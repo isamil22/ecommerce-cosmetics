@@ -22,6 +22,7 @@ public class CartController {
      * This method now accepts data from the request body.
      */
     @PostMapping("/add")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CartDTO> addToCart(@AuthenticationPrincipal UserDetails userDetails,
                                              @RequestBody AddToCartRequest request) {
         Long userId = ((User) userDetails).getId();
@@ -61,3 +62,4 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 }
+
