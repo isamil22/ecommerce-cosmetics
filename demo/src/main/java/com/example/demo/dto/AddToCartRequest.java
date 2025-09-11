@@ -1,0 +1,10 @@
+package com.example.demo.dto;
+
+import lombok.Data;
+
+@Data
+public class AddToCartRequest {
+    private Long productId;
+    private Integer quantity;
+    private Long productVariantId;
+}
