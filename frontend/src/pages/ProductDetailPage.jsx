@@ -92,7 +92,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         }
     };
 
-    // --- NEW: Function for the "Order Now" button ---
     const handleOrderNow = async () => {
         if (!isAuthenticated) {
             navigate('/auth');
@@ -115,6 +114,38 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             [typeName]: optionValue
         }));
     };
+
+    // Helper function to calculate average rating
+    const calculateAverageRating = () => {
+        if (!product || !product.comments || product.comments.length === 0) {
+            return 0;
+        }
+        const total = product.comments.reduce((acc, comment) => acc + comment.score, 0);
+        return total / product.comments.length;
+    };
+
+    const averageRating = calculateAverageRating();
+
+    // Helper function to render stars
+    const renderStars = (rating) => {
+        const fullStars = Math.floor(rating);
+        const halfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+        return (
+            <div className="flex items-center">
+                {[...Array(fullStars)].map((_, i) => (
+                    <span key={`full-${i}`} className="text-yellow-400">&#9733;</span>
+                ))}
+                {halfStar && <span className="text-yellow-400">&#9734;</span>}
+                {[...Array(emptyStars)].map((_, i) => (
+                    <span key={`empty-${i}`} className="text-gray-300">&#9733;</span>
+                ))}
+                <span className="ml-2 text-sm text-gray-600">({product.comments.length} reviews)</span>
+            </div>
+        );
+    };
+
 
     if (loading) return <Loader />;
     if (error) return <div className="text-center text-red-500 mt-8">{error}</div>;
@@ -148,8 +179,10 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 {/* Product Details */}
                 <div>
                     <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-                    <p className="text-2xl text-pink-600 font-semibold mb-4">${displayPrice}</p>
-                    <p className="text-gray-700 mb-4">{product.description.replace(/<[^>]+>/g, '')}</p>
+                    <p className="text-2xl text-pink-600 font-semibold mb-2">${displayPrice}</p>
+                    <div className="mb-4">
+                        {renderStars(averageRating)}
+                    </div>
 
                     {product.hasVariants && product.variantTypes.map(vt => (
                         <div key={vt.name} className="mb-4">
@@ -168,7 +201,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
                     ))}
 
-                    {/* --- MODIFIED: Added Order Now button --- */}
                     <div className="flex items-center space-x-4 mb-4">
                         <input
                             type="number"
@@ -197,8 +229,52 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             </div>
 
             <div className="mt-12">
-                <div className="border-b">
-                    {/* ... Tabs UI remains the same ... */}
+                <div className="border-b border-gray-200">
+                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                        <button
+                            onClick={() => setActiveTab('description')}
+                            className={`${
+                                activeTab === 'description'
+                                    ? 'border-pink-500 text-pink-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                        >
+                            Description
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('reviews')}
+                            className={`${
+                                activeTab === 'reviews'
+                                    ? 'border-pink-500 text-pink-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                        >
+                            Reviews ({product.comments ? product.comments.length : 0})
+                        </button>
+                    </nav>
+                </div>
+                <div className="mt-8">
+                    {activeTab === 'description' && (
+                        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: product.description }} />
+                    )}
+                    {activeTab === 'reviews' && (
+                        <div>
+                            {product.comments && product.comments.length > 0 ? (
+                                <div className="space-y-4">
+                                    {product.comments.map(comment => (
+                                        <div key={comment.id} className="p-4 border rounded-lg">
+                                            <p className="font-semibold">{comment.userFullName}</p>
+                                            <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
+                                            <p className="text-gray-600 mt-2">{comment.content}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No reviews yet.</p>
+                            )}
+                            <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
+                        </div>
+                    )}
                 </div>
             </div>
 
