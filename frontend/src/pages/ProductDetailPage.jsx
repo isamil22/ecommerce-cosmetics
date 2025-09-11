@@ -18,10 +18,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('description');
-
-    // --- NEW STATE FOR VARIANTS ---
     const [selectedOptions, setSelectedOptions] = useState({});
-
     const navigate = useNavigate();
 
     const fetchProduct = () => {
@@ -35,7 +32,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 const productData = productResponse.data;
                 setProduct(productData);
 
-                // --- NEW: Set initial variant options ---
                 if (productData.hasVariants && productData.variantTypes.length > 0) {
                     const initialOptions = {};
                     productData.variantTypes.forEach(vt => {
@@ -60,7 +56,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         fetchProduct();
     }, [id]);
 
-    // --- NEW: Memoized calculation for the active variant ---
     const activeVariant = useMemo(() => {
         if (!product || !product.hasVariants) return null;
         return product.variants.find(v =>
@@ -97,7 +92,23 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         }
     };
 
-    // --- NEW: Handler for variant selection ---
+    // --- NEW: Function for the "Order Now" button ---
+    const handleOrderNow = async () => {
+        if (!isAuthenticated) {
+            navigate('/auth');
+            return;
+        }
+        try {
+            const variantId = activeVariant ? activeVariant.id : null;
+            await addToCart(id, quantity, variantId);
+            fetchCartCount();
+            navigate('/order');
+        } catch (error) {
+            console.error('Failed to add to cart and proceed to order:', error);
+            setMessage('Failed to proceed to order.');
+        }
+    };
+
     const handleOptionSelect = (typeName, optionValue) => {
         setSelectedOptions(prev => ({
             ...prev,
@@ -140,7 +151,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     <p className="text-2xl text-pink-600 font-semibold mb-4">${displayPrice}</p>
                     <p className="text-gray-700 mb-4">{product.description.replace(/<[^>]+>/g, '')}</p>
 
-                    {/* --- NEW: Variant Selection UI --- */}
                     {product.hasVariants && product.variantTypes.map(vt => (
                         <div key={vt.name} className="mb-4">
                             <h3 className="text-lg font-semibold mb-2">{vt.name}</h3>
@@ -158,6 +168,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
                     ))}
 
+                    {/* --- MODIFIED: Added Order Now button --- */}
                     <div className="flex items-center space-x-4 mb-4">
                         <input
                             type="number"
@@ -173,19 +184,24 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         >
                             {displayStock > 0 ? 'Add to Cart' : 'Out of Stock'}
                         </button>
+                        <button
+                            onClick={handleOrderNow}
+                            className="flex-1 bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 disabled:bg-gray-400"
+                            disabled={displayStock <= 0}
+                        >
+                            Order Now
+                        </button>
                     </div>
                     {message && <p className="text-green-500">{message}</p>}
                 </div>
             </div>
 
-            {/* Tabs for Description and Reviews */}
             <div className="mt-12">
                 <div className="border-b">
                     {/* ... Tabs UI remains the same ... */}
                 </div>
             </div>
 
-            {/* Bestsellers Section */}
             <div className="mt-16 border-t border-gray-200">
                 <ProductSlider title="Our Best Sellers" products={bestsellers} />
             </div>
