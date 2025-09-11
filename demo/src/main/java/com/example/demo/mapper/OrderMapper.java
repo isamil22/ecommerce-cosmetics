@@ -40,6 +40,7 @@ public abstract class OrderMapper {
     public abstract OrderDTO toDTO(Order order);
 
     @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "productName", source = "product.name") // Add this line
     public abstract OrderItemDTO toOrderItemDTO(OrderItem orderItem);
 
     // --- List Mappings ---

@@ -61,7 +61,7 @@ const UserOrdersPage = () => {
                                     <div key={item.id} className="flex justify-between items-center text-sm mb-1">
                                         <div>
                                             {/* FIX 3: Display productId as product.name is not available */}
-                                            <p>Product ID: {item.productId}</p>
+                                            <p>{item.productName}</p>
                                             <p className="text-gray-500">Quantity: {item.quantity}</p>
                                         </div>
                                         <p>${item.price.toFixed(2)}</p>
