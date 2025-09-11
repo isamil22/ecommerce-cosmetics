@@ -11,7 +11,6 @@ const UserOrdersPage = () => {
         const fetchOrders = async () => {
             try {
                 const response = await getUserOrders();
-                // FIX 1: Correctly access the data from the response
                 setOrders(response.data || []);
             } catch (err) {
                 setError('Failed to fetch orders.');
@@ -24,7 +23,6 @@ const UserOrdersPage = () => {
         fetchOrders();
     }, []);
 
-    // Helper function to calculate the total for an order
     const calculateTotal = (items) => {
         if (!items) return '0.00';
         return items.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
@@ -56,11 +54,10 @@ const UserOrdersPage = () => {
 
                             <div className="mt-2 border-t pt-2">
                                 <h3 className="font-semibold mb-2">Items:</h3>
-                                {/* FIX 2: Use "order.orderItems" which matches the backend DTO */}
                                 {order.orderItems && order.orderItems.map((item) => (
                                     <div key={item.id} className="flex justify-between items-center text-sm mb-1">
                                         <div>
-                                            {/* FIX 3: Display productId as product.name is not available */}
+                                            {/* This is the corrected line */}
                                             <p>{item.productName}</p>
                                             <p className="text-gray-500">Quantity: {item.quantity}</p>
                                         </div>

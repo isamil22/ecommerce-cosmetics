@@ -1,4 +1,3 @@
-//isamil22/ecommerce-basic/ecommerce-basic-c83d487892bec1f57f16399098d19950a366e3c9/frontend/src/pages/admin/AdminOrdersPage.jsx
 import React, { useState, useEffect } from 'react';
 import {
     getAllOrders,
@@ -6,15 +5,14 @@ import {
     updateOrderStatus,
     getDeletedOrders,
     restoreOrder,
-    exportOrders // Import the new function
+    exportOrders
 } from '../../api/apiService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AdminOrdersPage = () => {
-    // ... (existing state and functions)
     const [orders, setOrders] = useState([]);
-    const [deletedOrders, setDeletedOrders] = useState([]); // State for deleted orders
+    const [deletedOrders, setDeletedOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -44,9 +42,9 @@ const AdminOrdersPage = () => {
     const handleDeleteOrder = async (orderId) => {
         if (window.confirm('Are you sure you want to delete this order?')) {
             try {
-                await deleteOrder(orderId); // This now soft-deletes the order
+                await deleteOrder(orderId);
                 toast.success('Order deleted successfully!');
-                fetchAllOrders(); // Refresh both lists
+                fetchAllOrders();
             } catch (err) {
                 toast.error('Failed to delete order.');
                 console.error(err);
@@ -59,7 +57,7 @@ const AdminOrdersPage = () => {
             try {
                 await restoreOrder(orderId);
                 toast.success('Order restored successfully!');
-                fetchAllOrders(); // Refresh both lists
+                fetchAllOrders();
             } catch (err) {
                 toast.error('Failed to restore order.');
                 console.error(err);
@@ -71,12 +69,13 @@ const AdminOrdersPage = () => {
         try {
             await updateOrderStatus(orderId, status);
             toast.success('Order status updated!');
-            fetchAllOrders(); // Refresh the list
+            fetchAllOrders();
         } catch (err) {
             toast.error('Failed to update order status.');
             console.error(err);
         }
     };
+
     const handleExport = async () => {
         try {
             const response = await exportOrders();
@@ -94,6 +93,25 @@ const AdminOrdersPage = () => {
         }
     };
 
+    // --- NEW --- Function to render order items
+    const renderOrderItems = (items) => {
+        if (!items || items.length === 0) {
+            return <p>No items in this order.</p>;
+        }
+        return (
+            <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">Order Items:</h4>
+                <ul className="list-disc list-inside">
+                    {items.map(item => (
+                        <li key={item.id} className="text-sm">
+                            {item.productName} - Quantity: {item.quantity} - Price: ${item.price.toFixed(2)}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    };
+
     if (loading) return <p>Loading orders...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
 
@@ -108,14 +126,14 @@ const AdminOrdersPage = () => {
                     Export Orders
                 </button>
             </div>
-            {/* ... (rest of the component) ... */}
+
             <div className="bg-white shadow-md rounded-lg p-4 mb-8">
                 <h2 className="text-xl font-semibold mb-3">Active Orders</h2>
                 <div className="overflow-x-auto">
                     <table className="min-w-full">
-                        {/* ... table head ... */}
                         <thead>
                         <tr>
+                            <th className="px-4 py-2 border"></th>
                             <th className="px-4 py-2 border">Order ID</th>
                             <th className="px-4 py-2 border">Customer</th>
                             <th className="px-4 py-2 border">Address</th>
@@ -127,33 +145,53 @@ const AdminOrdersPage = () => {
                         </thead>
                         <tbody>
                         {orders.map((order) => (
-                            <tr key={order.id}>
-                                <td className="border px-4 py-2">{order.id}</td>
-                                <td className="border px-4 py-2">{order.clientFullName}</td>
-                                <td className="border px-4 py-2">{order.address}, {order.city}</td>
-                                <td className="border px-4 py-2">{order.phoneNumber}</td>
-                                <td className="border px-4 py-2">{new Date(order.createdAt).toLocaleString()}</td>
-                                <td className="border px-4 py-2">
-                                    <select
-                                        value={order.status}
-                                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                        className="p-1 border rounded"
-                                    >
-                                        <option value="PREPARING">Preparing</option>
-                                        <option value="DELIVERING">Delivering</option>
-                                        <option value="DELIVERED">Delivered</option>
-                                        <option value="CANCELED">Canceled</option>
-                                    </select>
-                                </td>
-                                <td className="border px-4 py-2">
-                                    <button
-                                        onClick={() => handleDeleteOrder(order.id)}
-                                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
+                            <React.Fragment key={order.id}>
+                                <tr>
+                                    <td className="border px-4 py-2">
+                                        {/* --- NEW --- Plus icon to expand */}
+                                        <button onClick={() => {
+                                            const newOrders = orders.map(o => o.id === order.id ? { ...o, expanded: !o.expanded } : o);
+                                            setOrders(newOrders);
+                                        }}
+                                        >
+                                            {order.expanded ? '-' : '+'}
+                                        </button>
+                                    </td>
+                                    <td className="border px-4 py-2">{order.id}</td>
+                                    <td className="border px-4 py-2">{order.clientFullName}</td>
+                                    <td className="border px-4 py-2">{order.address}, {order.city}</td>
+                                    <td className="border px-4 py-2">{order.phoneNumber}</td>
+                                    <td className="border px-4 py-2">{new Date(order.createdAt).toLocaleString()}</td>
+                                    <td className="border px-4 py-2">
+                                        <select
+                                            value={order.status}
+                                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                            className="p-1 border rounded"
+                                        >
+                                            <option value="PREPARING">Preparing</option>
+                                            <option value="DELIVERING">Delivering</option>
+                                            <option value="DELIVERED">Delivered</option>
+                                            <option value="CANCELED">Canceled</option>
+                                        </select>
+                                    </td>
+                                    <td className="border px-4 py-2">
+                                        <button
+                                            onClick={() => handleDeleteOrder(order.id)}
+                                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                {/* --- NEW --- Row to show details when expanded */}
+                                {order.expanded && (
+                                    <tr>
+                                        <td colSpan="8" className="border px-4 py-2">
+                                            {renderOrderItems(order.orderItems)}
+                                        </td>
+                                    </tr>
+                                )}
+                            </React.Fragment>
                         ))}
                         </tbody>
                     </table>
