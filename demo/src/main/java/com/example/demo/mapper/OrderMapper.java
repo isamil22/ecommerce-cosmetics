@@ -40,7 +40,9 @@ public abstract class OrderMapper {
     public abstract OrderDTO toDTO(Order order);
 
     @Mapping(target = "productId", source = "product.id")
-    @Mapping(target = "productName", source = "product.name") // Add this line
+    @Mapping(target = "productName", source = "product.name")
+    // --- THIS IS THE NEW LINE ---
+    @Mapping(target = "imageUrl", expression = "java(!orderItem.getProduct().getImages().isEmpty() ? orderItem.getProduct().getImages().get(0) : null)")
     public abstract OrderItemDTO toOrderItemDTO(OrderItem orderItem);
 
     // --- List Mappings ---
