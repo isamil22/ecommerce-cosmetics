@@ -1,4 +1,3 @@
-// demo/src/main/java/com/example/demo/mapper/ProductMapper.java
 package com.example.demo.mapper;
 
 import com.example.demo.dto.CommentDTO;
@@ -21,7 +20,7 @@ public interface ProductMapper {
     @Mapping(source = "variantTypes", target = "variantTypes")
     @Mapping(source = "variants", target = "variants")
     @Mapping(source = "hasVariants", target = "hasVariants")
-    @Mapping(source = "isPackable", target = "packable")
+    @Mapping(source = "isPackable", target = "isPackable") // Correct
     ProductDTO toDTO(Product product);
 
     @Mapping(target = "category", ignore = true)
@@ -29,7 +28,7 @@ public interface ProductMapper {
     @Mapping(target = "variants", ignore = true)
     @Mapping(target = "comments", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "packable", target = "isPackable")
+    @Mapping(source = "isPackable", target = "isPackable") // Correct
     Product toEntity(ProductDTO productDTO);
 
     @Mapping(target = "id", ignore = true)
@@ -38,8 +37,7 @@ public interface ProductMapper {
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "variantTypes", ignore = true)
     @Mapping(target = "variants", ignore = true)
-    // --- THIS LINE IS THE FIX ---
-    @Mapping(source = "packable", target = "isPackable")
+    @Mapping(source = "isPackable", target = "isPackable") // Correct
     void updateProductFromDto(ProductDTO dto, @MappingTarget Product entity);
 
     default List<VariantTypeDto> mapVariantTypes(List<VariantType> variantTypes) {
