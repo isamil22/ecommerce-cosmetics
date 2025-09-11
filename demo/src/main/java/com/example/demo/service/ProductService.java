@@ -60,6 +60,9 @@ public class ProductService {
         product.setType(productDTO.getType());
         product.setHasVariants(productDTO.getHasVariants() != null ? productDTO.getHasVariants() : false);
 
+        // This was missing from the original create method, adding for consistency
+        product.setPackable(productDTO.getIsPackable() != null && productDTO.getIsPackable());
+
         // Handle images
         if (images != null && !images.isEmpty()) {
             List<String> imageUrls = uploadAndGetImageUrls(images);
@@ -90,6 +93,9 @@ public class ProductService {
         // Update basic fields
         productMapper.updateProductFromDto(productDTO, existingProduct);
         existingProduct.setHasVariants(productDTO.getHasVariants() != null ? productDTO.getHasVariants() : false);
+
+        // Add this line to explicitly update the isPackable property
+        existingProduct.setPackable(productDTO.getIsPackable() != null && productDTO.getIsPackable());
 
         // Update category if changed
         if (!existingProduct.getCategory().getId().equals(productDTO.getCategoryId())) {
