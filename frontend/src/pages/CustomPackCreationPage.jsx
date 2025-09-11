@@ -1,7 +1,6 @@
-// frontend/src/pages/CustomPackCreationPage.jsx
-
+// isamil22/ecommerce-basic/ecommerce-basic-183c9fbc49a0eaa23b86f1a5ff30389ed147bb06/frontend/src/pages/CustomPackCreationPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom'; // Import Link
 import { getCustomPackById, getPackableProducts, addToCart } from '../api/apiService';
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
@@ -87,10 +86,16 @@ const CustomPackCreationPage = () => {
                     <div
                         key={product.id}
                         onClick={() => handleProductSelect(product)}
-                        className={`border-2 p-4 rounded-lg cursor-pointer ${selectedProducts.find(p => p.id === product.id) ? 'border-pink-500' : 'border-gray-300'}`}
+                        className={`border-2 p-4 rounded-lg cursor-pointer transition-shadow duration-200 ${selectedProducts.find(p => p.id === product.id) ? 'border-pink-500 shadow-lg' : 'border-gray-300'}`}
                     >
-                        <img src={product.images[0]} alt={product.name} className="w-full h-48 object-cover mb-4" />
-                        <h3 className="font-bold">{product.name}</h3>
+                        {/* The onClick handler on the Link stops the parent div's onClick from firing, preventing selection when navigating */}
+                        <Link to={`/products/${product.id}`} onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer">
+                            <img src={product.images[0]} alt={product.name} className="w-full h-48 object-cover mb-4 rounded" />
+                        </Link>
+                        {/* The onClick handler on the Link stops the parent div's onClick from firing, preventing selection when navigating */}
+                        <Link to={`/products/${product.id}`} onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer">
+                            <h3 className="font-bold hover:underline">{product.name}</h3>
+                        </Link>
                         <p>${product.price.toFixed(2)}</p>
                     </div>
                 ))}

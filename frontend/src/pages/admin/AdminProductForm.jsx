@@ -1,3 +1,4 @@
+// frontend/src/pages/admin/AdminProductForm.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, createProduct, updateProduct, getAllCategories, uploadDescriptionImage } from '../../api/apiService';
@@ -16,6 +17,7 @@ const AdminProductForm = () => {
         type: 'BOTH',
         bestseller: false,
         newArrival: false,
+        isPackable: false, // Initial state for the new property
         hasVariants: false,
         variantTypes: [],
         variants: []
@@ -47,6 +49,7 @@ const AdminProductForm = () => {
                     const productData = response.data;
                     setProduct({
                         ...productData,
+                        isPackable: productData.isPackable || false, // Ensure isPackable is handled
                         hasVariants: productData.hasVariants || false,
                         variantTypes: productData.variantTypes ? productData.variantTypes.map(vt => ({
                             ...vt,
@@ -538,6 +541,19 @@ const AdminProductForm = () => {
                         />
                         <label htmlFor="hasVariants" className="ml-2 block text-sm text-gray-900">Has Variants</label>
                     </div>
+                    {/* --- ADD THIS CHECKBOX --- */}
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            name="isPackable"
+                            id="isPackable"
+                            checked={product.isPackable || false}
+                            onChange={handleInputChange}
+                            className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+                        />
+                        <label htmlFor="isPackable" className="ml-2 block text-sm text-gray-900">Available for Custom Packs</label>
+                    </div>
+                    {/* ------------------------- */}
                 </div>
 
                 {product.hasVariants && (
