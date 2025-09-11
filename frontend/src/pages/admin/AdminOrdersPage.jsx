@@ -93,7 +93,6 @@ const AdminOrdersPage = () => {
         }
     };
 
-    // --- NEW --- Function to render order items
     const renderOrderItems = (items) => {
         if (!items || items.length === 0) {
             return <p>No items in this order.</p>;
@@ -103,8 +102,13 @@ const AdminOrdersPage = () => {
                 <h4 className="font-bold mb-2">Order Items:</h4>
                 <ul className="list-disc list-inside">
                     {items.map(item => (
-                        <li key={item.id} className="text-sm">
-                            {item.productName} - Quantity: {item.quantity} - Price: ${item.price.toFixed(2)}
+                        <li key={item.id} className="flex items-center text-sm mb-2">
+                            {/* --- NEW --- Image tag added here */}
+                            <img src={item.imageUrl || 'https://placehold.co/60x60'} alt={item.productName} className="w-12 h-12 object-cover rounded-md mr-4" />
+                            <div>
+                                <div>{item.productName}</div>
+                                <div>Quantity: {item.quantity} - Price: ${item.price.toFixed(2)}</div>
+                            </div>
                         </li>
                     ))}
                 </ul>
@@ -148,7 +152,6 @@ const AdminOrdersPage = () => {
                             <React.Fragment key={order.id}>
                                 <tr>
                                     <td className="border px-4 py-2">
-                                        {/* --- NEW --- Plus icon to expand */}
                                         <button onClick={() => {
                                             const newOrders = orders.map(o => o.id === order.id ? { ...o, expanded: !o.expanded } : o);
                                             setOrders(newOrders);
@@ -183,7 +186,6 @@ const AdminOrdersPage = () => {
                                         </button>
                                     </td>
                                 </tr>
-                                {/* --- NEW --- Row to show details when expanded */}
                                 {order.expanded && (
                                     <tr>
                                         <td colSpan="8" className="border px-4 py-2">
@@ -198,7 +200,6 @@ const AdminOrdersPage = () => {
                 </div>
             </div>
 
-            {/* Deleted Orders Table */}
             <div className="bg-gray-100 shadow-md rounded-lg p-4">
                 <h2 className="text-xl font-semibold mb-3">Deleted Orders</h2>
                 <div className="overflow-x-auto">
