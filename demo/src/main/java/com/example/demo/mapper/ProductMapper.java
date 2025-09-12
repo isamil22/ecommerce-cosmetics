@@ -1,3 +1,4 @@
+// demo/src/main/java/com/example/demo/mapper/ProductMapper.java
 package com.example.demo.mapper;
 
 import com.example.demo.dto.CommentDTO;
@@ -20,6 +21,7 @@ public interface ProductMapper {
     @Mapping(source = "variantTypes", target = "variantTypes")
     @Mapping(source = "variants", target = "variants")
     @Mapping(source = "hasVariants", target = "hasVariants")
+    @Mapping(source = "quantity", target = "quantity") // Add this line
     ProductDTO toDTO(Product product);
 
     @Mapping(target = "category", ignore = true)
