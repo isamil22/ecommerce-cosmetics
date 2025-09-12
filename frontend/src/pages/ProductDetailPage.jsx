@@ -7,6 +7,7 @@ import CommentForm from '../components/CommentForm';
 import ProductSlider from '../components/ProductSlider';
 import VisitorCounter from '../components/VisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
+import TrustBadges from '../components/TrustBadges';
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -157,8 +158,13 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
                 <div>
-                    <div className="mb-4">
-                        <img src={selectedImage} alt="Selected product view" className="w-full h-auto object-cover rounded-lg shadow-lg" style={{ maxHeight: '500px' }} />
+                    <div className="mb-4 image-zoom-container">
+                        <img
+                            src={selectedImage}
+                            alt="Selected product view"
+                            className="w-full h-auto object-cover"
+                            style={{ maxHeight: '500px' }}
+                        />
                     </div>
                     <div className="flex space-x-2 overflow-x-auto">
                         {product.images.map((img, index) => (
@@ -180,7 +186,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     <div className="mb-4">
                         {renderStars(averageRating)}
                     </div>
-                    <VisitorCounter /> {/* MOVED a la nouvelle position */}
+                    <VisitorCounter />
                     <div className="mb-4">
                         <p className={`font-semibold ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                             Availability: {displayStock > 0 ? `${displayStock} in stock` : 'Out of Stock'}
@@ -212,22 +218,25 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                             className="w-20 p-2 border rounded-md text-center"
                             min="1"
                         />
-                        <button
-                            onClick={handleAddToCart}
-                            className="flex-1 bg-pink-600 text-white py-2 px-6 rounded-md hover:bg-pink-700 disabled:bg-gray-400"
-                            disabled={displayStock <= 0}
-                        >
-                            {displayStock > 0 ? 'Add to Cart' : 'Out of Stock'}
-                        </button>
-                        <button
-                            onClick={handleOrderNow}
-                            className="flex-1 bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 disabled:bg-gray-400"
-                            disabled={displayStock <= 0}
-                        >
-                            Order Now
-                        </button>
+                        <div className="flex flex-col gap-3 w-full">
+                            <button
+                                onClick={handleOrderNow}
+                                className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition-transform transform hover:scale-105"
+                                disabled={displayStock <= 0}
+                            >
+                                Order Now
+                            </button>
+                            <button
+                                onClick={handleAddToCart}
+                                className="w-full bg-pink-600 text-white py-3 px-6 rounded-lg hover:bg-pink-700 disabled:bg-gray-400 transition-colors"
+                                disabled={displayStock <= 0}
+                            >
+                                {displayStock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                            </button>
+                        </div>
                     </div>
                     {message && <p className="text-green-500">{message}</p>}
+                    <TrustBadges />
                 </div>
             </div>
 
@@ -282,7 +291,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             </div>
 
             <div className="mt-16 border-t border-gray-200">
-                <ProductSlider title="Our Best Sellers" products={bestsellers} />
+                <ProductSlider title="You Might Also Like" products={bestsellers} />
             </div>
 
         </div>
