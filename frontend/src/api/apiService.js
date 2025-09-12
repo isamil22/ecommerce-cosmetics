@@ -330,4 +330,8 @@ export const getFrequentlyBoughtTogether = (productId) => {
     return apiService.get(`/products/${productId}/frequently-bought-together`);
 };
 
+export const updateFrequentlyBoughtTogether = (productId, frequentlyBoughtIds) => {
+    return apiService.put(`/products/${productId}/frequently-bought-together`, frequentlyBoughtIds);
+};
+
 export default apiService;
