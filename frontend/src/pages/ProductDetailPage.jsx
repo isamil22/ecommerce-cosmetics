@@ -115,7 +115,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         }));
     };
 
-    // Helper function to calculate average rating
     const calculateAverageRating = () => {
         if (!product || !product.comments || product.comments.length === 0) {
             return 0;
@@ -126,7 +125,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
     const averageRating = calculateAverageRating();
 
-    // Helper function to render stars
     const renderStars = (rating) => {
         const fullStars = Math.floor(rating);
         const halfStar = rating % 1 >= 0.5;
@@ -145,7 +143,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             </div>
         );
     };
-
 
     if (loading) return <Loader />;
     if (error) return <div className="text-center text-red-500 mt-8">{error}</div>;
@@ -182,6 +179,12 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     <p className="text-2xl text-pink-600 font-semibold mb-2">${displayPrice}</p>
                     <div className="mb-4">
                         {renderStars(averageRating)}
+                    </div>
+
+                    <div className="mb-4">
+                        <p className={`font-semibold ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            Availability: {displayStock > 0 ? `${displayStock} in stock` : 'Out of Stock'}
+                        </p>
                     </div>
 
                     {product.hasVariants && product.variantTypes.map(vt => (
