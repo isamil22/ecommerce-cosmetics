@@ -326,4 +326,8 @@ export const saveCountdown = (countdownData) => {
     return apiService.post('/countdown', countdownData);
 };
 
+export const getFrequentlyBoughtTogether = (productId) => {
+    return apiService.get(`/products/${productId}/frequently-bought-together`);
+};
+
 export default apiService;

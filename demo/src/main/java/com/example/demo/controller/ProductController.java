@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.FrequentlyBoughtTogetherDTO;
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ProductVariantDto;
 import com.example.demo.service.ProductService;
@@ -131,5 +132,10 @@ public class ProductController {
     @GetMapping("/packable")
     public ResponseEntity<List<ProductDTO>> getPackableProducts() {
         return ResponseEntity.ok(productService.getPackableProducts());
+    }
+
+    @GetMapping("/{id}/frequently-bought-together")
+    public ResponseEntity<List<FrequentlyBoughtTogetherDTO>> getFrequentlyBoughtTogether(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getFrequentlyBoughtTogether(id));
     }
 }

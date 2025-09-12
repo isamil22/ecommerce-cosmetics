@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.FrequentlyBoughtTogetherDTO;
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ProductVariantDto;
 import com.example.demo.dto.VariantTypeDto;
@@ -294,5 +295,23 @@ public class ProductService {
         return productRepository.findByIsPackableTrue().stream()
                 .map(productMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<FrequentlyBoughtTogetherDTO> getFrequentlyBoughtTogether(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+        return product.getFrequentlyBoughtTogether().stream()
+                .map(this::toFrequentlyBoughtTogetherDTO)
+                .collect(Collectors.toList());
+    }
+
+    private FrequentlyBoughtTogetherDTO toFrequentlyBoughtTogetherDTO(Product product) {
+        FrequentlyBoughtTogetherDTO dto = new FrequentlyBoughtTogetherDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setImages(product.getImages());
+        return dto;
     }
 }

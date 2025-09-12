@@ -9,6 +9,7 @@ import VisitorCounter from '../components/VisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
 import SocialShare from '../components/SocialShare';
+import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -318,6 +319,8 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     )}
                 </div>
             </div>
+
+            <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} />
 
             <div className="mt-16 border-t border-gray-200">
                 <ProductSlider title="You Might Also Like" products={bestsellers} />

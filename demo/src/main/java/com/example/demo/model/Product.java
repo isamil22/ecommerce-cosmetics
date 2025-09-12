@@ -1,3 +1,4 @@
+// isamil22/ecommerce-basic/ecommerce-basic-7d0cae8be7d6e68651cd7c2fe9fb897e9162ff5e/demo/src/main/java/com/example/demo/model/Product.java
 package com.example.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -7,7 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -34,10 +37,8 @@ public class Product {
     private boolean bestseller;
     private boolean newArrival;
 
-    // This field is new or was missing from your entity
     private boolean hasVariants = false;
-
-    private boolean isPackable = false; // Add this line
+    private boolean isPackable = false;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
@@ -58,6 +59,14 @@ public class Product {
     @JsonManagedReference
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariant> variants = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "product_frequently_bought_together",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "frequently_bought_id")
+    )
+    private Set<Product> frequentlyBoughtTogether = new HashSet<>();
 
     public enum ProductType {
         MEN, WOMEN, BOTH
