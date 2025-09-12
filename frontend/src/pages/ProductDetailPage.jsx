@@ -8,6 +8,7 @@ import ProductSlider from '../components/ProductSlider';
 import VisitorCounter from '../components/VisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
+import SocialShare from '../components/SocialShare';
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -187,14 +188,9 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         {renderStars(averageRating)}
                     </div>
                     <VisitorCounter />
-                    <div className="mb-4">
-                        <p className={`font-semibold ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            Availability: {displayStock > 0 ? `${displayStock} in stock` : 'Out of Stock'}
-                        </p>
-                    </div>
 
                     {product.hasVariants && product.variantTypes.map(vt => (
-                        <div key={vt.name} className="mb-4">
+                        <div key={vt.name} className="my-4">
                             <h3 className="text-lg font-semibold mb-2">{vt.name}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {vt.options.map(option => (
@@ -210,15 +206,25 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
                     ))}
 
-                    <div className="flex items-center space-x-4 mb-4">
-                        <input
-                            type="number"
-                            value={quantity}
-                            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10)))}
-                            className="w-20 p-2 border rounded-md text-center"
-                            min="1"
-                        />
-                        <div className="flex flex-col gap-3 w-full">
+                    <div className="bg-gray-50 p-4 rounded-lg mt-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <p className={`font-semibold ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {displayStock > 0 ? `${displayStock} in stock` : 'Out of Stock'}
+                            </p>
+                            <div className="flex items-center">
+                                <label htmlFor="quantity" className="mr-3 text-sm font-medium text-gray-700">Qty:</label>
+                                <input
+                                    id="quantity"
+                                    type="number"
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10)))}
+                                    className="w-20 p-2 border rounded-md text-center"
+                                    min="1"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-3">
                             <button
                                 onClick={handleOrderNow}
                                 className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition-transform transform hover:scale-105"
@@ -235,8 +241,13 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                             </button>
                         </div>
                     </div>
-                    {message && <p className="text-green-500">{message}</p>}
+                    {message && <p className="text-green-500 mt-3">{message}</p>}
+
                     <TrustBadges />
+                    <SocialShare
+                        productUrl={window.location.href}
+                        productName={product.name}
+                    />
                 </div>
             </div>
 
@@ -263,6 +274,16 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         >
                             Reviews ({product.comments ? product.comments.length : 0})
                         </button>
+                        <button
+                            onClick={() => setActiveTab('shipping')}
+                            className={`${
+                                activeTab === 'shipping'
+                                    ? 'border-pink-500 text-pink-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                        >
+                            Shipping & Returns
+                        </button>
                     </nav>
                 </div>
                 <div className="mt-8">
@@ -285,6 +306,14 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                 <p>No reviews yet.</p>
                             )}
                             <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
+                        </div>
+                    )}
+                    {activeTab === 'shipping' && (
+                        <div className="prose max-w-none">
+                            <h3>Shipping Information</h3>
+                            <p>We offer fast shipping to your location. Most orders are processed within 1-2 business days and delivered within 3-5 business days in major cities like Casablanca and Rabat.</p>
+                            <h3>Return Policy</h3>
+                            <p>We offer a 30-day return policy on all our products. If you're not satisfied, you can return it for a full refund. Please see our FAQ page for more details.</p>
                         </div>
                     )}
                 </div>
