@@ -180,7 +180,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     <div className="mb-4">
                         {renderStars(averageRating)}
                     </div>
-
+                    <VisitorCounter /> {/* MOVED a la nouvelle position */}
                     <div className="mb-4">
                         <p className={`font-semibold ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                             Availability: {displayStock > 0 ? `${displayStock} in stock` : 'Out of Stock'}
@@ -284,7 +284,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             <div className="mt-16 border-t border-gray-200">
                 <ProductSlider title="Our Best Sellers" products={bestsellers} />
             </div>
-            <VisitorCounter />
+
         </div>
     );
 };
