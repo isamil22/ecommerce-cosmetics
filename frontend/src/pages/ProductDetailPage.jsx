@@ -1,4 +1,3 @@
-// frontend/src/pages/ProductDetailPage.jsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, addToCart, getBestsellers } from '../api/apiService';
@@ -13,7 +12,9 @@ import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
 import ReviewSummary from '../components/ReviewSummary';
 import Breadcrumbs from '../components/Breadcrumbs';
 import StickyAddToCartBar from '../components/StickyAddToCartBar';
-import PurchasePopup from '../components/PurchasePopup'; // <-- NEW: Import PurchasePopup
+import PurchasePopup from '../components/PurchasePopup';
+import OrderUrgencyTimer from '../components/OrderUrgencyTimer'; // <-- NEW
+import Accordion from '../components/Accordion'; // <-- NEW
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -24,7 +25,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const [message, setMessage] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('description');
     const [selectedOptions, setSelectedOptions] = useState({});
     const navigate = useNavigate();
     const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
@@ -41,7 +41,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-
 
     const fetchProduct = () => {
         setLoading(true);
@@ -184,7 +183,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
                 <div>
-                    {/* START: VIDEO SUPPORT UPDATE */}
                     <div className="mb-4">
                         {selectedImage && selectedImage.includes('youtube.com/embed') ? (
                             <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
@@ -232,20 +230,17 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                             )
                         )}
                     </div>
-                    {/* END: VIDEO SUPPORT UPDATE */}
                 </div>
 
                 {/* Product Details */}
                 <div>
                     <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
                     <p className="text-2xl text-pink-600 font-semibold mb-2">${displayPrice}</p>
-                    {/* START: PRICE PER UNIT */}
                     {product.size && product.unit && (
                         <p className="text-sm text-gray-500 mb-4">
                             (${(displayPrice / product.size).toFixed(2)} / {product.unit})
                         </p>
                     )}
-                    {/* END: PRICE PER UNIT */}
                     <div className="mb-4">
                         {renderStars(averageRating)}
                     </div>
@@ -268,6 +263,8 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                             </div>
                         </div>
                     ))}
+
+                    <OrderUrgencyTimer />
 
                     <div ref={addToCartRef} className="bg-gray-50 p-4 rounded-lg mt-6">
                         <div className="flex items-center justify-between mb-4">
@@ -320,97 +317,56 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             </div>
 
             <div className="mt-12">
-                <div className="border-b border-gray-200">
-                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-                        <button
-                            onClick={() => setActiveTab('description')}
-                            className={`${
-                                activeTab === 'description'
-                                    ? 'border-pink-500 text-pink-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-                        >
-                            Description
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('reviews')}
-                            className={`${
-                                activeTab === 'reviews'
-                                    ? 'border-pink-500 text-pink-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-                        >
-                            Reviews ({product.comments ? product.comments.length : 0})
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('shipping')}
-                            className={`${
-                                activeTab === 'shipping'
-                                    ? 'border-pink-500 text-pink-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-                        >
-                            Shipping & Returns
-                        </button>
-                    </nav>
-                </div>
-                <div className="mt-8">
-                    {/* START: "WHY BUY FROM US" UPDATE */}
-                    {activeTab === 'description' && (
-                        <div className="prose max-w-none">
-                            <div dangerouslySetInnerHTML={{ __html: product.description }} />
-
-                            <div className="mt-8 pt-6 border-t border-gray-200">
-                                <h4 className="text-xl font-bold text-gray-800 mb-4">Why Choose BeautyCosmetics?</h4>
-                                <ul className="space-y-3 list-none p-0">
-                                    <li className="flex items-start">
-                                        <span className="text-green-500 mr-2">✓</span>
-                                        <strong>Authentic Products:</strong> We guarantee 100% authentic products sourced directly from brands.
-                                    </li>
-                                    <li className="flex items-start">
-                                        <span className="text-green-500 mr-2">✓</span>
-                                        <strong>Fast & Reliable Shipping:</strong> Get your favorite products delivered to your door in Casablanca within 3-5 days.
-                                    </li>
-                                    <li className="flex items-start">
-                                        <span className="text-green-500 mr-2">✓</span>
-                                        <strong>30-Day Money-Back Guarantee:</strong> Not satisfied? Return it within 30 days for a full refund, no questions asked.
-                                    </li>
-                                    <li className="flex items-start">
-                                        <span className="text-green-500 mr-2">✓</span>
-                                        <strong>Secure Checkout:</strong> Your payment information is encrypted and processed securely.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    )}
-                    {/* END: "WHY BUY FROM US" UPDATE */}
-                    {activeTab === 'reviews' && (
-                        <div>
-                            {product.comments && product.comments.length > 0 ? (
-                                <div className="space-y-4">
-                                    {product.comments.map(comment => (
-                                        <div key={comment.id} className="p-4 border rounded-lg">
-                                            <p className="font-semibold">{comment.userFullName}</p>
-                                            <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
-                                            <p className="text-gray-600 mt-2">{comment.content}</p>
+                <Accordion
+                    items={[
+                        {
+                            title: 'Description',
+                            content: (
+                                <>
+                                    <div dangerouslySetInnerHTML={{ __html: product.description }} />
+                                    <div className="mt-8 pt-6 border-t border-gray-200">
+                                        <h4 className="text-xl font-bold text-gray-800 mb-4">Why Choose BeautyCosmetics?</h4>
+                                        <ul className="space-y-3 list-none p-0">
+                                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Authentic Products:</strong> We guarantee 100% authentic products sourced directly from brands.</li>
+                                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Fast & Reliable Shipping:</strong> Get your favorite products delivered to your door in Casablanca within 3-5 days.</li>
+                                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>30-Day Money-Back Guarantee:</strong> Not satisfied? Return it within 30 days for a full refund, no questions asked.</li>
+                                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Secure Checkout:</strong> Your payment information is encrypted and processed securely.</li>
+                                        </ul>
+                                    </div>
+                                </>
+                            )
+                        },
+                        {
+                            title: 'Ingredients',
+                            content: <p>{product.ingredients || 'No ingredients listed.'}</p>
+                        },
+                        {
+                            title: 'How to Use',
+                            content: <p>{product.howToUse || 'No usage instructions provided.'}</p>
+                        },
+                        {
+                            title: `Reviews (${product.comments ? product.comments.length : 0})`,
+                            content: (
+                                <div>
+                                    {product.comments && product.comments.length > 0 ? (
+                                        <div className="space-y-4">
+                                            {product.comments.map(comment => (
+                                                <div key={comment.id} className="p-4 border rounded-lg">
+                                                    <p className="font-semibold">{comment.userFullName}</p>
+                                                    <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
+                                                    <p className="text-gray-600 mt-2">{comment.content}</p>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    ) : (
+                                        <p>No reviews yet.</p>
+                                    )}
+                                    <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
                                 </div>
-                            ) : (
-                                <p>No reviews yet.</p>
-                            )}
-                            <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
-                        </div>
-                    )}
-                    {activeTab === 'shipping' && (
-                        <div className="prose max-w-none">
-                            <h3>Shipping Information</h3>
-                            <p>We offer fast shipping to your location. Most orders are processed within 1-2 business days and delivered within 3-5 business days in major cities like Casablanca and Rabat.</p>
-                            <h3>Return Policy</h3>
-                            <p>We offer a 30-day return policy on all our products. If you're not satisfied, you can return it for a full refund. Please see our FAQ page for more details.</p>
-                        </div>
-                    )}
-                </div>
+                            )
+                        }
+                    ]}
+                />
             </div>
 
             <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} />
@@ -424,9 +380,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 displayPrice={displayPrice}
                 handleAddToCart={handleAddToCart}
             />
-            {/* START: NEW PURCHASE POPUP */}
             <PurchasePopup productName={product.name} productImage={product.images[0]} />
-            {/* END: NEW PURCHASE POPUP */}
         </div>
     );
 };
