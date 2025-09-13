@@ -13,7 +13,7 @@ import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
 import ReviewSummary from '../components/ReviewSummary';
 import Breadcrumbs from '../components/Breadcrumbs';
 import StickyAddToCartBar from '../components/StickyAddToCartBar';
-
+import PurchasePopup from '../components/PurchasePopup'; // <-- NEW: Import PurchasePopup
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -184,31 +184,68 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
                 <div>
-                    <div className="mb-4 image-zoom-container">
-                        <img
-                            src={selectedImage}
-                            alt="Selected product view"
-                            className="w-full h-auto object-cover"
-                            style={{ maxHeight: '500px' }}
-                        />
+                    {/* START: VIDEO SUPPORT UPDATE */}
+                    <div className="mb-4">
+                        {selectedImage && selectedImage.includes('youtube.com/embed') ? (
+                            <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
+                                <iframe
+                                    src={selectedImage}
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title="Product Video"
+                                    className="w-full h-full"
+                                    style={{ minHeight: '400px' }}
+                                ></iframe>
+                            </div>
+                        ) : (
+                            <div className="image-zoom-container">
+                                <img
+                                    src={selectedImage}
+                                    alt="Selected product view"
+                                    className="w-full h-auto object-cover"
+                                    style={{ maxHeight: '500px' }}
+                                />
+                            </div>
+                        )}
                     </div>
                     <div className="flex space-x-2 overflow-x-auto">
-                        {product.images.map((img, index) => (
-                            <img
-                                key={index}
-                                src={img}
-                                alt={`Thumbnail ${index + 1}`}
-                                className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img ? 'border-pink-500' : 'border-transparent'}`}
-                                onClick={() => setSelectedImage(img)}
-                            />
-                        ))}
+                        {product.images.map((img, index) =>
+                            img.includes('youtube.com/embed') ? (
+                                <div
+                                    key={index}
+                                    onClick={() => setSelectedImage(img)}
+                                    className={`w-20 h-20 rounded-md cursor-pointer border-2 flex items-center justify-center bg-gray-200 ${selectedImage === img ? 'border-pink-500 ring-2 ring-pink-300' : 'border-transparent'}`}
+                                >
+                                    <svg className="w-8 h-8 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                            ) : (
+                                <img
+                                    key={index}
+                                    src={img}
+                                    alt={`Thumbnail ${index + 1}`}
+                                    className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img ? 'border-pink-500' : 'border-transparent'}`}
+                                    onClick={() => setSelectedImage(img)}
+                                />
+                            )
+                        )}
                     </div>
+                    {/* END: VIDEO SUPPORT UPDATE */}
                 </div>
 
                 {/* Product Details */}
                 <div>
                     <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
                     <p className="text-2xl text-pink-600 font-semibold mb-2">${displayPrice}</p>
+                    {/* START: PRICE PER UNIT */}
+                    {product.size && product.unit && (
+                        <p className="text-sm text-gray-500 mb-4">
+                            (${(displayPrice / product.size).toFixed(2)} / {product.unit})
+                        </p>
+                    )}
+                    {/* END: PRICE PER UNIT */}
                     <div className="mb-4">
                         {renderStars(averageRating)}
                     </div>
@@ -318,9 +355,35 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     </nav>
                 </div>
                 <div className="mt-8">
+                    {/* START: "WHY BUY FROM US" UPDATE */}
                     {activeTab === 'description' && (
-                        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: product.description }} />
+                        <div className="prose max-w-none">
+                            <div dangerouslySetInnerHTML={{ __html: product.description }} />
+
+                            <div className="mt-8 pt-6 border-t border-gray-200">
+                                <h4 className="text-xl font-bold text-gray-800 mb-4">Why Choose BeautyCosmetics?</h4>
+                                <ul className="space-y-3 list-none p-0">
+                                    <li className="flex items-start">
+                                        <span className="text-green-500 mr-2">✓</span>
+                                        <strong>Authentic Products:</strong> We guarantee 100% authentic products sourced directly from brands.
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-green-500 mr-2">✓</span>
+                                        <strong>Fast & Reliable Shipping:</strong> Get your favorite products delivered to your door in Casablanca within 3-5 days.
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-green-500 mr-2">✓</span>
+                                        <strong>30-Day Money-Back Guarantee:</strong> Not satisfied? Return it within 30 days for a full refund, no questions asked.
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-green-500 mr-2">✓</span>
+                                        <strong>Secure Checkout:</strong> Your payment information is encrypted and processed securely.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     )}
+                    {/* END: "WHY BUY FROM US" UPDATE */}
                     {activeTab === 'reviews' && (
                         <div>
                             {product.comments && product.comments.length > 0 ? (
@@ -361,6 +424,9 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 displayPrice={displayPrice}
                 handleAddToCart={handleAddToCart}
             />
+            {/* START: NEW PURCHASE POPUP */}
+            <PurchasePopup productName={product.name} productImage={product.images[0]} />
+            {/* END: NEW PURCHASE POPUP */}
         </div>
     );
 };
