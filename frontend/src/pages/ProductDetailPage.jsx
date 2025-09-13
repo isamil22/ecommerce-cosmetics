@@ -13,8 +13,8 @@ import ReviewSummary from '../components/ReviewSummary';
 import Breadcrumbs from '../components/Breadcrumbs';
 import StickyAddToCartBar from '../components/StickyAddToCartBar';
 import PurchasePopup from '../components/PurchasePopup';
-import OrderUrgencyTimer from '../components/OrderUrgencyTimer'; // <-- NEW
-import Accordion from '../components/Accordion'; // <-- NEW
+import OrderUrgencyTimer from '../components/OrderUrgencyTimer';
+import Accordion from '../components/Accordion';
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();

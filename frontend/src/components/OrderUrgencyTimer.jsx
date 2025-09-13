@@ -7,13 +7,11 @@ const OrderUrgencyTimer = () => {
     useEffect(() => {
         const calculateTimeLeft = () => {
             const now = new Date();
-            // Set cutoff time to 4 PM (16:00) for same-day shipping promise
             const cutoff = new Date();
             cutoff.setHours(16, 0, 0, 0);
 
             let diff = cutoff.getTime() - now.getTime();
 
-            // If past the cutoff, the deadline is for tomorrow
             if (diff < 0) {
                 cutoff.setDate(cutoff.getDate() + 1);
                 diff = cutoff.getTime() - now.getTime();
@@ -33,7 +31,6 @@ const OrderUrgencyTimer = () => {
             const isBeforeCutoff = now < today;
 
             const deliveryDate = new Date();
-            // Assuming 3-day delivery
             deliveryDate.setDate(deliveryDate.getDate() + (isBeforeCutoff ? 3 : 4));
 
             const options = { weekday: 'long' };
