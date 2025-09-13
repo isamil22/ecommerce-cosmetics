@@ -1,5 +1,5 @@
 // frontend/src/pages/ProductDetailPage.jsx
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, addToCart, getBestsellers } from '../api/apiService';
 import Loader from '../components/Loader';
@@ -10,6 +10,10 @@ import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
 import SocialShare from '../components/SocialShare';
 import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
+import ReviewSummary from '../components/ReviewSummary';
+import Breadcrumbs from '../components/Breadcrumbs';
+import StickyAddToCartBar from '../components/StickyAddToCartBar';
+
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -23,6 +27,21 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const [activeTab, setActiveTab] = useState('description');
     const [selectedOptions, setSelectedOptions] = useState({});
     const navigate = useNavigate();
+    const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
+    const addToCartRef = useRef(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (addToCartRef.current) {
+                const { bottom } = addToCartRef.current.getBoundingClientRect();
+                setIsStickyBarVisible(bottom < 0);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
 
     const fetchProduct = () => {
         setLoading(true);
@@ -156,6 +175,11 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
     return (
         <div className="container mx-auto p-4 pt-10">
+            <Breadcrumbs
+                categoryId={product.categoryId}
+                categoryName={product.categoryName}
+                productName={product.name}
+            />
             <CountdownBar />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
@@ -188,6 +212,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     <div className="mb-4">
                         {renderStars(averageRating)}
                     </div>
+                    <ReviewSummary comments={product.comments} />
                     <VisitorCounter />
 
                     {product.hasVariants && product.variantTypes.map(vt => (
@@ -207,11 +232,16 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
                     ))}
 
-                    <div className="bg-gray-50 p-4 rounded-lg mt-6">
+                    <div ref={addToCartRef} className="bg-gray-50 p-4 rounded-lg mt-6">
                         <div className="flex items-center justify-between mb-4">
                             <p className={`font-semibold ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                                 {displayStock > 0 ? `${displayStock} in stock` : 'Out of Stock'}
                             </p>
+                            {displayStock > 0 && displayStock <= 10 && (
+                                <div className="text-red-600 font-bold text-sm animate-pulse-custom my-2">
+                                    🔥 Hurry, only {displayStock} left!
+                                </div>
+                            )}
                             <div className="flex items-center">
                                 <label htmlFor="quantity" className="mr-3 text-sm font-medium text-gray-700">Qty:</label>
                                 <input
@@ -325,7 +355,12 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             <div className="mt-16 border-t border-gray-200">
                 <ProductSlider title="You Might Also Like" products={bestsellers} />
             </div>
-
+            <StickyAddToCartBar
+                isVisible={isStickyBarVisible}
+                product={product}
+                displayPrice={displayPrice}
+                handleAddToCart={handleAddToCart}
+            />
         </div>
     );
 };

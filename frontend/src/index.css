@@ -161,3 +161,19 @@ body {
 .image-zoom-container:hover img {
     transform: scale(1.5);
 }
+/* ... at the end of frontend/src/index.css ... */
+
+.image-zoom-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem; /* Corresponds to rounded-lg in Tailwind */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Corresponds to shadow-lg */
+}
+
+.image-zoom-container img {
+    transition: transform 0.3s ease;
+}
+
+.image-zoom-container:hover img {
+    transform: scale(1.5);
+}
