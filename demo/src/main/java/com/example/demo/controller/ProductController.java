@@ -138,4 +138,11 @@ public class ProductController {
     public ResponseEntity<List<FrequentlyBoughtTogetherDTO>> getFrequentlyBoughtTogether(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getFrequentlyBoughtTogether(id));
     }
+
+    @PutMapping("/{id}/frequently-bought-together")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> updateFrequentlyBoughtTogether(@PathVariable Long id, @RequestBody List<Long> frequentlyBoughtIds) {
+        productService.updateFrequentlyBoughtTogether(id, frequentlyBoughtIds);
+        return ResponseEntity.ok().build();
+    }
 }

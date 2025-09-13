@@ -314,4 +314,18 @@ public class ProductService {
         dto.setImages(product.getImages());
         return dto;
     }
+
+    @Transactional
+    public void updateFrequentlyBoughtTogether(Long productId, List<Long> frequentlyBoughtIds) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+
+        Set<Product> newRelatedProducts = frequentlyBoughtIds.stream()
+                .map(id -> productRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Related product not found with id: " + id)))
+                .collect(Collectors.toSet());
+
+        product.setFrequentlyBoughtTogether(newRelatedProducts);
+        productRepository.save(product);
+    }
 }
