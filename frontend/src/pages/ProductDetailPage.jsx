@@ -15,7 +15,7 @@ import StickyAddToCartBar from '../components/StickyAddToCartBar';
 import PurchasePopup from '../components/PurchasePopup';
 import OrderUrgencyTimer from '../components/OrderUrgencyTimer';
 import Accordion from '../components/Accordion';
-import ShippingThresholdIndicator from '../components/ShippingThresholdIndicator'; // <-- NEW
+import ShippingThresholdIndicator from '../components/ShippingThresholdIndicator';
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -30,7 +30,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const navigate = useNavigate();
     const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
     const addToCartRef = useRef(null);
-    const [cart, setCart] = useState(null); // <-- NEW
+    const [cart, setCart] = useState(null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -84,6 +84,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         fetchProductAndCart();
     }, [id, isAuthenticated]);
 
+
     const activeVariant = useMemo(() => {
         if (!product || !product.hasVariants) return null;
         return product.variants.find(v =>
@@ -113,8 +114,10 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             await addToCart(id, quantity, variantId);
             setMessage('Product added to cart!');
             fetchCartCount();
-            const response = await getCart(); // Re-fetch cart
-            setCart(response.data);
+            if (isAuthenticated) {
+                const response = await getCart();
+                setCart(response.data);
+            }
             setTimeout(() => setMessage(''), 3000);
         } catch (error) {
             console.error('Failed to add to cart:', error);
@@ -172,6 +175,56 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const oldPrice = activeVariant ? activeVariant.oldPrice : product.oldPrice;
     const displayStock = activeVariant ? activeVariant.stock : product.quantity;
 
+    // Define accordion items here to keep render clean
+    const accordionItems = [
+        {
+            title: 'Description',
+            content: (
+                <>
+                    <div dangerouslySetInnerHTML={{ __html: product.description }} />
+                    <div className="mt-8 pt-6 border-t border-gray-200">
+                        <h4 className="text-xl font-bold text-gray-800 mb-4">Why Choose Us?</h4>
+                        <ul className="space-y-3 list-none p-0">
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Authentic Products:</strong> Guaranteed 100% authentic.</li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Fast Shipping:</strong> Orders in Casablanca delivered in 3-5 days.</li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Easy Returns:</strong> 30-day money-back guarantee.</li>
+                        </ul>
+                    </div>
+                </>
+            )
+        },
+        {
+            title: `Reviews (${product.comments ? product.comments.length : 0})`,
+            content: (
+                <div>
+                    {product.comments && product.comments.length > 0 ? (
+                        <div className="space-y-4">
+                            {product.comments.map(comment => (
+                                <div key={comment.id} className="p-4 border rounded-lg">
+                                    <p className="font-semibold">{comment.userFullName}</p>
+                                    <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
+                                    <p className="text-gray-600 mt-2">{comment.content}</p>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>No reviews yet.</p>
+                    )}
+                    <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
+                </div>
+            )
+        },
+        {
+            title: 'Shipping & Returns',
+            content: (
+                <div>
+                    <p>We offer fast shipping to your location. Most orders are processed within 1-2 business days and delivered within 3-5 business days in major cities like Casablanca and Rabat.</p>
+                    <p className="mt-2">We also offer a <strong>30-day money-back guarantee</strong>. If you're not satisfied, you can return it for a full refund.</p>
+                </div>
+            )
+        }
+    ];
+
     return (
         <div className="container mx-auto p-4 pt-10">
             <Breadcrumbs categoryId={product.categoryId} categoryName={product.categoryName} productName={product.name} />
@@ -179,21 +232,37 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
                 <div>
-                    {/* ... (Video-enabled image gallery code remains the same) ... */}
+                    <div className="mb-4">
+                        {selectedImage && selectedImage.includes('youtube.com/embed') ? (
+                            <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
+                                <iframe src={selectedImage} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title="Product Video" className="w-full h-full" style={{ minHeight: '400px' }}></iframe>
+                            </div>
+                        ) : (
+                            <div className="image-zoom-container">
+                                <img src={selectedImage} alt="Selected product view" className="w-full h-auto object-cover" style={{ maxHeight: '500px' }} />
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex space-x-2 overflow-x-auto">
+                        {product.images && product.images.map((img, index) =>
+                            img.includes('youtube.com/embed') ? (
+                                <div key={index} onClick={() => setSelectedImage(img)} className={`w-20 h-20 rounded-md cursor-pointer border-2 flex items-center justify-center bg-gray-200 ${selectedImage === img ? 'border-pink-500 ring-2 ring-pink-300' : 'border-transparent'}`}>
+                                    <svg className="w-8 h-8 text-pink-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" /></svg>
+                                </div>
+                            ) : (
+                                <img key={index} src={img} alt={`Thumbnail ${index + 1}`} className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img ? 'border-pink-500' : 'border-transparent'}`} onClick={() => setSelectedImage(img)} />
+                            )
+                        )}
+                    </div>
                 </div>
+
                 {/* Product Details */}
                 <div>
                     <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-
-                    {/* START: PRICE ANCHORING UPDATE */}
                     <div className="flex items-center gap-4 mb-2">
                         <p className="text-2xl text-pink-600 font-semibold">${displayPrice}</p>
-                        { oldPrice > displayPrice &&
-                            <p className="text-xl text-gray-400 line-through">${oldPrice}</p>
-                        }
+                        {oldPrice > displayPrice && <p className="text-xl text-gray-400 line-through">${oldPrice}</p>}
                     </div>
-                    {/* END: PRICE ANCHORING UPDATE */}
-
                     {product.size && product.unit && (<p className="text-sm text-gray-500 mb-4">(${(displayPrice / product.size).toFixed(2)} / {product.unit})</p>)}
                     <div className="mb-4">{renderStars(averageRating)}</div>
                     <ReviewSummary comments={product.comments} />
@@ -203,24 +272,16 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                             <h3 className="text-lg font-semibold mb-2">{vt.name}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {vt.options.map(option => (
-                                    <button key={option} onClick={() => handleOptionSelect(vt.name, option)} className={`px-4 py-2 border rounded-md text-sm ${selectedOptions[vt.name] === option ? 'bg-pink-600 text-white border-pink-600' : 'bg-white text-gray-700'}`}>
-                                        {option}
-                                    </button>
+                                    <button key={option} onClick={() => handleOptionSelect(vt.name, option)} className={`px-4 py-2 border rounded-md text-sm ${selectedOptions[vt.name] === option ? 'bg-pink-600 text-white border-pink-600' : 'bg-white text-gray-700'}`}>{option}</button>
                                 ))}
                             </div>
                         </div>
                     ))}
-
-                    {/* START: NEW SHIPPING INDICATOR */}
                     {isAuthenticated && cart && <ShippingThresholdIndicator currentTotal={cart.totalPrice} />}
-                    {/* END: NEW SHIPPING INDICATOR */}
-
                     <OrderUrgencyTimer />
                     <div ref={addToCartRef} className="bg-gray-50 p-4 rounded-lg mt-6">
                         <div className="flex items-center justify-between mb-4">
-                            <p className={`font-semibold ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {displayStock > 0 ? `${displayStock} in stock` : 'Out of Stock'}
-                            </p>
+                            <p className={`font-semibold ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>{displayStock > 0 ? `${displayStock} in stock` : 'Out of Stock'}</p>
                             {displayStock > 0 && displayStock <= 10 && (<div className="text-red-600 font-bold text-sm animate-pulse-custom my-2">🔥 Hurry, only {displayStock} left!</div>)}
                             <div className="flex items-center">
                                 <label htmlFor="quantity" className="mr-3 text-sm font-medium text-gray-700">Qty:</label>
@@ -237,15 +298,17 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     <SocialShare productUrl={window.location.href} productName={product.name} />
                 </div>
             </div>
+
             <div className="mt-12">
-                {/* ... (Accordion component remains the same) ... */}
+                <Accordion items={accordionItems} />
             </div>
+
             <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} />
             <div className="mt-16 border-t border-gray-200">
                 <ProductSlider title="You Might Also Like" products={bestsellers} />
             </div>
             <StickyAddToCartBar isVisible={isStickyBarVisible} product={product} displayPrice={displayPrice} handleAddToCart={handleAddToCart} />
-            <PurchasePopup productName={product.name} productImage={product.images[0]} />
+            {product.images.length > 0 && <PurchasePopup productName={product.name} productImage={product.images[0]} />}
         </div>
     );
 };
