@@ -63,4 +63,11 @@ public class CommentController {
         commentService.deleteComment(commentId);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{commentId}/images")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteCommentImage(@PathVariable Long commentId, @RequestParam String imageUrl) {
+        commentService.deleteCommentImage(commentId, imageUrl);
+        return ResponseEntity.noContent().build();
+    }
 }

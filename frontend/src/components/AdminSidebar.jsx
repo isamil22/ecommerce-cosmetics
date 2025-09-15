@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2 } from 'react-icons/fi';
 
 const AdminSidebar = () => {
     const activeLinkClass = "bg-pink-600 text-white";
@@ -35,10 +36,6 @@ const AdminSidebar = () => {
                 </NavLink>
                 <NavLink to="/admin/reviews" className={({ isActive }) => `block py-2.5 px-4 rounded transition duration-200 ${isActive ? activeLinkClass : inactiveLinkClass}`}>
                     Reviews
-                </NavLink>
-                {/* --- NEW: Comments Link --- */}
-                <NavLink to="/admin/comments" className={({ isActive }) => `block py-2.5 px-4 rounded transition duration-200 ${isActive ? activeLinkClass : inactiveLinkClass}`}>
-                    Comments
                 </NavLink>
                 <NavLink to="/admin/coupons" className={({ isActive }) => `block py-2.5 px-4 rounded transition duration-200 ${isActive ? activeLinkClass : inactiveLinkClass}`}>
                     Coupons

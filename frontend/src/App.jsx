@@ -46,9 +46,9 @@ import AdminAnnouncementPage from './pages/admin/AdminAnnouncementPage.jsx';
 import AdminCountdownPage from './pages/admin/AdminCountdownPage.jsx';
 import AdminCustomPackForm from './pages/admin/AdminCustomPackForm';
 import AdminCustomPacksPage from './pages/admin/AdminCustomPacksPage';
-import CustomPacksPage from './pages/CustomPacksPage'; // <-- New import
-import CustomPackCreationPage from './pages/CustomPackCreationPage'; // <-- New import
-import AdminCommentsPage from './pages/admin/AdminCommentsPage'; // Import the new component
+import CustomPacksPage from './pages/CustomPacksPage';
+import CustomPackCreationPage from './pages/CustomPackCreationPage';
+import AdminProductCommentsPage from './pages/admin/AdminProductCommentsPage.jsx';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -134,10 +134,8 @@ function App() {
                         <Route path="/products" element={<ProductsPage />} />
                         <Route path="/packs" element={<PacksPage />} />
                         <Route path="/packs/:id" element={<PackDetailPage />} />
-                        {/* --- NEW ROUTES START --- */}
                         <Route path="/custom-packs" element={<CustomPacksPage />} />
                         <Route path="/custom-packs/:id" element={<CustomPackCreationPage />} />
-                        {/* --- NEW ROUTES END --- */}
                         <Route path="/products/:id" element={<ProductDetailPage fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />} />
                         <Route path="/hello" element={<HelloPage />} />
                         <Route path="/auth" element={<AuthPage setIsAuthenticated={handleSetIsAuthenticated} />} />
@@ -160,6 +158,8 @@ function App() {
                             <Route path="products" element={<AdminProductsPage />} />
                             <Route path="products/new" element={<AdminProductForm />} />
                             <Route path="products/edit/:id" element={<AdminProductForm />} />
+                            {/* --- NEW: Product Comments Route --- */}
+                            <Route path="products/:productId/comments" element={<AdminProductCommentsPage />} />
                             <Route path="orders" element={<AdminOrdersPage />} />
                             <Route path="users" element={<AdminUsersPage />} />
                             <Route path="reviews" element={<AdminReviewsPage />} />
@@ -177,7 +177,6 @@ function App() {
                             <Route path="countdown" element={<AdminCountdownPage />} />
                             <Route path="vistorcountsetting" element={<VisitorCounterSettingsPage />} />
                             <Route path="settings" element={<SettingsPage />} />
-                            <Route path="/admin/comments" element={<AdminCommentsPage />} />
                         </Route>
                     </Routes>
                 </main>

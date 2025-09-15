@@ -101,4 +101,11 @@ public class CommentService {
         }
         commentRepository.deleteById(commentId);
     }
+
+    public void deleteCommentImage(Long commentId, String imageUrl) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+        comment.getImages().remove(imageUrl);
+        commentRepository.save(comment);
+    }
 }

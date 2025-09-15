@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllProducts, deleteProduct } from '../../api/apiService';
+import { toast } from 'react-toastify';
 
 const AdminProductsPage = () => {
     const [products, setProducts] = useState([]);
@@ -12,6 +13,7 @@ const AdminProductsPage = () => {
             setProducts(response.data.content || response.data);
         } catch (err) {
             setError('Failed to fetch products.');
+            toast.error('Failed to fetch products.');
         }
     };
 
@@ -23,9 +25,11 @@ const AdminProductsPage = () => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
                 await deleteProduct(id);
+                toast.success('Product deleted successfully!');
                 fetchProducts(); // Refresh list after deleting
             } catch (err) {
                 setError('Failed to delete product.');
+                toast.error('Failed to delete product.');
             }
         }
     };
@@ -49,6 +53,8 @@ const AdminProductsPage = () => {
                             </div>
                             <div className="space-x-3">
                                 <Link to={`/admin/products/edit/${product.id}`} className="text-blue-600 hover:underline">Edit</Link>
+                                {/* --- NEW: Manage Comments Button --- */}
+                                <Link to={`/admin/products/${product.id}/comments`} className="text-green-600 hover:underline">Manage Comments</Link>
                                 <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:underline">Delete</button>
                             </div>
                         </li>

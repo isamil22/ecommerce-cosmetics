@@ -354,4 +354,8 @@ export const deleteComment = (commentId) => {
     return apiService.delete(`/comments/${commentId}`);
 };
 
+export const deleteCommentImage = (commentId, imageUrl) => {
+    return apiService.delete(`/comments/${commentId}/images`, { params: { imageUrl } });
+};
+
 export default apiService;
