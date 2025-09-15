@@ -342,4 +342,16 @@ export const addAdminComment = (productId, formData) => {
     });
 };
 
+export const getAllComments = () => {
+    return apiService.get('/comments');
+};
+
+export const updateComment = (commentId, commentData) => {
+    return apiService.put(`/comments/${commentId}`, commentData);
+};
+
+export const deleteComment = (commentId) => {
+    return apiService.delete(`/comments/${commentId}`);
+};
+
 export default apiService;

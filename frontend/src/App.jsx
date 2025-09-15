@@ -48,6 +48,7 @@ import AdminCustomPackForm from './pages/admin/AdminCustomPackForm';
 import AdminCustomPacksPage from './pages/admin/AdminCustomPacksPage';
 import CustomPacksPage from './pages/CustomPacksPage'; // <-- New import
 import CustomPackCreationPage from './pages/CustomPackCreationPage'; // <-- New import
+import AdminCommentsPage from './pages/admin/AdminCommentsPage'; // Import the new component
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -176,6 +177,7 @@ function App() {
                             <Route path="countdown" element={<AdminCountdownPage />} />
                             <Route path="vistorcountsetting" element={<VisitorCounterSettingsPage />} />
                             <Route path="settings" element={<SettingsPage />} />
+                            <Route path="/admin/comments" element={<AdminCommentsPage />} />
                         </Route>
                     </Routes>
                 </main>

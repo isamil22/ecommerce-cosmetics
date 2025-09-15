@@ -44,4 +44,23 @@ public class CommentController {
     public ResponseEntity<List<CommentDTO>> getCommentsByProduct(@PathVariable Long productId){
         return ResponseEntity.ok(commentService.getCommentsByProduct(productId));
     }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<CommentDTO>> getAllComments() {
+        return ResponseEntity.ok(commentService.getAllComments());
+    }
+
+    @PutMapping("/{commentId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId, @Valid @RequestBody CommentDTO commentDTO) {
+        return ResponseEntity.ok(commentService.updateComment(commentId, commentDTO));
+    }
+
+    @DeleteMapping("/{commentId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
+        return ResponseEntity.noContent().build();
+    }
 }

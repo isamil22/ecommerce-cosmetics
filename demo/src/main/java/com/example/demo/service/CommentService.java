@@ -28,7 +28,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
     private final S3Service s3Service;
-    private final PasswordEncoder passwordEncoder; // --- NEW: Inject PasswordEncoder ---
+    private final PasswordEncoder passwordEncoder;
 
     public CommentDTO addComment(Long productId, Long userId, CommentDTO commentDTO){
         Product product = productRepository.findById(productId)
@@ -47,16 +47,13 @@ public class CommentService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        // --- FIX START ---
         User user = new User();
         user.setFullName(name);
         user.setEmail(UUID.randomUUID().toString() + "@admin-comment.com");
-        // --- THIS IS THE FIX ---
-        user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString())); // Set a random, secure password
+        user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
         user.setRole(User.Role.USER);
         user.setEmailConfirmation(true);
         userRepository.save(user);
-        // --- FIX END ---
 
         Comment comment = new Comment();
         comment.setProduct(product);
@@ -81,5 +78,27 @@ public class CommentService {
         return comments.stream()
                 .map(commentMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<CommentDTO> getAllComments() {
+        return commentRepository.findAll().stream()
+                .map(commentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public CommentDTO updateComment(Long commentId, CommentDTO commentDTO) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+        comment.setContent(commentDTO.getContent());
+        comment.setScore(commentDTO.getScore());
+        Comment updatedComment = commentRepository.save(comment);
+        return commentMapper.toDTO(updatedComment);
+    }
+
+    public void deleteComment(Long commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new ResourceNotFoundException("Comment not found");
+        }
+        commentRepository.deleteById(commentId);
     }
 }
