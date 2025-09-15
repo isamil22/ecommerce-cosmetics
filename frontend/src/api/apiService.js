@@ -334,4 +334,12 @@ export const updateFrequentlyBoughtTogether = (productId, frequentlyBoughtIds) =
     return apiService.put(`/products/${productId}/frequently-bought-together`, frequentlyBoughtIds);
 };
 
+export const addAdminComment = (productId, formData) => {
+    return apiService.post(`/comments/admin/product/${productId}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
+
 export default apiService;

@@ -1,10 +1,12 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference; // <-- IMPORT THIS
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -17,7 +19,10 @@ public class Comment {
     private String content;
     private Integer score;
 
-    @JsonBackReference // <-- ADD THIS ANNOTATION
+    @ElementCollection
+    private List<String> images;
+
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="product_id", nullable = false)
     private Product product;

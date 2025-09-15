@@ -175,7 +175,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const oldPrice = activeVariant ? activeVariant.oldPrice : product.oldPrice;
     const displayStock = activeVariant ? activeVariant.stock : product.quantity;
 
-    // Define accordion items here to keep render clean
     const accordionItems = [
         {
             title: 'Description',
@@ -204,6 +203,15 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                     <p className="font-semibold">{comment.userFullName}</p>
                                     <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
                                     <p className="text-gray-600 mt-2">{comment.content}</p>
+                                    {/* --- NEW: Image display logic --- */}
+                                    {comment.images && comment.images.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                            {comment.images.map((img, index) => (
+                                                <img key={index} src={img} alt={`Comment image ${index + 1}`} className="w-24 h-24 object-cover rounded-md border" />
+                                            ))}
+                                        </div>
+                                    )}
+                                    {/* --- END: Image display logic --- */}
                                 </div>
                             ))}
                         </div>

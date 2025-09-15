@@ -1,7 +1,7 @@
 // frontend/src/pages/admin/AdminProductForm.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProductById, createProduct, updateProduct, getAllCategories, uploadDescriptionImage, getAllProducts, updateFrequentlyBoughtTogether } from '../../api/apiService';
+import { getProductById, createProduct, updateProduct, getAllCategories, uploadDescriptionImage, getAllProducts, updateFrequentlyBoughtTogether, addAdminComment } from '../../api/apiService';
 import { Editor } from '@tinymce/tinymce-react';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -35,6 +35,15 @@ const AdminProductForm = () => {
     // States for "Frequently Bought Together" feature
     const [allProducts, setAllProducts] = useState([]);
     const [selectedFbt, setSelectedFbt] = useState([]);
+
+    // --- NEW: State for the admin comment form ---
+    const [commentData, setCommentData] = useState({
+        name: '',
+        content: '',
+        score: 5,
+        images: []
+    });
+
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -251,6 +260,37 @@ const AdminProductForm = () => {
         }
     };
 
+    // --- NEW: Handlers for the admin comment form ---
+    const handleCommentChange = (e) => {
+        const { name, value } = e.target;
+        setCommentData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleCommentImageChange = (e) => {
+        setCommentData(prev => ({ ...prev, images: Array.from(e.target.files) }));
+    };
+
+    const handleAddComment = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('name', commentData.name);
+        formData.append('content', commentData.content);
+        formData.append('score', commentData.score);
+        commentData.images.forEach(image => {
+            formData.append('images', image);
+        });
+
+        try {
+            await addAdminComment(id, formData);
+            toast.success('Comment added successfully!');
+            setCommentData({ name: '', content: '', score: 5, images: [] });
+            // Optionally, you might want to refresh the product data to show the new comment immediately
+        } catch (error) {
+            console.error('Error adding comment:', error);
+            toast.error('Failed to add comment.');
+        }
+    };
+
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -391,6 +431,38 @@ const AdminProductForm = () => {
                     <button type="button" onClick={() => navigate('/admin/products')} className="flex-1 bg-gray-500 text-white py-3 px-4 rounded-md font-bold">Cancel</button>
                 </div>
             </form>
+
+            {/* --- NEW: Admin Comment Form --- */}
+            {id && (
+                <div className="mt-8 max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+                    <h2 className="text-2xl font-bold mb-4">Add a Comment as Admin</h2>
+                    <form onSubmit={handleAddComment} className="space-y-4">
+                        <div>
+                            <label htmlFor="commentName" className="block text-sm font-medium text-gray-700">Display Name</label>
+                            <input type="text" name="name" id="commentName" value={commentData.name} onChange={handleCommentChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g., Valued Customer" />
+                        </div>
+                        <div>
+                            <label htmlFor="commentContent" className="block text-sm font-medium text-gray-700">Comment</label>
+                            <textarea name="content" id="commentContent" value={commentData.content} onChange={handleCommentChange} required rows="4" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                        </div>
+                        <div>
+                            <label htmlFor="commentScore" className="block text-sm font-medium text-gray-700">Rating</label>
+                            <select name="score" id="commentScore" value={commentData.score} onChange={handleCommentChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <option value={5}>5 Stars</option>
+                                <option value={4}>4 Stars</option>
+                                <option value={3}>3 Stars</option>
+                                <option value={2}>2 Stars</option>
+                                <option value={1}>1 Star</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="commentImages" className="block text-sm font-medium text-gray-700">Images (Optional)</label>
+                            <input type="file" name="images" id="commentImages" onChange={handleCommentImageChange} multiple accept="image/*" className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0" />
+                        </div>
+                        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Submit Comment</button>
+                    </form>
+                </div>
+            )}
         </div>
     );
 };
