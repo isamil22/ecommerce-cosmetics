@@ -346,8 +346,12 @@ export const getAllComments = () => {
     return apiService.get('/comments');
 };
 
-export const updateComment = (commentId, commentData) => {
-    return apiService.put(`/comments/${commentId}`, commentData);
+export const updateComment = (commentId, formData) => {
+    return apiService.put(`/comments/${commentId}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 };
 
 export const deleteComment = (commentId) => {

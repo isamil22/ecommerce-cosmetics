@@ -86,11 +86,18 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public CommentDTO updateComment(Long commentId, CommentDTO commentDTO) {
+    public CommentDTO updateComment(Long commentId, CommentDTO commentDTO, MultipartFile image) throws IOException {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
         comment.setContent(commentDTO.getContent());
         comment.setScore(commentDTO.getScore());
+
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = s3Service.saveImage(image);
+            comment.getImages().clear();
+            comment.getImages().add(imageUrl);
+        }
+
         Comment updatedComment = commentRepository.save(comment);
         return commentMapper.toDTO(updatedComment);
     }

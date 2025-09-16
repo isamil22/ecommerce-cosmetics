@@ -10,6 +10,7 @@ const AdminProductCommentsPage = () => {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingComment, setEditingComment] = useState(null);
+    const [newImage, setNewImage] = useState(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [newCommentData, setNewCommentData] = useState({
         name: '',
@@ -52,10 +53,17 @@ const AdminProductCommentsPage = () => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('comment', new Blob([JSON.stringify(editingComment)], { type: "application/json" }));
+        if (newImage) {
+            formData.append('image', newImage);
+        }
+
         try {
-            await updateComment(editingComment.id, editingComment);
+            await updateComment(editingComment.id, formData);
             toast.success("Comment updated successfully!");
             setEditingComment(null);
+            setNewImage(null);
             fetchProductComments();
         } catch (error) {
             toast.error("Failed to update comment.");
@@ -219,6 +227,17 @@ const AdminProductCommentsPage = () => {
                                         </div>
                                     ))}
                                 </div>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
+                                    New Image
+                                </label>
+                                <input
+                                    id="image"
+                                    type="file"
+                                    onChange={(e) => setNewImage(e.target.files[0])}
+                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0"
+                                />
                             </div>
                             <div className="flex items-center justify-between">
                                 <button

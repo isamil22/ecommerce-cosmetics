@@ -53,8 +53,10 @@ public class CommentController {
 
     @PutMapping("/{commentId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId, @Valid @RequestBody CommentDTO commentDTO) {
-        return ResponseEntity.ok(commentService.updateComment(commentId, commentDTO));
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId,
+                                                    @RequestPart("comment") @Valid CommentDTO commentDTO,
+                                                    @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        return ResponseEntity.ok(commentService.updateComment(commentId, commentDTO, image));
     }
 
     @DeleteMapping("/{commentId}")
