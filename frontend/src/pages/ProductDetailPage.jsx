@@ -312,8 +312,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 <Accordion items={accordionItems} />
             </div>
 
-            <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} />
-            <div className="mt-16 border-t border-gray-200">
+            <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />            <div className="mt-16 border-t border-gray-200">
                 <ProductSlider title="You Might Also Like" products={bestsellers} />
             </div>
             <StickyAddToCartBar isVisible={isStickyBarVisible} product={product} displayPrice={displayPrice} handleAddToCart={handleAddToCart} />

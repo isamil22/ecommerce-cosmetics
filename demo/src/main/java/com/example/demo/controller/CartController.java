@@ -1,5 +1,3 @@
-// PASTE THIS CODE INTO: demo/src/main/java/com/example/demo/controller/CartController.java
-
 package com.example.demo.controller;
 
 import com.example.demo.dto.AddToCartRequest;
@@ -19,23 +17,23 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
     private final CartService cartService;
 
-    // CORRECTED: The @PreAuthorize("isAuthenticated()") annotation has been removed.
     @PostMapping("/add")
     public ResponseEntity<CartDTO> addToCart(@AuthenticationPrincipal UserDetails userDetails,
                                              @RequestBody AddToCartRequest request) {
+        // --- THIS IS THE FIX ---
+        // If the user is a guest, userDetails will be null.
+        // We return an empty OK response because the frontend handles the guest cart.
+        if (userDetails == null) {
+            return ResponseEntity.ok().build();
+        }
+
         Long userId = ((User) userDetails).getId();
         return ResponseEntity.ok(cartService.addToCart(userId, request.getProductId(), request.getQuantity()));
     }
 
-    /**
-     * Retrieves the cart. Handles both authenticated users and guests.
-     */
     @GetMapping
     public ResponseEntity<CartDTO> getCart(@AuthenticationPrincipal UserDetails userDetails) {
-        // If userDetails is null, it's a guest. Pass null to the service.
         Long userId = (userDetails != null) ? ((User) userDetails).getId() : null;
-
-        // The service will now handle the logic for both guests and logged-in users.
         return ResponseEntity.ok(cartService.getCart(userId));
     }
 
