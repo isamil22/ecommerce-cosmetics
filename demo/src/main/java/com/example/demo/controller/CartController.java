@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
     private final CartService cartService;
 
+    // CORRECTED: The @PreAuthorize("isAuthenticated()") annotation has been removed.
     @PostMapping("/add")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CartDTO> addToCart(@AuthenticationPrincipal UserDetails userDetails,
                                              @RequestBody AddToCartRequest request) {
         Long userId = ((User) userDetails).getId();
