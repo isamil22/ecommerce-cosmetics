@@ -59,16 +59,16 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated, userRole, cartCount }) =>
                                 >
                                     Logout
                                 </button>
-                                <CartIcon count={cartCount} />
                             </>
                         ) : (
                             <Link to="/auth" className="bg-pink-500 text-white hover:bg-pink-600 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                                 Login
                             </Link>
                         )}
+                        <CartIcon count={cartCount} />
                     </div>
                     <div className="flex items-center md:hidden">
-                        {isAuthenticated && <CartIcon count={cartCount} />}
+                        <CartIcon count={cartCount} />
                         <button onClick={() => setIsOpen(!isOpen)} type="button" className="ml-2 bg-pink-500 inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-pink-600 focus:outline-none">
                             <span className="sr-only">Open main menu</span>
                             {isOpen ? (
