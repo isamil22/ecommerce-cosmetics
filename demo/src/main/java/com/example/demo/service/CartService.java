@@ -1,3 +1,5 @@
+// PASTE THIS CODE INTO: demo/src/main/java/com/example/demo/service/CartService.java
+
 package com.example.demo.service;
 
 import com.example.demo.dto.CartDTO;
@@ -50,15 +52,26 @@ public class CartService {
         }
         Cart savedCart = cartRepository.save(cart);
         return cartMapper.toDTO(savedCart);
-
     }
 
     public CartDTO getCart(Long userId){
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(()->new ResourceNotFoundException("Cart not found"));
+        // If the userId is null, it's a guest. Return a new empty cart DTO.
+        if (userId == null) {
+            CartDTO guestCart = new CartDTO();
+            guestCart.setItems(new ArrayList<>());
+            return guestCart;
+        }
+
+        // For authenticated users, find their cart. If not present, create one.
+        Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
+            User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            Cart newCart = new Cart(null, user, new ArrayList<>());
+            return cartRepository.save(newCart);
+        });
 
         return cartMapper.toDTO(cart);
     }
+
     public void clearCart(Long userId){
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(()->new ResourceNotFoundException("Cart not found"));
@@ -67,7 +80,6 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    //update
     public void removeCartItem(Long userId, Long productId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user"));
@@ -77,15 +89,3 @@ public class CartService {
         cartRepository.save(cart);
     }
 }
-
-//It checks if both the User and Product exist.
-//
-//It ensures that enough stock of the Product is available.
-//
-//It finds or creates a Cart for the User.
-//
-//It checks if the Product is already in the cart:
-//
-//        If yes, it updates the quantity of that product in the cart.
-//
-//        If no, it adds a new CartItem for that Product.

@@ -1,3 +1,5 @@
+// PASTE THIS CODE INTO: frontend/src/pages/ProductDetailPage.jsx
+
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, addToCart, getBestsellers, getCart } from '../api/apiService';
@@ -16,6 +18,7 @@ import PurchasePopup from '../components/PurchasePopup';
 import OrderUrgencyTimer from '../components/OrderUrgencyTimer';
 import Accordion from '../components/Accordion';
 import ShippingThresholdIndicator from '../components/ShippingThresholdIndicator';
+import { toast } from 'react-toastify';
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -23,7 +26,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const [bestsellers, setBestsellers] = useState([]);
     const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
-    const [message, setMessage] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedOptions, setSelectedOptions] = useState({});
@@ -105,40 +107,42 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     };
 
     const handleAddToCart = async () => {
-        if (!isAuthenticated) {
-            navigate('/auth');
-            return;
-        }
-        try {
-            const variantId = activeVariant ? activeVariant.id : null;
-            await addToCart(id, quantity, variantId);
-            setMessage('Product added to cart!');
-            fetchCartCount();
-            if (isAuthenticated) {
+        if (isAuthenticated) {
+            try {
+                const variantId = activeVariant ? activeVariant.id : null;
+                await addToCart(id, quantity, variantId);
+                toast.success('Product added to cart!');
+                fetchCartCount();
                 const response = await getCart();
                 setCart(response.data);
+            } catch (error) {
+                console.error('Failed to add to cart:', error);
+                toast.error('Failed to add product to cart.');
             }
-            setTimeout(() => setMessage(''), 3000);
-        } catch (error) {
-            console.error('Failed to add to cart:', error);
-            setMessage('Failed to add product to cart.');
+        } else {
+            // Guest cart logic
+            const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+            const existingItemIndex = guestCart.items.findIndex(item => item.productId === product.id);
+
+            if (existingItemIndex > -1) {
+                guestCart.items[existingItemIndex].quantity += quantity;
+            } else {
+                guestCart.items.push({
+                    productId: product.id,
+                    productName: product.name,
+                    price: product.price,
+                    quantity: quantity,
+                });
+            }
+            localStorage.setItem('cart', JSON.stringify(guestCart));
+            toast.success('Product added to cart!');
+            fetchCartCount();
         }
     };
 
     const handleOrderNow = async () => {
-        if (!isAuthenticated) {
-            navigate('/auth');
-            return;
-        }
-        try {
-            const variantId = activeVariant ? activeVariant.id : null;
-            await addToCart(id, quantity, variantId);
-            fetchCartCount();
-            navigate('/order');
-        } catch (error) {
-            console.error('Failed to add to cart and proceed to order:', error);
-            setMessage('Failed to proceed to order.');
-        }
+        await handleAddToCart(); // Add to cart first
+        navigate('/order');   // Then navigate to order page
     };
 
     const handleOptionSelect = (typeName, optionValue) => {
@@ -203,7 +207,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                     <p className="font-semibold">{comment.userFullName}</p>
                                     <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
                                     <p className="text-gray-600 mt-2">{comment.content}</p>
-                                    {/* --- NEW: Image display logic --- */}
                                     {comment.images && comment.images.length > 0 && (
                                         <div className="flex flex-wrap gap-2 mt-2">
                                             {comment.images.map((img, index) => (
@@ -211,7 +214,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                             ))}
                                         </div>
                                     )}
-                                    {/* --- END: Image display logic --- */}
                                 </div>
                             ))}
                         </div>
@@ -301,7 +303,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                             <button onClick={handleAddToCart} className="w-full bg-pink-600 text-white py-3 px-6 rounded-lg hover:bg-pink-700 disabled:bg-gray-400 transition-colors" disabled={displayStock <= 0}>{displayStock > 0 ? 'Add to Cart' : 'Out of Stock'}</button>
                         </div>
                     </div>
-                    {message && <p className="text-green-500 mt-3">{message}</p>}
                     <TrustBadges />
                     <SocialShare productUrl={window.location.href} productName={product.name} />
                 </div>

@@ -1,3 +1,5 @@
+// PASTE THIS CODE INTO: demo/src/main/java/com/example/demo/controller/CartController.java
+
 package com.example.demo.controller;
 
 import com.example.demo.dto.AddToCartRequest;
@@ -17,10 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
     private final CartService cartService;
 
-    /**
-     * Handles adding a product to the cart.
-     * This method now accepts data from the request body.
-     */
     @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CartDTO> addToCart(@AuthenticationPrincipal UserDetails userDetails,
@@ -30,18 +28,17 @@ public class CartController {
     }
 
     /**
-     * Retrieves the current user's cart.
+     * Retrieves the cart. Handles both authenticated users and guests.
      */
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CartDTO> getCart(@AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = ((User) userDetails).getId();
+        // If userDetails is null, it's a guest. Pass null to the service.
+        Long userId = (userDetails != null) ? ((User) userDetails).getId() : null;
+
+        // The service will now handle the logic for both guests and logged-in users.
         return ResponseEntity.ok(cartService.getCart(userId));
     }
 
-    /**
-     * Clears all items from the user's cart.
-     */
     @DeleteMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> clearCart(@AuthenticationPrincipal UserDetails userDetails) {
@@ -50,9 +47,6 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Removes a specific item from the user's cart.
-     */
     @DeleteMapping("/{productId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> removeCartItem(@AuthenticationPrincipal UserDetails userDetails,
@@ -62,5 +56,3 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 }
-
-//fgdrgr
