@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPackById, addToCart } from '../api/apiService';
+import { getPackById, addToCart as apiAddToCart } from '../api/apiService';
 import Loader from '../components/Loader';
 import VisitorCounter from '../components/VisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
+import { toast } from 'react-toastify';
 
 const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChange, isDefault }) => {
     const imageUrl = (product.images && product.images.length > 0)
@@ -84,7 +85,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
 );
 
 
-const PackDetailPage = () => {
+const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     const { id } = useParams();
     const [pack, setPack] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -217,8 +218,41 @@ const PackDetailPage = () => {
         setMessage('');
         setError('');
         try {
-            const promises = Object.values(selections).map(productId => addToCart(productId, 1));
-            await Promise.all(promises);
+            if (isAuthenticated) {
+                const promises = Object.values(selections).map(productId => apiAddToCart(productId, 1));
+                await Promise.all(promises);
+            } else {
+                // --- REVISED GUEST LOGIC ---
+                let cart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+
+                // Safely get all possible products in the pack
+                const allProductsInPack = pack?.items?.flatMap(item => [item.defaultProduct, ...(item.variationProducts || [])]) || [];
+
+                for (const packItemId in selections) {
+                    const selectedProductId = selections[packItemId];
+                    // Find the full product object for the selected ID
+                    const productToAdd = allProductsInPack.find(p => p && p.id === selectedProductId);
+
+                    if (productToAdd) {
+                        const existingItemIndex = cart.items.findIndex(item => item.productId === productToAdd.id);
+
+                        if (existingItemIndex > -1) {
+                            // Increment quantity if item already exists
+                            cart.items[existingItemIndex].quantity += 1;
+                        } else {
+                            // Add new item to cart
+                            cart.items.push({
+                                productId: productToAdd.id,
+                                productName: productToAdd.name,
+                                price: productToAdd.price,
+                                quantity: 1,
+                                images: productToAdd.images || [], // Ensure images is an array
+                            });
+                        }
+                    }
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+            }
 
             // --- FACEBOOK PIXEL: ADD TO CART EVENT ---
             if (window.fbq) {
@@ -232,9 +266,15 @@ const PackDetailPage = () => {
             }
             // -----------------------------------------
 
-            setMessage('All selected pack items have been added to your cart!');
+            toast.success('All selected pack items have been added to your cart!');
+            if(fetchCartCount) {
+                fetchCartCount();
+            }
+
         } catch (err) {
-            setError('Failed to add items to cart. Please make sure you are logged in.');
+            console.error("Error during add to cart:", err);
+            setError('Failed to add items to cart. Please try again.');
+            toast.error('Failed to add items to cart.');
         }
     };
 
@@ -305,3 +345,4 @@ const PackDetailPage = () => {
 };
 
 export default PackDetailPage;
+

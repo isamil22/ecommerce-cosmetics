@@ -133,7 +133,7 @@ function App() {
                         <Route path="/" element={<HomePage />} />
                         <Route path="/products" element={<ProductsPage />} />
                         <Route path="/packs" element={<PacksPage />} />
-                        <Route path="/packs/:id" element={<PackDetailPage />} />
+                        <Route path="/packs/:id" element={<PackDetailPage isAuthenticated={isAuthenticated} fetchCartCount={fetchCartCount} />} />
                         <Route path="/custom-packs" element={<CustomPacksPage />} />
                         <Route path="/custom-packs/:id" element={<CustomPackCreationPage />} />
                         <Route path="/products/:id" element={<ProductDetailPage fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />} />
@@ -158,7 +158,6 @@ function App() {
                             <Route path="products" element={<AdminProductsPage />} />
                             <Route path="products/new" element={<AdminProductForm />} />
                             <Route path="products/edit/:id" element={<AdminProductForm />} />
-                            {/* --- NEW: Product Comments Route --- */}
                             <Route path="products/:productId/comments" element={<AdminProductCommentsPage />} />
                             <Route path="orders" element={<AdminOrdersPage />} />
                             <Route path="users" element={<AdminUsersPage />} />
