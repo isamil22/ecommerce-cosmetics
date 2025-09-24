@@ -16,6 +16,9 @@ apiService.interceptors.request.use(config => {
     return Promise.reject(error);
 });
 
+// Helper function to check if user is authenticated
+const isAuthenticated = () => !!localStorage.getItem('token');
+
 // --- UPDATED `createProduct` and `updateProduct` functions ---
 
 export const createProduct = (formData) => {
@@ -40,6 +43,113 @@ export const updateProduct = (id, formData) => {
             // This ensures proper boundary is set
         },
     });
+};
+
+// --- UPDATED Cart Functions for Guest User Support ---
+
+export const addToCart = async (productId, quantity, productVariantId) => {
+    if (isAuthenticated()) {
+        // User is authenticated, send request to the backend
+        return apiService.post(`/cart/add`, { productId, quantity, productVariantId });
+    } else {
+        // User is a guest, handle cart in local storage
+        try {
+            const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+            const productResponse = await getProductById(productId); // Fetch product details
+            const product = productResponse.data;
+
+            // Find existing item with same product and variant
+            const existingItemIndex = guestCart.items.findIndex(item =>
+                item.productId === productId && item.productVariantId === productVariantId
+            );
+
+            if (existingItemIndex > -1) {
+                // Update quantity of existing item
+                guestCart.items[existingItemIndex].quantity += quantity;
+            } else {
+                // Add new item to cart
+                guestCart.items.push({
+                    productId,
+                    productVariantId,
+                    productName: product.name,
+                    price: product.price,
+                    quantity,
+                    imageUrl: product.images && product.images.length > 0 ? product.images[0] : null
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(guestCart));
+            return Promise.resolve({ data: guestCart }); // Mock a successful response
+        } catch (error) {
+            console.error('Error adding to guest cart:', error);
+            return Promise.reject(error);
+        }
+    }
+};
+
+export const getCart = () => {
+    if (isAuthenticated()) {
+        return apiService.get('/cart');
+    } else {
+        // Return guest cart from localStorage
+        const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+        return Promise.resolve({ data: guestCart });
+    }
+};
+
+export const removeCartItem = async (productId, productVariantId) => {
+    if (isAuthenticated()) {
+        return apiService.delete(`/cart/${productId}`);
+    } else {
+        // Remove from guest cart in localStorage
+        const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+
+        // Filter out the item to remove
+        guestCart.items = guestCart.items.filter(item =>
+            !(item.productId === productId && item.productVariantId === productVariantId)
+        );
+
+        localStorage.setItem('cart', JSON.stringify(guestCart));
+        return Promise.resolve({ data: guestCart });
+    }
+};
+
+export const clearCart = () => {
+    if (isAuthenticated()) {
+        return apiService.delete('/cart/clear');
+    } else {
+        // Clear guest cart
+        localStorage.removeItem('cart');
+        return Promise.resolve({ data: { items: [] } });
+    }
+};
+
+// Function to merge guest cart with user cart after login
+export const mergeGuestCartWithUserCart = async () => {
+    const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+
+    if (guestCart.items.length > 0 && isAuthenticated()) {
+        try {
+            // Add each guest cart item to the user's cart
+            for (const item of guestCart.items) {
+                await apiService.post(`/cart/add`, {
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    productVariantId: item.productVariantId
+                });
+            }
+
+            // Clear guest cart after successful merge
+            localStorage.removeItem('cart');
+
+            return true;
+        } catch (error) {
+            console.error('Error merging guest cart with user cart:', error);
+            return false;
+        }
+    }
+
+    return false;
 };
 
 // --- Other existing functions ---
@@ -70,22 +180,12 @@ export const confirmEmail = (confirmationData) => {
 
 export const logoutUser = () => {
     localStorage.removeItem('token');
+    // Clear guest cart on logout
+    localStorage.removeItem('cart');
 };
 
 export const getUserProfile = () => {
     return apiService.get('/auth/user/profile');
-};
-
-export const getCart = () => {
-    return apiService.get('/cart');
-};
-
-export const removeCartItem = (productId) => {
-    return apiService.delete(`/cart/${productId}`);
-};
-
-export const addToCart = (productId, quantity, productVariantId) => {
-    return apiService.post(`/cart/add`, { productId, quantity, productVariantId });
 };
 
 export const getUserOrders = () => {
