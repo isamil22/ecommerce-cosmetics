@@ -68,10 +68,9 @@ public class SecurityConfig {
                                 "/api/settings",
                                 "/api/announcement",
                                 "/api/countdown",
-                                "/api/custom-packs",
+                                "/api/custom-packs/**", // Fixed: Allow access to all custom-packs endpoints
                                 "/api/products/packable",
-                                "/api/cart" // <-- ADD THIS LINE
-
+                                "/api/cart" // Allow guest users to view cart
                         )
                         .permitAll()
                         .requestMatchers("/", "/index.html", "/images/**", "/vite.svg").permitAll()
@@ -94,7 +93,6 @@ public class SecurityConfig {
         return source;
     }
 
-
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(){
         return new JwtAuthenticationFilter(jwtService, userDetailsService());
@@ -104,10 +102,12 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception{
         return authConfig.getAuthenticationManager();
     }
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> (UserDetails) userRepository.findByEmail(username)
