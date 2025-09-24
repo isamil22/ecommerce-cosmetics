@@ -2,15 +2,16 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import ReactGA from "react-ga4";
+import { addToCart } from '../api/apiService'; // Import the addToCart function
+import { toast } from 'react-toastify'; // Import toast for notifications
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => { // Accept props
     const fullImageUrl = (product.images && product.images.length > 0)
         ? product.images[0]
         : 'https://placehold.co/300x300/E91E63/FFFFFF?text=Product';
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         // This sends the event to Google Analytics
         ReactGA.event({
             category: 'Ecommerce',
@@ -31,7 +32,16 @@ const ProductCard = ({ product }) => {
         }
         // ------------------------------------
 
-        console.log(`Added ${product.name} to cart`);
+        try {
+            await addToCart(product.id, 1);
+            toast.success(`${product.name} added to cart!`);
+            if (fetchCartCount) {
+                fetchCartCount();
+            }
+        } catch (error) {
+            toast.error('Failed to add product to cart.');
+            console.error('Failed to add to cart:', error);
+        }
     };
 
     return (

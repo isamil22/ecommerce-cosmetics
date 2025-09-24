@@ -7,7 +7,7 @@ import Loader from '../components/Loader';
 import PackCard from '../components/PackCard';
 import ReactGA from 'react-ga4';
 
-const ProductsPage = () => {
+const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props here
     const [items, setItems] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -141,7 +141,6 @@ const ProductsPage = () => {
 
     const CardComponent = filters.productType === 'packs' ? PackCard : ProductCard;
 
-
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold text-center mb-8">Our Products</h1>
@@ -220,7 +219,13 @@ const ProductsPage = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                         {items.length > 0 ? (
                             items.map(item => (
-                                <CardComponent key={item.id} product={item} pack={item} />
+                                <CardComponent
+                                    key={item.id}
+                                    product={item}
+                                    pack={item}
+                                    fetchCartCount={fetchCartCount}
+                                    isAuthenticated={isAuthenticated}
+                                />
                             ))
                         ) : (
                             <p className="col-span-full text-center">No items match your criteria.</p>
@@ -244,4 +249,3 @@ const ProductsPage = () => {
 };
 
 export default ProductsPage;
-
