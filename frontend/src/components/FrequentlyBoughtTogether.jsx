@@ -39,7 +39,6 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
         }
 
         try {
-            // --- THIS IS THE CORRECTED LOGIC ---
             if (isAuthenticated) {
                 // For authenticated users, call the backend API
                 await Promise.all(productsToAdd.map(p => apiAddToCart(p.id, 1)));
@@ -48,13 +47,15 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                 let cart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
 
                 productsToAdd.forEach(p => {
-                    const existingItem = cart.items.find(item => item.id === p.id);
-                    if (existingItem) {
-                        existingItem.quantity += 1;
+                    const existingItemIndex = cart.items.findIndex(item => item.productId === p.id);
+                    if (existingItemIndex > -1) {
+                        cart.items[existingItemIndex].quantity += 1;
                     } else {
-                        // Ensure all necessary product details are added to the cart
+                        // Create a new cart item object with the correct structure
                         const productData = {
-                            ...p,
+                            productId: p.id,
+                            productName: p.name,
+                            price: p.price,
                             images: p.images || [], // Ensure images array exists
                             quantity: 1
                         };
