@@ -57,6 +57,15 @@ public class CommentService {
         Comment comment = commentMapper.toEntity(commentDTO);
         comment.setPack(pack);
         comment.setUser(user);
+
+        // FIX: Associate the comment with the first product in the pack to satisfy DB constraints
+        if (pack.getItems() != null && !pack.getItems().isEmpty() && pack.getItems().get(0).getDefaultProduct() != null) {
+            comment.setProduct(pack.getItems().get(0).getDefaultProduct());
+        } else {
+            // Fallback or error if pack has no products, which shouldn't happen in a valid pack
+            throw new IllegalStateException("Cannot add a comment to a pack with no products.");
+        }
+
         Comment savedComment = commentRepository.save(comment);
         return commentMapper.toDTO(savedComment);
     }
@@ -110,6 +119,14 @@ public class CommentService {
         comment.setUser(user);
         comment.setContent(content);
         comment.setScore(score);
+
+        // FIX: Associate the comment with the first product in the pack to satisfy DB constraints
+        if (pack.getItems() != null && !pack.getItems().isEmpty() && pack.getItems().get(0).getDefaultProduct() != null) {
+            comment.setProduct(pack.getItems().get(0).getDefaultProduct());
+        } else {
+            // Handle the case where the pack has no items.
+            throw new IllegalStateException("Cannot add a comment to a pack with no products.");
+        }
 
         if (images != null && !images.isEmpty()) {
             List<String> imageUrls = new ArrayList<>();
