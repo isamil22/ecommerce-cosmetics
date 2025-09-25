@@ -24,7 +24,7 @@ public class Comment {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name="product_id")
+    @JoinColumn(name="product_id", nullable = true)
     private Product product;
 
     @JsonBackReference
