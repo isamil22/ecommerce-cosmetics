@@ -1,9 +1,10 @@
 // frontend/src/pages/admin/AdminPackForm.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPack, getAllProducts } from '../../api/apiService';
 import Loader from '../../components/Loader';
+import { Editor } from '@tinymce/tinymce-react';
 
 const AdminPackForm = () => {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ const AdminPackForm = () => {
     const [imagePreview, setImagePreview] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const editorRef = useRef(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -80,8 +82,10 @@ const AdminPackForm = () => {
         }
 
         const formData = new FormData();
+        // Get the content from TinyMCE editor
+        const description = editorRef.current ? editorRef.current.getContent() : packData.description;
         // The backend expects a JSON string for the 'pack' part
-        formData.append('pack', new Blob([JSON.stringify(packData)], { type: 'application/json' }));
+        formData.append('pack', new Blob([JSON.stringify({ ...packData, description })], { type: 'application/json' }));
 
         if (image) {
             formData.append('image', image);
@@ -112,11 +116,29 @@ const AdminPackForm = () => {
                 </div>
                 <div>
                     <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea name="description" id="description" value={packData.description} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" required />
+                    <Editor
+                        apiKey='jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'
+                        onInit={(evt, editor) => editorRef.current = editor}
+                        initialValue={packData.description}
+                        init={{
+                            height: 500,
+                            menubar: false,
+                            plugins: [
+                                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                            ],
+                            toolbar: 'undo redo | blocks | ' +
+                                'bold italic forecolor | alignleft aligncenter ' +
+                                'alignright alignjustify | bullist numlist outdent indent | ' +
+                                'removeformat | help',
+                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                        }}
+                    />
                 </div>
                 <div>
                     <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
-                    <input type="number" name="price" id="price" value={packData.price} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" required />
+                    <input type="number" step="0.01" name="price" id="price" value={packData.price} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" required />
                 </div>
                 <div>
                     <label htmlFor="image" className="block text-sm font-medium text-gray-700">Pack Image</label>

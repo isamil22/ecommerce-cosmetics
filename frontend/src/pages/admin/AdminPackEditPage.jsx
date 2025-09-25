@@ -1,9 +1,10 @@
 // src/pages/admin/AdminPackEditPage.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPackById, updatePack, getAllProducts } from '../../api/apiService';
 import Loader from '../../components/Loader';
+import { Editor } from '@tinymce/tinymce-react';
 
 const AdminPackEditPage = () => {
     const { id } = useParams();
@@ -15,6 +16,7 @@ const AdminPackEditPage = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const editorRef = useRef(null);
 
     useEffect(() => {
         const fetchPackAndProducts = async () => {
@@ -92,9 +94,19 @@ const AdminPackEditPage = () => {
         e.preventDefault();
         setError('');
 
+        // Validation to ensure a default product is selected for each item
+        for (const item of packData.items) {
+            if (!item.defaultProductId) {
+                setError('Each pack item must have a default product selected.');
+                return;
+            }
+        }
+
         const formData = new FormData();
+        // Get the content from TinyMCE editor
+        const description = editorRef.current ? editorRef.current.getContent() : packData.description;
         // The backend expects a JSON string part named 'pack'
-        formData.append('pack', new Blob([JSON.stringify(packData)], { type: 'application/json' }));
+        formData.append('pack', new Blob([JSON.stringify({ ...packData, description })], { type: 'application/json' }));
 
         // Append the new image only if one was selected
         if (image) {
@@ -118,15 +130,38 @@ const AdminPackEditPage = () => {
             {error && <p className="text-red-500 bg-red-100 p-3 rounded-md mb-4">{error}</p>}
 
             {packData && (
-                <form onSubmit={handleSubmit}>
-                    {/* Form fields are similar to AdminPackForm, pre-filled with packData */}
-                    <div className="mb-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
                         <input type="text" name="name" id="name" value={packData.name} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" required />
                     </div>
-                    {/* ... other fields like description, price ... */}
-
-                    <div className="mb-4">
+                    <div>
+                        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+                        <Editor
+                            apiKey='jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'
+                            onInit={(evt, editor) => editorRef.current = editor}
+                            initialValue={packData.description}
+                            init={{
+                                height: 500,
+                                menubar: false,
+                                plugins: [
+                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                ],
+                                toolbar: 'undo redo | blocks | ' +
+                                    'bold italic forecolor | alignleft aligncenter ' +
+                                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                                    'removeformat | help',
+                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
+                        <input type="number" step="0.01" name="price" id="price" value={packData.price} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" required />
+                    </div>
+                    <div>
                         <label htmlFor="image" className="block text-sm font-medium text-gray-700">Update Pack Image (Optional)</label>
                         <input
                             type="file"
@@ -138,16 +173,17 @@ const AdminPackEditPage = () => {
                         />
                     </div>
                     {imagePreview && (
-                        <div className="mb-6">
+                        <div>
                             <p className="block text-sm font-medium text-gray-700">Image Preview:</p>
                             <img src={imagePreview} alt="Pack preview" className="mt-2 h-48 w-auto rounded-lg border p-1" />
                         </div>
                     )}
 
-                    <h3 className="text-xl font-semibold mb-4 text-gray-700">Pack Items</h3>
+                    <hr />
+                    <h3 className="text-xl font-semibold text-gray-700">Pack Items</h3>
                     {packData.items.map((item, index) => (
                         <div key={index} className="p-4 border rounded-md mb-4 relative bg-gray-50">
-                            <button type="button" onClick={() => removeItem(index)} className="absolute top-2 right-2 text-red-500 hover:text-red-700">&times;</button>
+                            <button type="button" onClick={() => removeItem(index)} className="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold text-xl">&times;</button>
                             <div className="mb-2">
                                 <label className="block text-sm font-medium text-gray-700">Default Product</label>
                                 <select value={item.defaultProductId} onChange={(e) => handleItemChange(index, 'defaultProductId', e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" required>
@@ -163,8 +199,7 @@ const AdminPackEditPage = () => {
                             </div>
                         </div>
                     ))}
-                    <button type="button" onClick={addItem} className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Add Another Item</button>
-
+                    <button type="button" onClick={addItem} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Add Another Item</button>
                     <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 transition duration-300">
                         Save Changes
                     </button>

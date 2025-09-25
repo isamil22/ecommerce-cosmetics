@@ -23,7 +23,11 @@ public class Pack {
     private Long id;
 
     private String name;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     private double price;
     private String imageUrl; // CORRECT: Field for the main pack image
 

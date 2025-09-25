@@ -48,7 +48,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
 
         {item.defaultProduct && (
             <div>
-                <h5 className="font-semibold text-md text-gray-600 mb-2">✅ Included by default:</h5>
+                <h5 className="font-semibold text-md text-gray-600 mb-2">âœ… Included by default:</h5>
                 <ProductOption
                     product={item.defaultProduct}
                     packItemId={item.id}
@@ -84,7 +84,6 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
     </div>
 );
 
-
 const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     const { id } = useParams();
     const [pack, setPack] = useState(null);
@@ -95,7 +94,6 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     const [initialSelections, setInitialSelections] = useState({});
     const [composedImageUrl, setComposedImageUrl] = useState(null);
     const [initialPackImageUrl, setInitialPackImageUrl] = useState('');
-
 
     useEffect(() => {
         if (!pack || Object.keys(selections).length === 0) return;
@@ -304,7 +302,10 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                 ${(pack.price || 0).toFixed(2)}
                             </p>
                             <VisitorCounter />
-                            <p className="text-gray-600 leading-relaxed">{pack.description}</p>
+                            <div
+                                className="text-gray-600 leading-relaxed prose prose-gray max-w-none"
+                                dangerouslySetInnerHTML={{ __html: pack.description }}
+                            />
                         </div>
                     </div>
 
@@ -345,4 +346,3 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 };
 
 export default PackDetailPage;
-
