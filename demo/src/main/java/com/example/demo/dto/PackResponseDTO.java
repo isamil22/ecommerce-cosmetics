@@ -9,6 +9,7 @@ public class PackResponseDTO {
     private String name;
     private String description;
     private double price;
-    private String imageUrl; // CORRECT: DTO includes the image URL for the frontend
+    private String imageUrl;
     private List<PackItemResponseDTO> items;
+    private List<CommentDTO> comments;
 }

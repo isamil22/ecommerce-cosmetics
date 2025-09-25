@@ -29,9 +29,13 @@ public class Pack {
     private String description;
 
     private double price;
-    private String imageUrl; // CORRECT: Field for the main pack image
+    private String imageUrl;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PackItem> items = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 }

@@ -21,6 +21,7 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
+    // Add comment to product (authenticated user)
     @PostMapping("/product/{productId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentDTO> addComment(@PathVariable Long productId,
@@ -30,6 +31,17 @@ public class CommentController {
         return ResponseEntity.ok(commentService.addComment(productId, userId, commentDTO));
     }
 
+    // Add comment to pack (authenticated user)
+    @PostMapping("/pack/{packId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CommentDTO> addCommentToPack(@PathVariable Long packId,
+                                                       @AuthenticationPrincipal UserDetails userDetails,
+                                                       @Valid @RequestBody CommentDTO commentDTO) {
+        Long userId = ((User) userDetails).getId();
+        return ResponseEntity.ok(commentService.addCommentToPack(packId, userId, commentDTO));
+    }
+
+    // Add admin comment to product
     @PostMapping("/admin/product/{productId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommentDTO> addAdminComment(@PathVariable Long productId,
@@ -40,17 +52,37 @@ public class CommentController {
         return ResponseEntity.ok(commentService.addAdminComment(productId, content, score, name, images));
     }
 
+    // Add admin comment to pack
+    @PostMapping("/admin/pack/{packId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CommentDTO> addAdminCommentToPack(@PathVariable Long packId,
+                                                            @RequestParam("content") String content,
+                                                            @RequestParam("score") Integer score,
+                                                            @RequestParam("name") String name,
+                                                            @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
+        return ResponseEntity.ok(commentService.addAdminCommentToPack(packId, content, score, name, images));
+    }
+
+    // Get comments by product
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<CommentDTO>> getCommentsByProduct(@PathVariable Long productId){
         return ResponseEntity.ok(commentService.getCommentsByProduct(productId));
     }
 
+    // Get comments by pack
+    @GetMapping("/pack/{packId}")
+    public ResponseEntity<List<CommentDTO>> getCommentsByPack(@PathVariable Long packId) {
+        return ResponseEntity.ok(commentService.getCommentsByPack(packId));
+    }
+
+    // Get all comments (admin only)
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CommentDTO>> getAllComments() {
         return ResponseEntity.ok(commentService.getAllComments());
     }
 
+    // Update comment (admin only)
     @PutMapping("/{commentId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId,
@@ -59,6 +91,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.updateComment(commentId, commentDTO, image));
     }
 
+    // Delete comment (admin only)
     @DeleteMapping("/{commentId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
@@ -66,6 +99,7 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 
+    // Delete comment image (admin only)
     @DeleteMapping("/{commentId}/images")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCommentImage(@PathVariable Long commentId, @RequestParam String imageUrl) {

@@ -24,8 +24,13 @@ public class Comment {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name="product_id", nullable = false)
+    @JoinColumn(name="product_id")
     private Product product;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "pack_id")
+    private Pack pack;
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
