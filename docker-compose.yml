@@ -9,7 +9,6 @@ services:
       MYSQL_ROOT_PASSWORD: 'root'
     ports:
       - '3307:3306'
-
     volumes:
       - db_data:/var/lib/mysql
     command: --innodb-buffer-pool-size=256M
@@ -47,10 +46,24 @@ services:
       - '8081:80'
     depends_on:
       - backend
-    # --- ADD THIS SECTION ---
     env_file:
       - ./frontend/.env
-    # -----------------------
+    networks:
+      - my-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8083:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: user
+      PMA_PASSWORD: password
+      PMA_ROOT_PASSWORD: root
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - my-network
 
