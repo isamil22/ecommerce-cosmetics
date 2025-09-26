@@ -5,6 +5,7 @@ import com.example.demo.model.User;
 import com.example.demo.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,24 +43,24 @@ public class CommentController {
     }
 
     // Add admin comment to product
-    @PostMapping("/admin/product/{productId}")
+    @PostMapping(value = "/admin/product/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommentDTO> addAdminComment(@PathVariable Long productId,
                                                       @RequestParam("content") String content,
                                                       @RequestParam("score") Integer score,
                                                       @RequestParam("name") String name,
-                                                      @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.addAdminComment(productId, content, score, name, images));
     }
 
     // Add admin comment to pack
-    @PostMapping("/admin/pack/{packId}")
+    @PostMapping(value = "/admin/pack/{packId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommentDTO> addAdminCommentToPack(@PathVariable Long packId,
                                                             @RequestParam("content") String content,
                                                             @RequestParam("score") Integer score,
                                                             @RequestParam("name") String name,
-                                                            @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                                            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.addAdminCommentToPack(packId, content, score, name, images));
     }
 
