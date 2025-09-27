@@ -1,3 +1,5 @@
+// frontend/src/pages/PackDetailPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPackById, addToCart as apiAddToCart } from '../api/apiService';
@@ -5,6 +7,7 @@ import Loader from '../components/Loader';
 import VisitorCounter from '../components/VisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import { toast } from 'react-toastify';
+import CommentForm from '../components/CommentForm'; // Import CommentForm
 
 const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChange, isDefault }) => {
     const imageUrl = (product.images && product.images.length > 0)
@@ -48,7 +51,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
 
         {item.defaultProduct && (
             <div>
-                <h5 className="font-semibold text-md text-gray-600 mb-2">âœ… Included by default:</h5>
+                <h5 className="font-semibold text-md text-gray-600 mb-2">✅ Included by default:</h5>
                 <ProductOption
                     product={item.defaultProduct}
                     packItemId={item.id}
@@ -94,6 +97,45 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     const [initialSelections, setInitialSelections] = useState({});
     const [composedImageUrl, setComposedImageUrl] = useState(null);
     const [initialPackImageUrl, setInitialPackImageUrl] = useState('');
+
+    const fetchPack = async () => {
+        try {
+            const response = await getPackById(id);
+            const packData = response.data;
+            setPack(packData);
+            setComposedImageUrl(packData.imageUrl);
+            setInitialPackImageUrl(packData.imageUrl);
+
+            // --- FACEBOOK PIXEL: VIEWCONTENT EVENT ---
+            if (window.fbq) {
+                window.fbq('track', 'ViewContent', {
+                    content_ids: [packData.id],
+                    content_name: packData.name,
+                    content_type: 'product_group',
+                    value: packData.price,
+                    currency: 'USD'
+                });
+            }
+            // -----------------------------------------
+
+            const initial = {};
+            if (packData && packData.items) {
+                packData.items.forEach(item => {
+                    if (item && item.defaultProduct) {
+                        initial[item.id] = item.defaultProduct.id;
+                    }
+                });
+            }
+            setSelections(initial);
+            setInitialSelections(initial);
+        } catch (err) {
+            setError('Failed to fetch pack details. It might not exist.');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     useEffect(() => {
         if (!pack || Object.keys(selections).length === 0) return;
@@ -161,43 +203,6 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     }, [selections, pack, initialPackImageUrl, initialSelections]);
 
     useEffect(() => {
-        const fetchPack = async () => {
-            try {
-                const response = await getPackById(id);
-                const packData = response.data;
-                setPack(packData);
-                setComposedImageUrl(packData.imageUrl);
-                setInitialPackImageUrl(packData.imageUrl);
-
-                // --- FACEBOOK PIXEL: VIEWCONTENT EVENT ---
-                if (window.fbq) {
-                    window.fbq('track', 'ViewContent', {
-                        content_ids: [packData.id],
-                        content_name: packData.name,
-                        content_type: 'product_group',
-                        value: packData.price,
-                        currency: 'USD'
-                    });
-                }
-                // -----------------------------------------
-
-                const initial = {};
-                if (packData && packData.items) {
-                    packData.items.forEach(item => {
-                        if (item && item.defaultProduct) {
-                            initial[item.id] = item.defaultProduct.id;
-                        }
-                    });
-                }
-                setSelections(initial);
-                setInitialSelections(initial);
-            } catch (err) {
-                setError('Failed to fetch pack details. It might not exist.');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchPack();
     }, [id]);
 
@@ -265,7 +270,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             // -----------------------------------------
 
             toast.success('All selected pack items have been added to your cart!');
-            if(fetchCartCount) {
+            if (fetchCartCount) {
                 fetchCartCount();
             }
 
@@ -274,6 +279,10 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             setError('Failed to add items to cart. Please try again.');
             toast.error('Failed to add items to cart.');
         }
+    };
+
+    const handleCommentAdded = () => {
+        fetchPack();
     };
 
     if (loading) return <Loader />;
@@ -287,59 +296,80 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             {!pack && !loading && <p className="text-center mt-10">Pack not found.</p>}
 
             {pack && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    {/* Left Side: Pack Info & Image */}
-                    <div className="space-y-6">
-                        <div className="bg-white p-6 rounded-lg shadow-xl">
-                            <img
-                                key={composedImageUrl}
-                                src={composedImageUrl || 'https://placehold.co/1200x600/fde4f2/E91E63?text=Our+Pack'}
-                                alt={pack.name}
-                                className="w-full h-auto object-cover rounded-lg mb-6"
-                            />
-                            <h1 className="text-4xl font-extrabold text-gray-800">{pack.name}</h1>
-                            <p className="text-3xl text-pink-500 font-bold my-3">
-                                ${(pack.price || 0).toFixed(2)}
-                            </p>
-                            <VisitorCounter />
-                            <div
-                                className="text-gray-600 leading-relaxed prose prose-gray max-w-none"
-                                dangerouslySetInnerHTML={{ __html: pack.description }}
-                            />
+                <>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        {/* Left Side: Pack Info & Image */}
+                        <div className="space-y-6">
+                            <div className="bg-white p-6 rounded-lg shadow-xl">
+                                <img
+                                    key={composedImageUrl}
+                                    src={composedImageUrl || 'https://placehold.co/1200x600/fde4f2/E91E63?text=Our+Pack'}
+                                    alt={pack.name}
+                                    className="w-full h-auto object-cover rounded-lg mb-6"
+                                />
+                                <h1 className="text-4xl font-extrabold text-gray-800">{pack.name}</h1>
+                                <p className="text-3xl text-pink-500 font-bold my-3">
+                                    ${(pack.price || 0).toFixed(2)}
+                                </p>
+                                <VisitorCounter />
+                                <div
+                                    className="text-gray-600 leading-relaxed prose prose-gray max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: pack.description }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Right Side: Customization Options */}
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                                Customize Your Pack
+                            </h2>
+                            <div className="space-y-4">
+                                {pack.items && pack.items.map(item => (
+                                    <PackItemSelector
+                                        key={item.id}
+                                        item={item}
+                                        selectedProductId={selections[item.id]}
+                                        onSelectionChange={handleSelectionChange}
+                                    />
+                                ))}
+                            </div>
+                            <div className="mt-8">
+                                <button
+                                    onClick={handleAddToCart}
+                                    className="w-full bg-pink-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-pink-700 transition duration-300"
+                                >
+                                    Add Selections to Cart
+                                </button>
+                                <button
+                                    onClick={handleReset}
+                                    className="w-full mt-4 bg-gray-200 text-gray-800 font-bold py-3 px-6 rounded-lg hover:bg-gray-300 transition duration-300"
+                                >
+                                    Reset to Defaults
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Right Side: Customization Options */}
-                    <div>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                            Customize Your Pack
-                        </h2>
-                        <div className="space-y-4">
-                            {pack.items && pack.items.map(item => (
-                                <PackItemSelector
-                                    key={item.id}
-                                    item={item}
-                                    selectedProductId={selections[item.id]}
-                                    onSelectionChange={handleSelectionChange}
-                                />
-                            ))}
-                        </div>
-                        <div className="mt-8">
-                            <button
-                                onClick={handleAddToCart}
-                                className="w-full bg-pink-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-pink-700 transition duration-300"
-                            >
-                                Add Selections to Cart
-                            </button>
-                            <button
-                                onClick={handleReset}
-                                className="w-full mt-4 bg-gray-200 text-gray-800 font-bold py-3 px-6 rounded-lg hover:bg-gray-300 transition duration-300"
-                            >
-                                Reset to Defaults
-                            </button>
-                        </div>
+                    {/* Comments Section */}
+                    <div className="mt-12">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Comments</h2>
+                        {pack.comments && pack.comments.length > 0 ? (
+                            <div className="space-y-4">
+                                {pack.comments.map(comment => (
+                                    <div key={comment.id} className="p-4 border rounded-lg">
+                                        <p className="font-semibold">{comment.userFullName}</p>
+                                        <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
+                                        <p className="text-gray-600 mt-2">{comment.content}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>No comments yet.</p>
+                        )}
+                        <CommentForm packId={id} onCommentAdded={handleCommentAdded} />
                     </div>
-                </div>
+                </>
             )}
         </div>
     );

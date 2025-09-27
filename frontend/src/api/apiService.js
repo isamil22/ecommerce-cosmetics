@@ -274,8 +274,8 @@ export const updateHero = (formData) => {
     });
 };
 
-export const addComment = (productId, commentData) => {
-    return apiService.post(`/comments/product/${productId}`, commentData);
+export const addComment = (id, commentData, type = 'product') => {
+    return apiService.post(`/comments/${type}/${id}`, commentData);
 };
 
 export const forgotPassword = (email) => {

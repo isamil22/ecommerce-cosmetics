@@ -1,7 +1,9 @@
+// frontend/src/components/CommentForm.jsx
+
 import React, { useState } from 'react';
 import { addComment } from '../api/apiService';
 
-const CommentForm = ({ productId, onCommentAdded }) => {
+const CommentForm = ({ productId, packId, onCommentAdded }) => {
     const [content, setContent] = useState('');
     const [score, setScore] = useState(5);
     const [error, setError] = useState('');
@@ -17,7 +19,11 @@ const CommentForm = ({ productId, onCommentAdded }) => {
         }
 
         try {
-            await addComment(productId, { content, score });
+            if (productId) {
+                await addComment(productId, { content, score }, 'product');
+            } else if (packId) {
+                await addComment(packId, { content, score }, 'pack');
+            }
             setSuccess('Thank you! Your comment has been submitted.');
             setContent('');
             setScore(5);
