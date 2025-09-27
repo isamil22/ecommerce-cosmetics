@@ -49,18 +49,18 @@ public class CommentController {
                                                       @RequestParam("content") String content,
                                                       @RequestParam("score") Integer score,
                                                       @RequestParam("name") String name,
-                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                                      @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.addAdminComment(productId, content, score, name, images));
     }
 
-    // Add admin comment to pack
+    // Add admin comment to pack - FIXED VERSION
     @PostMapping(value = "/admin/pack/{packId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommentDTO> addAdminCommentToPack(@PathVariable Long packId,
                                                             @RequestParam("content") String content,
                                                             @RequestParam("score") Integer score,
                                                             @RequestParam("name") String name,
-                                                            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                                            @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.addAdminCommentToPack(packId, content, score, name, images));
     }
 
