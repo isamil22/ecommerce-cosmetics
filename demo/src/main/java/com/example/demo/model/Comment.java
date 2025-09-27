@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "comment")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,19 +22,19 @@ public class Comment {
     private Integer score;
 
     @ElementCollection
-    private List<String> images = new ArrayList<>(); // Initialize the list here
-
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name="product_id", nullable = true)
-    private Product product;
-
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "pack_id")
-    private Pack pack;
+    private List<String> images = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name="product_id", nullable = true) // This allows the comment to not be associated with a product
+    private Product product;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "pack_id", nullable = true) // This allows the comment to not be associated with a pack
+    private Pack pack;
 }
