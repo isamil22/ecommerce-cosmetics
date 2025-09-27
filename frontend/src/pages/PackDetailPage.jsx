@@ -361,6 +361,15 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                         <p className="font-semibold">{comment.userFullName}</p>
                                         <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
                                         <p className="text-gray-600 mt-2">{comment.content}</p>
+                                        {/* --- FIX START: Add image rendering logic --- */}
+                                        {comment.images && comment.images.length > 0 && (
+                                            <div className="flex flex-wrap gap-2 mt-2">
+                                                {comment.images.map((img, index) => (
+                                                    <img key={index} src={img} alt={`Comment image ${index + 1}`} className="w-24 h-24 object-cover rounded-md border" />
+                                                ))}
+                                            </div>
+                                        )}
+                                        {/* --- FIX END --- */}
                                     </div>
                                 ))}
                             </div>
