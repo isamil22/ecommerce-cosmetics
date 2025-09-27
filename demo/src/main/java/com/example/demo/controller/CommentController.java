@@ -53,7 +53,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.addAdminComment(productId, content, score, name, images));
     }
 
-    // Add admin comment to pack - FIXED VERSION
+    // Add admin comment to pack
     @PostMapping(value = "/admin/pack/{packId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CommentDTO> addAdminCommentToPack(@PathVariable Long packId,
@@ -83,20 +83,39 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getAllComments());
     }
 
-    // Update comment (admin only)
-    @PutMapping("/{commentId}")
+    // Update product comment (admin only)
+    @PutMapping("/product/{commentId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId,
-                                                    @RequestPart("comment") @Valid CommentDTO commentDTO,
-                                                    @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+    public ResponseEntity<CommentDTO> updateProductComment(@PathVariable Long commentId,
+                                                           @RequestPart("comment") @Valid CommentDTO commentDTO,
+                                                           @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
         return ResponseEntity.ok(commentService.updateComment(commentId, commentDTO, image));
     }
 
-    // Delete comment (admin only)
-    @DeleteMapping("/{commentId}")
+    // Update pack comment (admin only) - NEW
+    @PutMapping(value = "/pack/{commentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+    public ResponseEntity<CommentDTO> updatePackComment(@PathVariable Long commentId,
+                                                        @RequestParam("content") String content,
+                                                        @RequestParam("score") Integer score,
+                                                        @RequestParam("name") String name,
+                                                        @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
+        return ResponseEntity.ok(commentService.updatePackComment(commentId, content, score, name, images));
+    }
+
+    // Delete product comment (admin only)
+    @DeleteMapping("/product/{commentId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteProductComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Delete pack comment (admin only) - NEW
+    @DeleteMapping("/pack/{commentId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deletePackComment(@PathVariable Long commentId) {
+        commentService.deletePackComment(commentId);
         return ResponseEntity.noContent().build();
     }
 

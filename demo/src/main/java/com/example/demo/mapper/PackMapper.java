@@ -4,7 +4,7 @@ import com.example.demo.dto.PackResponseDTO;
 import com.example.demo.model.Pack;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {PackItemMapper.class})
+@Mapper(componentModel = "spring", uses = {PackItemMapper.class, CommentMapper.class})
 public interface PackMapper {
     PackResponseDTO toResponseDTO(Pack pack);
 }
