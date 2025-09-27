@@ -49,7 +49,7 @@ public class CommentController {
                                                       @RequestParam("content") String content,
                                                       @RequestParam("score") Integer score,
                                                       @RequestParam("name") String name,
-                                                      @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.addAdminComment(productId, content, score, name, images));
     }
 
@@ -60,7 +60,7 @@ public class CommentController {
                                                             @RequestParam("content") String content,
                                                             @RequestParam("score") Integer score,
                                                             @RequestParam("name") String name,
-                                                            @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                                            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.addAdminCommentToPack(packId, content, score, name, images));
     }
 
@@ -99,7 +99,7 @@ public class CommentController {
                                                         @RequestParam("content") String content,
                                                         @RequestParam("score") Integer score,
                                                         @RequestParam("name") String name,
-                                                        @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                                        @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.updatePackComment(commentId, content, score, name, images));
     }
 
