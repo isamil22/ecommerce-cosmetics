@@ -4,6 +4,7 @@ import com.example.demo.model.CustomPack;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class CustomPackDTO {
@@ -15,4 +16,6 @@ public class CustomPackDTO {
     private CustomPack.PricingType pricingType;
     private BigDecimal fixedPrice;
     private BigDecimal discountRate;
+    private List<ProductDTO> allowedProducts;
+    private List<Long> allowedProductIds; // For easier form handling
 }

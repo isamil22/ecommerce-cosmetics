@@ -4,7 +4,9 @@ import com.example.demo.dto.CustomPackDTO;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.CustomPackMapper;
 import com.example.demo.model.CustomPack;
+import com.example.demo.model.Product;
 import com.example.demo.repositories.CustomPackRepository;
+import com.example.demo.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +19,19 @@ import java.util.stream.Collectors;
 public class CustomPackService {
 
     private final CustomPackRepository customPackRepository;
+    private final ProductRepository productRepository;
     private final CustomPackMapper customPackMapper;
 
+    @Transactional
     public CustomPackDTO createCustomPack(CustomPackDTO customPackDTO) {
         CustomPack customPack = customPackMapper.toEntity(customPackDTO);
+        
+        // Handle allowed products if provided
+        if (customPackDTO.getAllowedProductIds() != null && !customPackDTO.getAllowedProductIds().isEmpty()) {
+            List<Product> allowedProducts = productRepository.findAllById(customPackDTO.getAllowedProductIds());
+            customPack.setAllowedProducts(allowedProducts);
+        }
+        
         CustomPack savedCustomPack = customPackRepository.save(customPack);
         return customPackMapper.toDTO(savedCustomPack);
     }
@@ -51,15 +62,37 @@ public class CustomPackService {
         existingPack.setFixedPrice(customPackDTO.getFixedPrice());
         existingPack.setDiscountRate(customPackDTO.getDiscountRate());
 
+        // Update allowed products if provided
+        if (customPackDTO.getAllowedProductIds() != null) {
+            if (customPackDTO.getAllowedProductIds().isEmpty()) {
+                existingPack.getAllowedProducts().clear();
+            } else {
+                List<Product> allowedProducts = productRepository.findAllById(customPackDTO.getAllowedProductIds());
+                existingPack.setAllowedProducts(allowedProducts);
+            }
+        }
+
         CustomPack updatedPack = customPackRepository.save(existingPack);
         return customPackMapper.toDTO(updatedPack);
     }
 
-    // --- ADD THIS METHOD ---
     public void deleteCustomPack(Long id) {
         if (!customPackRepository.existsById(id)) {
             throw new ResourceNotFoundException("CustomPack not found with id: " + id);
         }
         customPackRepository.deleteById(id);
+    }
+
+    // New method to get allowed products for a custom pack
+    public List<Product> getAllowedProductsForPack(Long customPackId) {
+        CustomPack customPack = customPackRepository.findById(customPackId)
+                .orElseThrow(() -> new ResourceNotFoundException("CustomPack not found with id: " + customPackId));
+        
+        // If no specific products are allowed, return all packable products
+        if (customPack.getAllowedProducts() == null || customPack.getAllowedProducts().isEmpty()) {
+            return productRepository.findByIsPackableTrue();
+        }
+        
+        return customPack.getAllowedProducts();
     }
 }

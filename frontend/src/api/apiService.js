@@ -436,6 +436,10 @@ export const getPackableProducts = () => {
     return apiService.get('/products/packable');
 };
 
+export const getAllowedProductsForCustomPack = (customPackId) => {
+    return apiService.get(`/custom-packs/${customPackId}/allowed-products`);
+};
+
 export const saveCountdown = (countdownData) => {
     return apiService.post('/countdown', countdownData);
 };
