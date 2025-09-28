@@ -12,4 +12,6 @@ public class PackResponseDTO {
     private String imageUrl;
     private List<PackItemResponseDTO> items;
     private List<CommentDTO> comments;
+    private List<ProductDTO> recommendedProducts;
+    private List<PackSummaryDTO> recommendedPacks;
 }

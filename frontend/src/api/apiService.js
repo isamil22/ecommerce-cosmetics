@@ -311,7 +311,6 @@ export const getAllPacks = () => {
 export const getPackById = (id) => {
     return apiService.get(`/packs/${id}`);
 };
-
 export const updateDefaultProductForPack = (packId, itemId, productId) => {
     return apiService.put(`/packs/${packId}/items/${itemId}/default-product`, { productId });
 };
@@ -320,10 +319,21 @@ export const deletePack = (id) => {
     return apiService.delete(`/packs/${id}`);
 };
 
+// Pack Recommendations API Functions
+export const updatePackRecommendations = (packId, data) => {
+    return apiService.put(`/packs/${packId}/recommendations`, data);
+};
+
+export const updatePackProductRecommendations = (packId, productIds) => {
+    return apiService.put(`/packs/${packId}/recommendations/products`, productIds);
+};
+
+export const updatePackPackRecommendations = (packId, packIds) => {
+    return apiService.put(`/packs/${packId}/recommendations/packs`, packIds);
+};
+
 export const createOrder = (orderData) => {
     const params = new URLSearchParams();
-    params.append('clientFullName', orderData.clientFullName);
-    params.append('city', orderData.city);
     params.append('address', orderData.address);
     params.append('phoneNumber', orderData.phoneNumber);
     if (orderData.couponCode) {

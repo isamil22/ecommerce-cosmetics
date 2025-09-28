@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.PackRequestDTO;
 import com.example.demo.dto.PackResponseDTO;
 import com.example.demo.dto.UpdateDefaultProductRequestDTO;
+import com.example.demo.dto.UpdateRecommendationsRequestDTO;
 import com.example.demo.mapper.PackMapper;
 import com.example.demo.model.Pack;
 import com.example.demo.service.PackService;
@@ -74,5 +75,36 @@ public class PackController {
     public ResponseEntity<Void> deletePack(@PathVariable Long id) {
         packService.deletePack(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/recommendations")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PackResponseDTO> updateRecommendations(
+            @PathVariable Long id,
+            @RequestBody UpdateRecommendationsRequestDTO request) {
+        PackResponseDTO updatedPack = packService.updateRecommendations(
+                id, 
+                request.getProductIds(), 
+                request.getPackIds()
+        );
+        return ResponseEntity.ok(updatedPack);
+    }
+
+    @PutMapping("/{id}/recommendations/products")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PackResponseDTO> updateRecommendedProducts(
+            @PathVariable Long id,
+            @RequestBody List<Long> productIds) {
+        PackResponseDTO updatedPack = packService.updateRecommendedProducts(id, productIds);
+        return ResponseEntity.ok(updatedPack);
+    }
+
+    @PutMapping("/{id}/recommendations/packs")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PackResponseDTO> updateRecommendedPacks(
+            @PathVariable Long id,
+            @RequestBody List<Long> packIds) {
+        PackResponseDTO updatedPack = packService.updateRecommendedPacks(id, packIds);
+        return ResponseEntity.ok(updatedPack);
     }
 }

@@ -78,6 +78,13 @@ const AdminPacksPage = () => {
                                     >
                                         Edit
                                     </Link>
+                                    {/* This is the "Manage Recommendations" button */}
+                                    <Link
+                                        to={`/admin/packs/${pack.id}/recommendations`}
+                                        className="text-purple-600 hover:text-purple-800 font-medium"
+                                    >
+                                        Recommendations
+                                    </Link>
                                     {/* This is the "Manage Comments" button */}
                                     <Link
                                         to={`/admin/packs/${pack.id}/comments`}

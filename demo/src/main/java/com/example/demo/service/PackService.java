@@ -132,6 +132,79 @@ public class PackService {
     }
 
     @Transactional
+    public PackResponseDTO updateRecommendedProducts(Long packId, List<Long> productIds) {
+        Pack pack = packRepository.findById(packId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + packId));
+
+        // Clear existing recommendations
+        pack.getRecommendedProducts().clear();
+
+        // Add new recommendations
+        if (productIds != null && !productIds.isEmpty()) {
+            List<Product> recommendedProducts = productIds.stream()
+                    .map(id -> productRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id)))
+                    .collect(Collectors.toList());
+            pack.getRecommendedProducts().addAll(recommendedProducts);
+        }
+
+        Pack updatedPack = packRepository.save(pack);
+        return packMapper.toResponseDTO(updatedPack);
+    }
+
+    @Transactional
+    public PackResponseDTO updateRecommendedPacks(Long packId, List<Long> packIds) {
+        Pack pack = packRepository.findById(packId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + packId));
+
+        // Clear existing recommendations
+        pack.getRecommendedPacks().clear();
+
+        // Add new recommendations
+        if (packIds != null && !packIds.isEmpty()) {
+            List<Pack> recommendedPacks = packIds.stream()
+                    .map(id -> packRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + id)))
+                    .collect(Collectors.toList());
+            pack.getRecommendedPacks().addAll(recommendedPacks);
+        }
+
+        Pack updatedPack = packRepository.save(pack);
+        return packMapper.toResponseDTO(updatedPack);
+    }
+
+    @Transactional
+    public PackResponseDTO updateRecommendations(Long packId, List<Long> productIds, List<Long> packIds) {
+        Pack pack = packRepository.findById(packId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + packId));
+
+        // Clear existing recommendations
+        pack.getRecommendedProducts().clear();
+        pack.getRecommendedPacks().clear();
+
+        // Add new product recommendations
+        if (productIds != null && !productIds.isEmpty()) {
+            List<Product> recommendedProducts = productIds.stream()
+                    .map(id -> productRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id)))
+                    .collect(Collectors.toList());
+            pack.getRecommendedProducts().addAll(recommendedProducts);
+        }
+
+        // Add new pack recommendations
+        if (packIds != null && !packIds.isEmpty()) {
+            List<Pack> recommendedPacks = packIds.stream()
+                    .map(id -> packRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + id)))
+                    .collect(Collectors.toList());
+            pack.getRecommendedPacks().addAll(recommendedPacks);
+        }
+
+        Pack updatedPack = packRepository.save(pack);
+        return packMapper.toResponseDTO(updatedPack);
+    }
+
+    @Transactional
     public PackResponseDTO updateDefaultProduct(Long packId, Long itemId, Long productId) {
         Pack pack = packRepository.findById(packId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + packId));

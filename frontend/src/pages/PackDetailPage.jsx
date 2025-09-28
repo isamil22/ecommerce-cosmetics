@@ -8,6 +8,7 @@ import VisitorCounter from '../components/VisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import { toast } from 'react-toastify';
 import CommentForm from '../components/CommentForm'; // Import CommentForm
+import PackRecommendations from '../components/PackRecommendations';
 
 const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChange, isDefault }) => {
     const imageUrl = (product.images && product.images.length > 0)
@@ -378,10 +379,14 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                         )}
                         <CommentForm packId={id} onCommentAdded={handleCommentAdded} />
                     </div>
+
+                    {/* Recommendations Section */}
+                    <PackRecommendations pack={pack} />
                 </>
             )}
         </div>
     );
+
 };
 
 export default PackDetailPage;

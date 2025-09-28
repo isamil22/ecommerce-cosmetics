@@ -81,11 +81,4 @@ public interface ProductMapper {
         return dto;
     }
 
-    @Mapping(target = "userId", source = "user.id")
-    @Mapping(target = "userFullName", source = "user.fullName")
-    CommentDTO toDTO(Comment comment);
-
-    @Mapping(target = "user.id", source = "userId")
-    @Mapping(target = "product", ignore = true)
-    Comment toEntity(CommentDTO commentDTO);
 }

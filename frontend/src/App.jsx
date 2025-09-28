@@ -50,6 +50,7 @@ import CustomPacksPage from './pages/CustomPacksPage';
 import CustomPackCreationPage from './pages/CustomPackCreationPage';
 import AdminProductCommentsPage from './pages/admin/AdminProductCommentsPage.jsx';
 import AdminPackCommentsPage from './pages/admin/AdminPackCommentsPage.jsx';
+import AdminPackRecommendationsPage from './pages/admin/AdminPackRecommendationsPage.jsx';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -170,6 +171,7 @@ function App() {
                             <Route path="packs/new" element={<AdminPackForm />} />
                             <Route path="packs/edit/:id" element={<AdminPackEditPage />} />
                             <Route path="packs/:packId/comments" element={<AdminPackCommentsPage />} />
+                            <Route path="packs/:packId/recommendations" element={<AdminPackRecommendationsPage />} />
                             <Route path="custom-packs" element={<AdminCustomPacksPage />} />
                             <Route path="custom-packs/new" element={<AdminCustomPackForm />} />
                             <Route path="custom-packs/edit/:id" element={<AdminCustomPackForm />} />
