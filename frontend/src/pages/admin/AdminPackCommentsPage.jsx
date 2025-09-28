@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getProductById, updateProductComment, deleteProductComment, addAdminComment, deleteCommentImage } from '../../api/apiService';
+import { getPackById, updatePackComment, deletePackComment, addAdminComment, deleteCommentImage } from '../../api/apiService';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader';
 
-const AdminProductCommentsPage = () => {
-    const { productId } = useParams();
-    const [product, setProduct] = useState(null);
+const AdminPackCommentsPage = () => {
+    const { packId } = useParams();
+    const [pack, setPack] = useState(null);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingComment, setEditingComment] = useState(null);
@@ -19,21 +19,21 @@ const AdminProductCommentsPage = () => {
         images: []
     });
 
-    const fetchProductComments = async () => {
+    const fetchPackComments = async () => {
         try {
-            const response = await getProductById(productId);
-            setProduct(response.data);
+            const response = await getPackById(packId);
+            setPack(response.data);
             setComments(response.data.comments || []);
         } catch (error) {
-            toast.error("Failed to fetch product comments.");
+            toast.error("Failed to fetch pack comments.");
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchProductComments();
-    }, [productId]);
+        fetchPackComments();
+    }, [packId]);
 
     const handleEdit = (comment) => {
         setEditingComment({ ...comment });
@@ -42,9 +42,9 @@ const AdminProductCommentsPage = () => {
     const handleDelete = async (commentId) => {
         if (window.confirm("Are you sure you want to delete this comment?")) {
             try {
-                await deleteProductComment(commentId);
+                await deletePackComment(commentId);
                 toast.success("Comment deleted successfully!");
-                fetchProductComments();
+                fetchPackComments();
             } catch (error) {
                 toast.error("Failed to delete comment.");
             }
@@ -54,17 +54,19 @@ const AdminProductCommentsPage = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('comment', new Blob([JSON.stringify(editingComment)], { type: "application/json" }));
+        formData.append('content', editingComment.content);
+        formData.append('score', editingComment.score);
+        formData.append('name', editingComment.userFullName);
         if (newImage) {
-            formData.append('image', newImage);
+            formData.append('images', newImage);
         }
 
         try {
-            await updateProductComment(editingComment.id, formData);
+            await updatePackComment(editingComment.id, formData);
             toast.success("Comment updated successfully!");
             setEditingComment(null);
             setNewImage(null);
-            fetchProductComments();
+            fetchPackComments();
         } catch (error) {
             toast.error("Failed to update comment.");
         }
@@ -90,11 +92,11 @@ const AdminProductCommentsPage = () => {
         });
 
         try {
-            await addAdminComment(productId, formData);
+            await addAdminComment(packId, formData, 'pack');
             toast.success('Comment added successfully!');
             setIsAddModalOpen(false);
             setNewCommentData({ name: '', content: '', score: 5, images: [] });
-            fetchProductComments();
+            fetchPackComments();
         } catch (error) {
             console.error('Error adding comment:', error);
             toast.error('Failed to add comment.');
@@ -106,7 +108,7 @@ const AdminProductCommentsPage = () => {
             try {
                 await deleteCommentImage(commentId, imageUrl);
                 toast.success("Image deleted successfully!");
-                fetchProductComments();
+                fetchPackComments();
                 if (editingComment && editingComment.id === commentId) {
                     setEditingComment(prev => ({
                         ...prev,
@@ -124,13 +126,13 @@ const AdminProductCommentsPage = () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Comments for {product?.name}</h1>
+                <h1 className="text-3xl font-bold">Comments for {pack?.name}</h1>
                 <div>
                     <button onClick={() => setIsAddModalOpen(true)} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 mr-4">
                         Add New Comment
                     </button>
-                    <Link to="/admin/products" className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600">
-                        Back to Products
+                    <Link to="/admin/packs" className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600">
+                        Back to Packs
                     </Link>
                 </div>
             </div>
@@ -300,4 +302,4 @@ const AdminProductCommentsPage = () => {
     );
 };
 
-export default AdminProductCommentsPage;
+export default AdminPackCommentsPage;

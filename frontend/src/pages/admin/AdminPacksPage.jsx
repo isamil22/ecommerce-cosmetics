@@ -78,6 +78,13 @@ const AdminPacksPage = () => {
                                     >
                                         Edit
                                     </Link>
+                                    {/* This is the "Manage Comments" button */}
+                                    <Link
+                                        to={`/admin/packs/${pack.id}/comments`}
+                                        className="text-green-600 hover:text-green-800 font-medium"
+                                    >
+                                        Manage Comments
+                                    </Link>
                                     {/* This is the "Delete" button */}
                                     <button
                                         onClick={() => handleDelete(pack.id)}

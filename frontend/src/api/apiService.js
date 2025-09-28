@@ -434,8 +434,8 @@ export const updateFrequentlyBoughtTogether = (productId, frequentlyBoughtIds) =
     return apiService.put(`/products/${productId}/frequently-bought-together`, frequentlyBoughtIds);
 };
 
-export const addAdminComment = (productId, formData) => {
-    return apiService.post(`/comments/admin/product/${productId}`, formData, {
+export const addAdminComment = (id, formData, type = 'product') => {
+    return apiService.post(`/comments/admin/${type}/${id}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -460,6 +460,32 @@ export const deleteComment = (commentId) => {
 
 export const deleteCommentImage = (commentId, imageUrl) => {
     return apiService.delete(`/comments/${commentId}/images`, { params: { imageUrl } });
+};
+
+// Pack-specific comment functions
+export const updatePackComment = (commentId, formData) => {
+    return apiService.put(`/comments/pack/${commentId}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
+
+export const deletePackComment = (commentId) => {
+    return apiService.delete(`/comments/pack/${commentId}`);
+};
+
+// Product-specific comment functions
+export const updateProductComment = (commentId, formData) => {
+    return apiService.put(`/comments/product/${commentId}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
+
+export const deleteProductComment = (commentId) => {
+    return apiService.delete(`/comments/product/${commentId}`);
 };
 
 export default apiService;

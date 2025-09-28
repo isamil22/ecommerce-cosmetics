@@ -190,6 +190,12 @@ public class CommentService {
         comment.setContent(commentDTO.getContent());
         comment.setScore(commentDTO.getScore());
 
+        // Update user name if provided
+        if (commentDTO.getUserFullName() != null && !commentDTO.getUserFullName().trim().isEmpty()) {
+            comment.getUser().setFullName(commentDTO.getUserFullName());
+            userRepository.save(comment.getUser());
+        }
+
         if (image != null && !image.isEmpty()) {
             String imageUrl = s3Service.saveImage(image);
             comment.getImages().clear();
