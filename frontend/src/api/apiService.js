@@ -158,8 +158,26 @@ export const getAllProducts = (params) => {
     return apiService.get('/products', { params });
 };
 
-export const getProductById = (id) => {
-    return apiService.get(`/products/${id}`);
+export const getProductById = async (id) => {
+    try {
+        const response = await apiService.get(`/products/${id}`);
+        // Ensure the response has the expected structure
+        if (!response.data) {
+            throw new Error('Invalid product data received from server');
+        }
+        // Ensure images is always an array
+        if (!Array.isArray(response.data.images)) {
+            response.data.images = [];
+        }
+        // Ensure variants exists if hasVariants is true
+        if (response.data.hasVariants && !Array.isArray(response.data.variants)) {
+            response.data.variants = [];
+        }
+        return response;
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        throw error; // Re-throw to be handled by the component
+    }
 };
 
 export const getHelloMessage = () => {

@@ -1,16 +1,20 @@
-// demo/src/main/java/com/example/demo/mapper/ProductMapper.java
 package com.example.demo.mapper;
 
-import com.example.demo.dto.CommentDTO;
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ProductVariantDto;
 import com.example.demo.dto.VariantTypeDto;
-import com.example.demo.model.*;
+import com.example.demo.model.Product;
+import com.example.demo.model.ProductVariant;
+import com.example.demo.model.VariantOption;
+import com.example.demo.model.VariantType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -18,17 +22,16 @@ public interface ProductMapper {
 
     @Mapping(source = "category.name", target = "categoryName")
     @Mapping(source = "category.id", target = "categoryId")
-    @Mapping(source = "variantTypes", target = "variantTypes")
-    @Mapping(source = "variants", target = "variants")
-    @Mapping(source = "hasVariants", target = "hasVariants")
-    @Mapping(source = "quantity", target = "quantity") // Add this line
+    @Mapping(source = "packable", target = "isPackable")
     ProductDTO toDTO(Product product);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     @Mapping(target = "variantTypes", ignore = true)
     @Mapping(target = "variants", ignore = true)
-    @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "frequentlyBoughtTogether", ignore = true)
+    @Mapping(source = "isPackable", target = "packable")
     Product toEntity(ProductDTO productDTO);
 
     @Mapping(target = "id", ignore = true)
@@ -37,6 +40,8 @@ public interface ProductMapper {
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "variantTypes", ignore = true)
     @Mapping(target = "variants", ignore = true)
+    @Mapping(target = "frequentlyBoughtTogether", ignore = true)
+    @Mapping(source = "isPackable", target = "packable")
     void updateProductFromDto(ProductDTO dto, @MappingTarget Product entity);
 
     default List<VariantTypeDto> mapVariantTypes(List<VariantType> variantTypes) {
@@ -74,11 +79,12 @@ public interface ProductMapper {
             return null;
         }
         ProductVariantDto dto = new ProductVariantDto();
-        dto.setVariantMap(productVariant.getVariantMap());
-        dto.setPrice(productVariant.getPrice());
-        dto.setStock(productVariant.getStock());
+        Map<String, String> variantMap = productVariant.getVariantMap();
+        dto.setVariantMap(variantMap != null ? variantMap : new HashMap<>());
+        dto.setPrice(productVariant.getPrice() != null ? productVariant.getPrice() : BigDecimal.ZERO);
+        dto.setStock(productVariant.getStock() != null ? productVariant.getStock() : 0);
         dto.setImageUrl(productVariant.getImageUrl());
+        dto.setId(productVariant.getId());
         return dto;
     }
-
 }

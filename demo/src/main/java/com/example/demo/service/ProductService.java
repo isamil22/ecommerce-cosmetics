@@ -280,14 +280,25 @@ public class ProductService {
     public ProductDTO getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        return productMapper.toDTO(product);
-    }
-
-    public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Product not found with id: " + id);
+        
+        // Ensure product has all required fields
+        if (product.getImages() == null) {
+            product.setImages(new ArrayList<>());
         }
-        productRepository.deleteById(id);
+        if (product.getVariants() == null) {
+            product.setVariants(new ArrayList<>());
+        }
+        if (product.getVariantTypes() == null) {
+            product.setVariantTypes(new ArrayList<>());
+        }
+        
+        // If hasVariants is true but no variants exist, set hasVariants to false
+        if (Boolean.TRUE.equals(product.getHasVariants()) && 
+            (product.getVariants() == null || product.getVariants().isEmpty())) {
+            product.setHasVariants(false);
+        }
+        
+        return productMapper.toDTO(product);
     }
 
     @Transactional(readOnly = true)

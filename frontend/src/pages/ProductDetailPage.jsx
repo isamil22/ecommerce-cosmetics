@@ -13,12 +13,15 @@ import SocialShare from '../components/SocialShare';
 import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
 import ReviewSummary from '../components/ReviewSummary';
 import Breadcrumbs from '../components/Breadcrumbs';
-import StickyAddToCartBar from '../components/StickyAddToCartBar';
 import PurchasePopup from '../components/PurchasePopup';
 import OrderUrgencyTimer from '../components/OrderUrgencyTimer';
-import Accordion from '../components/Accordion';
 import ShippingThresholdIndicator from '../components/ShippingThresholdIndicator';
+import EnhancedCountdown from '../components/EnhancedCountdown';
+import LiveVisitorCounter from '../components/LiveVisitorCounter';
+import PurchaseNotifications from '../components/PurchaseNotifications';
+import StickyAddToCart from '../components/StickyAddToCart';
 import { toast } from 'react-toastify';
+import './PackDetailPage.css'; // Import CSS for animations
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
@@ -88,10 +91,18 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
 
     const activeVariant = useMemo(() => {
-        if (!product || !product.hasVariants) return null;
-        return product.variants.find(v =>
-            Object.entries(selectedOptions).every(([key, value]) => v.variantMap[key] === value)
-        );
+        if (!product || !product.hasVariants || !product.variants) return null;
+        try {
+            return product.variants.find(v =>
+                v && v.variantMap && 
+                Object.entries(selectedOptions).every(([key, value]) => 
+                    v.variantMap && v.variantMap[key] === value
+                )
+            );
+        } catch (error) {
+            console.error('Error finding active variant:', error);
+            return null;
+        }
     }, [product, selectedOptions]);
 
     useEffect(() => {
@@ -173,11 +184,23 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
     if (loading) return <Loader />;
     if (error) return <div className="text-center text-red-500 mt-8">{error}</div>;
-    if (!product) return null;
+    if (!product) return <div className="text-center mt-8">Product not found</div>;
+    
+    // Add null checks for required product properties
+    if (!product.images || !Array.isArray(product.images) || product.images.length === 0) {
+        product.images = ['/placeholder-product.jpg'];
+    }
 
-    const displayPrice = activeVariant ? activeVariant.price : product.price;
-    const oldPrice = activeVariant ? activeVariant.oldPrice : product.oldPrice;
-    const displayStock = activeVariant ? activeVariant.stock : product.quantity;
+    // Add null checks for prices and stock
+    const displayPrice = activeVariant ? 
+        (activeVariant.price || 0) : 
+        (product.price || 0);
+    const oldPrice = activeVariant ? 
+        (activeVariant.oldPrice || 0) : 
+        (product.oldPrice || 0);
+    const displayStock = activeVariant ? 
+        (activeVariant.stock || 0) : 
+        (product.quantity || 0);
 
     const accordionItems = [
         {
@@ -239,6 +262,16 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         <div className="container mx-auto p-4 pt-10">
             <Breadcrumbs categoryId={product.categoryId} categoryName={product.categoryName} productName={product.name} />
             <CountdownBar />
+            
+            {/* Enhanced Countdown Timer */}
+            <EnhancedCountdown 
+                endTime={new Date().getTime() + (24 * 60 * 60 * 1000)} // 24 hours from now
+                packName={product.name}
+                onExpire={() => {
+                    toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
+                }}
+            />
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Image Gallery */}
                 <div>
@@ -277,6 +310,10 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     <div className="mb-4">{renderStars(averageRating)}</div>
                     <ReviewSummary comments={product.comments} />
                     <VisitorCounter />
+                    
+                    {/* Live Visitor Counter */}
+                    <LiveVisitorCounter packId={id} />
+                    
                     {product.hasVariants && product.variantTypes.map(vt => (
                         <div key={vt.name} className="my-4">
                             <h3 className="text-lg font-semibold mb-2">{vt.name}</h3>
@@ -308,14 +345,170 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 </div>
             </div>
 
-            <div className="mt-12">
-                <Accordion items={accordionItems} />
+            {/* Enhanced Description Section - Always Visible */}
+            <div className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200">
+                <div className="flex items-center mb-4">
+                    <span className="text-3xl mr-3">📋</span>
+                    <h2 className="text-2xl font-bold text-gray-800">وصف المنتج / Product Description</h2>
+                </div>
+                <div className="prose max-w-none">
+                    <div dangerouslySetInnerHTML={{ __html: product.description }} />
+                    <div className="mt-8 pt-6 border-t border-gray-200">
+                        <h4 className="text-xl font-bold text-gray-800 mb-4">🌟 لماذا تختارنا؟ / Why Choose Us?</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="flex items-start bg-white p-4 rounded-lg shadow-sm">
+                                <span className="text-green-500 text-xl mr-3">✓</span>
+                                <div>
+                                    <strong className="text-green-700">منتجات أصلية / Authentic Products</strong>
+                                    <p className="text-sm text-gray-600 mt-1">مضمونة 100% أصلية / Guaranteed 100% authentic</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start bg-white p-4 rounded-lg shadow-sm">
+                                <span className="text-blue-500 text-xl mr-3">🚚</span>
+                                <div>
+                                    <strong className="text-blue-700">شحن سريع / Fast Shipping</strong>
+                                    <p className="text-sm text-gray-600 mt-1">الدار البيضاء 3-5 أيام / Casablanca 3-5 days</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start bg-white p-4 rounded-lg shadow-sm">
+                                <span className="text-purple-500 text-xl mr-3">↩️</span>
+                                <div>
+                                    <strong className="text-purple-700">إرجاع سهل / Easy Returns</strong>
+                                    <p className="text-sm text-gray-600 mt-1">ضمان 30 يوم / 30-day guarantee</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />            <div className="mt-16 border-t border-gray-200">
+            {/* Enhanced Reviews Section - Prominent Display */}
+            <div className="mt-8 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border-2 border-yellow-200">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center">
+                        <span className="text-3xl mr-3">⭐</span>
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                آراء العملاء / Customer Reviews ({product.comments ? product.comments.length : 0})
+                            </h2>
+                            {product.comments && product.comments.length > 0 && (
+                                <div className="flex items-center mt-2">
+                                    <div className="flex items-center mr-4">
+                                        {renderStars(averageRating)}
+                                    </div>
+                                    <span className="text-lg font-semibold text-yellow-600">
+                                        {averageRating.toFixed(1)} من 5 / out of 5
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    {product.comments && product.comments.length > 0 && (
+                        <div className="text-center bg-white rounded-lg p-3 shadow-sm">
+                            <div className="text-2xl font-bold text-green-600">{product.comments.length}</div>
+                            <div className="text-sm text-gray-600">مراجعة / Reviews</div>
+                        </div>
+                    )}
+                </div>
+
+                {product.comments && product.comments.length > 0 ? (
+                    <div className="space-y-4 mb-6">
+                        {product.comments.slice(0, 3).map(comment => (
+                            <div key={comment.id} className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-400">
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center">
+                                        <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                                            {comment.userFullName[0]}
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-gray-800">{comment.userFullName}</p>
+                                            <div className="flex items-center">
+                                                <span className="text-yellow-400 text-lg">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</span>
+                                                <span className="text-sm text-gray-500 ml-2">تقييم {comment.score}/5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">✓ مؤكد / Verified</span>
+                                </div>
+                                <p className="text-gray-700 leading-relaxed">{comment.content}</p>
+                                {comment.images && comment.images.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mt-3">
+                                        {comment.images.map((img, index) => (
+                                            <img key={index} src={img} alt={`Review image ${index + 1}`} className="w-20 h-20 object-cover rounded-md border-2 border-yellow-200 hover:border-yellow-400 transition-colors cursor-pointer" />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                        {product.comments.length > 3 && (
+                            <div className="text-center">
+                                <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                                    عرض جميع المراجعات ({product.comments.length}) / View All Reviews
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div className="text-center py-8 bg-white rounded-lg">
+                        <span className="text-6xl mb-4 block">💭</span>
+                        <p className="text-gray-600 text-lg mb-4">لا توجد مراجعات بعد / No reviews yet</p>
+                        <p className="text-sm text-gray-500">كن أول من يكتب مراجعة! / Be the first to write a review!</p>
+                    </div>
+                )}
+
+                {/* Comment Form */}
+                <div className="mt-6 bg-white rounded-lg p-4 border-2 border-dashed border-yellow-300">
+                    <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                        <span className="text-2xl mr-2">✍️</span>
+                        اكتب مراجعتك / Write Your Review
+                    </h3>
+                    <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
+                </div>
+            </div>
+
+            {/* Shipping & Returns - Compact but Visible */}
+            <div className="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border-2 border-green-200">
+                <div className="flex items-center mb-4">
+                    <span className="text-3xl mr-3">🚚</span>
+                    <h2 className="text-2xl font-bold text-gray-800">الشحن والإرجاع / Shipping & Returns</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 className="font-bold text-green-700 mb-2 flex items-center">
+                            <span className="text-xl mr-2">📦</span>
+                            معلومات الشحن / Shipping Info
+                        </h4>
+                        <p className="text-gray-600">نحن نقدم شحن سريع إلى موقعك. معظم الطلبات تتم معالجتها خلال 1-2 يوم عمل وتسليمها خلال 3-5 أيام عمل في المدن الكبرى مثل الدار البيضاء والرباط.</p>
+                        <p className="text-sm text-gray-500 mt-2">We offer fast shipping to your location. Most orders are processed within 1-2 business days and delivered within 3-5 business days in major cities like Casablanca and Rabat.</p>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 className="font-bold text-blue-700 mb-2 flex items-center">
+                            <span className="text-xl mr-2">↩️</span>
+                            سياسة الإرجاع / Return Policy
+                        </h4>
+                        <p className="text-gray-600">نحن نقدم أيضاً <strong>ضمان استرداد الأموال لمدة 30 يوماً</strong>. إذا لم تكن راضياً، يمكنك إرجاعه لاسترداد كامل.</p>
+                        <p className="text-sm text-gray-500 mt-2">We also offer a <strong>30-day money-back guarantee</strong>. If you're not satisfied, you can return it for a full refund.</p>
+                    </div>
+                </div>
+            </div>
+
+            <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />
+            
+            <div className="mt-16 border-t border-gray-200">
                 <ProductSlider title="You Might Also Like" products={bestsellers} />
             </div>
-            <StickyAddToCartBar isVisible={isStickyBarVisible} product={product} displayPrice={displayPrice} handleAddToCart={handleAddToCart} />
+            
+            {/* Enhanced Purchase Notifications */}
+            <PurchaseNotifications packName={product.name} />
+            
+            {/* Enhanced Sticky Add to Cart - replaces StickyAddToCartBar */}
+            <StickyAddToCart 
+                pack={product}
+                onAddToCart={handleAddToCart}
+                isVisible={isStickyBarVisible}
+                selectedCount={1}
+                totalItems={1}
+            />
             {product.images.length > 0 && <PurchasePopup productName={product.name} productImage={product.images[0]} />}
         </div>
     );
