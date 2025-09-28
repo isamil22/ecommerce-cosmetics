@@ -14,4 +14,5 @@ public class PackResponseDTO {
     private List<CommentDTO> comments;
     private List<ProductDTO> recommendedProducts;
     private List<PackSummaryDTO> recommendedPacks;
+    private List<CustomPackDTO> recommendedCustomPacks;
 }

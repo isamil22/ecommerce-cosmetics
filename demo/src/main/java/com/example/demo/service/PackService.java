@@ -4,9 +4,11 @@ import com.example.demo.dto.PackRequestDTO;
 import com.example.demo.dto.PackResponseDTO;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.PackMapper;
+import com.example.demo.model.CustomPack;
 import com.example.demo.model.Pack;
 import com.example.demo.model.PackItem;
 import com.example.demo.model.Product;
+import com.example.demo.repositories.CustomPackRepository;
 import com.example.demo.repositories.PackRepository;
 import com.example.demo.repositories.ProductRepository;
 import org.slf4j.Logger;
@@ -41,6 +43,9 @@ public class PackService {
 
     @Autowired
     private PackMapper packMapper;
+
+    @Autowired
+    private CustomPackRepository customPackRepository;
 
     public List<Pack> getAllPacks() {
         return packRepository.findAll();
@@ -174,13 +179,14 @@ public class PackService {
     }
 
     @Transactional
-    public PackResponseDTO updateRecommendations(Long packId, List<Long> productIds, List<Long> packIds) {
+    public PackResponseDTO updateRecommendations(Long packId, List<Long> productIds, List<Long> packIds, List<Long> customPackIds) {
         Pack pack = packRepository.findById(packId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + packId));
 
         // Clear existing recommendations
         pack.getRecommendedProducts().clear();
         pack.getRecommendedPacks().clear();
+        pack.getRecommendedCustomPacks().clear();
 
         // Add new product recommendations
         if (productIds != null && !productIds.isEmpty()) {
@@ -198,6 +204,36 @@ public class PackService {
                             .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + id)))
                     .collect(Collectors.toList());
             pack.getRecommendedPacks().addAll(recommendedPacks);
+        }
+
+        // Add new custom pack recommendations
+        if (customPackIds != null && !customPackIds.isEmpty()) {
+            List<CustomPack> recommendedCustomPacks = customPackIds.stream()
+                    .map(id -> customPackRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Custom pack not found with id: " + id)))
+                    .collect(Collectors.toList());
+            pack.getRecommendedCustomPacks().addAll(recommendedCustomPacks);
+        }
+
+        Pack updatedPack = packRepository.save(pack);
+        return packMapper.toResponseDTO(updatedPack);
+    }
+
+    @Transactional
+    public PackResponseDTO updateRecommendedCustomPacks(Long packId, List<Long> customPackIds) {
+        Pack pack = packRepository.findById(packId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pack not found with id: " + packId));
+
+        // Clear existing custom pack recommendations
+        pack.getRecommendedCustomPacks().clear();
+
+        // Add new custom pack recommendations
+        if (customPackIds != null && !customPackIds.isEmpty()) {
+            List<CustomPack> recommendedCustomPacks = customPackIds.stream()
+                    .map(id -> customPackRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Custom pack not found with id: " + id)))
+                    .collect(Collectors.toList());
+            pack.getRecommendedCustomPacks().addAll(recommendedCustomPacks);
         }
 
         Pack updatedPack = packRepository.save(pack);

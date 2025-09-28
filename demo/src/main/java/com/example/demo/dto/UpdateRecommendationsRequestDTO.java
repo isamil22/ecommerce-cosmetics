@@ -7,5 +7,6 @@ import java.util.List;
 public class UpdateRecommendationsRequestDTO {
     private List<Long> productIds;
     private List<Long> packIds;
+    private List<Long> customPackIds;
 }
 

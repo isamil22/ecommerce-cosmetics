@@ -85,7 +85,8 @@ public class PackController {
         PackResponseDTO updatedPack = packService.updateRecommendations(
                 id, 
                 request.getProductIds(), 
-                request.getPackIds()
+                request.getPackIds(),
+                request.getCustomPackIds()
         );
         return ResponseEntity.ok(updatedPack);
     }
@@ -105,6 +106,15 @@ public class PackController {
             @PathVariable Long id,
             @RequestBody List<Long> packIds) {
         PackResponseDTO updatedPack = packService.updateRecommendedPacks(id, packIds);
+        return ResponseEntity.ok(updatedPack);
+    }
+
+    @PutMapping("/{id}/recommendations/custom-packs")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PackResponseDTO> updateRecommendedCustomPacks(
+            @PathVariable Long id,
+            @RequestBody List<Long> customPackIds) {
+        PackResponseDTO updatedPack = packService.updateRecommendedCustomPacks(id, customPackIds);
         return ResponseEntity.ok(updatedPack);
     }
 }

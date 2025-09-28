@@ -5,7 +5,7 @@ import com.example.demo.model.Pack;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {PackItemMapper.class, CommentMapper.class, ProductMapper.class, PackSummaryMapper.class})
+@Mapper(componentModel = "spring", uses = {PackItemMapper.class, CommentMapper.class, ProductMapper.class, PackSummaryMapper.class, CustomPackMapper.class})
 public interface PackMapper {
     @Mapping(target = "comments", source = "comments")
     PackResponseDTO toResponseDTO(Pack pack);

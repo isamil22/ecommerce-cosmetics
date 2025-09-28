@@ -54,4 +54,12 @@ public class Pack {
             inverseJoinColumns = @JoinColumn(name = "recommended_pack_id")
     )
     private List<Pack> recommendedPacks = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "pack_recommended_custom_packs",
+            joinColumns = @JoinColumn(name = "pack_id"),
+            inverseJoinColumns = @JoinColumn(name = "custom_pack_id")
+    )
+    private List<CustomPack> recommendedCustomPacks = new ArrayList<>();
 }

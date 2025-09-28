@@ -332,6 +332,10 @@ export const updatePackPackRecommendations = (packId, packIds) => {
     return apiService.put(`/packs/${packId}/recommendations/packs`, packIds);
 };
 
+export const updatePackCustomPackRecommendations = (packId, customPackIds) => {
+    return apiService.put(`/packs/${packId}/recommendations/custom-packs`, customPackIds);
+};
+
 export const createOrder = (orderData) => {
     const params = new URLSearchParams();
     params.append('address', orderData.address);
