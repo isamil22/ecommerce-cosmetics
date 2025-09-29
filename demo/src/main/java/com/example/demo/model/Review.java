@@ -21,8 +21,12 @@ public class Review {
 
     private boolean approved = false;
 
+    private boolean createdByAdmin = false; // Flag to identify admin-created reviews
+
+    private String customName; // Custom name for admin-created reviews (optional)
+
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true) // Nullable for admin-created reviews
     private User user;
 
     // The relationship to a specific Product has been removed

@@ -136,7 +136,9 @@ const HomePage = () => {
                         <div key={review.id} className="bg-white p-6 rounded-lg shadow-md">
                             <p className="text-gray-600 mb-4">"{review.content}"</p> {/* Added mb-4 for spacing */}
                             <div className="mt-auto"> {/* Use mt-auto to push content to the bottom if the card height varies */}
-                                <p className="font-semibold text-pink-500">{review.userEmail}</p>
+                                <p className="font-semibold text-pink-500">
+                                    {review.createdByAdmin ? (review.customName || 'Anonymous Customer') : (review.userEmail || 'Customer')}
+                                </p>
                                 {/* Display stars using the helper function */}
                                 {renderStars(review.rating)}
                             </div>

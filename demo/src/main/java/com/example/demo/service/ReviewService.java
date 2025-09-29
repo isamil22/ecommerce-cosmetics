@@ -72,4 +72,43 @@ public class ReviewService {
         }
         reviewRepository.deleteById(reviewId);
     }
+
+    // Admin creates a review (no user association required, automatically approved)
+    public ReviewDTO createAdminReview(ReviewDTO reviewDTO) {
+        Review review = new Review();
+        review.setContent(reviewDTO.getContent());
+        review.setRating(reviewDTO.getRating());
+        review.setApproved(true); // Admin reviews are automatically approved
+        review.setCreatedByAdmin(true);
+        review.setCustomName(reviewDTO.getCustomName()); // Custom name for the review
+        review.setUser(null); // No user association for admin-created reviews
+
+        Review savedReview = reviewRepository.save(review);
+        return reviewMapper.toDTO(savedReview);
+    }
+
+    // Update an existing review (for admin to edit any review)
+    public ReviewDTO updateReview(Long reviewId, ReviewDTO reviewDTO) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
+        
+        review.setContent(reviewDTO.getContent());
+        review.setRating(reviewDTO.getRating());
+        review.setApproved(reviewDTO.isApproved());
+        
+        // Update custom name if it's an admin-created review
+        if (review.isCreatedByAdmin()) {
+            review.setCustomName(reviewDTO.getCustomName());
+        }
+
+        Review updatedReview = reviewRepository.save(review);
+        return reviewMapper.toDTO(updatedReview);
+    }
+
+    // Get all reviews (both pending and approved) for admin management
+    public List<ReviewDTO> getAllReviews() {
+        return reviewRepository.findAll().stream()
+                .map(reviewMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

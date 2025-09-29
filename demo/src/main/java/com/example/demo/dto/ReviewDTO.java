@@ -10,5 +10,7 @@ public class ReviewDTO {
     private boolean approved;
     private Long userId;
     private String userEmail;
+    private boolean createdByAdmin;
+    private String customName; // Custom name for admin-created reviews
     // The productId and productName fields have been removed as they are no longer needed.
 }

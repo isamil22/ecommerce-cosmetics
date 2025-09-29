@@ -52,4 +52,27 @@ public class ReviewController {
         reviewService.deleteReview(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Admin creates a review
+    @PostMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReviewDTO> createAdminReview(@Valid @RequestBody ReviewDTO reviewDTO) {
+        ReviewDTO createdReview = reviewService.createAdminReview(reviewDTO);
+        return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
+    }
+
+    // Admin updates a review
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @Valid @RequestBody ReviewDTO reviewDTO) {
+        ReviewDTO updatedReview = reviewService.updateReview(id, reviewDTO);
+        return ResponseEntity.ok(updatedReview);
+    }
+
+    // Admin gets all reviews (approved and pending)
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ReviewDTO>> getAllReviews() {
+        return ResponseEntity.ok(reviewService.getAllReviews());
+    }
 }

@@ -282,6 +282,21 @@ export const deleteReview = (reviewId) => {
     return apiService.delete(`/reviews/${reviewId}`);
 };
 
+// Admin creates a review
+export const createAdminReview = (reviewData) => {
+    return apiService.post('/reviews/admin', reviewData);
+};
+
+// Admin updates a review
+export const updateReview = (reviewId, reviewData) => {
+    return apiService.put(`/reviews/${reviewId}`, reviewData);
+};
+
+// Admin gets all reviews (approved and pending)
+export const getAllReviews = () => {
+    return apiService.get('/reviews/all');
+};
+
 export const getHero = () => {
     return apiService.get('/hero');
 };
