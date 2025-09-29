@@ -293,7 +293,7 @@ public class ProductService {
         }
         
         // If hasVariants is true but no variants exist, set hasVariants to false
-        if (Boolean.TRUE.equals(product.getHasVariants()) && 
+        if (product.isHasVariants() && 
             (product.getVariants() == null || product.getVariants().isEmpty())) {
             product.setHasVariants(false);
         }
@@ -338,5 +338,12 @@ public class ProductService {
 
         product.setFrequentlyBoughtTogether(newRelatedProducts);
         productRepository.save(product);
+    }
+
+    @Transactional
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        productRepository.delete(product);
     }
 }

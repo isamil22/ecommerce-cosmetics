@@ -7,6 +7,7 @@ import java.util.Map;
 
 @Data
 public class ProductVariantDto {
+    private Long id;
     private Map<String, String> variantMap;
     private BigDecimal price;
     private int stock;

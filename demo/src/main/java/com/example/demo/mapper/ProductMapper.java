@@ -82,7 +82,7 @@ public interface ProductMapper {
         Map<String, String> variantMap = productVariant.getVariantMap();
         dto.setVariantMap(variantMap != null ? variantMap : new HashMap<>());
         dto.setPrice(productVariant.getPrice() != null ? productVariant.getPrice() : BigDecimal.ZERO);
-        dto.setStock(productVariant.getStock() != null ? productVariant.getStock() : 0);
+        dto.setStock(productVariant.getStock());
         dto.setImageUrl(productVariant.getImageUrl());
         dto.setId(productVariant.getId());
         return dto;

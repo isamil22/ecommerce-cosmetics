@@ -20,6 +20,7 @@ import EnhancedCountdown from '../components/EnhancedCountdown';
 import LiveVisitorCounter from '../components/LiveVisitorCounter';
 import PurchaseNotifications from '../components/PurchaseNotifications';
 import StickyAddToCart from '../components/StickyAddToCart';
+import Accordion from '../components/Accordion';
 import { toast } from 'react-toastify';
 import './PackDetailPage.css'; // Import CSS for animations
 
