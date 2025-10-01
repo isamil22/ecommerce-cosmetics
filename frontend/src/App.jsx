@@ -42,6 +42,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import FacebookPixel from './components/FacebookPixel.jsx';
 import AnalyticsTracker from './components/AnalyticsTracker.jsx';
 import AnnouncementBar from './components/AnnouncementBar.jsx';
+import FloatingActionButton from './components/FloatingActionButton.jsx';
 import AdminAnnouncementPage from './pages/admin/AdminAnnouncementPage.jsx';
 import AdminCountdownPage from './pages/admin/AdminCountdownPage.jsx';
 import AdminCustomPackForm from './pages/admin/AdminCustomPackForm';
@@ -184,6 +185,9 @@ function App() {
                     </Routes>
                 </main>
                 <Footer />
+                
+                {/* Floating Action Button */}
+                <FloatingActionButton cartCount={cartCount} />
             </div>
         </BrowserRouter>
     );

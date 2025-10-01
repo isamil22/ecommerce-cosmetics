@@ -10,6 +10,499 @@ html {
 
 body {
     overflow-x: hidden; /* Prevents horizontal scrollbar from animations */
+    line-height: 1.6;
+}
+
+/* --- ATTENTION-GRABBING ANIMATIONS --- */
+@keyframes attention-pulse {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7);
+    }
+    50% { 
+        transform: scale(1.05); 
+        box-shadow: 0 0 0 10px rgba(236, 72, 153, 0);
+    }
+}
+
+@keyframes slide-in-right {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(236, 72, 153, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.8), 0 0 30px rgba(236, 72, 153, 0.6);
+    }
+}
+
+@keyframes urgent-bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes flash {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0.3;
+    }
+}
+
+.animate-attention-pulse {
+    animation: attention-pulse 2s infinite;
+}
+
+.animate-slide-in-right {
+    animation: slide-in-right 0.5s ease-out;
+}
+
+.animate-shimmer {
+    animation: shimmer 2s infinite;
+}
+
+.animate-glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+.animate-urgent-bounce {
+    animation: urgent-bounce 1s infinite;
+}
+
+.animate-flash {
+    animation: flash 1s infinite;
+}
+
+/* --- Enhanced Container System --- */
+.container-fluid {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.container-sm {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.container-md {
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.container-lg {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.container-xl {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.container-2xl {
+    max-width: 1536px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* --- Enhanced Spacing System --- */
+.section-spacing {
+    padding: 2rem 0;
+}
+
+.section-spacing-lg {
+    padding: 4rem 0;
+}
+
+.section-spacing-xl {
+    padding: 6rem 0;
+}
+
+.content-spacing {
+    margin-bottom: 1.5rem;
+}
+
+.content-spacing-lg {
+    margin-bottom: 3rem;
+}
+
+.content-spacing-xl {
+    margin-bottom: 4rem;
+}
+
+/* --- Enhanced Grid System --- */
+.grid-responsive {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-responsive-sm {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-responsive-lg {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+/* --- Enhanced Card System --- */
+.card-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Enhanced Button System --- */
+.btn-container {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Enhanced Typography Hierarchy */
+.text-hierarchy-1 {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+}
+
+.text-hierarchy-2 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+}
+
+.text-hierarchy-3 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.text-hierarchy-4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.text-body-large {
+    font-size: 1.125rem;
+    line-height: 1.7;
+}
+
+.text-body {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.text-body-small {
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Enhanced Visual Spacing */
+.visual-spacing-xs {
+    margin-bottom: 0.5rem;
+}
+
+.visual-spacing-sm {
+    margin-bottom: 1rem;
+}
+
+.visual-spacing-md {
+    margin-bottom: 1.5rem;
+}
+
+.visual-spacing-lg {
+    margin-bottom: 2rem;
+}
+
+.visual-spacing-xl {
+    margin-bottom: 3rem;
+}
+
+.visual-spacing-2xl {
+    margin-bottom: 4rem;
+}
+
+/* Priority-Based Layout Utilities */
+.compact-section {
+    max-width: 28rem;
+    margin: 0 auto;
+}
+
+.compact-card {
+    max-width: 24rem;
+    margin: 0 auto;
+}
+
+.compact-button-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.compact-info-panel {
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.compact-reviews-section {
+    max-width: 36rem;
+    margin: 0 auto;
+}
+
+/* Element Priority Sizing */
+.priority-high {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.priority-medium {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.priority-low {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Optimized Button Hierarchy */
+.btn-primary-cta {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    transition: all 0.2s ease;
+}
+
+.btn-primary-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+}
+
+.btn-secondary-cta {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.5);
+}
+
+/* Optimized Form Elements */
+.form-input-optimized {
+    height: 2.25rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.form-input-optimized:focus {
+    border-color: #ec4899;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    outline: none;
+}
+
+/* Optimized Spacing System */
+.spacing-optimized-xs { margin-bottom: 0.25rem; }
+.spacing-optimized-sm { margin-bottom: 0.5rem; }
+.spacing-optimized-md { margin-bottom: 1rem; }
+.spacing-optimized-lg { margin-bottom: 1.5rem; }
+.spacing-optimized-xl { margin-bottom: 2rem; }
+
+/* Mobile Responsive Adjustments for Compact Layout */
+@media (max-width: 768px) {
+    .compact-section {
+        max-width: 100%;
+        margin: 0 0.5rem;
+    }
+    
+    .compact-card {
+        max-width: 100%;
+        margin: 0 0.5rem;
+    }
+    
+    .compact-info-panel {
+        max-width: 100%;
+        margin: 0 0.5rem;
+        padding: 0.75rem;
+    }
+    
+    .compact-reviews-section {
+        max-width: 100%;
+        margin: 0 0.5rem;
+    }
+    
+    .compact-grid-2 {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+    }
+    
+    .compact-grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
+    }
+    
+    .compact-flex-row {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+}
+
+/* Professional Element Sizing */
+.professional-button {
+    min-height: 2.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.professional-input {
+    height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+}
+
+.professional-select {
+    height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+}
+
+/* Compact Grid Layouts */
+.compact-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    max-width: 24rem;
+    margin: 0 auto;
+}
+
+.compact-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    max-width: 20rem;
+    margin: 0 auto;
+}
+
+.compact-flex-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(209, 213, 219, 0.5);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -674,6 +1167,54 @@ kbd {
 
 /* Responsive Enhancements */
 @media (max-width: 768px) {
+    .container-xl, .container-lg, .container-md, .container-sm {
+        padding: 0 1rem;
+    }
+    
+    .section-spacing {
+        padding: 1.5rem 0;
+    }
+    
+    .section-spacing-lg {
+        padding: 2rem 0;
+    }
+    
+    .section-spacing-xl {
+        padding: 3rem 0;
+    }
+    
+    .grid-responsive {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    
+    .grid-responsive-sm {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .grid-responsive-lg {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+    
+    .card-container {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+    
+    .btn-container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+    
     .search-container {
         padding: 1rem;
     }
@@ -694,5 +1235,90 @@ kbd {
     .pagination-btn {
         padding: 0.5rem 1rem;
         font-size: 0.875rem;
+    }
+    
+    /* Enhanced mobile typography */
+    h1 {
+        font-size: 2rem !important;
+        line-height: 1.2;
+    }
+    
+    h2 {
+        font-size: 1.75rem !important;
+        line-height: 1.3;
+    }
+    
+    h3 {
+        font-size: 1.5rem !important;
+        line-height: 1.4;
+    }
+    
+    /* Touch-friendly elements */
+    .btn-primary, .btn-secondary {
+        min-height: 48px;
+        min-width: 48px;
+    }
+    
+    /* Mobile-specific spacing */
+    .mobile-spacing {
+        padding: 1rem 0;
+    }
+    
+    .mobile-text-center {
+        text-align: center;
+    }
+    
+    .mobile-full-width {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container-xl, .container-lg, .container-md, .container-sm {
+        padding: 0 0.75rem;
+    }
+    
+    .section-spacing {
+        padding: 1rem 0;
+    }
+    
+    .section-spacing-lg {
+        padding: 1.5rem 0;
+    }
+    
+    .section-spacing-xl {
+        padding: 2rem 0;
+    }
+    
+    .grid-responsive {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .grid-responsive-sm {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .grid-responsive-lg {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .card-container {
+        padding: 0.75rem;
+        margin: 0.25rem;
+    }
+    
+    h1 {
+        font-size: 1.75rem !important;
+    }
+    
+    h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    h3 {
+        font-size: 1.25rem !important;
     }
 }

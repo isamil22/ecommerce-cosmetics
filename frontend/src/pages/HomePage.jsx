@@ -7,6 +7,7 @@ import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
 import EnhancedCountdown from '../components/EnhancedCountdown';
 import PurchaseNotifications from '../components/PurchaseNotifications';
+import LiveNotifications from '../components/LiveNotifications';
 import { toast } from 'react-toastify';
 
 const HomePage = () => {
@@ -77,14 +78,14 @@ const HomePage = () => {
     const LoadingSkeleton = () => (
         <div className="min-h-screen">
             {/* Hero Skeleton */}
-            <div className="container mx-auto px-4 mt-8 mb-8">
-                <div className="bg-gray-200 rounded-3xl h-96 animate-skeleton-pulse"></div>
+            <div className="container-xl section-spacing">
+                <div className="bg-gray-200 rounded-3xl h-96 animate-skeleton-pulse max-w-6xl mx-auto"></div>
             </div>
             
             {/* Categories Skeleton */}
-            <div className="container mx-auto px-4 mb-20">
+            <div className="container-xl section-spacing-lg">
                 <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-8 animate-skeleton-pulse"></div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="grid-responsive-sm max-w-4xl mx-auto">
                     {[...Array(6)].map((_, i) => (
                         <div key={i} className="bg-gray-200 rounded-2xl h-40 animate-skeleton-pulse"></div>
                     ))}
@@ -92,9 +93,9 @@ const HomePage = () => {
             </div>
             
             {/* Products Skeleton */}
-            <div className="container mx-auto px-4 mb-20">
+            <div className="container-xl section-spacing-lg">
                 <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-8 animate-skeleton-pulse"></div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid-responsive max-w-6xl mx-auto">
                     {[...Array(8)].map((_, i) => (
                         <div key={i} className="bg-gray-200 rounded-2xl h-80 animate-skeleton-pulse"></div>
                     ))}
@@ -113,7 +114,7 @@ const HomePage = () => {
             <CountdownBar />
 
             {/* Enhanced Countdown Timer */}
-            <div className="container mx-auto px-4">
+            <div className="container-xl section-spacing">
                 <EnhancedCountdown 
                     endTime={new Date().getTime() + (24 * 60 * 60 * 1000)}
                     packName="عروض اليوم الخاصة / Today's Special Offers"
@@ -125,11 +126,11 @@ const HomePage = () => {
 
             {/* --- ENHANCED HERO SECTION --- */}
             {hero && (
-                <div className="relative mb-8">
-                <div
-                        className="relative rounded-3xl mx-4 sm:mx-6 lg:mx-8 p-8 sm:p-12 md:p-20 lg:p-28 text-center text-white overflow-hidden bg-cover bg-center shadow-2xl"
-                    style={{ backgroundImage: `url(${heroImageUrl})` }}
-                >
+                <div className="container-xl section-spacing">
+                    <div
+                        className="relative rounded-3xl p-8 sm:p-12 md:p-20 lg:p-28 text-center text-white overflow-hidden bg-cover bg-center shadow-2xl max-w-6xl mx-auto"
+                        style={{ backgroundImage: `url(${heroImageUrl})` }}
+                    >
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-br from-pink-600/80 via-purple-600/70 to-blue-600/60"></div>
                         
@@ -190,7 +191,7 @@ const HomePage = () => {
             )}
 
             {/* --- ENHANCED Shop By Category Section --- */}
-            <div className="container mx-auto px-4 mb-20">
+            <div className="container-xl section-spacing-lg">
                 <div className="text-center mb-12">
                     <div className="inline-block mb-3">
                         <span className="text-4xl">🛍️</span>
@@ -206,7 +207,7 @@ const HomePage = () => {
                     </p>
                 </div>
                 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+                <div className="grid-responsive-sm max-w-4xl mx-auto">
                     {categories.length > 0 ? categories.map((category, index) => (
                         <Link
                             key={category.id}
@@ -279,7 +280,7 @@ const HomePage = () => {
                         </h3>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
                         <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
                             <div className="text-5xl mb-4 text-center">🎯</div>
                             <h4 className="text-xl font-bold text-gray-800 mb-3 text-center">
@@ -337,7 +338,7 @@ const HomePage = () => {
             </div>
 
             {/* --- ENHANCED PRODUCTS SECTION WITH TABS --- */}
-            <div className="container mx-auto px-4 mb-20">
+            <div className="container-xl section-spacing-lg">
                 <div className="text-center mb-10">
                     <div className="inline-block mb-3">
                         <span className="text-4xl">⭐</span>
@@ -389,7 +390,7 @@ const HomePage = () => {
                             id="bestsellers-panel"
                             role="tabpanel"
                             aria-labelledby="bestsellers-tab"
-                            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 animate-fade-in"
+                            className="grid-responsive max-w-6xl mx-auto animate-fade-in"
                         >
                             {bestsellers.length > 0 ? (
                                 bestsellers.map((product, index) => (
@@ -416,7 +417,7 @@ const HomePage = () => {
                             id="newArrivals-panel"
                             role="tabpanel"
                             aria-labelledby="newArrivals-tab"
-                            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 animate-fade-in"
+                            className="grid-responsive max-w-6xl mx-auto animate-fade-in"
                         >
                             {newArrivals.length > 0 ? (
                                 newArrivals.map((product, index) => (
@@ -607,6 +608,9 @@ const HomePage = () => {
 
             {/* Purchase Notifications */}
             <PurchaseNotifications packName="منتجات المتجر / Store Products" />
+            
+            {/* Live Activity Notifications */}
+            <LiveNotifications />
         </div>
     );
 };

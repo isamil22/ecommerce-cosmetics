@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiService = axios.create({
-    baseURL: '/api',
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8082/api' : '/api',
 });
 
 // Add JWT token to every request if it exists

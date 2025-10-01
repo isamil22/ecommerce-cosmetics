@@ -4,20 +4,38 @@ import { getFrequentlyBoughtTogether, addToCart as apiAddToCart } from '../api/a
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 
-// Note the new 'isAuthenticated' prop here
 const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) => {
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (product) {
+        if (product && product.id) {
+            console.log('Fetching frequently bought together for product:', product.id, product.name);
+            setLoading(true);
             getFrequentlyBoughtTogether(product.id)
                 .then(response => {
-                    const productsData = response.data;
+                    console.log('API Response:', response);
+                    const productsData = response.data || [];
+                    console.log('Products data:', productsData);
+                    console.log('Product ID:', product.id);
                     setRelatedProducts(productsData);
-                    setSelectedProducts([product.id, ...productsData.map(p => p.id)]);
+                    // Initialize with all products selected by default
+                    const initialSelected = [product.id, ...productsData.map(p => p.id)];
+                    console.log('Initial selected products:', initialSelected);
+                    setSelectedProducts(initialSelected);
                 })
-                .catch(error => console.error('Failed to fetch frequently bought together products:', error));
+                .catch(error => {
+                    console.error('Failed to fetch frequently bought together products:', error);
+                    console.error('Error details:', error.response?.data || error.message);
+                    
+                    // Set empty array on error to prevent crashes
+                    setRelatedProducts([]);
+                    setSelectedProducts([product.id]);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
         }
     }, [product]);
 
@@ -30,8 +48,16 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
     };
 
     const handleAddAllToCart = async () => {
+        console.log('Add to cart button clicked!');
+        alert('Button clicked! Check console for details.');
+        console.log('Selected products:', selectedProducts);
+        console.log('Product:', product);
+        console.log('Related products:', relatedProducts);
+        
         const allProducts = [product, ...relatedProducts];
         const productsToAdd = allProducts.filter(p => selectedProducts.includes(p.id));
+
+        console.log('Products to add:', productsToAdd);
 
         if (productsToAdd.length === 0) {
             toast.warn('Please select at least one item.');
@@ -66,7 +92,7 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                 localStorage.setItem('cart', JSON.stringify(cart));
             }
 
-            toast.success('Selected items added to cart!');
+            toast.success(`${productsToAdd.length} item(s) added to cart!`);
             if (fetchCartCount) {
                 fetchCartCount();
             }
@@ -77,19 +103,57 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
         }
     };
 
+    console.log('Component render - loading:', loading, 'relatedProducts:', relatedProducts, 'product:', product);
+
+    if (loading) {
+        console.log('Rendering loading state');
+        return (
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
+                <div className="animate-pulse">
+                    <div className="h-6 bg-gray-200 rounded w-64 mb-4"></div>
+                    <div className="flex items-center gap-4">
+                        <div className="w-20 h-20 bg-gray-200 rounded"></div>
+                        <div className="w-20 h-20 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (relatedProducts.length === 0) {
-        return null;
+        console.log('No related products found, showing fallback message');
+        // For testing purposes, let's show a fallback message
+        return (
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
+                <h2 className="text-xl font-bold mb-6 text-gray-800">Frequently Bought Together</h2>
+                <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                    </div>
+                    <p className="text-gray-500 text-lg">No related products found for this item.</p>
+                    <p className="text-sm text-gray-400 mt-2">Related products will appear here when available.</p>
+                    <div className="mt-4 text-xs text-gray-300">
+                        <p>This feature requires products to have frequently bought together relationships configured in the admin panel.</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     const allDisplayProducts = [product, ...relatedProducts];
-    const totalPrice = allDisplayProducts
-        .filter(p => selectedProducts.includes(p.id))
-        .reduce((total, p) => total + p.price, 0);
+    const selectedProductsData = allDisplayProducts.filter(p => selectedProducts.includes(p.id));
+    const totalPrice = selectedProductsData.reduce((total, p) => total + (p.price || 0), 0);
+
+    console.log('Button state - selectedProducts.length:', selectedProducts.length);
+    console.log('Button disabled:', selectedProducts.length === 0);
 
     return (
-        <div className="mt-12 p-6 border rounded-lg bg-gray-50">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Frequently Bought Together</h2>
-            <div className="flex flex-wrap items-center gap-4">
+        <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
+            <h2 className="text-xl font-bold mb-6 text-gray-800">Frequently Bought Together</h2>
+            
+            <div className="flex flex-wrap items-center justify-center gap-6">
                 {allDisplayProducts.map((p, index) => (
                     <React.Fragment key={p.id}>
                         <div className="flex items-center">
@@ -98,28 +162,51 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                                 id={`product-${p.id}`}
                                 checked={selectedProducts.includes(p.id)}
                                 onChange={() => handleCheckboxChange(p.id)}
-                                className="h-5 w-5 rounded border-gray-300 text-pink-600 focus:ring-pink-500 cursor-pointer"
+                                className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer mr-3"
                             />
-                            <label htmlFor={`product-${p.id}`} className="ml-3 flex flex-col items-center cursor-pointer">
-                                <Link to={`/products/${p.id}`}>
-                                    <img src={p.images && p.images[0]} alt={p.name} className="w-24 h-24 object-cover rounded-md shadow-sm border border-gray-200" />
+                            <div className="flex flex-col items-center cursor-pointer">
+                                <Link to={`/products/${p.id}`} className="block">
+                                    <img 
+                                        src={p.images && p.images[0] ? p.images[0] : '/placeholder-product.jpg'} 
+                                        alt={p.name} 
+                                        className="w-20 h-20 object-cover rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+                                        onError={(e) => {
+                                            e.target.src = '/placeholder-product.jpg';
+                                        }}
+                                    />
                                 </Link>
-                                <span className="text-sm mt-2 text-gray-700">{p.name}</span>
-                                <span className="text-sm font-semibold text-gray-900">${p.price.toFixed(2)}</span>
-                            </label>
+                                <span className="text-sm mt-2 text-gray-700 text-center max-w-[100px] truncate">{p.name}</span>
+                                <span className="text-sm font-semibold text-gray-900">${(p.price || 0).toFixed(2)}</span>
+                            </div>
                         </div>
-                        {index < allDisplayProducts.length - 1 && <span className="text-2xl text-gray-400">+</span>}
+                        {index < allDisplayProducts.length - 1 && (
+                            <span className="text-2xl text-gray-400 font-bold">+</span>
+                        )}
                     </React.Fragment>
                 ))}
             </div>
-            <div className="mt-6 text-right">
-                <p className="text-xl font-bold text-gray-800">Total Price: <span className="text-pink-600">${totalPrice.toFixed(2)}</span></p>
-                <button
-                    onClick={handleAddAllToCart}
-                    className="mt-2 bg-pink-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-pink-700 transition-colors"
-                >
-                    Add Selected to Cart
-                </button>
+            
+            <div className="mt-6 flex items-center justify-between bg-gray-50 p-4 rounded-lg relative z-10">
+                <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Total Price:</span>
+                    <span className="text-xl font-bold text-pink-600">${totalPrice.toFixed(2)}</span>
+                </div>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => alert('Test button works!')}
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
+                    >
+                        Test Button
+                    </button>
+                    <button
+                        onClick={handleAddAllToCart}
+                        disabled={false}
+                        className="bg-pink-600 hover:bg-pink-700 disabled:bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg transition-colors disabled:cursor-not-allowed cursor-pointer relative z-20"
+                        style={{ pointerEvents: 'auto', position: 'relative' }}
+                    >
+                        Add Selected to Cart
+                    </button>
+                </div>
             </div>
         </div>
     );

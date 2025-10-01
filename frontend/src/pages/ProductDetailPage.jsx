@@ -14,8 +14,6 @@ import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
 import ReviewSummary from '../components/ReviewSummary';
 import Breadcrumbs from '../components/Breadcrumbs';
 import PurchasePopup from '../components/PurchasePopup';
-import OrderUrgencyTimer from '../components/OrderUrgencyTimer';
-import ShippingThresholdIndicator from '../components/ShippingThresholdIndicator';
 import EnhancedCountdown from '../components/EnhancedCountdown';
 import LiveVisitorCounter from '../components/LiveVisitorCounter';
 import PurchaseNotifications from '../components/PurchaseNotifications';
@@ -273,7 +271,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full -translate-y-48 translate-x-48 opacity-30 animate-pulse"></div>
                 <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-200 to-pink-200 rounded-full translate-y-40 -translate-x-40 opacity-30 animate-pulse" style={{animationDelay: '1s'}}></div>
                 
-                <div className="relative z-10 container mx-auto p-4 pt-10">
+                <div className="relative z-10 container-xl section-spacing">
                     <Breadcrumbs categoryId={product.categoryId} categoryName={product.categoryName} productName={product.name} />
                     <CountdownBar />
                     
@@ -286,7 +284,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         }}
                     />
                     
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 content-spacing-lg">
                 {/* Enhanced Image Gallery */}
                 <div className="space-y-6">
                     {/* Main Product Image with Enhanced Styling */}
@@ -313,7 +311,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
 
                         {/* Main Image Container */}
-                        <div className="relative overflow-hidden rounded-2xl shadow-2xl bg-white p-4">
+                        <div className="relative overflow-hidden rounded-2xl shadow-2xl bg-white p-4 max-w-2xl mx-auto">
                             {selectedImage && selectedImage.includes('youtube.com/embed') ? (
                                 <div className="aspect-w-16 aspect-h-9 bg-black rounded-xl overflow-hidden">
                                     <iframe src={selectedImage} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title="Product Video" className="w-full h-full" style={{ minHeight: '500px' }}></iframe>
@@ -374,24 +372,24 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     </div>
                 </div>
 
-                {/* Enhanced Product Details */}
-                <div className="space-y-8">
-                    {/* Product Header with Premium Styling */}
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20">
-                        {/* Product Title with Enhanced Typography */}
-                        <div className="mb-6">
-                            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-4 leading-tight">
+                    {/* Optimized Product Details - Priority Layout */}
+                <div className="space-y-5 max-w-2xl mx-auto lg:max-w-none">
+                    {/* HIGH PRIORITY: Product Header - Most Important */}
+                    <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-200">
+                        {/* Product Title - Highest Priority */}
+                        <div className="mb-5">
+                            <h1 className="text-3xl lg:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-3 leading-tight">
                                 {product.name}
                             </h1>
                             
-                            {/* Enhanced Price Display */}
-                            <div className="flex items-center gap-4 mb-4">
+                            {/* Price Display - High Priority */}
+                            <div className="flex items-center gap-3 mb-4">
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-black text-pink-600">${displayPrice}</span>
+                                    <span className="text-3xl lg:text-4xl font-black text-pink-600">${displayPrice}</span>
                                     {oldPrice > displayPrice && (
                                         <div className="flex flex-col">
-                                            <span className="text-xl text-gray-400 line-through">${oldPrice}</span>
-                                            <span className="text-sm font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                            <span className="text-lg text-gray-400 line-through">${oldPrice}</span>
+                                            <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
                                                 Save ${(oldPrice - displayPrice).toFixed(2)}
                                             </span>
                                         </div>
@@ -399,9 +397,9 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                 </div>
                             </div>
                             
-                            {/* Size/Unit Info with Enhanced Styling */}
+                            {/* Size/Unit Info - Medium Priority */}
                             {product.size && product.unit && (
-                                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-xl border border-blue-200">
+                                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded-lg border border-blue-200">
                                     <p className="text-sm text-gray-600">
                                         <span className="font-semibold">Price per {product.unit}:</span> ${(displayPrice / product.size).toFixed(2)}
                                     </p>
@@ -409,51 +407,68 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                             )}
                         </div>
 
-                        {/* Enhanced Rating and Reviews */}
-                        <div className="mb-6">
-                            <div className="flex items-center gap-4 mb-3">
-                                <div className="flex items-center gap-2">
-                                    {renderStars(averageRating)}
-                                    <span className="text-lg font-bold text-gray-800">{averageRating.toFixed(1)}</span>
+                        {/* MEDIUM PRIORITY: Rating and Reviews - Condensed */}
+                        <div className="mb-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-2">
+                                        {renderStars(averageRating)}
+                                        <span className="text-lg font-bold text-gray-800">{averageRating.toFixed(1)}</span>
+                                    </div>
+                                    <div className="h-5 w-px bg-gray-300"></div>
+                                    <span className="text-sm text-gray-600">
+                                        ({product.comments?.length || 0} reviews)
+                                    </span>
                                 </div>
-                                <div className="h-6 w-px bg-gray-300"></div>
-                                <span className="text-sm text-gray-600">
-                                    {product.comments?.length || 0} reviews
-                                </span>
-                            </div>
-                            <ReviewSummary comments={product.comments} />
-                        </div>
-
-                        {/* Enhanced Visitor Counters */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-xl border border-green-200">
-                                <VisitorCounter />
-                            </div>
-                            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200">
-                                <LiveVisitorCounter packId={id} />
+                                <div className="text-right">
+                                    <ReviewSummary comments={product.comments} />
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Enhanced Variants Selection */}
+                    {/* LOW PRIORITY: Activity Information Panel - Social Proof */}
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200 compact-info-panel">
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                                <span className="text-gray-700 truncate">مشاهد الآن / Viewing</span>
+                                <span className="font-bold text-purple-600">16</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <span className="text-gray-700 truncate">مشاهدة / Viewed</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                <span className="text-gray-700 truncate">أضاف اليوم / Added today</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span className="text-gray-700 truncate">نشاط مديت / Activity</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* HIGH PRIORITY: Product Options Selection */}
                     {product.hasVariants && (
-                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
-                            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                <span className="text-2xl">🎨</span>
+                        <div className="bg-white/95 backdrop-blur-sm rounded-xl p-5 shadow-lg border border-gray-200 compact-card">
+                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <span className="text-xl">🎨</span>
                                 <span>اختر الخيارات / Select Options</span>
                             </h3>
                             {product.variantTypes && product.variantTypes.map(vt => vt && (
-                                <div key={vt.name} className="mb-6">
-                                    <h4 className="text-lg font-semibold mb-3 text-gray-700">{vt.name || 'Option'}</h4>
-                                    <div className="flex flex-wrap gap-3">
+                                <div key={vt.name} className="mb-4">
+                                    <h4 className="text-sm font-semibold mb-3 text-gray-700 capitalize">{vt.name || 'Option'}</h4>
+                                    <div className="flex gap-2 flex-wrap">
                                         {vt.options && vt.options.map(option => option && (
                                             <button 
                                                 key={option} 
                                                 onClick={() => handleOptionSelect(vt.name, option)} 
-                                                className={`px-6 py-3 border-2 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                                                className={`px-4 py-2.5 border-2 rounded-lg font-semibold transition-all duration-200 text-sm min-w-[60px] ${
                                                     selectedOptions[vt.name] === option 
-                                                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white border-pink-500 shadow-lg' 
-                                                        : 'bg-white text-gray-700 border-gray-300 hover:border-pink-300 hover:bg-pink-50'
+                                                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white border-pink-500 shadow-md transform scale-105' 
+                                                        : 'bg-white text-gray-700 border-gray-300 hover:border-pink-300 hover:bg-pink-50 hover:shadow-sm'
                                                 }`}
                                             >
                                                 {option}
@@ -465,65 +480,54 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
                     )}
 
-                    {/* Enhanced Shipping and Urgency Indicators */}
-                    <div className="space-y-4">
-                        {isAuthenticated && cart && (
-                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
-                                <ShippingThresholdIndicator currentTotal={cart.totalPrice} />
-                            </div>
-                        )}
-                        <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-xl border border-orange-200">
-                            <OrderUrgencyTimer />
-                        </div>
-                    </div>
 
-                    {/* Enhanced Purchase Section */}
-                    <div ref={addToCartRef} className="bg-gradient-to-br from-white to-pink-50 p-8 rounded-2xl shadow-2xl border border-pink-200">
-                        {/* Stock Status with Enhanced Visual */}
-                        <div className="mb-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-4 h-4 rounded-full ${displayStock > 0 ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-                                    <p className={`font-bold text-lg ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {/* HIGHEST PRIORITY: Purchase Section */}
+                    <div ref={addToCartRef} className="bg-gradient-to-br from-white to-pink-50 p-6 rounded-xl shadow-xl border border-pink-200 compact-section">
+                        {/* Stock Status - Critical Information */}
+                        <div className="mb-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-3 h-3 rounded-full ${displayStock > 0 ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+                                    <p className={`font-bold text-base ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                                         {displayStock > 0 ? `${displayStock} متوفر / in stock` : 'غير متوفر / Out of Stock'}
                                     </p>
                                 </div>
                                 {displayStock > 0 && displayStock <= 10 && (
-                                    <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-full font-bold text-sm animate-bounce">
-                                        🔥 فقط {displayStock} متبقي! / Only {displayStock} left!
+                                    <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full font-bold text-xs animate-pulse">
+                                        🔥 {displayStock} left!
                                     </div>
                                 )}
                             </div>
                             
-                            {/* Stock Progress Bar */}
-                            {!isOutOfStock && product.quantity <= 20 && (
-                                <div className="space-y-2">
-                                    <div className="flex justify-between text-sm text-gray-600">
-                                        <span>المخزون / Stock Level</span>
-                                        <span className="font-semibold">{product.quantity} متبقي / left</span>
+                            {/* Stock Progress Bar - Only show if low stock */}
+                            {!isOutOfStock && displayStock <= 20 && displayStock > 0 && (
+                                <div className="space-y-1">
+                                    <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Stock Level</span>
+                                        <span className="font-semibold">{displayStock} left</span>
                                     </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-3">
+                                    <div className="w-full bg-gray-200 rounded-full h-2">
                                         <div 
-                                            className="bg-gradient-to-r from-orange-500 to-red-500 h-3 rounded-full transition-all duration-500"
-                                            style={{ width: `${Math.min((product.quantity / 20) * 100, 100)}%` }}
+                                            className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-500"
+                                            style={{ width: `${Math.min((displayStock / 20) * 100, 100)}%` }}
                                         ></div>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* Enhanced Quantity Selector */}
-                        <div className="mb-6">
-                            <label htmlFor="quantity" className="block text-lg font-semibold text-gray-700 mb-3">
+                        {/* Optimized Quantity Selector */}
+                        <div className="mb-5">
+                            <label htmlFor="quantity" className="block text-sm font-semibold text-gray-700 mb-2">
                                 الكمية / Quantity
                             </label>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 max-w-[140px]">
                                 <button 
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
+                                    className="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-md flex items-center justify-center transition-colors disabled:opacity-50"
                                     disabled={quantity <= 1}
                                 >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                                     </svg>
                                 </button>
@@ -532,58 +536,66 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                     type="number" 
                                     value={quantity} 
                                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10)))} 
-                                    className="w-20 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-xl focus:border-pink-500 focus:outline-none" 
+                                    className="w-16 h-9 text-center text-base font-bold border-2 border-gray-300 rounded-md focus:border-pink-500 focus:outline-none" 
                                     min="1" 
                                 />
                                 <button 
                                     onClick={() => setQuantity(quantity + 1)}
-                                    className="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
+                                    className="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-md flex items-center justify-center transition-colors"
                                 >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                     </svg>
                                 </button>
                             </div>
                         </div>
 
-                        {/* Enhanced Action Buttons */}
-                        <div className="space-y-4">
+                        {/* HIGHEST PRIORITY: Action Buttons */}
+                        <div className="space-y-2.5">
+                            {/* Primary CTA - Order Now */}
                             <button 
                                 onClick={handleOrderNow} 
-                                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 px-8 rounded-2xl hover:from-green-600 hover:to-emerald-700 disabled:bg-gray-400 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center gap-3" 
+                                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3.5 px-6 rounded-lg hover:from-green-600 hover:to-emerald-700 disabled:bg-gray-400 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02]" 
                                 disabled={displayStock <= 0}
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
-                                <span className="text-lg">اطلب الآن / Order Now</span>
+                                <span className="text-base">اطلب الآن / Order Now</span>
                             </button>
                             
+                            {/* Secondary CTA - Add to Cart */}
                             <button 
                                 onClick={handleAddToCart} 
-                                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-4 px-8 rounded-2xl hover:from-pink-600 hover:to-purple-700 disabled:bg-gray-400 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center gap-3" 
+                                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-pink-600 hover:to-purple-700 disabled:bg-gray-400 transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg" 
                                 disabled={displayStock <= 0}
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
-                                <span className="text-lg">
+                                <span className="text-base">
                                     {displayStock > 0 ? 'أضف للسلة / Add to Cart' : 'غير متوفر / Out of Stock'}
                                 </span>
                             </button>
                         </div>
                     </div>
 
-                    {/* Enhanced Trust Badges and Social Share */}
-                    <div className="space-y-6">
-                        <TrustBadges />
-                        <SocialShare productUrl={window.location.href} productName={product.name} />
+                    {/* MEDIUM PRIORITY: Trust Badges and Social Share */}
+                    <div className="space-y-4">
+                        <div className="compact-card">
+                            <TrustBadges />
+                        </div>
+                        <div className="compact-card">
+                            <SocialShare productUrl={window.location.href} productName={product.name} />
+                        </div>
                     </div>
                 </div>
             </div>
+            </div>
 
-            {/* Enhanced Description Section with Premium Styling */}
-            <div className="mt-16 bg-gradient-to-br from-white via-blue-50 to-purple-50 rounded-3xl p-8 shadow-2xl border border-white/50">
+            {/* MEDIUM PRIORITY: Description Section */}
+            <div className="container-xl section-spacing-lg">
+                <div className="bg-gradient-to-br from-white via-blue-50 to-purple-50 rounded-2xl p-6 shadow-lg border border-white/50 max-w-4xl mx-auto">
                 <div className="flex items-center mb-8">
                     <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mr-4">
                         <span className="text-3xl">📋</span>
@@ -646,10 +658,12 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
 
-            {/* Enhanced Reviews Section with Premium Styling */}
-            <div className="mt-16 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 rounded-3xl p-8 shadow-2xl border border-yellow-200/50">
+            {/* LOW PRIORITY: Reviews Section */}
+            <div className="container-xl section-spacing-lg">
+                <div className="bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 rounded-2xl p-6 shadow-lg border border-yellow-200/50 max-w-4xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center">
@@ -747,10 +761,12 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     </h3>
                     <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
                 </div>
+                </div>
             </div>
 
-            {/* Enhanced Shipping & Returns Section */}
-            <div className="mt-16 bg-gradient-to-br from-green-50 via-blue-50 to-indigo-50 rounded-3xl p-8 shadow-2xl border border-green-200/50">
+            {/* LOW PRIORITY: Shipping & Returns Section */}
+            <div className="container-xl section-spacing-lg">
+                <div className="bg-gradient-to-br from-green-50 via-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg border border-green-200/50 max-w-4xl mx-auto">
                 <div className="flex items-center mb-8">
                     <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-2xl flex items-center justify-center mr-4">
                         <span className="text-3xl">🚚</span>
@@ -812,15 +828,17 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
 
-            {/* Enhanced Frequently Bought Together */}
-            <div className="mt-16">
+            {/* MEDIUM PRIORITY: Frequently Bought Together */}
+            <div className="container-xl section-spacing-lg">
                 <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />
             </div>
             
-            {/* Enhanced Product Recommendations */}
-            <div className="mt-16 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-3xl p-8 shadow-2xl border border-purple-200/50">
+            {/* LOW PRIORITY: Product Recommendations */}
+            <div className="container-xl section-spacing-lg">
+                <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-2xl p-6 shadow-lg border border-purple-200/50 max-w-4xl mx-auto">
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
                         قد يعجبك أيضاً / You Might Also Like
@@ -828,10 +846,11 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     <p className="text-gray-600">منتجات مختارة خصيصاً لك / Products specially selected for you</p>
                 </div>
                 <ProductSlider title="" products={bestsellers} />
+                </div>
             </div>
             
             {/* Enhanced Purchase Notifications */}
-            <div className="mt-16">
+            <div className="container-xl section-spacing">
                 <PurchaseNotifications packName={product.name} />
             </div>
             
@@ -848,7 +867,8 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             {product.images && product.images.length > 0 && <PurchasePopup productName={product.name} productImage={product.images[0]} />}
             
             {/* Professional Footer CTA Section */}
-            <div className="mt-20 bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 rounded-3xl p-12 text-white relative overflow-hidden">
+            <div className="container-xl section-spacing-xl">
+                <div className="bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 rounded-3xl p-8 lg:p-12 text-white relative overflow-hidden max-w-6xl mx-auto">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full -translate-x-48 -translate-y-48"></div>
@@ -883,9 +903,9 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </button>
                     </div>
                 </div>
-            </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 };

@@ -8,8 +8,8 @@ const ProductSlider = ({ title, products }) => {
 
     return (
         <div className="py-12">
-            <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {title && <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>}
+            <div className="grid-responsive max-w-6xl mx-auto">
                 {products.map(product => (
                     <div key={product.id} className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
                         <Link to={`/product/${product.id}`} className="block">

@@ -30,7 +30,7 @@ const Footer = () => {
         <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 mt-20">
             {/* Trust Badges Section */}
             <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 py-8">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="container-xl">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center">
                         <div className="flex flex-col items-center space-y-2">
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@ const Footer = () => {
             </div>
 
             {/* Main Footer Content */}
-            <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div className="container-xl section-spacing-lg">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
                     {/* About Section */}
                     <div className="lg:col-span-2">
