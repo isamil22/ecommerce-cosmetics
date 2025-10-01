@@ -45,6 +45,18 @@ export const updateProduct = (id, formData) => {
     });
 };
 
+// Quick update function for simple field updates (JSON data)
+export const updateProductQuick = (id, productData) => {
+    return apiService({
+        method: 'put',
+        url: `/products/${id}`,
+        data: productData,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+};
+
 // --- UPDATED Cart Functions for Guest User Support ---
 
 export const addToCart = async (productId, quantity, productVariantId) => {

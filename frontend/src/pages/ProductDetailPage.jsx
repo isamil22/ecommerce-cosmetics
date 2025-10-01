@@ -61,10 +61,12 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             const productData = productResponse.data;
             setProduct(productData);
 
-            if (productData.hasVariants && productData.variantTypes.length > 0) {
+            if (productData.hasVariants && productData.variantTypes && productData.variantTypes.length > 0) {
                 const initialOptions = {};
                 productData.variantTypes.forEach(vt => {
-                    initialOptions[vt.name] = vt.options[0];
+                    if (vt && vt.name && vt.options && vt.options.length > 0) {
+                        initialOptions[vt.name] = vt.options[0];
+                    }
                 });
                 setSelectedOptions(initialOptions);
             }
@@ -178,7 +180,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 {[...Array(fullStars)].map((_, i) => <span key={`full-${i}`} className="text-yellow-400">&#9733;</span>)}
                 {halfStar && <span className="text-yellow-400">&#9734;</span>}
                 {[...Array(emptyStars)].map((_, i) => <span key={`empty-${i}`} className="text-gray-300">&#9733;</span>)}
-                <span className="ml-2 text-sm text-gray-600">({product.comments.length} reviews)</span>
+                <span className="ml-2 text-sm text-gray-600">({product.comments ? product.comments.length : 0} reviews)</span>
             </div>
         );
     };
@@ -202,6 +204,9 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const displayStock = activeVariant ? 
         (activeVariant.stock || 0) : 
         (product.quantity || 0);
+    
+    // Stock status
+    const isOutOfStock = displayStock <= 0;
 
     const accordionItems = [
         {
@@ -224,18 +229,18 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             title: `Reviews (${product.comments ? product.comments.length : 0})`,
             content: (
                 <div>
-                    {product.comments && product.comments.length > 0 ? (
-                        <div className="space-y-4">
-                            {product.comments.map(comment => (
+                            {product.comments && product.comments.length > 0 ? (
+                                <div className="space-y-4">
+                                    {product.comments.map(comment => comment && (
                                 <div key={comment.id} className="p-4 border rounded-lg">
-                                    <p className="font-semibold">{comment.userFullName}</p>
-                                    <p className="text-yellow-400">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</p>
-                                    <p className="text-gray-600 mt-2">{comment.content}</p>
+                                    <p className="font-semibold">{comment.userFullName || 'Anonymous'}</p>
+                                    <p className="text-yellow-400">{'★'.repeat(comment.score || 0)}{'☆'.repeat(5 - (comment.score || 0))}</p>
+                                    <p className="text-gray-600 mt-2">{comment.content || ''}</p>
                                     {comment.images && comment.images.length > 0 && (
                                         <div className="flex flex-wrap gap-2 mt-2">
-                                            {comment.images.map((img, index) => (
+                                            {comment.images.map((img, index) => img && (
                                                 <img key={index} src={img} alt={`Comment image ${index + 1}`} className="w-24 h-24 object-cover rounded-md border" />
-                                            ))}
+                                            )).filter(Boolean)}
                                         </div>
                                     )}
                                 </div>
@@ -337,7 +342,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </h3>
                         <div className="flex space-x-3 overflow-x-auto pb-2">
                             {product.images && product.images.map((img, index) =>
-                                img.includes('youtube.com/embed') ? (
+                                img && img.includes('youtube.com/embed') ? (
                                     <div 
                                         key={index} 
                                         onClick={() => setSelectedImage(img)} 
@@ -437,11 +442,11 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                 <span className="text-2xl">🎨</span>
                                 <span>اختر الخيارات / Select Options</span>
                             </h3>
-                            {product.variantTypes.map(vt => (
+                            {product.variantTypes && product.variantTypes.map(vt => vt && (
                                 <div key={vt.name} className="mb-6">
-                                    <h4 className="text-lg font-semibold mb-3 text-gray-700">{vt.name}</h4>
+                                    <h4 className="text-lg font-semibold mb-3 text-gray-700">{vt.name || 'Option'}</h4>
                                     <div className="flex flex-wrap gap-3">
-                                        {vt.options.map(option => (
+                                        {vt.options && vt.options.map(option => option && (
                                             <button 
                                                 key={option} 
                                                 onClick={() => handleOptionSelect(vt.name, option)} 
@@ -676,18 +681,18 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
                 {product.comments && product.comments.length > 0 ? (
                     <div className="space-y-6 mb-8">
-                        {product.comments.slice(0, 3).map(comment => (
+                        {product.comments && product.comments.slice(0, 3).map(comment => comment && (
                             <div key={comment.id} className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border-l-4 border-yellow-400 hover:shadow-xl transition-all duration-300">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-4">
                                         <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">
-                                            {comment.userFullName[0]}
+                                            {(comment.userFullName && comment.userFullName[0]) || 'A'}
                                         </div>
                                         <div>
-                                            <p className="font-bold text-gray-800 text-lg">{comment.userFullName}</p>
+                                            <p className="font-bold text-gray-800 text-lg">{comment.userFullName || 'Anonymous'}</p>
                                             <div className="flex items-center gap-2">
                                                 <div className="flex items-center">
-                                                    <span className="text-yellow-400 text-xl">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</span>
+                                                    <span className="text-yellow-400 text-xl">{'★'.repeat(comment.score || 0)}{'☆'.repeat(5 - (comment.score || 0))}</span>
                                                 </div>
                                                 <span className="text-sm font-semibold text-gray-600">تقييم {comment.score}/5</span>
                                             </div>
@@ -701,14 +706,14 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                 <p className="text-gray-700 leading-relaxed text-lg mb-4">{comment.content}</p>
                                 {comment.images && comment.images.length > 0 && (
                                     <div className="flex flex-wrap gap-3">
-                                        {comment.images.map((img, index) => (
+                                        {comment.images.map((img, index) => img && (
                                             <img 
                                                 key={index} 
                                                 src={img} 
                                                 alt={`Review image ${index + 1}`} 
                                                 className="w-24 h-24 object-cover rounded-xl border-2 border-yellow-200 hover:border-yellow-400 transition-all duration-300 cursor-pointer transform hover:scale-105" 
                                             />
-                                        ))}
+                                        )).filter(Boolean)}
                                     </div>
                                 )}
                             </div>
@@ -840,7 +845,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             />
             
             {/* Enhanced Purchase Popup */}
-            {product.images.length > 0 && <PurchasePopup productName={product.name} productImage={product.images[0]} />}
+            {product.images && product.images.length > 0 && <PurchasePopup productName={product.name} productImage={product.images[0]} />}
             
             {/* Professional Footer CTA Section */}
             <div className="mt-20 bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 rounded-3xl p-12 text-white relative overflow-hidden">
