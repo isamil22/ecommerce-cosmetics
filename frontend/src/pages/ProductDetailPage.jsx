@@ -433,28 +433,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         </div>
                     </div>
 
-                    {/* LOW PRIORITY: Activity Information Panel - Social Proof */}
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200 compact-info-panel">
-                        <div className="grid grid-cols-2 gap-3 text-xs">
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                                <span className="text-gray-700 truncate">مشاهد الآن / Viewing</span>
-                                <span className="font-bold text-purple-600">16</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                <span className="text-gray-700 truncate">مشاهدة / Viewed</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                <span className="text-gray-700 truncate">أضاف اليوم / Added today</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                <span className="text-gray-700 truncate">نشاط مديت / Activity</span>
-                            </div>
-                        </div>
-                    </div>
 
                     {/* HIGH PRIORITY: Product Options Selection */}
                     {product.hasVariants && (
