@@ -1,0 +1,117 @@
+{
+  "summary": {
+    "total": 15,
+    "passed": 13,
+    "failed": 1,
+    "skipped": 1,
+    "successRate": "86.7"
+  },
+  "tests": [
+    {
+      "test": "Enhanced API GET",
+      "status": "PASS",
+      "message": "API requires authentication (expected)",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.813Z"
+    },
+    {
+      "test": "Enhanced Database Table",
+      "status": "FAIL",
+      "message": "Enhanced table does not exist",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.980Z"
+    },
+    {
+      "test": "Enhanced Table Structure",
+      "status": "SKIP",
+      "message": "Cannot test structure without table",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.981Z"
+    },
+    {
+      "test": "Frontend File: frontend/src/pages/admin/EnhancedVisitorCounterSettingsPage.jsx",
+      "status": "PASS",
+      "message": "File exists",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.983Z"
+    },
+    {
+      "test": "Frontend File: frontend/src/components/EnhancedVisitorCounter.jsx",
+      "status": "PASS",
+      "message": "File exists",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.984Z"
+    },
+    {
+      "test": "Frontend File: frontend/src/api/enhancedVisitorCounterService.js",
+      "status": "PASS",
+      "message": "File exists",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.984Z"
+    },
+    {
+      "test": "Frontend Components",
+      "status": "PASS",
+      "message": "All frontend files present",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.984Z"
+    },
+    {
+      "test": "Backend File: demo/src/main/java/com/example/demo/model/EnhancedVisitorCounterSettings.java",
+      "status": "PASS",
+      "message": "File exists",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.984Z"
+    },
+    {
+      "test": "Backend File: demo/src/main/java/com/example/demo/repositories/EnhancedVisitorCounterSettingsRepository.java",
+      "status": "PASS",
+      "message": "File exists",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.985Z"
+    },
+    {
+      "test": "Backend File: demo/src/main/java/com/example/demo/service/EnhancedVisitorCounterSettingsService.java",
+      "status": "PASS",
+      "message": "File exists",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.985Z"
+    },
+    {
+      "test": "Backend File: demo/src/main/java/com/example/demo/controller/EnhancedVisitorCounterSettingsController.java",
+      "status": "PASS",
+      "message": "File exists",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.985Z"
+    },
+    {
+      "test": "Backend Components",
+      "status": "PASS",
+      "message": "All backend files present",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.985Z"
+    },
+    {
+      "test": "App.jsx Integration",
+      "status": "PASS",
+      "message": "Enhanced component imported",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.986Z"
+    },
+    {
+      "test": "App.jsx Route",
+      "status": "PASS",
+      "message": "Enhanced route configured",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.986Z"
+    },
+    {
+      "test": "Admin Sidebar Integration",
+      "status": "PASS",
+      "message": "Enhanced counter link added",
+      "data": null,
+      "timestamp": "2025-10-02T12:01:58.987Z"
+    }
+  ],
+  "timestamp": "2025-10-02T12:01:58.988Z"
+}

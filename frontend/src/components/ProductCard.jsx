@@ -26,7 +26,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
         : 0;
 
     // Stock status
-    const isLowStock = product.quantity > 0 && product.quantity <= 5;
+    const isLowStockStatus = product.quantity > 0 && product.quantity <= 5;
     const isOutOfStock = !product.quantity || product.quantity === 0;
 
     // Check if product is new (created within last 30 days)
@@ -125,7 +125,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                         🔥 خصم {discountPercent}% / {discountPercent}% OFF
                     </span>
                 )}
-                {isLowStock && !isOutOfStock && (
+                {isLowStockStatus && !isOutOfStock && (
                     <span className="bg-gradient-to-r from-orange-500 to-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                         ⚠️ {product.quantity} متبقي / Left
                     </span>

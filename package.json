@@ -1,0 +1,25 @@
+{
+  "name": "ecommerce-basic",
+  "version": "1.0.0",
+  "main": "add-sample-fbt-data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isamil22/ecommerce-basic.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/isamil22/ecommerce-basic/issues"
+  },
+  "homepage": "https://github.com/isamil22/ecommerce-basic#readme",
+  "description": "",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.1",
+    "puppeteer": "^24.22.3"
+  }
+}

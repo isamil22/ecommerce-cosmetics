@@ -1,0 +1,522 @@
+import React, { useState, useEffect } from 'react';
+import { getEnhancedSettings, saveEnhancedSettings } from '../../api/enhancedVisitorCounterService';
+import { toast } from 'react-toastify';
+import { 
+    FiUsers, FiEye, FiCalendar, FiActivity, 
+    FiSettings, FiSave, FiRefreshCw, FiEye as FiPreview,
+    FiGlobe, FiEdit, FiClock, FiToggleRight
+} from 'react-icons/fi';
+
+const EnhancedVisitorCounterSettingsPage = () => {
+    const [settings, setSettings] = useState({
+        // Current Viewers
+        currentViewersEnabled: true,
+        currentViewersMin: 5,
+        currentViewersMax: 25,
+        
+        // Total Views
+        totalViewsEnabled: true,
+        totalViewsMin: 100,
+        totalViewsMax: 500,
+        
+        // Added Today
+        addedTodayEnabled: true,
+        addedTodayMin: 1,
+        addedTodayMax: 10,
+        
+        // Activity
+        activityEnabled: true,
+        activityMin: 20,
+        activityMax: 80,
+        
+        // Display Settings
+        showBilingualText: true,
+        customTitle: 'Live Statistics',
+        backgroundColor: '#f3f4f6',
+        textColor: '#374151',
+        borderColor: '#d1d5db',
+        
+        // Animation Settings
+        enableAnimations: true,
+        animationSpeed: 3000,
+        enableFadeEffect: true,
+        
+        // Global Settings
+        globalEnabled: true
+    });
+
+    const [originalSettings, setOriginalSettings] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+    const [hasChanges, setHasChanges] = useState(false);
+    const [showPreview, setShowPreview] = useState(true);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const data = await getEnhancedSettings();
+                const newSettings = {
+                    currentViewersEnabled: data.currentViewersEnabled || true,
+                    currentViewersMin: data.currentViewersMin || 5,
+                    currentViewersMax: data.currentViewersMax || 25,
+                    totalViewsEnabled: data.totalViewsEnabled || true,
+                    totalViewsMin: data.totalViewsMin || 100,
+                    totalViewsMax: data.totalViewsMax || 500,
+                    addedTodayEnabled: data.addedTodayEnabled || true,
+                    addedTodayMin: data.addedTodayMin || 1,
+                    addedTodayMax: data.addedTodayMax || 10,
+                    activityEnabled: data.activityEnabled || true,
+                    activityMin: data.activityMin || 20,
+                    activityMax: data.activityMax || 80,
+                    showBilingualText: data.showBilingualText !== false,
+                    customTitle: data.customTitle || 'Live Statistics',
+                    backgroundColor: data.backgroundColor || '#f3f4f6',
+                    textColor: data.textColor || '#374151',
+                    borderColor: data.borderColor || '#d1d5db',
+                    enableAnimations: data.enableAnimations !== false,
+                    animationSpeed: data.animationSpeed || 3000,
+                    enableFadeEffect: data.enableFadeEffect !== false,
+                    globalEnabled: data.globalEnabled !== false
+                };
+                setSettings(newSettings);
+                setOriginalSettings(newSettings);
+            } catch (err) {
+                toast.error('Failed to load enhanced visitor counter settings.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchSettings();
+    }, []);
+
+    useEffect(() => {
+        const changed = JSON.stringify(settings) !== JSON.stringify(originalSettings);
+        setHasChanges(changed);
+    }, [settings, originalSettings]);
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        const newValue = type === 'checkbox' ? checked : 
+                        type === 'number' ? parseInt(value) || 0 : value;
+        
+        setSettings(prev => ({
+            ...prev,
+            [name]: newValue,
+        }));
+    };
+
+    const handleSaveSettings = async (e) => {
+        e.preventDefault();
+        
+        // Validation
+        if (settings.currentViewersMin >= settings.currentViewersMax) {
+            toast.error('Current viewers minimum must be less than maximum.');
+            return;
+        }
+        if (settings.totalViewsMin >= settings.totalViewsMax) {
+            toast.error('Total views minimum must be less than maximum.');
+            return;
+        }
+        if (settings.addedTodayMin >= settings.addedTodayMax) {
+            toast.error('Added today minimum must be less than maximum.');
+            return;
+        }
+        if (settings.activityMin >= settings.activityMax) {
+            toast.error('Activity minimum must be less than maximum.');
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            const savedSettings = await saveEnhancedSettings(settings);
+            setOriginalSettings(savedSettings);
+            setHasChanges(false);
+            toast.success('Enhanced visitor counter settings saved successfully!');
+        } catch (err) {
+            toast.error('Failed to save settings. You must be an admin.');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleReset = () => {
+        setSettings(originalSettings);
+        setHasChanges(false);
+        toast.info('Settings reset to original values.');
+    };
+
+    const generateRandomValue = (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="flex items-center space-x-2">
+                    <FiRefreshCw className="w-5 h-5 animate-spin text-pink-600" />
+                    <span className="text-gray-600">Loading enhanced visitor counter settings...</span>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-50 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">Enhanced Visitor Counter Management</h1>
+                    <p className="text-lg text-gray-600">Control every aspect of your visitor counter display</p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Main Settings Panel */}
+                    <div className="lg:col-span-2">
+                        <form onSubmit={handleSaveSettings} className="space-y-8">
+                            {/* Global Settings */}
+                            <div className="bg-white rounded-2xl shadow-xl p-6">
+                                <div className="flex items-center space-x-2 mb-6">
+                                    <FiSettings className="w-6 h-6 text-gray-500" />
+                                    <h2 className="text-2xl font-bold text-gray-900">Global Settings</h2>
+                                </div>
+                                
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <label className="flex items-center space-x-2">
+                                            <FiToggleRight className="w-5 h-5 text-gray-500" />
+                                            <span className="text-lg font-medium">Enable Visitor Counter System</span>
+                                        </label>
+                                        <input
+                                            type="checkbox"
+                                            name="globalEnabled"
+                                            checked={settings.globalEnabled}
+                                            onChange={handleChange}
+                                            className="h-6 w-11 rounded-full bg-gray-200 transition-colors focus:ring-2 focus:ring-pink-500"
+                                        />
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Custom Title</label>
+                                            <input
+                                                type="text"
+                                                name="customTitle"
+                                                value={settings.customTitle}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                                                placeholder="Live Statistics"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Animation Speed (ms)</label>
+                                            <input
+                                                type="number"
+                                                name="animationSpeed"
+                                                value={settings.animationSpeed}
+                                                onChange={handleChange}
+                                                min="1000"
+                                                max="10000"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Metric Settings */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Current Viewers */}
+                                <MetricSettingsCard
+                                    title="Current Viewers"
+                                    subtitle="مشاهد الآن / Viewing"
+                                    icon={<FiUsers className="w-6 h-6" />}
+                                    color="orange"
+                                    enabled={settings.currentViewersEnabled}
+                                    min={settings.currentViewersMin}
+                                    max={settings.currentViewersMax}
+                                    onToggle={(checked) => handleChange({ target: { name: 'currentViewersEnabled', type: 'checkbox', checked } })}
+                                    onMinChange={(value) => handleChange({ target: { name: 'currentViewersMin', type: 'number', value } })}
+                                    onMaxChange={(value) => handleChange({ target: { name: 'currentViewersMax', type: 'number', value } })}
+                                    previewValue={generateRandomValue(settings.currentViewersMin, settings.currentViewersMax)}
+                                />
+
+                                {/* Total Views */}
+                                <MetricSettingsCard
+                                    title="Total Views"
+                                    subtitle="مشاهدة / Viewed"
+                                    icon={<FiEye className="w-6 h-6" />}
+                                    color="blue"
+                                    enabled={settings.totalViewsEnabled}
+                                    min={settings.totalViewsMin}
+                                    max={settings.totalViewsMax}
+                                    onToggle={(checked) => handleChange({ target: { name: 'totalViewsEnabled', type: 'checkbox', checked } })}
+                                    onMinChange={(value) => handleChange({ target: { name: 'totalViewsMin', type: 'number', value } })}
+                                    onMaxChange={(value) => handleChange({ target: { name: 'totalViewsMax', type: 'number', value } })}
+                                    previewValue={generateRandomValue(settings.totalViewsMin, settings.totalViewsMax)}
+                                />
+
+                                {/* Added Today */}
+                                <MetricSettingsCard
+                                    title="Added Today"
+                                    subtitle="أضاف اليوم / Added today"
+                                    icon={<FiCalendar className="w-6 h-6" />}
+                                    color="yellow"
+                                    enabled={settings.addedTodayEnabled}
+                                    min={settings.addedTodayMin}
+                                    max={settings.addedTodayMax}
+                                    onToggle={(checked) => handleChange({ target: { name: 'addedTodayEnabled', type: 'checkbox', checked } })}
+                                    onMinChange={(value) => handleChange({ target: { name: 'addedTodayMin', type: 'number', value } })}
+                                    onMaxChange={(value) => handleChange({ target: { name: 'addedTodayMax', type: 'number', value } })}
+                                    previewValue={generateRandomValue(settings.addedTodayMin, settings.addedTodayMax)}
+                                />
+
+                                {/* Activity */}
+                                <MetricSettingsCard
+                                    title="Activity Level"
+                                    subtitle="نشاط مديت / Activity"
+                                    icon={<FiActivity className="w-6 h-6" />}
+                                    color="green"
+                                    enabled={settings.activityEnabled}
+                                    min={settings.activityMin}
+                                    max={settings.activityMax}
+                                    onToggle={(checked) => handleChange({ target: { name: 'activityEnabled', type: 'checkbox', checked } })}
+                                    onMinChange={(value) => handleChange({ target: { name: 'activityMin', type: 'number', value } })}
+                                    onMaxChange={(value) => handleChange({ target: { name: 'activityMax', type: 'number', value } })}
+                                    previewValue={generateRandomValue(settings.activityMin, settings.activityMax)}
+                                />
+                            </div>
+
+                            {/* Display Settings */}
+                            <div className="bg-white rounded-2xl shadow-xl p-6">
+                                <div className="flex items-center space-x-2 mb-6">
+                                    <FiEdit className="w-6 h-6 text-gray-500" />
+                                    <h2 className="text-2xl font-bold text-gray-900">Display Settings</h2>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+                                        <input
+                                            type="color"
+                                            name="backgroundColor"
+                                            value={settings.backgroundColor}
+                                            onChange={handleChange}
+                                            className="w-full h-12 border border-gray-300 rounded-lg cursor-pointer"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Text Color</label>
+                                        <input
+                                            type="color"
+                                            name="textColor"
+                                            value={settings.textColor}
+                                            onChange={handleChange}
+                                            className="w-full h-12 border border-gray-300 rounded-lg cursor-pointer"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Border Color</label>
+                                        <input
+                                            type="color"
+                                            name="borderColor"
+                                            value={settings.borderColor}
+                                            onChange={handleChange}
+                                            className="w-full h-12 border border-gray-300 rounded-lg cursor-pointer"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="bg-white rounded-2xl shadow-xl p-6">
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <button
+                                        type="submit"
+                                        disabled={!hasChanges || isSaving}
+                                        className={`flex-1 flex items-center justify-center space-x-2 py-3 px-6 rounded-xl font-semibold text-white transition-all ${
+                                            hasChanges && !isSaving
+                                                ? 'bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 shadow-lg hover:shadow-xl'
+                                                : 'bg-gray-300 cursor-not-allowed'
+                                        }`}
+                                    >
+                                        {isSaving ? (
+                                            <>
+                                                <FiRefreshCw className="w-5 h-5 animate-spin" />
+                                                <span>Saving...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FiSave className="w-5 h-5" />
+                                                <span>Save All Settings</span>
+                                            </>
+                                        )}
+                                    </button>
+                                    
+                                    {hasChanges && (
+                                        <button
+                                            type="button"
+                                            onClick={handleReset}
+                                            className="flex-1 flex items-center justify-center space-x-2 py-3 px-6 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all"
+                                        >
+                                            <FiRefreshCw className="w-5 h-5" />
+                                            <span>Reset Changes</span>
+                                        </button>
+                                    )}
+                                </div>
+
+                                {hasChanges && (
+                                    <div className="flex items-center space-x-2 text-orange-600 bg-orange-50 p-3 rounded-lg mt-4">
+                                        <FiSettings className="w-5 h-5" />
+                                        <span className="text-sm font-medium">You have unsaved changes</span>
+                                    </div>
+                                )}
+                            </div>
+                        </form>
+                    </div>
+
+                    {/* Preview Panel */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
+                            <div className="flex items-center space-x-2 mb-6">
+                                <FiPreview className="w-6 h-6 text-gray-500" />
+                                <h3 className="text-xl font-bold text-gray-900">Live Preview</h3>
+                                <button
+                                    onClick={() => setShowPreview(!showPreview)}
+                                    className="ml-auto text-sm text-pink-600 hover:text-pink-700"
+                                >
+                                    {showPreview ? 'Hide' : 'Show'}
+                                </button>
+                            </div>
+
+                            {showPreview && (
+                                <div 
+                                    className="rounded-xl p-4 border-2"
+                                    style={{
+                                        backgroundColor: settings.backgroundColor,
+                                        borderColor: settings.borderColor,
+                                        color: settings.textColor
+                                    }}
+                                >
+                                    <h4 className="text-lg font-semibold mb-4">{settings.customTitle}</h4>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {settings.currentViewersEnabled && (
+                                            <div className="flex items-center space-x-2">
+                                                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                                <span className="text-sm">
+                                                    مشاهد الآن / Viewing {generateRandomValue(settings.currentViewersMin, settings.currentViewersMax)}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {settings.totalViewsEnabled && (
+                                            <div className="flex items-center space-x-2">
+                                                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                                <span className="text-sm">
+                                                    مشاهدة / Viewed{' '}
+                                                    <span className="font-bold text-purple-600">{generateRandomValue(settings.totalViewsMin, settings.totalViewsMax)}</span>
+                                                </span>
+                                            </div>
+                                        )}
+                                        {settings.addedTodayEnabled && (
+                                            <div className="flex items-center space-x-2">
+                                                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                                <span className="text-sm">
+                                                    أضاف اليوم / Added today{' '}
+                                                    <span className="font-bold text-purple-600">{generateRandomValue(settings.addedTodayMin, settings.addedTodayMax)}</span>
+                                                </span>
+                                            </div>
+                                        )}
+                                        {settings.activityEnabled && (
+                                            <div className="flex items-center space-x-2">
+                                                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                                <span className="text-sm">
+                                                    نشاط مديت / Activity{' '}
+                                                    <span className="font-bold text-purple-600">{generateRandomValue(settings.activityMin, settings.activityMax)}</span>
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Metric Settings Card Component
+const MetricSettingsCard = ({ 
+    title, subtitle, icon, color, enabled, min, max, 
+    onToggle, onMinChange, onMaxChange, previewValue 
+}) => {
+    const colorClasses = {
+        orange: 'border-orange-200 bg-orange-50',
+        blue: 'border-blue-200 bg-blue-50',
+        yellow: 'border-yellow-200 bg-yellow-50',
+        green: 'border-green-200 bg-green-50'
+    };
+
+    const dotColors = {
+        orange: 'bg-orange-500',
+        blue: 'bg-blue-500',
+        yellow: 'bg-yellow-500',
+        green: 'bg-green-500'
+    };
+
+    return (
+        <div className={`bg-white rounded-xl shadow-lg p-6 border-2 ${colorClasses[color]}`}>
+            <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                    <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
+                        {icon}
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-gray-900">{title}</h3>
+                        <p className="text-sm text-gray-600">{subtitle}</p>
+                    </div>
+                </div>
+                <input
+                    type="checkbox"
+                    checked={enabled}
+                    onChange={(e) => onToggle(e.target.checked)}
+                    className="h-5 w-5 text-pink-600 rounded focus:ring-pink-500"
+                />
+            </div>
+
+            {enabled && (
+                <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Min</label>
+                            <input
+                                type="number"
+                                value={min}
+                                onChange={(e) => onMinChange(parseInt(e.target.value) || 0)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500"
+                                min="0"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Max</label>
+                            <input
+                                type="number"
+                                value={max}
+                                onChange={(e) => onMaxChange(parseInt(e.target.value) || 0)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500"
+                                min={min + 1}
+                            />
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 text-sm">
+                        <div className={`w-2 h-2 rounded-full ${dotColors[color]}`}></div>
+                        <span>Preview: {previewValue}</span>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default EnhancedVisitorCounterSettingsPage;

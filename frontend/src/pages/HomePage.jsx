@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard';
 import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
 import EnhancedCountdown from '../components/EnhancedCountdown';
+import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter';
 import PurchaseNotifications from '../components/PurchaseNotifications';
 import LiveNotifications from '../components/LiveNotifications';
 import { toast } from 'react-toastify';
@@ -122,6 +123,13 @@ const HomePage = () => {
                         toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
                     }}
                 />
+            </div>
+
+            {/* Enhanced Visitor Counter */}
+            <div className="container-xl section-spacing">
+                <div className="max-w-4xl mx-auto">
+                    <EnhancedVisitorCounter />
+                </div>
             </div>
 
             {/* --- ENHANCED HERO SECTION --- */}

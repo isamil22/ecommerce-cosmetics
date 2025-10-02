@@ -101,6 +101,10 @@ const AdminSidebar = () => {
                         <FiUsers className="w-5 h-5 mr-3" />
                         <span className="font-medium">Visitor Counter</span>
                     </NavLink>
+                    <NavLink to="/admin/enhanced-visitor-counter" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-200 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
+                        <FiUsers className="w-5 h-5 mr-3" />
+                        <span className="font-medium">Enhanced Counter</span>
+                    </NavLink>
                 </div>
 
                 {/* Settings */}

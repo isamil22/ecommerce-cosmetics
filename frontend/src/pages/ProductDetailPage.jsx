@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import CommentForm from '../components/CommentForm';
 import ProductSlider from '../components/ProductSlider';
 import VisitorCounter from '../components/VisitorCounter.jsx';
+import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
 import SocialShare from '../components/SocialShare';
@@ -405,6 +406,11 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                     </p>
                                 </div>
                             )}
+                            
+                            {/* Enhanced Visitor Counter */}
+                            <div className="mt-4">
+                                <EnhancedVisitorCounter />
+                            </div>
                         </div>
 
                         {/* MEDIUM PRIORITY: Rating and Reviews - Condensed */}

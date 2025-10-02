@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllProducts, getAllOrders, deleteProduct, getPendingReviews, getAllPacks, getAllCustomPacks, getAllCategories, getAllUsers } from '/src/api/apiService.js';
-import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiShoppingCart, FiUsers, FiPackage, FiStar, FiEye, FiEdit3, FiTrash2, FiPlus, FiArrowUpRight, FiBarChart, FiActivity, FiTarget } from 'react-icons/fi';
+import { getSettings } from '/src/api/visitorCountSettingService.js';
+import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiShoppingCart, FiUsers, FiPackage, FiStar, FiEye, FiEdit3, FiTrash2, FiPlus, FiArrowUpRight, FiBarChart, FiActivity, FiTarget, FiSettings } from 'react-icons/fi';
 
 const AdminDashboard = () => {
     const [products, setProducts] = useState([]);
@@ -11,6 +12,7 @@ const AdminDashboard = () => {
     const [customPacks, setCustomPacks] = useState([]);
     const [categories, setCategories] = useState([]);
     const [users, setUsers] = useState([]);
+    const [visitorCounterSettings, setVisitorCounterSettings] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -19,14 +21,15 @@ const AdminDashboard = () => {
             try {
                 setLoading(true);
                 // Fetch all dashboard data at the same time
-                const [productsResponse, ordersResponse, reviewsResponse, packsResponse, customPacksResponse, categoriesResponse, usersResponse] = await Promise.all([
+                const [productsResponse, ordersResponse, reviewsResponse, packsResponse, customPacksResponse, categoriesResponse, usersResponse, visitorCounterResponse] = await Promise.all([
                     getAllProducts(),
                     getAllOrders(),
                     getPendingReviews(),
                     getAllPacks(),
                     getAllCustomPacks(),
                     getAllCategories(),
-                    getAllUsers()
+                    getAllUsers(),
+                    getSettings().catch(() => null) // Don't fail if visitor counter settings fail
                 ]);
 
                 // Handle products data
@@ -39,6 +42,7 @@ const AdminDashboard = () => {
                 setCustomPacks(customPacksResponse.data || []);
                 setCategories(categoriesResponse.data || []);
                 setUsers(usersResponse.data || []);
+                setVisitorCounterSettings(visitorCounterResponse || null);
             } catch (err) {
                 setError('Failed to fetch dashboard data.');
                 console.error(err);
@@ -211,7 +215,7 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Secondary Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
                         <div className="flex items-center justify-between">
                             <div>
@@ -254,6 +258,32 @@ const AdminDashboard = () => {
                         </div>
                         <Link to="/admin/categories" className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center mt-2">
                             Manage Categories <FiArrowUpRight className="w-4 h-4 ml-1" />
+                        </Link>
+                    </div>
+
+                    {/* Visitor Counter Status */}
+                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">Visitor Counter</p>
+                                <div className="flex items-center mt-1">
+                                    <div className={`w-3 h-3 rounded-full mr-2 ${visitorCounterSettings?.enabled ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    <p className="text-gray-900 text-lg font-bold">
+                                        {visitorCounterSettings?.enabled ? 'Active' : 'Disabled'}
+                                    </p>
+                                </div>
+                                {visitorCounterSettings?.enabled && (
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Range: {visitorCounterSettings.min}-{visitorCounterSettings.max}
+                                    </p>
+                                )}
+                            </div>
+                            <div className={`rounded-full p-3 ${visitorCounterSettings?.enabled ? 'bg-green-100' : 'bg-red-100'}`}>
+                                <FiEye className={`w-6 h-6 ${visitorCounterSettings?.enabled ? 'text-green-600' : 'text-red-600'}`} />
+                            </div>
+                        </div>
+                        <Link to="/admin/vistorcountsetting" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2">
+                            Configure Settings <FiArrowUpRight className="w-4 h-4 ml-1" />
                         </Link>
                     </div>
                 </div>

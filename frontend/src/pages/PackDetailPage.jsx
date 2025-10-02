@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getPackById, addToCart as apiAddToCart } from '../api/apiService';
 import Loader from '../components/Loader';
 import VisitorCounter from '../components/VisitorCounter.jsx';
+import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import { toast } from 'react-toastify';
 import CommentForm from '../components/CommentForm';
@@ -677,6 +678,9 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                     </p>
                                 </div>
                                 <VisitorCounter />
+                                
+                                {/* Enhanced Visitor Counter */}
+                                <EnhancedVisitorCounter />
                                 
                                 {/* Live Visitor Counter */}
                                 <LiveVisitorCounter packId={id} />
