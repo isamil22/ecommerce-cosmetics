@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getEnhancedSettings } from '../api/enhancedVisitorCounterService';
+import { 
+    FiUsers, FiEye, FiCalendar, FiActivity, 
+    FiTrendingUp, FiClock, FiZap, FiGlobe 
+} from 'react-icons/fi';
 
 const EnhancedVisitorCounter = () => {
     const [settings, setSettings] = useState(null);
@@ -99,93 +103,141 @@ const EnhancedVisitorCounter = () => {
 
     return (
         <div 
-            className={`rounded-xl p-4 border-2 transition-all duration-500 ${settings.enableFadeEffect ? 'opacity-100' : ''}`}
+            className={`rounded-2xl p-6 border-2 shadow-lg transition-all duration-500 hover:shadow-xl ${settings.enableFadeEffect ? 'opacity-100' : ''}`}
             style={containerStyle}
         >
             {settings.customTitle && (
-                <h4 className="text-lg font-semibold mb-4 text-center">{settings.customTitle}</h4>
+                <div className="text-center mb-6">
+                    <h4 className="text-xl font-bold mb-2 flex items-center justify-center space-x-2">
+                        <FiGlobe className="w-6 h-6 text-blue-600" />
+                        <span>{settings.customTitle}</span>
+                    </h4>
+                    <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto"></div>
+                </div>
             )}
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Current Viewers */}
                 {settings.currentViewersEnabled && (
-                    <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-orange-500 rounded-full flex-shrink-0"></div>
-                        <div className="text-sm">
-                            {settings.showBilingualText ? (
-                                <span>
-                                    مشاهد الآن / Viewing{' '}
-                                    <span className="font-bold text-purple-600">{metrics.currentViewers}</span>
-                                </span>
-                            ) : (
-                                <span>
-                                    Viewing{' '}
-                                    <span className="font-bold text-purple-600">{metrics.currentViewers}</span>
-                                </span>
-                            )}
-                        </div>
-                    </div>
+                    <MetricCard
+                        icon={<FiUsers className="w-5 h-5" />}
+                        title={settings.showBilingualText ? "مشاهد الآن / Viewing" : "Viewing"}
+                        value={metrics.currentViewers}
+                        color="orange"
+                        animation="pulse"
+                        description="People currently viewing"
+                    />
                 )}
 
                 {/* Total Views */}
                 {settings.totalViewsEnabled && (
-                    <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
-                        <div className="text-sm">
-                            {settings.showBilingualText ? (
-                                <span>
-                                    مشاهدة / Viewed{' '}
-                                    <span className="font-bold text-purple-600">{metrics.totalViews}</span>
-                                </span>
-                            ) : (
-                                <span>
-                                    Viewed{' '}
-                                    <span className="font-bold text-purple-600">{metrics.totalViews}</span>
-                                </span>
-                            )}
-                        </div>
-                    </div>
+                    <MetricCard
+                        icon={<FiEye className="w-5 h-5" />}
+                        title={settings.showBilingualText ? "مشاهدة / Viewed" : "Viewed"}
+                        value={metrics.totalViews}
+                        color="blue"
+                        animation="bounce"
+                        description="Total page views"
+                    />
                 )}
 
                 {/* Added Today */}
                 {settings.addedTodayEnabled && (
-                    <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-yellow-500 rounded-full flex-shrink-0"></div>
-                        <div className="text-sm">
-                            {settings.showBilingualText ? (
-                                <span>
-                                    أضاف اليوم / Added today{' '}
-                                    <span className="font-bold text-purple-600">{metrics.addedToday}</span>
-                                </span>
-                            ) : (
-                                <span>
-                                    Added today{' '}
-                                    <span className="font-bold text-purple-600">{metrics.addedToday}</span>
-                                </span>
-                            )}
-                        </div>
-                    </div>
+                    <MetricCard
+                        icon={<FiCalendar className="w-5 h-5" />}
+                        title={settings.showBilingualText ? "أضاف اليوم / Added today" : "Added today"}
+                        value={metrics.addedToday}
+                        color="yellow"
+                        animation="ping"
+                        description="New additions today"
+                    />
                 )}
 
                 {/* Activity */}
                 {settings.activityEnabled && (
-                    <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></div>
-                        <div className="text-sm">
-                            {settings.showBilingualText ? (
-                                <span>
-                                    نشاط مديت / Activity{' '}
-                                    <span className="font-bold text-purple-600">{metrics.activity}</span>
-                                </span>
-                            ) : (
-                                <span>
-                                    Activity{' '}
-                                    <span className="font-bold text-purple-600">{metrics.activity}</span>
-                                </span>
-                            )}
-                        </div>
-                    </div>
+                    <MetricCard
+                        icon={<FiActivity className="w-5 h-5" />}
+                        title={settings.showBilingualText ? "نشاط مديت / Activity" : "Activity"}
+                        value={metrics.activity}
+                        color="green"
+                        animation="pulse"
+                        description="Current activity level"
+                    />
                 )}
+            </div>
+        </div>
+    );
+};
+
+// MetricCard Component for individual metrics
+const MetricCard = ({ icon, title, value, color, animation, description }) => {
+    const colorClasses = {
+        orange: {
+            bg: 'bg-orange-50',
+            border: 'border-orange-200',
+            icon: 'text-orange-600',
+            dot: 'bg-orange-500',
+            value: 'text-orange-700'
+        },
+        blue: {
+            bg: 'bg-blue-50',
+            border: 'border-blue-200',
+            icon: 'text-blue-600',
+            dot: 'bg-blue-500',
+            value: 'text-blue-700'
+        },
+        yellow: {
+            bg: 'bg-yellow-50',
+            border: 'border-yellow-200',
+            icon: 'text-yellow-600',
+            dot: 'bg-yellow-500',
+            value: 'text-yellow-700'
+        },
+        green: {
+            bg: 'bg-green-50',
+            border: 'border-green-200',
+            icon: 'text-green-600',
+            dot: 'bg-green-500',
+            value: 'text-green-700'
+        }
+    };
+
+    const animationClasses = {
+        pulse: 'animate-pulse',
+        bounce: 'animate-bounce',
+        ping: 'animate-ping'
+    };
+
+    const colors = colorClasses[color] || colorClasses.blue;
+
+    return (
+        <div 
+            className={`${colors.bg} ${colors.border} border-2 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-md group`}
+            title={description}
+        >
+            <div className="flex items-center justify-between mb-2">
+                <div className={`p-2 rounded-lg ${colors.bg} ${colors.border} border`}>
+                    <div className={`${colors.icon} ${animationClasses[animation] || ''}`}>
+                        {icon}
+                    </div>
+                </div>
+                <div className={`w-3 h-3 ${colors.dot} rounded-full ${animationClasses[animation] || ''}`}></div>
+            </div>
+            
+            <div className="space-y-1">
+                <h5 className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
+                    {title}
+                </h5>
+                <div className="flex items-center space-x-2">
+                    <span className={`text-2xl font-bold ${colors.value} transition-all duration-500`}>
+                        {value}
+                    </span>
+                    <div className="flex space-x-1">
+                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`}></div>
+                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`} style={{ animationDelay: '0.2s' }}></div>
+                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`} style={{ animationDelay: '0.4s' }}></div>
+                    </div>
+                </div>
             </div>
         </div>
     );

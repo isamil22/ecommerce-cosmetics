@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { 
     FiUsers, FiEye, FiCalendar, FiActivity, 
     FiSettings, FiSave, FiRefreshCw, FiEye as FiPreview,
-    FiGlobe, FiEdit, FiClock, FiToggleRight
+    FiGlobe, FiEdit, FiClock, FiToggleRight, FiTrendingUp
 } from 'react-icons/fi';
 
 const EnhancedVisitorCounterSettingsPage = () => {
@@ -390,49 +390,60 @@ const EnhancedVisitorCounterSettingsPage = () => {
 
                             {showPreview && (
                                 <div 
-                                    className="rounded-xl p-4 border-2"
+                                    className="rounded-2xl p-6 border-2 shadow-lg"
                                     style={{
                                         backgroundColor: settings.backgroundColor,
                                         borderColor: settings.borderColor,
                                         color: settings.textColor
                                     }}
                                 >
-                                    <h4 className="text-lg font-semibold mb-4">{settings.customTitle}</h4>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="text-center mb-6">
+                                        <h4 className="text-xl font-bold mb-2 flex items-center justify-center space-x-2">
+                                            <FiGlobe className="w-6 h-6 text-blue-600" />
+                                            <span>{settings.customTitle}</span>
+                                        </h4>
+                                        <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto"></div>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {settings.currentViewersEnabled && (
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                                                <span className="text-sm">
-                                                    مشاهد الآن / Viewing {generateRandomValue(settings.currentViewersMin, settings.currentViewersMax)}
-                                                </span>
-                                            </div>
+                                            <PreviewMetricCard
+                                                icon={<FiUsers className="w-5 h-5" />}
+                                                title={settings.showBilingualText ? "مشاهد الآن / Viewing" : "Viewing"}
+                                                value={generateRandomValue(settings.currentViewersMin, settings.currentViewersMax)}
+                                                color="orange"
+                                                animation="pulse"
+                                                description="People currently viewing"
+                                            />
                                         )}
                                         {settings.totalViewsEnabled && (
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                                <span className="text-sm">
-                                                    مشاهدة / Viewed{' '}
-                                                    <span className="font-bold text-purple-600">{generateRandomValue(settings.totalViewsMin, settings.totalViewsMax)}</span>
-                                                </span>
-                                            </div>
+                                            <PreviewMetricCard
+                                                icon={<FiEye className="w-5 h-5" />}
+                                                title={settings.showBilingualText ? "مشاهدة / Viewed" : "Viewed"}
+                                                value={generateRandomValue(settings.totalViewsMin, settings.totalViewsMax)}
+                                                color="blue"
+                                                animation="bounce"
+                                                description="Total page views"
+                                            />
                                         )}
                                         {settings.addedTodayEnabled && (
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                                                <span className="text-sm">
-                                                    أضاف اليوم / Added today{' '}
-                                                    <span className="font-bold text-purple-600">{generateRandomValue(settings.addedTodayMin, settings.addedTodayMax)}</span>
-                                                </span>
-                                            </div>
+                                            <PreviewMetricCard
+                                                icon={<FiCalendar className="w-5 h-5" />}
+                                                title={settings.showBilingualText ? "أضاف اليوم / Added today" : "Added today"}
+                                                value={generateRandomValue(settings.addedTodayMin, settings.addedTodayMax)}
+                                                color="yellow"
+                                                animation="ping"
+                                                description="New additions today"
+                                            />
                                         )}
                                         {settings.activityEnabled && (
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                                <span className="text-sm">
-                                                    نشاط مديت / Activity{' '}
-                                                    <span className="font-bold text-purple-600">{generateRandomValue(settings.activityMin, settings.activityMax)}</span>
-                                                </span>
-                                            </div>
+                                            <PreviewMetricCard
+                                                icon={<FiActivity className="w-5 h-5" />}
+                                                title={settings.showBilingualText ? "نشاط مديت / Activity" : "Activity"}
+                                                value={generateRandomValue(settings.activityMin, settings.activityMax)}
+                                                color="green"
+                                                animation="pulse"
+                                                description="Current activity level"
+                                            />
                                         )}
                                     </div>
                                 </div>
@@ -515,6 +526,80 @@ const MetricSettingsCard = ({
                     </div>
                 </div>
             )}
+        </div>
+    );
+};
+
+// PreviewMetricCard Component for settings preview
+const PreviewMetricCard = ({ icon, title, value, color, animation, description }) => {
+    const colorClasses = {
+        orange: {
+            bg: 'bg-orange-50',
+            border: 'border-orange-200',
+            icon: 'text-orange-600',
+            dot: 'bg-orange-500',
+            value: 'text-orange-700'
+        },
+        blue: {
+            bg: 'bg-blue-50',
+            border: 'border-blue-200',
+            icon: 'text-blue-600',
+            dot: 'bg-blue-500',
+            value: 'text-blue-700'
+        },
+        yellow: {
+            bg: 'bg-yellow-50',
+            border: 'border-yellow-200',
+            icon: 'text-yellow-600',
+            dot: 'bg-yellow-500',
+            value: 'text-yellow-700'
+        },
+        green: {
+            bg: 'bg-green-50',
+            border: 'border-green-200',
+            icon: 'text-green-600',
+            dot: 'bg-green-500',
+            value: 'text-green-700'
+        }
+    };
+
+    const animationClasses = {
+        pulse: 'animate-pulse',
+        bounce: 'animate-bounce',
+        ping: 'animate-ping'
+    };
+
+    const colors = colorClasses[color] || colorClasses.blue;
+
+    return (
+        <div 
+            className={`${colors.bg} ${colors.border} border-2 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-md group`}
+            title={description}
+        >
+            <div className="flex items-center justify-between mb-2">
+                <div className={`p-2 rounded-lg ${colors.bg} ${colors.border} border`}>
+                    <div className={`${colors.icon} ${animationClasses[animation] || ''}`}>
+                        {icon}
+                    </div>
+                </div>
+                <div className={`w-3 h-3 ${colors.dot} rounded-full ${animationClasses[animation] || ''}`}></div>
+            </div>
+            
+            <div className="space-y-1">
+                <h5 className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
+                    {title}
+                </h5>
+                <div className="flex items-center space-x-2">
+                    <span className={`text-2xl font-bold ${colors.value} transition-all duration-500`}>
+                        {value}
+                    </span>
+                    <div className="flex space-x-1">
+                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`}></div>
+                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`} style={{ animationDelay: '0.2s' }}></div>
+                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`} style={{ animationDelay: '0.4s' }}></div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
