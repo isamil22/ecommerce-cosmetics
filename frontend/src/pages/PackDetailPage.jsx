@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPackById, addToCart as apiAddToCart } from '../api/apiService';
 import Loader from '../components/Loader';
-import VisitorCounter from '../components/VisitorCounter.jsx';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import { toast } from 'react-toastify';
@@ -677,7 +676,6 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                         سعر مخفض! / Discounted Price!
                                     </p>
                                 </div>
-                                <VisitorCounter />
                                 
                                 {/* Enhanced Visitor Counter */}
                                 <EnhancedVisitorCounter />

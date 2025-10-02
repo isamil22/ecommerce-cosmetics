@@ -6,7 +6,6 @@ import { getProductById, addToCart, getBestsellers, getCart } from '../api/apiSe
 import Loader from '../components/Loader';
 import CommentForm from '../components/CommentForm';
 import ProductSlider from '../components/ProductSlider';
-import VisitorCounter from '../components/VisitorCounter.jsx';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
