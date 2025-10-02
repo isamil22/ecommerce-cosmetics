@@ -11,24 +11,17 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
 
     useEffect(() => {
         if (product && product.id) {
-            console.log('Fetching frequently bought together for product:', product.id, product.name);
             setLoading(true);
             getFrequentlyBoughtTogether(product.id)
                 .then(response => {
-                    console.log('API Response:', response);
                     const productsData = response.data || [];
-                    console.log('Products data:', productsData);
-                    console.log('Product ID:', product.id);
                     setRelatedProducts(productsData);
                     // Initialize with all products selected by default
                     const initialSelected = [product.id, ...productsData.map(p => p.id)];
-                    console.log('Initial selected products:', initialSelected);
                     setSelectedProducts(initialSelected);
                 })
                 .catch(error => {
-                    console.error('Failed to fetch frequently bought together products:', error);
-                    console.error('Error details:', error.response?.data || error.message);
-                    
+                    console.error('Error loading frequently bought together:', error);
                     // Set empty array on error to prevent crashes
                     setRelatedProducts([]);
                     setSelectedProducts([product.id]);
@@ -40,24 +33,20 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
     }, [product]);
 
     const handleCheckboxChange = (productId) => {
-        setSelectedProducts(prev =>
-            prev.includes(productId)
+        setSelectedProducts(prev => {
+            const isCurrentlySelected = prev.includes(productId);
+            const newSelection = isCurrentlySelected 
                 ? prev.filter(id => id !== productId)
-                : [...prev, productId]
-        );
+                : [...prev, productId];
+            
+            return newSelection;
+        });
     };
 
     const handleAddAllToCart = async () => {
-        console.log('Add to cart button clicked!');
-        alert('Button clicked! Check console for details.');
-        console.log('Selected products:', selectedProducts);
-        console.log('Product:', product);
-        console.log('Related products:', relatedProducts);
         
         const allProducts = [product, ...relatedProducts];
         const productsToAdd = allProducts.filter(p => selectedProducts.includes(p.id));
-
-        console.log('Products to add:', productsToAdd);
 
         if (productsToAdd.length === 0) {
             toast.warn('Please select at least one item.');
@@ -103,10 +92,7 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
         }
     };
 
-    console.log('Component render - loading:', loading, 'relatedProducts:', relatedProducts, 'product:', product);
-
     if (loading) {
-        console.log('Rendering loading state');
         return (
             <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
                 <div className="animate-pulse">
@@ -121,7 +107,6 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
     }
 
     if (relatedProducts.length === 0) {
-        console.log('No related products found, showing fallback message');
         // For testing purposes, let's show a fallback message
         return (
             <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
@@ -146,37 +131,100 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
     const selectedProductsData = allDisplayProducts.filter(p => selectedProducts.includes(p.id));
     const totalPrice = selectedProductsData.reduce((total, p) => total + (p.price || 0), 0);
 
-    console.log('Button state - selectedProducts.length:', selectedProducts.length);
-    console.log('Button disabled:', selectedProducts.length === 0);
 
     return (
         <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
             <h2 className="text-xl font-bold mb-6 text-gray-800">Frequently Bought Together</h2>
+            <p className="text-sm text-gray-600 mb-4 text-center">
+                💡 Click anywhere on any product card to toggle selection
+            </p>
             
             <div className="flex flex-wrap items-center justify-center gap-6">
                 {allDisplayProducts.map((p, index) => (
                     <React.Fragment key={p.id}>
-                        <div className="flex items-center">
-                            <input
-                                type="checkbox"
-                                id={`product-${p.id}`}
-                                checked={selectedProducts.includes(p.id)}
-                                onChange={() => handleCheckboxChange(p.id)}
-                                className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer mr-3"
-                            />
-                            <div className="flex flex-col items-center cursor-pointer">
-                                <Link to={`/products/${p.id}`} className="block">
-                                    <img 
-                                        src={p.images && p.images[0] ? p.images[0] : '/placeholder-product.jpg'} 
-                                        alt={p.name} 
-                                        className="w-20 h-20 object-cover rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
-                                        onError={(e) => {
-                                            e.target.src = '/placeholder-product.jpg';
-                                        }}
-                                    />
+                        <div 
+                            className={`flex items-center p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:scale-105 hover:shadow-lg ${
+                                selectedProducts.includes(p.id) 
+                                    ? 'border-blue-500 bg-blue-50 shadow-md' 
+                                    : 'border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-gray-400'
+                            }`}
+                            onClick={(e) => {
+                                // Only handle click if it's not on the checkbox area
+                                if (!e.target.closest('.flex.items-center.mr-3')) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleCheckboxChange(p.id);
+                                }
+                            }}
+                            title="Click anywhere on this card to toggle selection"
+                            style={{ userSelect: 'none', position: 'relative', zIndex: 10, minWidth: '140px' }}
+                        >
+                            <div className="flex items-center mr-3">
+                                <div
+                                    className={`h-6 w-6 rounded border-2 cursor-pointer transition-all duration-200 flex items-center justify-center ${
+                                        selectedProducts.includes(p.id)
+                                            ? 'bg-blue-600 border-blue-600 text-white'
+                                            : 'border-gray-300 bg-white hover:border-gray-400'
+                                    }`}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleCheckboxChange(p.id);
+                                    }}
+                                    style={{ 
+                                        pointerEvents: 'auto',
+                                        zIndex: 20,
+                                        position: 'relative'
+                                    }}
+                                >
+                                    {selectedProducts.includes(p.id) && (
+                                        <svg 
+                                            className="w-4 h-4" 
+                                            fill="currentColor" 
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path 
+                                                fillRule="evenodd" 
+                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
+                                                clipRule="evenodd" 
+                                            />
+                                        </svg>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <img 
+                                    src={p.images && p.images[0] ? p.images[0] : '/placeholder-product.jpg'} 
+                                    alt={p.name} 
+                                    className="w-20 h-20 object-cover rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+                                    onError={(e) => {
+                                        e.target.src = '/placeholder-product.jpg';
+                                    }}
+                                />
+                                <span className={`text-sm mt-2 text-center max-w-[100px] truncate ${
+                                    selectedProducts.includes(p.id) 
+                                        ? 'text-gray-700' 
+                                        : 'text-gray-500'
+                                }`}>
+                                    {p.name}
+                                    {p.id === product.id && (
+                                        <span className="block text-xs text-blue-600 font-medium">(Main Product)</span>
+                                    )}
+                                </span>
+                                <Link 
+                                    to={`/product/${p.id}`}
+                                    className="text-xs text-blue-600 hover:text-blue-800 underline mt-1 cursor-pointer"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                >
+                                    View Details
                                 </Link>
-                                <span className="text-sm mt-2 text-gray-700 text-center max-w-[100px] truncate">{p.name}</span>
-                                <span className="text-sm font-semibold text-gray-900">${(p.price || 0).toFixed(2)}</span>
+                                <span className={`text-sm font-semibold ${
+                                    selectedProducts.includes(p.id) 
+                                        ? 'text-gray-900' 
+                                        : 'text-gray-500'
+                                }`}>${(p.price || 0).toFixed(2)}</span>
                             </div>
                         </div>
                         {index < allDisplayProducts.length - 1 && (
@@ -193,18 +241,11 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                 </div>
                 <div className="flex gap-2">
                     <button
-                        onClick={() => alert('Test button works!')}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
-                    >
-                        Test Button
-                    </button>
-                    <button
                         onClick={handleAddAllToCart}
-                        disabled={false}
-                        className="bg-pink-600 hover:bg-pink-700 disabled:bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg transition-colors disabled:cursor-not-allowed cursor-pointer relative z-20"
-                        style={{ pointerEvents: 'auto', position: 'relative' }}
+                        disabled={selectedProducts.length === 0}
+                        className="bg-pink-600 hover:bg-pink-700 disabled:bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg transition-colors disabled:cursor-not-allowed"
                     >
-                        Add Selected to Cart
+                        Add Selected to Cart ({selectedProducts.length})
                     </button>
                 </div>
             </div>

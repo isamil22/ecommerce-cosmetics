@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Debug Test</title>
+    <style>
+        .product-card {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 10px;
+            width: 300px;
+            background: white;
+            position: relative;
+            z-index: 10;
+        }
+        .product-card.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .product-card.unselected {
+            border-color: #d1d5db;
+            background-color: #f9fafb;
+            opacity: 0.75;
+        }
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .product-name {
+            font-size: 14px;
+            margin: 8px 0 4px 0;
+            font-weight: 500;
+        }
+        .product-price {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .debug-info {
+            background: #f3f4f6;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Click Debug Test - Frequently Bought Together</h1>
+    <p>Test the click functionality by clicking on product cards or checkboxes:</p>
+    
+    <div id="debug-info" class="debug-info">
+        <div>Click events will be logged here...</div>
+    </div>
+    
+    <div id="products-container">
+        <div class="product-card selected" data-product-id="1" onclick="toggleProduct(1)">
+            <input type="checkbox" class="checkbox" checked onchange="toggleProduct(1)">
+            <div class="product-info">
+                <div class="product-name">Main Product</div>
+                <div class="product-price">$100.00</div>
+            </div>
+        </div>
+        
+        <div class="product-card selected" data-product-id="2" onclick="toggleProduct(2)">
+            <input type="checkbox" class="checkbox" checked onchange="toggleProduct(2)">
+            <div class="product-info">
+                <div class="product-name">Related Product 1</div>
+                <div class="product-price">$50.00</div>
+            </div>
+        </div>
+        
+        <div class="product-card selected" data-product-id="3" onclick="toggleProduct(3)">
+            <input type="checkbox" class="checkbox" checked onchange="toggleProduct(3)">
+            <div class="product-info">
+                <div class="product-name">Related Product 2</div>
+                <div class="product-price">$75.00</div>
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 20px; padding: 20px; background: #f9fafb; border-radius: 8px;">
+        <h3>Current State:</h3>
+        <p>Selected Products: <span id="selected-count">3</span></p>
+        <p>Total Price: $<span id="total-price">225.00</span></p>
+        <p>Selected IDs: <span id="selected-ids">[1, 2, 3]</span></p>
+    </div>
+
+    <script>
+        let selectedProducts = [1, 2, 3];
+        
+        function log(message) {
+            const debugInfo = document.getElementById('debug-info');
+            const timestamp = new Date().toLocaleTimeString();
+            debugInfo.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            debugInfo.scrollTop = debugInfo.scrollHeight;
+        }
+        
+        function toggleProduct(productId) {
+            log(`🎯 Click detected for product ${productId}`);
+            
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+            const checkbox = productCard.querySelector('.checkbox');
+            
+            const wasSelected = selectedProducts.includes(productId);
+            log(`📋 Product ${productId} was ${wasSelected ? 'SELECTED' : 'UNSELECTED'}`);
+            
+            if (selectedProducts.includes(productId)) {
+                // Remove from selection
+                selectedProducts = selectedProducts.filter(id => id !== productId);
+                productCard.classList.remove('selected');
+                productCard.classList.add('unselected');
+                checkbox.checked = false;
+                log(`❌ Product ${productId} UNCHECKED`);
+            } else {
+                // Add to selection
+                selectedProducts.push(productId);
+                productCard.classList.remove('unselected');
+                productCard.classList.add('selected');
+                checkbox.checked = true;
+                log(`✅ Product ${productId} CHECKED`);
+            }
+            
+            log(`📊 New selection: [${selectedProducts.join(', ')}]`);
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            document.getElementById('selected-count').textContent = selectedProducts.length;
+            document.getElementById('selected-ids').textContent = `[${selectedProducts.join(', ')}]`;
+            
+            const prices = {1: 100, 2: 50, 3: 75};
+            const total = selectedProducts.reduce((sum, id) => sum + prices[id], 0);
+            document.getElementById('total-price').textContent = total.toFixed(2);
+            
+            log(`💰 Total price updated: $${total.toFixed(2)}`);
+        }
+        
+        // Add event listeners for debugging
+        document.addEventListener('click', function(e) {
+            log(`🖱️ Global click detected on: ${e.target.tagName} (${e.target.className})`);
+        });
+        
+        // Initial log
+        log('🚀 Test page loaded. Click on any product card or checkbox to test.');
+    </script>
+</body>
+</html>
