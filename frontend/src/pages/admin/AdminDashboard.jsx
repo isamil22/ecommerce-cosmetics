@@ -422,6 +422,10 @@ const AdminDashboard = () => {
                                     <FiBarChart className="w-5 h-5 text-blue-600 mr-3" />
                                     <span className="text-blue-800 font-medium">Add Category</span>
                                 </Link>
+                                <Link to="/admin/review-form-settings" className="flex items-center p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
+                                    <FiSettings className="w-5 h-5 text-orange-600 mr-3" />
+                                    <span className="text-orange-800 font-medium">Review Form Settings</span>
+                                </Link>
                             </div>
                         </div>
                     </div>

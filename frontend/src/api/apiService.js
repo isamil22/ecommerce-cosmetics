@@ -551,4 +551,13 @@ export const deleteProductComment = (commentId) => {
     return apiService.delete(`/comments/product/${commentId}`);
 };
 
+// Settings API functions
+export const getSettings = () => {
+    return apiService.get('/settings');
+};
+
+export const saveSettings = (settings) => {
+    return apiService.post('/settings', settings);
+};
+
 export default apiService;

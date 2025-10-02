@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProductById, addToCart, getBestsellers, getCart } from '../api/apiService';
+import { getProductById, addToCart, getBestsellers, getCart, getSettings } from '../api/apiService';
 import Loader from '../components/Loader';
 import CommentForm from '../components/CommentForm';
 import ProductSlider from '../components/ProductSlider';
@@ -35,6 +35,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
     const addToCartRef = useRef(null);
     const [cart, setCart] = useState(null);
+    const [reviewFormEnabled, setReviewFormEnabled] = useState(true);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -51,13 +52,18 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         setLoading(true);
         window.scrollTo(0, 0);
         try {
-            const [productResponse, bestsellersResponse] = await Promise.all([
+            const [productResponse, bestsellersResponse, settingsResponse] = await Promise.all([
                 getProductById(id),
-                getBestsellers()
+                getBestsellers(),
+                getSettings()
             ]);
 
             const productData = productResponse.data;
             setProduct(productData);
+
+            // Set review form visibility based on admin settings
+            const settings = settingsResponse.data;
+            setReviewFormEnabled(settings.reviewFormEnabled === 'true');
 
             if (productData.hasVariants && productData.variantTypes && productData.variantTypes.length > 0) {
                 const initialOptions = {};
@@ -247,7 +253,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     ) : (
                         <p>No reviews yet.</p>
                     )}
-                    <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
+                    {reviewFormEnabled && <CommentForm productId={id} onCommentAdded={handleCommentAdded} />}
                 </div>
             )
         },
@@ -735,15 +741,17 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 )}
 
                 {/* Enhanced Comment Form */}
-                <div className="mt-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 border-2 border-dashed border-yellow-300">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
-                            <span className="text-xl">✍️</span>
-                        </div>
-                        <span>اكتب مراجعتك / Write Your Review</span>
-                    </h3>
-                    <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
-                </div>
+                {reviewFormEnabled && (
+                    <div className="mt-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 border-2 border-dashed border-yellow-300">
+                        <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                                <span className="text-xl">✍️</span>
+                            </div>
+                            <span>اكتب مراجعتك / Write Your Review</span>
+                        </h3>
+                        <CommentForm productId={id} onCommentAdded={handleCommentAdded} />
+                    </div>
+                )}
                 </div>
             </div>
 

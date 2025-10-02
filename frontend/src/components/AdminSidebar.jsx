@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell } from 'react-icons/fi';
+import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare } from 'react-icons/fi';
 
 const AdminSidebar = () => {
     const activeLinkClass = "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg";
@@ -100,6 +100,10 @@ const AdminSidebar = () => {
                     <NavLink to="/admin/enhanced-visitor-counter" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-200 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
                         <FiUsers className="w-5 h-5 mr-3" />
                         <span className="font-medium">Enhanced Counter</span>
+                    </NavLink>
+                    <NavLink to="/admin/review-form-settings" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-200 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
+                        <FiMessageSquare className="w-5 h-5 mr-3" />
+                        <span className="font-medium">Review Form Settings</span>
                     </NavLink>
                 </div>
 

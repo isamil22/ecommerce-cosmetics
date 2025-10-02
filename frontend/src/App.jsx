@@ -52,6 +52,7 @@ import CustomPackCreationPage from './pages/CustomPackCreationPage';
 import AdminProductCommentsPage from './pages/admin/AdminProductCommentsPage.jsx';
 import AdminPackCommentsPage from './pages/admin/AdminPackCommentsPage.jsx';
 import AdminPackRecommendationsPage from './pages/admin/AdminPackRecommendationsPage.jsx';
+import ReviewFormSettingsPage from './pages/admin/ReviewFormSettingsPage.jsx';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -180,6 +181,7 @@ function App() {
                             <Route path="announcement" element={<AdminAnnouncementPage />} />
                             <Route path="countdown" element={<AdminCountdownPage />} />
                             <Route path="enhanced-visitor-counter" element={<EnhancedVisitorCounterSettingsPage />} />
+                            <Route path="review-form-settings" element={<ReviewFormSettingsPage />} />
                             <Route path="settings" element={<SettingsPage />} />
                         </Route>
                     </Routes>
