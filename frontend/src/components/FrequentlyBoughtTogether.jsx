@@ -3,6 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { getFrequentlyBoughtTogether, addToCart as apiAddToCart } from '../api/apiService';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { 
+    FiShoppingCart, 
+    FiCheck, 
+    FiPlus, 
+    FiHeart, 
+    FiEye, 
+    FiStar,
+    FiTag,
+    FiZap
+} from 'react-icons/fi';
 
 const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) => {
     const [relatedProducts, setRelatedProducts] = useState([]);
@@ -94,12 +104,19 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
 
     if (loading) {
         return (
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-white via-blue-50 to-purple-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/50 max-w-5xl mx-auto">
                 <div className="animate-pulse">
-                    <div className="h-6 bg-gray-200 rounded w-64 mb-4"></div>
-                    <div className="flex items-center gap-4">
-                        <div className="w-20 h-20 bg-gray-200 rounded"></div>
-                        <div className="w-20 h-20 bg-gray-200 rounded"></div>
+                    <div className="flex flex-col sm:flex-row items-center mb-6 sm:mb-8">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl mb-3 sm:mb-0 sm:mr-4"></div>
+                        <div className="flex-1 text-center sm:text-left">
+                            <div className="h-6 sm:h-8 bg-gray-200 rounded w-64 sm:w-80 mb-2 mx-auto sm:mx-0"></div>
+                            <div className="h-3 sm:h-4 bg-gray-200 rounded w-48 sm:w-64 mx-auto sm:mx-0"></div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+                        <div className="w-full sm:w-32 h-32 sm:h-40 bg-gray-200 rounded-xl sm:rounded-2xl"></div>
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-200 rounded-full"></div>
+                        <div className="w-full sm:w-32 h-32 sm:h-40 bg-gray-200 rounded-xl sm:rounded-2xl"></div>
                     </div>
                 </div>
             </div>
@@ -107,20 +124,31 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
     }
 
     if (relatedProducts.length === 0) {
-        // For testing purposes, let's show a fallback message
         return (
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
-                <h2 className="text-xl font-bold mb-6 text-gray-800">Frequently Bought Together</h2>
-                <div className="text-center py-8">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
+            <div className="bg-gradient-to-br from-white via-blue-50 to-purple-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/50 max-w-5xl mx-auto">
+                <div className="flex flex-col sm:flex-row items-center text-center sm:text-left mb-6 sm:mb-8">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-0 sm:mr-4">
+                        <FiShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                     </div>
-                    <p className="text-gray-500 text-lg">No related products found for this item.</p>
-                    <p className="text-sm text-gray-400 mt-2">Related products will appear here when available.</p>
-                    <div className="mt-4 text-xs text-gray-300">
-                        <p>This feature requires products to have frequently bought together relationships configured in the admin panel.</p>
+                    <div className="flex-1">
+                        <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            Frequently Bought Together
+                        </h2>
+                        <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Products that customers often purchase together</p>
+                    </div>
+                </div>
+                
+                <div className="text-center py-8 sm:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/50">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                        <FiShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">No Related Products Yet</h3>
+                    <p className="text-gray-600 text-base sm:text-lg mb-4">Related products will appear here when available.</p>
+                    <div className="bg-blue-50 p-3 sm:p-4 rounded-xl border border-blue-200 max-w-md mx-auto">
+                        <p className="text-xs sm:text-sm text-blue-700">
+                            <FiTag className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
+                            This feature requires products to have frequently bought together relationships configured in the admin panel.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -130,123 +158,195 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
     const allDisplayProducts = [product, ...relatedProducts];
     const selectedProductsData = allDisplayProducts.filter(p => selectedProducts.includes(p.id));
     const totalPrice = selectedProductsData.reduce((total, p) => total + (p.price || 0), 0);
-
+    const savings = allDisplayProducts.reduce((total, p) => total + (p.price || 0), 0) - totalPrice;
 
     return (
-        <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
-            <h2 className="text-xl font-bold mb-6 text-gray-800">Frequently Bought Together</h2>
-            <p className="text-sm text-gray-600 mb-4 text-center">
-                💡 Click anywhere on any product card to toggle selection
-            </p>
+        <div className="bg-gradient-to-br from-white via-blue-50 to-purple-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/50 max-w-5xl mx-auto">
+            {/* Enhanced Header */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left mb-6 sm:mb-8">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-0 sm:mr-4">
+                    <FiShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                </div>
+                <div className="flex-1">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        Frequently Bought Together
+                    </h2>
+                    <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Products that customers often purchase together</p>
+                </div>
+            </div>
+
+            {/* Enhanced Instruction */}
+            <div className="text-center mb-6 sm:mb-8">
+                <div className="inline-flex items-center gap-1 sm:gap-2 bg-gradient-to-r from-yellow-100 to-orange-100 px-3 sm:px-4 py-2 rounded-full border border-yellow-200">
+                    <FiZap className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-600 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium text-yellow-800">Click any product card to toggle selection</span>
+                </div>
+            </div>
             
-            <div className="flex flex-wrap items-center justify-center gap-6">
+            {/* Enhanced Product Cards */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
                 {allDisplayProducts.map((p, index) => (
                     <React.Fragment key={p.id}>
                         <div 
-                            className={`flex items-center p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:scale-105 hover:shadow-lg ${
+                            className={`group relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border-2 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl w-full sm:w-auto sm:min-w-[200px] lg:min-w-[220px] ${
                                 selectedProducts.includes(p.id) 
-                                    ? 'border-blue-500 bg-blue-50 shadow-md' 
-                                    : 'border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-gray-400'
+                                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 shadow-xl ring-4 ring-blue-100' 
+                                    : 'border-gray-200 hover:border-blue-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-blue-50'
                             }`}
                             onClick={(e) => {
-                                // Only handle click if it's not on the checkbox area
-                                if (!e.target.closest('.flex.items-center.mr-3')) {
+                                if (!e.target.closest('.checkbox-container')) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     handleCheckboxChange(p.id);
                                 }
                             }}
                             title="Click anywhere on this card to toggle selection"
-                            style={{ userSelect: 'none', position: 'relative', zIndex: 10, minWidth: '140px' }}
+                            style={{ userSelect: 'none', position: 'relative', zIndex: 10 }}
                         >
-                            <div className="flex items-center mr-3">
+                            {/* Enhanced Checkbox */}
+                            <div className="checkbox-container absolute top-3 left-3 sm:top-4 sm:left-4 z-20">
                                 <div
-                                    className={`h-6 w-6 rounded border-2 cursor-pointer transition-all duration-200 flex items-center justify-center ${
+                                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-all duration-300 flex items-center justify-center ${
                                         selectedProducts.includes(p.id)
-                                            ? 'bg-blue-600 border-blue-600 text-white'
-                                            : 'border-gray-300 bg-white hover:border-gray-400'
+                                            ? 'bg-gradient-to-br from-blue-500 to-purple-600 border-blue-500 text-white shadow-lg transform scale-110'
+                                            : 'border-gray-300 bg-white hover:border-blue-400 hover:bg-blue-50'
                                     }`}
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
                                         handleCheckboxChange(p.id);
                                     }}
-                                    style={{ 
-                                        pointerEvents: 'auto',
-                                        zIndex: 20,
-                                        position: 'relative'
-                                    }}
                                 >
                                     {selectedProducts.includes(p.id) && (
-                                        <svg 
-                                            className="w-4 h-4" 
-                                            fill="currentColor" 
-                                            viewBox="0 0 20 20"
-                                        >
-                                            <path 
-                                                fillRule="evenodd" 
-                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
-                                                clipRule="evenodd" 
-                                            />
-                                        </svg>
+                                        <FiCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                                     )}
                                 </div>
                             </div>
-                            <div className="flex flex-col items-center">
-                                <img 
-                                    src={p.images && p.images[0] ? p.images[0] : '/placeholder-product.jpg'} 
-                                    alt={p.name} 
-                                    className="w-20 h-20 object-cover rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
-                                    onError={(e) => {
-                                        e.target.src = '/placeholder-product.jpg';
-                                    }}
-                                />
-                                <span className={`text-sm mt-2 text-center max-w-[100px] truncate ${
+
+                            {/* Product Badge */}
+                            {p.id === product.id && (
+                                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20">
+                                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                        Main Product
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Enhanced Product Image */}
+                            <div className="flex justify-center mb-3 sm:mb-4">
+                                <div className="relative">
+                                    <img 
+                                        src={p.images && p.images[0] ? p.images[0] : '/placeholder-product.jpg'} 
+                                        alt={p.name} 
+                                        className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-cover rounded-lg sm:rounded-xl shadow-lg border border-gray-200 group-hover:shadow-xl transition-all duration-300"
+                                        onError={(e) => {
+                                            e.target.src = '/placeholder-product.jpg';
+                                        }}
+                                    />
+                                    {/* Hover Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent rounded-lg sm:rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                </div>
+                            </div>
+
+                            {/* Enhanced Product Info */}
+                            <div className="text-center">
+                                <h3 className={`font-bold text-sm sm:text-base lg:text-lg mb-2 line-clamp-2 ${
                                     selectedProducts.includes(p.id) 
-                                        ? 'text-gray-700' 
-                                        : 'text-gray-500'
+                                        ? 'text-gray-800' 
+                                        : 'text-gray-600'
                                 }`}>
                                     {p.name}
-                                    {p.id === product.id && (
-                                        <span className="block text-xs text-blue-600 font-medium">(Main Product)</span>
-                                    )}
-                                </span>
-                                <Link 
-                                    to={`/product/${p.id}`}
-                                    className="text-xs text-blue-600 hover:text-blue-800 underline mt-1 cursor-pointer"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                >
-                                    View Details
-                                </Link>
-                                <span className={`text-sm font-semibold ${
-                                    selectedProducts.includes(p.id) 
-                                        ? 'text-gray-900' 
-                                        : 'text-gray-500'
-                                }`}>${(p.price || 0).toFixed(2)}</span>
+                                </h3>
+                                
+                                {/* Price Display */}
+                                <div className="mb-3 sm:mb-4">
+                                    <span className={`text-xl sm:text-2xl font-black ${
+                                        selectedProducts.includes(p.id) 
+                                            ? 'text-blue-600' 
+                                            : 'text-gray-500'
+                                    }`}>
+                                        ${(p.price || 0).toFixed(2)}
+                                    </span>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-2 justify-center">
+                                    <Link 
+                                        to={`/product/${p.id}`}
+                                        className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium px-2 sm:px-3 py-1 sm:py-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                        }}
+                                    >
+                                        <FiEye className="w-3 h-3" />
+                                        <span className="hidden sm:inline">View Details</span>
+                                        <span className="sm:hidden">View</span>
+                                    </Link>
+                                </div>
                             </div>
+
+                            {/* Selection Indicator */}
+                            {selectedProducts.includes(p.id) && (
+                                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 pointer-events-none"></div>
+                            )}
                         </div>
+                        
+                        {/* Enhanced Plus Icon */}
                         {index < allDisplayProducts.length - 1 && (
-                            <span className="text-2xl text-gray-400 font-bold">+</span>
+                            <div className="flex items-center justify-center my-2 sm:my-0">
+                                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center shadow-lg">
+                                    <FiPlus className="w-4 h-4 sm:w-6 sm:h-6 text-gray-600" />
+                                </div>
+                            </div>
                         )}
                     </React.Fragment>
                 ))}
             </div>
             
-            <div className="mt-6 flex items-center justify-between bg-gray-50 p-4 rounded-lg relative z-10">
-                <div className="flex items-center gap-2">
-                    <span className="text-gray-700 font-medium">Total Price:</span>
-                    <span className="text-xl font-bold text-pink-600">${totalPrice.toFixed(2)}</span>
-                </div>
-                <div className="flex gap-2">
-                    <button
-                        onClick={handleAddAllToCart}
-                        disabled={selectedProducts.length === 0}
-                        className="bg-pink-600 hover:bg-pink-700 disabled:bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg transition-colors disabled:cursor-not-allowed"
-                    >
-                        Add Selected to Cart ({selectedProducts.length})
-                    </button>
+            {/* Enhanced Footer with Total and CTA */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/50 shadow-xl">
+                <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6">
+                    <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full lg:w-auto">
+                        <div className="text-center sm:text-left">
+                            <p className="text-gray-600 font-medium mb-1 text-sm sm:text-base">Total Price:</p>
+                            <div className="flex items-center justify-center sm:justify-start gap-2">
+                                <span className="text-2xl sm:text-3xl font-black text-blue-600">${totalPrice.toFixed(2)}</span>
+                                {savings > 0 && (
+                                    <span className="text-xs sm:text-sm text-green-600 font-bold bg-green-100 px-2 py-1 rounded-full">
+                                        Save ${savings.toFixed(2)}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {selectedProducts.length > 0 && (
+                            <div className="text-center sm:text-left">
+                                <p className="text-gray-600 font-medium mb-1 text-sm sm:text-base">Selected Items:</p>
+                                <p className="text-base sm:text-lg font-bold text-gray-800">{selectedProducts.length} item(s)</p>
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="flex gap-3 w-full lg:w-auto">
+                        <button
+                            onClick={handleAddAllToCart}
+                            disabled={selectedProducts.length === 0}
+                            className={`flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-lg transition-all duration-300 transform w-full lg:w-auto ${
+                                selectedProducts.length > 0
+                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl hover:scale-105'
+                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                        >
+                            <FiShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
+                            <span className="hidden sm:inline">Add Selected to Cart</span>
+                            <span className="sm:hidden">Add to Cart</span>
+                            {selectedProducts.length > 0 && (
+                                <span className="bg-white/20 px-2 py-1 rounded-full text-xs sm:text-sm">
+                                    {selectedProducts.length}
+                                </span>
+                            )}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
