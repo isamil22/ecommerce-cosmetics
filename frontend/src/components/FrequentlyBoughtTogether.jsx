@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getFrequentlyBoughtTogether, addToCart as apiAddToCart } from '../api/apiService';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
     FiShoppingCart, 
     FiCheck, 
@@ -18,6 +18,7 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (product && product.id) {
@@ -194,7 +195,8 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                                     : 'border-gray-200 hover:border-blue-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-blue-50'
                             }`}
                             onClick={(e) => {
-                                if (!e.target.closest('.checkbox-container')) {
+                                // Don't handle click if it's on checkbox or view details link
+                                if (!e.target.closest('.checkbox-container') && !e.target.closest('a')) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     handleCheckboxChange(p.id);
@@ -271,17 +273,17 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
 
                                 {/* Action Buttons */}
                                 <div className="flex gap-2 justify-center">
-                                    <Link 
-                                        to={`/product/${p.id}`}
+                                    <button 
                                         className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium px-2 sm:px-3 py-1 sm:py-2 rounded-lg hover:bg-blue-100 transition-all duration-200"
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            navigate(`/products/${p.id}`);
                                         }}
                                     >
                                         <FiEye className="w-3 h-3" />
                                         <span className="hidden sm:inline">View Details</span>
                                         <span className="sm:hidden">View</span>
-                                    </Link>
+                                    </button>
                                 </div>
                             </div>
 
