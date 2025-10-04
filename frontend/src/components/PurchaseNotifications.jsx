@@ -1,7 +1,7 @@
 // Purchase Notifications - Shows when others buy to create urgency
 import React, { useState, useEffect } from 'react';
 
-const PurchaseNotifications = ({ packName }) => {
+const PurchaseNotifications = ({ packName, productImage }) => {
     const [notifications, setNotifications] = useState([]);
     const [currentNotification, setCurrentNotification] = useState(null);
 
@@ -66,34 +66,46 @@ const PurchaseNotifications = ({ packName }) => {
 
     return (
         <div className="fixed bottom-20 left-2 sm:left-4 z-50 animate-slide-in-left max-w-[calc(100vw-1rem)] sm:max-w-sm">
-            <div className="bg-white border-2 border-green-400 rounded-xl shadow-2xl p-3 sm:p-4">
+            <div className="bg-white border-t-4 border-green-400 rounded-xl shadow-2xl p-3 sm:p-4">
                 <div className="flex items-start sm:items-center">
-                    {/* Avatar */}
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg mr-2 sm:mr-3 animate-bounce-custom flex-shrink-0">
-                        {currentNotification.name.ar[0]}
-                    </div>
+                    {/* Product Image */}
+                    {productImage && (
+                        <div className="w-16 h-16 mr-3 flex-shrink-0">
+                            <img 
+                                src={productImage} 
+                                alt={packName || 'Product'} 
+                                className="w-full h-full object-cover rounded-md"
+                            />
+                        </div>
+                    )}
                     
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                        <div className="flex flex-col sm:flex-row sm:items-center mb-1">
-                            <span className="font-bold text-gray-800 text-xs sm:text-sm truncate">
+                        {/* Name and Location */}
+                        <div className="mb-1">
+                            <span className="font-bold text-gray-800 text-sm">
                                 {currentNotification.name.ar} / {currentNotification.name.en}
                             </span>
-                            <span className="text-xs text-gray-500 sm:ml-2 truncate">
+                            <span className="text-xs text-gray-500 ml-1">
                                 من {currentNotification.name.city}
                             </span>
                         </div>
                         
-                        <p className="text-xs sm:text-sm text-gray-700 mb-1">
-                            <span className="text-green-600 font-semibold">
+                        {/* Action */}
+                        <div className="mb-1">
+                            <span className="text-green-600 font-semibold text-sm">
                                 {currentNotification.message.ar} / {currentNotification.message.en}
                             </span>
-                            <br />
-                            <span className="text-gray-600 text-xs truncate">
+                        </div>
+                        
+                        {/* Product Name */}
+                        <div className="mb-2">
+                            <span className="text-gray-600 text-sm">
                                 {currentNotification.packName}
                             </span>
-                        </p>
+                        </div>
                         
+                        {/* Time and Verification */}
                         <div className="flex items-center justify-between">
                             <span className="text-xs text-gray-500">
                                 منذ {currentNotification.timeAgo} دقيقة / {currentNotification.timeAgo} min ago
@@ -106,7 +118,7 @@ const PurchaseNotifications = ({ packName }) => {
                     </div>
                     
                     {/* Success Icon */}
-                    <div className="text-green-500 text-xl ml-2">
+                    <div className="text-gray-400 text-lg ml-2">
                         🛒
                     </div>
                 </div>

@@ -824,7 +824,10 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             )}
             
             {/* Purchase Notifications */}
-            <PurchaseNotifications packName={pack?.name} />
+            <PurchaseNotifications 
+                packName={pack?.name} 
+                productImage={pack?.images && pack.images.length > 0 ? pack.images[0] : null}
+            />
             
             {/* Sticky Add to Cart */}
             <StickyAddToCart 

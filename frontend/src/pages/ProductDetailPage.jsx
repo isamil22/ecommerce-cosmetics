@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProductById, addToCart, getBestsellers, getCart, getSettings } from '../api/apiService';
+import { getProductById, addToCart, getCart, getSettings } from '../api/apiService';
 import Loader from '../components/Loader';
 import CommentForm from '../components/CommentForm';
-import ProductSlider from '../components/ProductSlider';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
 import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
@@ -13,7 +12,6 @@ import SocialShare from '../components/SocialShare';
 import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
 import ReviewSummary from '../components/ReviewSummary';
 import Breadcrumbs from '../components/Breadcrumbs';
-import PurchasePopup from '../components/PurchasePopup';
 import EnhancedCountdown from '../components/EnhancedCountdown';
 import LiveVisitorCounter from '../components/LiveVisitorCounter';
 import PurchaseNotifications from '../components/PurchaseNotifications';
@@ -25,7 +23,6 @@ import './PackDetailPage.css'; // Import CSS for animations
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
-    const [bestsellers, setBestsellers] = useState([]);
     const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -52,9 +49,8 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         setLoading(true);
         window.scrollTo(0, 0);
         try {
-            const [productResponse, bestsellersResponse, settingsResponse] = await Promise.all([
+            const [productResponse, settingsResponse] = await Promise.all([
                 getProductById(id),
-                getBestsellers(),
                 getSettings()
             ]);
 
@@ -78,7 +74,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             if (productData.images && productData.images.length > 0) {
                 setSelectedImage(productData.images[0]);
             }
-            setBestsellers(bestsellersResponse.data);
 
             if (isAuthenticated) {
                 const cartResponse = await getCart();
@@ -827,22 +822,13 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 <FrequentlyBoughtTogether product={product} fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />
             </div>
             
-            {/* LOW PRIORITY: Product Recommendations */}
-            <div className="container-xl section-spacing-lg">
-                <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-2xl p-6 shadow-lg border border-purple-200/50 max-w-4xl mx-auto">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-                        قد يعجبك أيضاً / You Might Also Like
-                    </h2>
-                    <p className="text-gray-600">منتجات مختارة خصيصاً لك / Products specially selected for you</p>
-                </div>
-                <ProductSlider title="" products={bestsellers} />
-                </div>
-            </div>
             
             {/* Enhanced Purchase Notifications */}
             <div className="container-xl section-spacing">
-                <PurchaseNotifications packName={product.name} />
+                <PurchaseNotifications 
+                    packName={product.name} 
+                    productImage={product.images && product.images.length > 0 ? product.images[0] : null}
+                />
             </div>
             
             {/* Enhanced Sticky Add to Cart - replaces StickyAddToCartBar */}
@@ -854,8 +840,6 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 totalItems={1}
             />
             
-            {/* Enhanced Purchase Popup */}
-            {product.images && product.images.length > 0 && <PurchasePopup productName={product.name} productImage={product.images[0]} />}
             
             {/* Professional Footer CTA Section */}
             <div className="container-xl section-spacing-xl">

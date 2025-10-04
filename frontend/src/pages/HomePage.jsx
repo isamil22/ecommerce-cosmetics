@@ -8,7 +8,6 @@ import TrustBadges from '../components/TrustBadges';
 import EnhancedCountdown from '../components/EnhancedCountdown';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter';
 import PurchaseNotifications from '../components/PurchaseNotifications';
-import LiveNotifications from '../components/LiveNotifications';
 import { toast } from 'react-toastify';
 
 const HomePage = () => {
@@ -615,10 +614,11 @@ const HomePage = () => {
             </div>
 
             {/* Purchase Notifications */}
-            <PurchaseNotifications packName="منتجات المتجر / Store Products" />
+            <PurchaseNotifications 
+                packName="منتجات المتجر / Store Products" 
+                productImage="/placeholder-image.jpg"
+            />
             
-            {/* Live Activity Notifications */}
-            <LiveNotifications />
         </div>
     );
 };
