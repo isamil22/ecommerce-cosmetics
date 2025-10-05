@@ -12,6 +12,7 @@ const OrderPage = () => {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [applyingCoupon, setApplyingCoupon] = useState(false);
+    const [orderId, setOrderId] = useState('');
     const navigate = useNavigate();
     const isAuthenticated = !!localStorage.getItem('token');
 
@@ -48,6 +49,11 @@ const OrderPage = () => {
         };
         fetchCart();
     }, [isAuthenticated]);
+
+    useEffect(() => {
+        // Generate order ID on client side to avoid hydration mismatches
+        setOrderId(Math.floor(Math.random() * 1000000).toString().padStart(6, '0'));
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -192,7 +198,7 @@ const OrderPage = () => {
                             <p className="text-gray-600 mb-8">{success}</p>
                             <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4 mb-8">
                                 <p className="text-blue-800 text-sm">
-                                    <span className="font-semibold">رقم الطلب / Order ID:</span> #{Date.now().toString().slice(-6)}
+                                    <span className="font-semibold">رقم الطلب / Order ID:</span> #{orderId}
                                 </p>
                             </div>
                     <FeedbackForm />

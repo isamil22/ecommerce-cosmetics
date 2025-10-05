@@ -383,6 +383,8 @@ export const updatePackCustomPackRecommendations = (packId, customPackIds) => {
 
 export const createOrder = (orderData) => {
     const params = new URLSearchParams();
+    params.append('clientFullName', orderData.clientFullName);
+    params.append('city', orderData.city);
     params.append('address', orderData.address);
     params.append('phoneNumber', orderData.phoneNumber);
     if (orderData.couponCode) {
