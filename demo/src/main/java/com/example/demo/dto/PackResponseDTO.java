@@ -15,4 +15,5 @@ public class PackResponseDTO {
     private List<ProductDTO> recommendedProducts;
     private List<PackSummaryDTO> recommendedPacks;
     private List<CustomPackDTO> recommendedCustomPacks;
+    private boolean hideCommentForm = false;
 }

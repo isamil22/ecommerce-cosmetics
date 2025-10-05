@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment Visibility Control - Quick Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .content {
+            padding: 40px;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .test-button.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        .test-button.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        .test-button.danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .console-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+            white-space: pre-wrap;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Comment Visibility Control Test</h1>
+            <p>Quick verification of the new admin comment control feature</p>
+        </div>
+        
+        <div class="content">
+            <div class="step">
+                <h3>📋 Test Instructions</h3>
+                <p>Follow these steps to verify the comment visibility control is working:</p>
+                <ol>
+                    <li>Click "Test Admin Form" to check the comment control exists</li>
+                    <li>Click "Test API Response" to verify backend integration</li>
+                    <li>Click "Create Test Pack with Comments" to test enabled comments</li>
+                    <li>Click "Create Test Pack without Comments" to test disabled comments</li>
+                    <li>Check the console output for test results</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3>🎯 Quick Tests</h3>
+                <button class="test-button" onclick="testAdminForm()">
+                    📝 Test Admin Form
+                </button>
+                <button class="test-button success" onclick="testAPI()">
+                    🔌 Test API Response
+                </button>
+                <button class="test-button warning" onclick="createPackWithComments()">
+                    ✅ Create Pack with Comments
+                </button>
+                <button class="test-button danger" onclick="createPackWithoutComments()">
+                    ❌ Create Pack without Comments
+                </button>
+                <button class="test-button" onclick="runFullTest()">
+                    🚀 Run Full Test Suite
+                </button>
+            </div>
+
+            <div class="step">
+                <h3>📊 Test Results</h3>
+                <div id="testResults">
+                    <div class="status info">Ready to run tests. Click a test button above to begin.</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>📝 Console Output</h3>
+                <div id="consoleOutput" class="console-output">Waiting for test execution...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            
+            // Add to results
+            testResults.push({ message, type, timestamp });
+            
+            // Update console output
+            const consoleOutput = document.getElementById('consoleOutput');
+            consoleOutput.textContent += logMessage + '\n';
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            
+            // Also log to browser console
+            console.log(logMessage);
+        }
+
+        function updateTestResults() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '';
+            
+            testResults.forEach(result => {
+                const div = document.createElement('div');
+                div.className = `status ${result.type}`;
+                div.innerHTML = `<strong>[${result.timestamp}]</strong> ${result.message}`;
+                resultsDiv.appendChild(div);
+            });
+        }
+
+        async function testAdminForm() {
+            log('🧪 Testing Admin Pack Form...', 'info');
+            
+            try {
+                // Open admin form in new tab
+                const newWindow = window.open('http://localhost:8081/admin/packs/new', '_blank');
+                
+                // Wait a moment for page to load
+                setTimeout(() => {
+                    log('✅ Admin form opened in new tab', 'success');
+                    log('Please check the new tab for comment visibility controls', 'info');
+                    log('Look for radio buttons: "Show Comments" and "Hide Comments"', 'info');
+                }, 1000);
+                
+            } catch (error) {
+                log(`❌ Error opening admin form: ${error.message}`, 'error');
+            }
+            
+            updateTestResults();
+        }
+
+        async function testAPI() {
+            log('🔌 Testing API Response...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/packs/1');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.data && typeof data.data.commentsEnabled !== 'undefined') {
+                        log(`✅ API returns commentsEnabled field: ${data.data.commentsEnabled}`, 'success');
+                    } else {
+                        log('❌ API does not return commentsEnabled field', 'error');
+                    }
+                } else {
+                    log(`❌ API request failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Error testing API: ${error.message}`, 'error');
+            }
+            
+            updateTestResults();
+        }
+
+        async function createPackWithComments() {
+            log('📦 Creating pack with comments enabled...', 'info');
+            
+            try {
+                // Open admin form in new tab
+                const newWindow = window.open('http://localhost:8081/admin/packs/new', '_blank');
+                
+                setTimeout(() => {
+                    log('✅ Admin form opened for creating pack with comments', 'success');
+                    log('Please fill out the form and select "Show Comments"', 'info');
+                    log('Then submit the form to test pack creation', 'info');
+                }, 1000);
+                
+            } catch (error) {
+                log(`❌ Error opening admin form: ${error.message}`, 'error');
+            }
+            
+            updateTestResults();
+        }
+
+        async function createPackWithoutComments() {
+            log('🚫 Creating pack with comments disabled...', 'info');
+            
+            try {
+                // Open admin form in new tab
+                const newWindow = window.open('http://localhost:8081/admin/packs/new', '_blank');
+                
+                setTimeout(() => {
+                    log('✅ Admin form opened for creating pack without comments', 'success');
+                    log('Please fill out the form and select "Hide Comments"', 'info');
+                    log('Then submit the form to test pack creation', 'info');
+                }, 1000);
+                
+            } catch (error) {
+                log(`❌ Error opening admin form: ${error.message}`, 'error');
+            }
+            
+            updateTestResults();
+        }
+
+        async function runFullTest() {
+            log('🚀 Running full test suite...', 'info');
+            
+            // Clear previous results
+            testResults = [];
+            document.getElementById('consoleOutput').textContent = '';
+            
+            // Run all tests
+            await testAPI();
+            
+            log('📋 Full test suite completed', 'success');
+            log('Please manually test the admin form and pack creation', 'info');
+            
+            updateTestResults();
+        }
+
+        // Load the comprehensive test script
+        function loadTestScript() {
+            const script = document.createElement('script');
+            script.src = 'test-comment-visibility-verification.js';
+            script.onload = () => {
+                log('✅ Comprehensive test script loaded', 'success');
+                log('Use window.testCommentVisibility.runAllTests() in console for full testing', 'info');
+            };
+            script.onerror = () => {
+                log('❌ Could not load comprehensive test script', 'error');
+            };
+            document.head.appendChild(script);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🎯 Comment Visibility Control Test Page Loaded', 'success');
+            log('Frontend should be running on http://localhost:8081', 'info');
+            log('Backend should be running on http://localhost:8080', 'info');
+            loadTestScript();
+        });
+    </script>
+</body>
+</html>

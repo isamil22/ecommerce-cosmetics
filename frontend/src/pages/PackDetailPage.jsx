@@ -800,12 +800,14 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                             </div>
                         )}
                         
-                        <div className="bg-blue-50 p-6 rounded-lg">
-                            <h3 className="text-lg font-bold mb-3 text-blue-800">
-                                ✍️ اترك تعليقك / Leave Your Comment
-                            </h3>
-                            <CommentForm packId={id} onCommentAdded={handleCommentAdded} />
-                        </div>
+                        {!pack.hideCommentForm && (
+                            <div className="bg-blue-50 p-6 rounded-lg">
+                                <h3 className="text-lg font-bold mb-3 text-blue-800">
+                                    ✍️ اترك تعليقك / Leave Your Comment
+                                </h3>
+                                <CommentForm packId={id} onCommentAdded={handleCommentAdded} />
+                            </div>
+                        )}
                     </div>
 
                     {/* Recommendations Section */}

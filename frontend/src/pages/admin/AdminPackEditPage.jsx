@@ -37,6 +37,7 @@ const AdminPackEditPage = () => {
                     name: fetchedPack.name,
                     description: fetchedPack.description,
                     price: fetchedPack.price,
+                    hideCommentForm: fetchedPack.hideCommentForm || false,
                     items: fetchedPack.items.map(item => ({
                         // Ensure IDs are correctly mapped for the request
                         defaultProductId: item.defaultProduct.id,
@@ -160,6 +161,28 @@ const AdminPackEditPage = () => {
                     <div>
                         <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
                         <input type="number" step="0.01" name="price" id="price" value={packData.price} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500" required />
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                        <div>
+                            <label htmlFor="hideCommentForm" className="block text-sm font-medium text-gray-700 mb-1">
+                                Hide Comment Form
+                            </label>
+                            <p className="text-sm text-gray-600">
+                                When enabled, users won't be able to leave comments on this pack. Existing comments will still be visible.
+                            </p>
+                        </div>
+                        <div className="flex items-center">
+                            <input
+                                type="checkbox"
+                                id="hideCommentForm"
+                                name="hideCommentForm"
+                                checked={packData.hideCommentForm}
+                                onChange={(e) => {
+                                    setPackData({ ...packData, hideCommentForm: e.target.checked });
+                                }}
+                                className="h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                            />
+                        </div>
                     </div>
                     <div>
                         <label htmlFor="image" className="block text-sm font-medium text-gray-700">Update Pack Image (Optional)</label>

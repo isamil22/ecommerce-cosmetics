@@ -33,6 +33,7 @@ const AdminPackForm = () => {
         items: [{ defaultProductId: '', variationProductIds: [] }],
         recommendedProductIds: [],
         recommendedPackIds: [],
+        hideCommentForm: false,
     });
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
@@ -712,6 +713,33 @@ const AdminPackForm = () => {
                                         <p className="text-xs text-gray-400">PNG, JPG, GIF up to 5MB</p>
                                     </div>
                                 )}
+                            </div>
+                        </div>
+
+                        {/* Hide Comment Form Toggle */}
+                        <div className="lg:col-span-2">
+                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                                <div>
+                                    <label htmlFor="hideCommentForm" className="block text-sm font-semibold text-gray-700 mb-1">
+                                        Hide Comment Form
+                                    </label>
+                                    <p className="text-sm text-gray-600">
+                                        When enabled, users won't be able to leave comments on this pack. Existing comments will still be visible.
+                                    </p>
+                                </div>
+                                <div className="flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        id="hideCommentForm"
+                                        name="hideCommentForm"
+                                        checked={packData.hideCommentForm}
+                                        onChange={(e) => {
+                                            setPackData({ ...packData, hideCommentForm: e.target.checked });
+                                            setIsDirty(true);
+                                        }}
+                                        className="h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

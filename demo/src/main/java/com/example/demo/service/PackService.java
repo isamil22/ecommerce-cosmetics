@@ -61,6 +61,7 @@ public class PackService {
         pack.setName(packRequestDTO.getName());
         pack.setDescription(packRequestDTO.getDescription());
         pack.setPrice(packRequestDTO.getPrice());
+        pack.setHideCommentForm(packRequestDTO.isHideCommentForm());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = s3Service.saveImage(imageFile);
@@ -118,6 +119,7 @@ public class PackService {
         pack.setName(packRequestDTO.getName());
         pack.setDescription(packRequestDTO.getDescription());
         pack.setPrice(packRequestDTO.getPrice());
+        pack.setHideCommentForm(packRequestDTO.isHideCommentForm());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String newImageUrl = s3Service.saveImage(imageFile);

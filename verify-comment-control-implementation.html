@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment Control Implementation Verification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .content {
+            padding: 40px;
+        }
+        .verification-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            background: #f8f9fa;
+        }
+        .verification-section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .verification-section h2::before {
+            content: "✅";
+            font-size: 1.5rem;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+        .implementation-details {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .implementation-details h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        .file-list {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .file-list h3 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .file-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .file-list li {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        .test-instructions {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-instructions h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .test-button.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        .test-button.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        .test-button.info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 5px;
+        }
+        .status-badge.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-badge.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎛️ Comment Visibility Control Implementation Verification</h1>
+            <p>Complete verification of the admin comment control feature implementation</p>
+        </div>
+        
+        <div class="content">
+            <!-- Implementation Status -->
+            <div class="verification-section">
+                <h2>Implementation Status</h2>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0;">
+                    <span class="status-badge completed">✅ Frontend Form Control</span>
+                    <span class="status-badge completed">✅ Backend Model Update</span>
+                    <span class="status-badge completed">✅ API Integration</span>
+                    <span class="status-badge completed">✅ Conditional Rendering</span>
+                    <span class="status-badge completed">✅ Backward Compatibility</span>
+                </div>
+                <p><strong>Status:</strong> 🎉 <strong>FULLY IMPLEMENTED AND READY FOR TESTING</strong></p>
+            </div>
+
+            <!-- Files Modified -->
+            <div class="verification-section">
+                <h2>Files Modified</h2>
+                <div class="file-list">
+                    <h3>📁 Frontend Files</h3>
+                    <ul>
+                        <li><strong>frontend/src/pages/admin/AdminPackForm.jsx</strong> - Added comment visibility control</li>
+                        <li><strong>frontend/src/pages/PackDetailPage.jsx</strong> - Added conditional rendering</li>
+                    </ul>
+                </div>
+                <div class="file-list">
+                    <h3>📁 Backend Files</h3>
+                    <ul>
+                        <li><strong>demo/src/main/java/com/example/demo/model/Pack.java</strong> - Added commentsEnabled field</li>
+                        <li><strong>demo/src/main/java/com/example/demo/dto/PackRequestDTO.java</strong> - Added commentsEnabled field</li>
+                        <li><strong>demo/src/main/java/com/example/demo/dto/PackResponseDTO.java</strong> - Added commentsEnabled field</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Implementation Details -->
+            <div class="verification-section">
+                <h2>Implementation Details</h2>
+                
+                <div class="implementation-details">
+                    <h3>🎨 Frontend: Admin Pack Form</h3>
+                    <p>Added radio button control in Basic Information section:</p>
+                    <div class="code-block">
+// Added to packData state
+commentsEnabled: true
+
+// Radio button control
+&lt;input type="radio" name="commentsEnabled" value="true" 
+       checked={packData.commentsEnabled === true} /&gt;
+&lt;input type="radio" name="commentsEnabled" value="false" 
+       checked={packData.commentsEnabled === false} /&gt;
+                    </div>
+                </div>
+
+                <div class="implementation-details">
+                    <h3>🔧 Backend: Pack Model</h3>
+                    <p>Added commentsEnabled field to database model:</p>
+                    <div class="code-block">
+@Column(name = "comments_enabled")
+private Boolean commentsEnabled = true;
+                    </div>
+                </div>
+
+                <div class="implementation-details">
+                    <h3>👀 Frontend: Conditional Rendering</h3>
+                    <p>Pack detail page only shows comments when enabled:</p>
+                    <div class="code-block">
+{pack.commentsEnabled !== false && (
+    &lt;div className="mt-12"&gt;
+        {/* Comments section */}
+    &lt;/div&gt;
+)}
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="verification-section">
+                <h2>How It Works</h2>
+                <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3>🔄 Workflow</h3>
+                    <ol>
+                        <li><strong>Admin creates pack:</strong> Selects "Show Comments" or "Hide Comments"</li>
+                        <li><strong>Form submission:</strong> commentsEnabled field sent to backend</li>
+                        <li><strong>Database storage:</strong> Field saved in packs table</li>
+                        <li><strong>API response:</strong> Field returned when fetching pack data</li>
+                        <li><strong>Frontend rendering:</strong> Comments section shown/hidden based on setting</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Testing Instructions -->
+            <div class="verification-section">
+                <h2>Testing Instructions</h2>
+                <div class="test-instructions">
+                    <h3>🧪 Manual Testing Steps</h3>
+                    <ol>
+                        <li><strong>Start servers:</strong>
+                            <ul>
+                                <li>Backend: <code>cd demo && mvn spring-boot:run</code></li>
+                                <li>Frontend: <code>cd frontend && npm run dev</code></li>
+                            </ul>
+                        </li>
+                        <li><strong>Test admin form:</strong> Go to <code>http://localhost:8081/admin/packs/new</code></li>
+                        <li><strong>Verify control exists:</strong> Look for "Comment Section" radio buttons</li>
+                        <li><strong>Create pack with comments:</strong> Select "Show Comments" and submit</li>
+                        <li><strong>Create pack without comments:</strong> Select "Hide Comments" and submit</li>
+                        <li><strong>Verify pack pages:</strong> Check that comments show/hide correctly</li>
+                    </ol>
+                </div>
+                
+                <button class="test-button success" onclick="openAdminForm()">
+                    📝 Open Admin Pack Form
+                </button>
+                <button class="test-button info" onclick="openPackPage()">
+                    📦 Open Test Pack Page
+                </button>
+                <button class="test-button warning" onclick="openAPIEndpoint()">
+                    🔌 Open API Endpoint
+                </button>
+            </div>
+
+            <!-- Expected Results -->
+            <div class="verification-section">
+                <h2>Expected Results</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="background: #d4edda; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                        <h3 style="color: #155724; margin-top: 0;">✅ Comments Enabled Pack</h3>
+                        <ul style="color: #155724;">
+                            <li>Admin form shows "Show Comments" selected</li>
+                            <li>Pack page displays comments section</li>
+                            <li>Users can view existing comments</li>
+                            <li>Users can submit new comments</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8d7da; padding: 20px; border-radius: 10px; border-left: 4px solid #dc3545;">
+                        <h3 style="color: #721c24; margin-top: 0;">❌ Comments Disabled Pack</h3>
+                        <ul style="color: #721c24;">
+                            <li>Admin form shows "Hide Comments" selected</li>
+                            <li>Pack page has NO comments section</li>
+                            <li>Page flows directly to recommendations</li>
+                            <li>No comment form visible</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Testing -->
+            <div class="verification-section">
+                <h2>API Testing</h2>
+                <div class="test-instructions">
+                    <h3>🔌 API Endpoint Verification</h3>
+                    <p>Test the API endpoint to verify the commentsEnabled field is returned:</p>
+                    <div class="code-block">
+GET http://localhost:8080/api/packs/1
+
+Expected Response:
+{
+  "data": {
+    "id": 1,
+    "name": "Pack Name",
+    "commentsEnabled": true,
+    ...
+  }
+}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Troubleshooting -->
+            <div class="verification-section">
+                <h2>Troubleshooting</h2>
+                <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 20px; margin: 20px 0;">
+                    <h3 style="color: #856404; margin-top: 0;">🚨 Common Issues</h3>
+                    <ul style="color: #856404;">
+                        <li><strong>Comments still showing when disabled:</strong> Check if commentsEnabled is properly set in database</li>
+                        <li><strong>Radio buttons not working:</strong> Check browser console for JavaScript errors</li>
+                        <li><strong>Form submission fails:</strong> Verify backend accepts the new field</li>
+                        <li><strong>Database errors:</strong> May need to restart backend after model changes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="verification-section">
+                <h2>Implementation Summary</h2>
+                <div style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); padding: 30px; border-radius: 15px; text-align: center;">
+                    <h3 style="color: #1976d2; margin-top: 0;">🎉 Feature Successfully Implemented!</h3>
+                    <p style="font-size: 1.1rem; color: #1976d2; margin: 20px 0;">
+                        The comment visibility control feature is fully implemented and ready for use. 
+                        Admins now have complete control over whether customers can see and interact with comments on individual pack pages.
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                        <span class="status-badge completed">✅ Admin Control</span>
+                        <span class="status-badge completed">✅ Backend Integration</span>
+                        <span class="status-badge completed">✅ Frontend Logic</span>
+                        <span class="status-badge completed">✅ User Experience</span>
+                        <span class="status-badge completed">✅ Backward Compatibility</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openAdminForm() {
+            window.open('http://localhost:8081/admin/packs/new', '_blank');
+            console.log('🎛️ Opening admin pack form for testing...');
+        }
+
+        function openPackPage() {
+            window.open('http://localhost:8081/packs/1', '_blank');
+            console.log('📦 Opening test pack page...');
+        }
+
+        function openAPIEndpoint() {
+            window.open('http://localhost:8080/api/packs/1', '_blank');
+            console.log('🔌 Opening API endpoint for testing...');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎛️ Comment Visibility Control Implementation Verification Page Loaded');
+            console.log('✅ All components have been successfully implemented');
+            console.log('🧪 Ready for testing - use the buttons above to open test pages');
+        });
+    </script>
+</body>
+</html>

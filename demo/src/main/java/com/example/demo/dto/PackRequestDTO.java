@@ -12,4 +12,5 @@ public class PackRequestDTO {
     private List<PackItemRequestDTO> items;
     private List<Long> recommendedProductIds;
     private List<Long> recommendedPackIds;
+    private boolean hideCommentForm = false;
 }

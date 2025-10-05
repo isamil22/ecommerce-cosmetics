@@ -18,6 +18,7 @@
   "homepage": "https://github.com/isamil22/ecommerce-basic#readme",
   "description": "",
   "dependencies": {
+    "form-data": "^4.0.4",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.15.1",
     "puppeteer": "^24.22.3"

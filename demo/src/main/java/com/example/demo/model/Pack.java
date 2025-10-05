@@ -62,4 +62,7 @@ public class Pack {
             inverseJoinColumns = @JoinColumn(name = "custom_pack_id")
     )
     private List<CustomPack> recommendedCustomPacks = new ArrayList<>();
+
+    @Column(name = "hide_comment_form", nullable = false)
+    private boolean hideCommentForm = false;
 }
