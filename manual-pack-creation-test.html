@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Pack Creation Test Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .test-button.success {
+            background-color: #28a745;
+        }
+        .test-button.error {
+            background-color: #dc3545;
+        }
+        .test-button.warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-warning { background-color: #ffc107; }
+        .status-info { background-color: #17a2b8; }
+        .step-by-step {
+            counter-reset: step-counter;
+        }
+        .step {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            position: relative;
+        }
+        .step::before {
+            content: "Step " counter(step-counter);
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #007bff;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .step h3 {
+            margin-top: 10px;
+            color: #007bff;
+        }
+        .step-content {
+            margin-top: 20px;
+        }
+        .form-field {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        .form-field label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        .form-field input, .form-field textarea, .form-field select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .screenshot {
+            border: 2px dashed #dee2e6;
+            padding: 20px;
+            text-align: center;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .console-output {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+            position: relative;
+            padding-left: 30px;
+        }
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: #6c757d;
+            font-size: 16px;
+        }
+        .checklist li.completed::before {
+            content: "☑";
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Manual Pack Creation Test Guide</h1>
+        <p><strong>Test Date:</strong> <span id="testDate"></span></p>
+        <p><strong>Purpose:</strong> Step-by-step guide to manually test pack creation from the admin form</p>
+        
+        <div class="test-result info">
+            <h3>📋 Test Overview</h3>
+            <p>This guide will walk you through manually testing the pack creation functionality step by step. Follow each step carefully and check off items as you complete them.</p>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🎯 Test Checklist</h2>
+        <ul class="checklist" id="testChecklist">
+            <li>Navigate to admin pack form</li>
+            <li>Verify form loads without errors</li>
+            <li>Fill in basic pack information</li>
+            <li>Test image upload functionality</li>
+            <li>Select products for the pack</li>
+            <li>Configure product recommendations</li>
+            <li>Configure pack recommendations</li>
+            <li>Submit the form</li>
+            <li>Verify pack creation success</li>
+            <li>Check pack appears in packs list</li>
+        </ul>
+    </div>
+
+    <div class="test-container">
+        <h2>📝 Step-by-Step Test Instructions</h2>
+        
+        <div class="step-by-step">
+            <div class="step">
+                <h3>🔗 Access Admin Pack Form</h3>
+                <div class="step-content">
+                    <p><strong>Action:</strong> Navigate to the admin pack creation form</p>
+                    <div class="screenshot">
+                        <p>📷 Screenshot: Admin Pack Form Loading</p>
+                        <p><em>Take a screenshot showing the form loads correctly</em></p>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label>URL to test:</label>
+                        <input type="text" value="http://localhost:8081/admin/packs/new" readonly>
+                    </div>
+                    
+                    <div class="test-result info">
+                        <h4>✅ Expected Result:</h4>
+                        <ul>
+                            <li>Page loads without JavaScript errors</li>
+                            <li>Form displays all required fields</li>
+                            <li>Product selector shows available products</li>
+                            <li>Recommendation sections are visible</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="http://localhost:8081/admin/packs/new" target="_blank" class="test-button">🚀 Open Admin Pack Form</a>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>📝 Fill Basic Pack Information</h3>
+                <div class="step-content">
+                    <p><strong>Action:</strong> Fill in the basic pack information fields</p>
+                    
+                    <div class="form-field">
+                        <label>Pack Name:</label>
+                        <input type="text" value="Test Beauty Pack - Manual Test" readonly>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label>Description:</label>
+                        <textarea readonly>&lt;p&gt;This is a comprehensive beauty pack created through manual testing.&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Premium skincare essentials&lt;/li&gt;
+    &lt;li&gt;Professional makeup products&lt;/li&gt;
+    &lt;li&gt;Perfect for daily beauty routine&lt;/li&gt;
+    &lt;li&gt;Excellent value for money&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Perfect for:&lt;/strong&gt; Beauty enthusiasts, skincare beginners, makeup lovers&lt;/p&gt;</textarea>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label>Price:</label>
+                        <input type="number" value="129.99" readonly>
+                    </div>
+                    
+                    <div class="test-result info">
+                        <h4>✅ Expected Result:</h4>
+                        <ul>
+                            <li>All fields accept input correctly</li>
+                            <li>Rich text editor works for description</li>
+                            <li>Price field accepts decimal values</li>
+                            <li>Form validation works properly</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>🖼️ Test Image Upload</h3>
+                <div class="step-content">
+                    <p><strong>Action:</strong> Upload an image for the pack</p>
+                    
+                    <div class="form-field">
+                        <label>Image Upload:</label>
+                        <input type="file" accept="image/*">
+                    </div>
+                    
+                    <div class="test-result info">
+                        <h4>✅ Expected Result:</h4>
+                        <ul>
+                            <li>File picker opens correctly</li>
+                            <li>Image preview appears after selection</li>
+                            <li>Only image files are accepted</li>
+                            <li>Upload process works smoothly</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>🛍️ Select Products for Pack</h3>
+                <div class="step-content">
+                    <p><strong>Action:</strong> Use the product selector to add products to the pack</p>
+                    
+                    <div class="form-field">
+                        <label>Product Selection:</label>
+                        <select multiple>
+                            <option value="2">COSRX - BHA Blackhead Power Liquid - $280.00</option>
+                            <option value="3">Lip Butter Balm Treatment - $24.00</option>
+                            <option value="4">Intensive Bond Building Hair Treatment - $30.00</option>
+                        </select>
+                    </div>
+                    
+                    <div class="test-result info">
+                        <h4>✅ Expected Result:</h4>
+                        <ul>
+                            <li>Product selector shows available products</li>
+                            <li>Multiple products can be selected</li>
+                            <li>Product images and details display correctly</li>
+                            <li>Search functionality works</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>⭐ Configure Recommendations</h3>
+                <div class="step-content">
+                    <p><strong>Action:</strong> Set up product and pack recommendations</p>
+                    
+                    <div class="form-field">
+                        <label>Recommended Products:</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                            <label><input type="checkbox" checked> Product 1 - $21.25</label>
+                            <label><input type="checkbox" checked> Product 2 - $280.00</label>
+                            <label><input type="checkbox"> Product 3 - $24.00</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label>Recommended Packs:</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                            <label><input type="checkbox" checked> Offer Pack - $199.00</label>
+                        </div>
+                    </div>
+                    
+                    <div class="test-result info">
+                        <h4>✅ Expected Result:</h4>
+                        <ul>
+                            <li>Checkboxes work correctly</li>
+                            <li>Selection summary updates dynamically</li>
+                            <li>Product and pack lists display properly</li>
+                            <li>Recommendation counts are accurate</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>🚀 Submit the Form</h3>
+                <div class="step-content">
+                    <p><strong>Action:</strong> Submit the pack creation form</p>
+                    
+                    <div class="test-result warning">
+                        <h4>⚠️ Important:</h4>
+                        <p>Make sure you're logged in as an admin user before submitting. The form requires authentication.</p>
+                    </div>
+                    
+                    <div class="test-result info">
+                        <h4>✅ Expected Result:</h4>
+                        <ul>
+                            <li>Form submits without errors</li>
+                            <li>Success message appears</li>
+                            <li>Page redirects to packs list</li>
+                            <li>New pack appears in the database</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="test-result error">
+                        <h4>❌ If Errors Occur:</h4>
+                        <ul>
+                            <li>Check browser console for JavaScript errors</li>
+                            <li>Verify authentication status</li>
+                            <li>Check network tab for API errors</li>
+                            <li>Ensure all required fields are filled</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>✅ Verify Pack Creation</h3>
+                <div class="step-content">
+                    <p><strong>Action:</strong> Verify the pack was created successfully</p>
+                    
+                    <div class="form-field">
+                        <label>Check Packs List:</label>
+                        <input type="text" value="http://localhost:8081/admin/packs" readonly>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label>Check API Response:</label>
+                        <input type="text" value="http://localhost:8082/api/packs" readonly>
+                    </div>
+                    
+                    <div class="test-result info">
+                        <h4>✅ Expected Result:</h4>
+                        <ul>
+                            <li>New pack appears in admin packs list</li>
+                            <li>Pack details are correct</li>
+                            <li>API returns the new pack data</li>
+                            <li>All selected products are included</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="http://localhost:8081/admin/packs" target="_blank" class="test-button success">📋 Check Packs List</a>
+                    <a href="http://localhost:8082/api/packs" target="_blank" class="test-button">🔍 Check API</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>📊 Test Results Recording</h2>
+        <div class="console-output" id="consoleOutput">
+            <div>🧪 Manual Pack Creation Test Console</div>
+            <div>====================================</div>
+            <div>Record your test results here...</div>
+        </div>
+        
+        <div class="form-field">
+            <label>Test Results:</label>
+            <textarea id="testResults" placeholder="Record any issues, errors, or observations during testing..."></textarea>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="test-button success" onclick="markAllComplete()">✅ Mark All Complete</button>
+            <button class="test-button" onclick="exportResults()">📤 Export Results</button>
+            <button class="test-button error" onclick="clearResults()">🗑️ Clear Results</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize test date
+        document.getElementById('testDate').textContent = new Date().toLocaleString();
+
+        function logToConsole(message, type = 'info') {
+            const console = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : type === 'warning' ? '#ffd43b' : '#00ff00';
+            console.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function markAllComplete() {
+            const checklist = document.getElementById('testChecklist');
+            const items = checklist.querySelectorAll('li');
+            items.forEach(item => {
+                item.classList.add('completed');
+            });
+            logToConsole('All checklist items marked as complete', 'success');
+        }
+
+        function exportResults() {
+            const results = document.getElementById('testResults').value;
+            const console = document.getElementById('consoleOutput').innerText;
+            const data = {
+                date: new Date().toISOString(),
+                results: results,
+                console: console,
+                checklist: Array.from(document.querySelectorAll('.checklist li')).map(li => ({
+                    text: li.textContent.trim(),
+                    completed: li.classList.contains('completed')
+                }))
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pack-creation-test-results-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            logToConsole('Test results exported successfully', 'success');
+        }
+
+        function clearResults() {
+            document.getElementById('testResults').value = '';
+            document.getElementById('consoleOutput').innerHTML = `
+                <div>🧪 Manual Pack Creation Test Console</div>
+                <div>====================================</div>
+                <div>Results cleared. Ready for new test...</div>
+            `;
+            
+            const checklist = document.getElementById('testChecklist');
+            const items = checklist.querySelectorAll('li');
+            items.forEach(item => {
+                item.classList.remove('completed');
+            });
+            
+            logToConsole('Results cleared', 'info');
+        }
+
+        // Auto-log when page loads
+        window.addEventListener('load', () => {
+            logToConsole('Manual pack creation test page loaded', 'success');
+            logToConsole('Ready to begin manual testing', 'info');
+        });
+
+        // Log when checklist items are clicked
+        document.getElementById('testChecklist').addEventListener('click', function(e) {
+            if (e.target.tagName === 'LI') {
+                e.target.classList.toggle('completed');
+                const status = e.target.classList.contains('completed') ? 'completed' : 'incomplete';
+                logToConsole(`Checklist item "${e.target.textContent.trim()}" marked as ${status}`, 'info');
+            }
+        });
+    </script>
+</body>
+</html>

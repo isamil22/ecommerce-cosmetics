@@ -84,6 +84,23 @@ public class PackService {
 
         pack.setItems(items);
 
+        // Handle recommendations
+        if (packRequestDTO.getRecommendedProductIds() != null && !packRequestDTO.getRecommendedProductIds().isEmpty()) {
+            List<Product> recommendedProducts = packRequestDTO.getRecommendedProductIds().stream()
+                    .map(id -> productRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Recommended product not found with id: " + id)))
+                    .collect(Collectors.toList());
+            pack.getRecommendedProducts().addAll(recommendedProducts);
+        }
+
+        if (packRequestDTO.getRecommendedPackIds() != null && !packRequestDTO.getRecommendedPackIds().isEmpty()) {
+            List<Pack> recommendedPacks = packRequestDTO.getRecommendedPackIds().stream()
+                    .map(id -> packRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Recommended pack not found with id: " + id)))
+                    .collect(Collectors.toList());
+            pack.getRecommendedPacks().addAll(recommendedPacks);
+        }
+
         if (pack.getImageUrl() == null) {
             updatePackImage(pack);
         }

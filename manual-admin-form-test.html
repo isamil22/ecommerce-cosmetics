@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Pack Form - Manual Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #ddd;
+            background: #f9f9f9;
+        }
+        .pass { border-left-color: #4CAF50; }
+        .fail { border-left-color: #f44336; }
+        .info { border-left-color: #2196F3; }
+        .checkbox {
+            margin-right: 10px;
+        }
+        .code {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Admin Pack Form - Manual Test Guide</h1>
+    
+    <div class="warning">
+        <strong>⚠️ Prerequisites:</strong>
+        <ul>
+            <li>Backend server running on http://localhost:8080</li>
+            <li>Frontend development server running</li>
+            <li>Admin user account available</li>
+            <li>At least 3-4 products in the database</li>
+            <li>At least 1 existing pack in the database</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Pre-Test Checklist</h2>
+        
+        <div class="test-item info">
+            <input type="checkbox" class="checkbox" id="check1">
+            <label for="check1">Backend server is running (port 8080)</label>
+        </div>
+        
+        <div class="test-item info">
+            <input type="checkbox" class="checkbox" id="check2">
+            <label for="check2">Frontend development server is running</label>
+        </div>
+        
+        <div class="test-item info">
+            <input type="checkbox" class="checkbox" id="check3">
+            <label for="check3">Admin user can log in successfully</label>
+        </div>
+        
+        <div class="test-item info">
+            <input type="checkbox" class="checkbox" id="check4">
+            <label for="check4">Database has at least 3-4 products</label>
+        </div>
+        
+        <div class="test-item info">
+            <input type="checkbox" class="checkbox" id="check5">
+            <label for="check5">Database has at least 1 existing pack</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 Test Scenarios</h2>
+        
+        <h3>Test 1: Basic Form Navigation</h3>
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test1-1">
+            <label for="test1-1">Navigate to Admin → Packs → Create New Pack</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test1-2">
+            <label for="test1-2">Verify progress steps show: Basic Info → Pack Items → Recommendations → Review</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test1-3">
+            <label for="test1-3">Check that form loads without JavaScript errors in browser console</label>
+        </div>
+
+        <h3>Test 2: Recommendations Section Visibility</h3>
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test2-1">
+            <label for="test2-1">Scroll down to find "Pack Recommendations" section</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test2-2">
+            <label for="test2-2">Verify info box explains recommendation system</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test2-3">
+            <label for="test2-3">Check two-column layout: "Recommended Products" and "Recommended Packs"</label>
+        </div>
+
+        <h3>Test 3: Product Recommendations</h3>
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test3-1">
+            <label for="test3-1">Left column shows list of products with images and names</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test3-2">
+            <label for="test3-2">Product checkboxes are clickable and responsive</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test3-3">
+            <label for="test3-3">Header shows count: "Recommended Products (X)" updates when selecting</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test3-4">
+            <label for="test3-4">Selection summary at bottom shows selected product names</label>
+        </div>
+
+        <h3>Test 4: Pack Recommendations</h3>
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test4-1">
+            <label for="test4-1">Right column shows list of existing packs with images and names</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test4-2">
+            <label for="test4-2">Pack checkboxes are clickable and responsive</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test4-3">
+            <label for="test4-3">Header shows count: "Recommended Packs (X)" updates when selecting</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test4-4">
+            <label for="test4-4">Selection summary shows selected pack names</label>
+        </div>
+
+        <h3>Test 5: Form Submission with Recommendations</h3>
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test5-1">
+            <label for="test5-1">Fill in pack name, description, and price</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test5-2">
+            <label for="test5-2">Add at least one pack item with default product</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test5-3">
+            <label for="test5-3">Select 2-3 products as recommendations</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test5-4">
+            <label for="test5-4">Select 1 existing pack as recommendation (if available)</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test5-5">
+            <label for="test5-5">Submit form and verify success message</label>
+        </div>
+        
+        <div class="test-item">
+            <input type="checkbox" class="checkbox" id="test5-6">
+            <label for="test5-6">Check that pack was created with correct recommendations</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Expected Results</h2>
+        
+        <h3>Visual Elements:</h3>
+        <ul>
+            <li>✅ Recommendations section appears between "Pack Items" and "Submit" sections</li>
+            <li>✅ Two-column layout with products on left, packs on right</li>
+            <li>✅ Each item shows image, name, and price</li>
+            <li>✅ Checkboxes are properly styled and responsive</li>
+            <li>✅ Selection counts update in real-time</li>
+            <li>✅ Selection summary shows at bottom</li>
+        </ul>
+
+        <h3>Functionality:</h3>
+        <ul>
+            <li>✅ Checkboxes can be selected/deselected</li>
+            <li>✅ Multiple selections work correctly</li>
+            <li>✅ Form validation works with recommendations</li>
+            <li>✅ Form submission includes recommendation data</li>
+            <li>✅ Created pack has correct recommendations</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🐛 Common Issues & Solutions</h2>
+        
+        <div class="test-item fail">
+            <strong>Issue:</strong> Recommendations section not visible<br>
+            <strong>Solution:</strong> Check browser console for JavaScript errors, ensure all imports are correct
+        </div>
+        
+        <div class="test-item fail">
+            <strong>Issue:</strong> Product/pack lists are empty<br>
+            <strong>Solution:</strong> Verify API endpoints return data, check network requests in browser dev tools
+        </div>
+        
+        <div class="test-item fail">
+            <strong>Issue:</strong> Form submission fails<br>
+            <strong>Solution:</strong> Check backend logs, verify PackRequestDTO includes recommendation fields
+        </div>
+        
+        <div class="test-item fail">
+            <strong>Issue:</strong> Recommendations not saved<br>
+            <strong>Solution:</strong> Verify PackService.createPack() handles recommendations, check database
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Test Results</h2>
+        
+        <div class="code">
+            <strong>Test Date:</strong> _______________<br>
+            <strong>Tester:</strong> _______________<br>
+            <strong>Browser:</strong> _______________<br>
+            <strong>Overall Result:</strong> ✅ PASS / ❌ FAIL<br>
+            <strong>Notes:</strong> _______________
+        </div>
+    </div>
+
+    <script>
+        // Simple test tracking
+        let testResults = {};
+        
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                testResults[e.target.id] = e.target.checked;
+                updateSummary();
+            }
+        });
+        
+        function updateSummary() {
+            const total = document.querySelectorAll('input[type="checkbox"]').length;
+            const checked = Object.values(testResults).filter(v => v).length;
+            
+            console.log(`Tests completed: ${checked}/${total}`);
+        }
+    </script>
+</body>
+</html>

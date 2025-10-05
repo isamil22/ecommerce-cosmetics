@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Pack Card Design - Same as Product Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .test-button.success {
+            background-color: #28a745;
+        }
+        .test-button.error {
+            background-color: #dc3545;
+        }
+        .test-button.warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-warning { background-color: #ffc107; }
+        .status-info { background-color: #17a2b8; }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison-item {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .comparison-item.before {
+            background-color: #fff5f5;
+        }
+        .comparison-item.after {
+            background-color: #f0fff4;
+        }
+        .console-output {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+            position: relative;
+            padding-left: 30px;
+        }
+        .feature-list li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-size: 16px;
+        }
+        .design-specs {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test Pack Card Design - Same as Product Cards</h1>
+        <p><strong>Test Date:</strong> <span id="testDate"></span></p>
+        <p><strong>Purpose:</strong> Verify that pack cards now have identical design to product cards</p>
+        
+        <div class="test-result success">
+            <h3>✅ Pack Card Design Updated</h3>
+            <p>Pack cards now have the exact same design as product cards, including all engagement metrics, styling, and interactive elements.</p>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>📊 Before vs After Comparison</h2>
+        
+        <div class="comparison-grid">
+            <div class="comparison-item before">
+                <h3>❌ Before (Different Design)</h3>
+                <ul>
+                    <li><strong>Missing:</strong> Engagement metrics section</li>
+                    <li><strong>Missing:</strong> Star ratings and reviews</li>
+                    <li><strong>Missing:</strong> Stock status bar</li>
+                    <li><strong>Missing:</strong> Recent purchase notifications</li>
+                    <li><strong>Missing:</strong> Hover effects and animations</li>
+                    <li><strong>Different:</strong> Button styling and colors</li>
+                    <li><strong>Different:</strong> Card layout and spacing</li>
+                </ul>
+            </div>
+            
+            <div class="comparison-item after">
+                <h3>✅ After (Identical Design)</h3>
+                <ul>
+                    <li><strong>Added:</strong> Complete engagement metrics section</li>
+                    <li><strong>Added:</strong> Star ratings and review counts</li>
+                    <li><strong>Added:</strong> Stock status with urgency indicators</li>
+                    <li><strong>Added:</strong> Recent purchase notifications</li>
+                    <li><strong>Added:</strong> Hover effects and animations</li>
+                    <li><strong>Unified:</strong> Button styling (blue theme for packs)</li>
+                    <li><strong>Unified:</strong> Card layout and spacing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🎨 New Pack Card Features</h2>
+        <ul class="feature-list">
+            <li><strong>Engagement Metrics:</strong> Viewing, Added today, Viewed, Activity indicators</li>
+            <li><strong>Star Ratings:</strong> 5-star rating system with review counts</li>
+            <li><strong>Stock Status:</strong> Available/stock count with urgency indicators</li>
+            <li><strong>Recent Purchases:</strong> "X bought today" notifications</li>
+            <li><strong>Hover Effects:</strong> Scale, glow, and smooth transitions</li>
+            <li><strong>Quick Actions:</strong> Quick view button on hover</li>
+            <li><strong>Loading States:</strong> Image loading skeleton</li>
+            <li><strong>Responsive Design:</strong> Adapts to all screen sizes</li>
+            <li><strong>Blue Theme:</strong> Blue color scheme to distinguish from products</li>
+            <li><strong>Pack Badge:</strong> "📦 Pack" badge in top-left corner</li>
+        </ul>
+    </div>
+
+    <div class="test-container">
+        <h2>🔧 Technical Implementation</h2>
+        
+        <div class="design-specs">
+<strong>PackCard Component Features:</strong>
+
+✅ <strong>State Management:</strong>
+- isHovered, imageLoaded, viewingCount, recentPurchases
+- Random data generation for realistic metrics
+
+✅ <strong>Visual Elements:</strong>
+- Blue gradient badges ("📦 Pack")
+- Star rating system with reviews
+- Engagement metrics with colored dots
+- Stock status bar with urgency
+- Recent purchase notifications
+
+✅ <strong>Interactive Features:</strong>
+- Hover effects (scale, glow, transitions)
+- Quick view button
+- Smooth animations and transitions
+- Loading states and error handling
+
+✅ <strong>Styling:</strong>
+- Identical layout to ProductCard
+- Blue color theme (vs pink for products)
+- Same spacing, typography, and effects
+- Responsive grid layout
+
+✅ <strong>Navigation:</strong>
+- Proper routing to pack detail pages
+- Quick view functionality
+- Link handling
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🧪 Testing Instructions</h2>
+        
+        <div class="test-result warning">
+            <h3>⚠️ Manual Testing Required</h3>
+            <p>To verify the new pack card design, test on a pack detail page that has pack recommendations.</p>
+        </div>
+        
+        <ol>
+            <li><strong>Navigate to Pack Detail Page:</strong>
+                <ul>
+                    <li>Go to <code>http://localhost:8081/packs/3</code> (has both products and packs)</li>
+                    <li>Scroll down to the recommendations section</li>
+                </ul>
+            </li>
+            
+            <li><strong>Verify Pack Card Design:</strong>
+                <ul>
+                    <li>✅ Pack cards should look identical to product cards</li>
+                    <li>✅ Blue "📦 Pack" badge in top-left corner</li>
+                    <li>✅ Engagement metrics section at bottom of image</li>
+                    <li>✅ Star ratings and review counts</li>
+                    <li>✅ Stock status bar with urgency</li>
+                    <li>✅ Blue-themed button ("عرض التفاصيل / View Details")</li>
+                </ul>
+            </li>
+            
+            <li><strong>Test Interactions:</strong>
+                <ul>
+                    <li>✅ Hover effects (scale, glow)</li>
+                    <li>✅ Quick view button appears on hover</li>
+                    <li>✅ Button click navigates to pack page</li>
+                    <li>✅ Smooth animations and transitions</li>
+                </ul>
+            </li>
+            
+            <li><strong>Compare with Product Cards:</strong>
+                <ul>
+                    <li>✅ Same layout and spacing</li>
+                    <li>✅ Same engagement metrics structure</li>
+                    <li>✅ Only difference should be color theme (blue vs pink)</li>
+                    <li>✅ Pack badge vs category badge</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="http://localhost:8081/packs/3" target="_blank" class="test-button success">🚀 Test Pack 3 Page</a>
+            <a href="http://localhost:8081/packs/1" target="_blank" class="test-button">📦 Test Pack 1 Page</a>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>📊 Expected Results</h2>
+        
+        <div class="console-output" id="consoleOutput">
+            <div>🧪 Pack Card Design Test Console</div>
+            <div>====================================</div>
+            <div>Expected behavior after changes:</div>
+            <div></div>
+            <div>✅ Pack cards look identical to product cards</div>
+            <div>✅ Blue "📦 Pack" badges visible</div>
+            <div>✅ Engagement metrics section present</div>
+            <div>✅ Star ratings and reviews displayed</div>
+            <div>✅ Stock status bar with urgency</div>
+            <div>✅ Blue-themed buttons and effects</div>
+            <div>✅ Hover effects and animations working</div>
+            <div>✅ Quick view functionality working</div>
+        </div>
+        
+        <div class="test-result success">
+            <h3>✅ Success Criteria</h3>
+            <p>The test is successful if:</p>
+            <ul>
+                <li>Pack cards have identical layout to product cards</li>
+                <li>All engagement metrics are visible and functional</li>
+                <li>Blue color theme distinguishes packs from products</li>
+                <li>Hover effects and animations work smoothly</li>
+                <li>Navigation and interactions work correctly</li>
+                <li>Responsive design works on all screen sizes</li>
+                <li>No JavaScript errors occur</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Initialize test date
+        document.getElementById('testDate').textContent = new Date().toLocaleString();
+
+        function logToConsole(message, type = 'info') {
+            const console = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : type === 'warning' ? '#ffd43b' : '#00ff00';
+            console.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            console.scrollTop = console.scrollHeight;
+        }
+
+        // Auto-log when page loads
+        window.addEventListener('load', () => {
+            logToConsole('Pack card design test page loaded', 'success');
+            logToConsole('PackCard component has been created with identical design to ProductCard', 'info');
+            logToConsole('Ready to test the new pack card design', 'info');
+        });
+    </script>
+</body>
+</html>

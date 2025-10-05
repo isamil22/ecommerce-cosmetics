@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllProducts, getAllOrders, deleteProduct, getPendingReviews, getAllPacks, getAllCustomPacks, getAllCategories, getAllUsers } from '/src/api/apiService.js';
+import { getAllProducts, getAllOrders, deleteProduct, getPendingReviews, getAllPacks, getAllCustomPacks, getAllCategories, getAllUsers, getSettings } from '/src/api/apiService.js';
 import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiShoppingCart, FiUsers, FiPackage, FiStar, FiEye, FiEdit3, FiTrash2, FiPlus, FiArrowUpRight, FiBarChart, FiActivity, FiTarget, FiSettings } from 'react-icons/fi';
 
 const AdminDashboard = () => {
@@ -20,14 +20,15 @@ const AdminDashboard = () => {
             try {
                 setLoading(true);
                 // Fetch all dashboard data at the same time
-                const [productsResponse, ordersResponse, reviewsResponse, packsResponse, customPacksResponse, categoriesResponse, usersResponse] = await Promise.all([
+                const [productsResponse, ordersResponse, reviewsResponse, packsResponse, customPacksResponse, categoriesResponse, usersResponse, visitorCounterResponse] = await Promise.all([
                     getAllProducts(),
                     getAllOrders(),
                     getPendingReviews(),
                     getAllPacks(),
                     getAllCustomPacks(),
                     getAllCategories(),
-                    getAllUsers()
+                    getAllUsers(),
+                    getSettings()
                 ]);
 
                 // Handle products data

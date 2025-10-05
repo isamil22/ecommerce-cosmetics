@@ -10,4 +10,6 @@ public class PackRequestDTO {
     private String description;
     private double price;
     private List<PackItemRequestDTO> items;
+    private List<Long> recommendedProductIds;
+    private List<Long> recommendedPackIds;
 }
