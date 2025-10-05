@@ -2,11 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllPacks, deletePack } from '../../api/apiService'; // Correct path
 import Loader from '../../components/Loader'; // Correct path
+import { 
+    FiPlus, 
+    FiEdit3, 
+    FiThumbsUp, 
+    FiMessageSquare, 
+    FiTrash2, 
+    FiPackage,
+    FiDollarSign,
+    FiMoreVertical,
+    FiEye,
+    FiRefreshCw
+} from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
 const AdminPacksPage = () => {
     const [packs, setPacks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [deletingPackId, setDeletingPackId] = useState(null);
+    const [hoveredPackId, setHoveredPackId] = useState(null);
 
     const fetchPacks = async () => {
         try {
@@ -33,13 +48,23 @@ const AdminPacksPage = () => {
 
     const handleDelete = async (packId) => {
         if (window.confirm('Are you sure you want to delete this pack?')) {
+            setDeletingPackId(packId);
             try {
                 await deletePack(packId);
+                toast.success('Pack deleted successfully!');
                 fetchPacks(); // Refresh the list
             } catch (err) {
                 setError('Failed to delete pack.');
+                toast.error('Failed to delete pack. Please try again.');
+            } finally {
+                setDeletingPackId(null);
             }
         }
+    };
+
+    const handleRefresh = () => {
+        setLoading(true);
+        fetchPacks();
     };
 
 
@@ -52,60 +77,136 @@ const AdminPacksPage = () => {
     }
 
     return (
-        <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Manage Packs</h1>
-                <Link to="/admin/packs/new" className="bg-pink-600 text-white py-2 px-4 rounded-md hover:bg-pink-700">
-                    Add New Pack
-                </Link>
+        <div className="min-h-screen bg-gray-50 p-6">
+            {/* Enhanced Header */}
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <FiPackage className="w-7 h-7 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-800">Manage Packs</h1>
+                            <p className="text-gray-600 mt-1">Create and manage product bundles</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                        <button
+                            onClick={handleRefresh}
+                            className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                        >
+                            <FiRefreshCw className="w-4 h-4" />
+                            <span>Refresh</span>
+                        </button>
+                        <Link 
+                            to="/admin/packs/new" 
+                            className="flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                        >
+                            <FiPlus className="w-5 h-5" />
+                            <span className="font-semibold">Add New Pack</span>
+                        </Link>
+                    </div>
+                </div>
             </div>
+
+            {/* Enhanced Packs List */}
             {packs && packs.length > 0 ? (
-                <div className="bg-white shadow-md rounded-lg">
-                    <ul className="divide-y divide-gray-200">
-                        {packs.map((pack) => (
-                            <li key={pack.id} className="p-4 flex justify-between items-center">
-                                <div>
-                                    <h2 className="text-xl font-semibold text-gray-800">{pack.name}</h2>
-                                    <p className="text-gray-600">
-                                        {pack.price != null ? `$${pack.price.toFixed(2)}` : 'No price'}
-                                    </p>
+                <div className="space-y-4">
+                    {packs.map((pack) => (
+                        <div 
+                            key={pack.id} 
+                            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                            onMouseEnter={() => setHoveredPackId(pack.id)}
+                            onMouseLeave={() => setHoveredPackId(null)}
+                        >
+                            <div className="p-6">
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center space-x-4">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center">
+                                            <FiPackage className="w-8 h-8 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-xl font-bold text-gray-800 mb-1">{pack.name}</h2>
+                                            <div className="flex items-center space-x-2 text-gray-600">
+                                                <FiDollarSign className="w-4 h-4" />
+                                                <span className="font-semibold">
+                                                    {pack.price != null ? `$${pack.price.toFixed(2)}` : 'No price set'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Enhanced Action Buttons */}
+                                    <div className="flex items-center space-x-2">
+                                        <Link
+                                            to={`/admin/packs/edit/${pack.id}`}
+                                            className="group flex items-center space-x-2 px-4 py-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-lg transition-all duration-200 transform hover:scale-105"
+                                        >
+                                            <FiEdit3 className="w-4 h-4 group-hover:animate-pulse" />
+                                            <span className="font-medium">Edit</span>
+                                        </Link>
+                                        
+                                        <Link
+                                            to={`/admin/packs/${pack.id}/recommendations`}
+                                            className="group flex items-center space-x-2 px-4 py-2 text-purple-600 hover:text-white hover:bg-purple-600 rounded-lg transition-all duration-200 transform hover:scale-105"
+                                        >
+                                            <FiThumbsUp className="w-4 h-4 group-hover:animate-bounce" />
+                                            <span className="font-medium">Recommendations</span>
+                                        </Link>
+                                        
+                                        <Link
+                                            to={`/admin/packs/${pack.id}/comments`}
+                                            className="group flex items-center space-x-2 px-4 py-2 text-green-600 hover:text-white hover:bg-green-600 rounded-lg transition-all duration-200 transform hover:scale-105"
+                                        >
+                                            <FiMessageSquare className="w-4 h-4 group-hover:animate-pulse" />
+                                            <span className="font-medium">Comments</span>
+                                        </Link>
+                                        
+                                        <button
+                                            onClick={() => handleDelete(pack.id)}
+                                            disabled={deletingPackId === pack.id}
+                                            className="group flex items-center space-x-2 px-4 py-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {deletingPackId === pack.id ? (
+                                                <FiRefreshCw className="w-4 h-4 animate-spin" />
+                                            ) : (
+                                                <FiTrash2 className="w-4 h-4 group-hover:animate-pulse" />
+                                            )}
+                                            <span className="font-medium">
+                                                {deletingPackId === pack.id ? 'Deleting...' : 'Delete'}
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="space-x-4">
-                                    {/* This is the "Update" button */}
-                                    <Link
-                                        to={`/admin/packs/edit/${pack.id}`}
-                                        className="text-blue-600 hover:text-blue-800 font-medium"
-                                    >
-                                        Edit
-                                    </Link>
-                                    {/* This is the "Manage Recommendations" button */}
-                                    <Link
-                                        to={`/admin/packs/${pack.id}/recommendations`}
-                                        className="text-purple-600 hover:text-purple-800 font-medium"
-                                    >
-                                        Recommendations
-                                    </Link>
-                                    {/* This is the "Manage Comments" button */}
-                                    <Link
-                                        to={`/admin/packs/${pack.id}/comments`}
-                                        className="text-green-600 hover:text-green-800 font-medium"
-                                    >
-                                        Manage Comments
-                                    </Link>
-                                    {/* This is the "Delete" button */}
-                                    <button
-                                        onClick={() => handleDelete(pack.id)}
-                                        className="text-red-600 hover:text-red-800 font-medium"
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                                
+                                {/* Pack Description Preview */}
+                                {pack.description && (
+                                    <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                                        <p className="text-sm text-gray-600 line-clamp-2">
+                                            {pack.description.replace(/<[^>]*>/g, '').substring(0, 150)}
+                                            {pack.description.length > 150 && '...'}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : (
-                <p>No packs found.</p>
+                <div className="bg-white rounded-xl shadow-md p-12 text-center">
+                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FiPackage className="w-12 h-12 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-600 mb-2">No packs found</h3>
+                    <p className="text-gray-500 mb-6">Get started by creating your first product pack</p>
+                    <Link 
+                        to="/admin/packs/new" 
+                        className="inline-flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                        <FiPlus className="w-5 h-5" />
+                        <span className="font-semibold">Create Your First Pack</span>
+                    </Link>
+                </div>
             )}
         </div>
     );
