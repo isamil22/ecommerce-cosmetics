@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllProducts, getAllOrders, deleteProduct, getPendingReviews, getAllPacks, getAllCustomPacks, getAllCategories, getAllUsers, getSettings } from '/src/api/apiService.js';
-import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiShoppingCart, FiUsers, FiPackage, FiStar, FiEye, FiEdit3, FiTrash2, FiPlus, FiArrowUpRight, FiBarChart, FiActivity, FiTarget, FiSettings } from 'react-icons/fi';
+import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiShoppingCart, FiUsers, FiPackage, FiStar, FiEye, FiEdit3, FiTrash2, FiPlus, FiArrowUpRight, FiBarChart, FiActivity, FiTarget, FiSettings, FiRefreshCw, FiCheckCircle, FiAlertCircle, FiClock, FiZap, FiHeart, FiShield } from 'react-icons/fi';
 
 const AdminDashboard = () => {
     const [products, setProducts] = useState([]);
@@ -14,6 +14,8 @@ const AdminDashboard = () => {
     const [visitorCounterSettings, setVisitorCounterSettings] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [hoveredCard, setHoveredCard] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,6 +65,37 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleRefresh = async () => {
+        setRefreshing(true);
+        try {
+            const [productsResponse, ordersResponse, reviewsResponse, packsResponse, customPacksResponse, categoriesResponse, usersResponse, visitorCounterResponse] = await Promise.all([
+                getAllProducts(),
+                getAllOrders(),
+                getPendingReviews(),
+                getAllPacks(),
+                getAllCustomPacks(),
+                getAllCategories(),
+                getAllUsers(),
+                getSettings()
+            ]);
+
+            const productsArray = Array.isArray(productsResponse.data) ? productsResponse.data : productsResponse.data?.content || [];
+            setProducts(productsArray);
+            setOrders(ordersResponse.data || []);
+            setPendingReviews(reviewsResponse.data || []);
+            setPacks(packsResponse.data || []);
+            setCustomPacks(customPacksResponse.data || []);
+            setCategories(categoriesResponse.data || []);
+            setUsers(usersResponse.data || []);
+            setVisitorCounterSettings(visitorCounterResponse || null);
+        } catch (err) {
+            setError('Failed to refresh dashboard data.');
+            console.error(err);
+        } finally {
+            setRefreshing(false);
+        }
+    };
+
     // Calculate analytics
     const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
     const totalOrders = orders.length;
@@ -102,21 +135,49 @@ const AdminDashboard = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
-            {/* Header Section */}
+            {/* Enhanced Header Section */}
             <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-8">
                 <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-                            Admin Dashboard
-                        </h1>
-                        <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with your store today.</p>
+                    <div className="flex items-center space-x-4">
+                        <div className="relative">
+                            <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <FiBarChart className="w-8 h-8 text-white animate-pulse" />
+                            </div>
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-bounce">
+                                <FiCheckCircle className="w-3 h-3 text-white" />
+                            </div>
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-pink-600 to-blue-600 bg-clip-text text-transparent flex items-center space-x-3">
+                                <span>Admin Dashboard</span>
+                                <FiZap className="w-8 h-8 text-yellow-500 animate-pulse" />
+                            </h1>
+                            <p className="text-gray-600 mt-2 flex items-center space-x-2">
+                                <FiHeart className="w-4 h-4 text-pink-500" />
+                                <span>Welcome back! Here's what's happening with your store today.</span>
+                            </p>
+                        </div>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                            Live Status: Online
+                        <button
+                            onClick={handleRefresh}
+                            disabled={refreshing}
+                            className="flex items-center space-x-2 bg-white text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-pink-300 transition-all duration-300 group"
+                        >
+                            <FiRefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-transform duration-500 ${refreshing ? 'animate-spin' : ''}`} />
+                            <span>Refresh</span>
+                        </button>
+                        
+                        <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center space-x-2">
+                            <FiShield className="w-4 h-4 animate-pulse" />
+                            <span>Live Status: Online</span>
                         </div>
+                        
                         <div className="text-right">
-                            <p className="text-sm text-gray-500">Last updated</p>
+                            <p className="text-sm text-gray-500 flex items-center space-x-1">
+                                <FiClock className="w-3 h-3" />
+                                <span>Last updated</span>
+                            </p>
                             <p className="text-sm font-semibold text-gray-900">{new Date().toLocaleTimeString()}</p>
                         </div>
                     </div>
@@ -125,9 +186,9 @@ const AdminDashboard = () => {
 
             <div className="p-6">
                 {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 animate-pulse">
                         <div className="flex items-center">
-                            <FiActivity className="mr-2" />
+                            <FiAlertCircle className="mr-2 animate-bounce" />
                             <span className="font-semibold">Error:</span>
                             <span className="ml-2">{error}</span>
                         </div>
@@ -137,136 +198,164 @@ const AdminDashboard = () => {
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     {/* Revenue Card */}
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+                    <div 
+                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
+                        onMouseEnter={() => setHoveredCard('revenue')}
+                        onMouseLeave={() => setHoveredCard(null)}
+                    >
                         <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-6">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-green-100 text-sm font-medium">Total Revenue</p>
                                     <p className="text-white text-3xl font-bold">${totalRevenue.toFixed(2)}</p>
                                 </div>
-                                <div className="bg-white/20 rounded-full p-3">
-                                    <FiDollarSign className="w-8 h-8 text-white" />
+                                <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                    <FiDollarSign className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
                                 </div>
                             </div>
                             <div className="flex items-center mt-4">
-                                <FiTrendingUp className="w-4 h-4 text-green-200 mr-1" />
+                                <FiTrendingUp className="w-4 h-4 text-green-200 mr-1 animate-pulse" />
                                 <span className="text-green-200 text-sm">+{revenueGrowth}% from last month</span>
                             </div>
+                            {hoveredCard === 'revenue' && (
+                                <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                            )}
                         </div>
                     </div>
 
                     {/* Orders Card */}
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+                    <div 
+                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
+                        onMouseEnter={() => setHoveredCard('orders')}
+                        onMouseLeave={() => setHoveredCard(null)}
+                    >
                         <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-6">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-blue-100 text-sm font-medium">Total Orders</p>
                                     <p className="text-white text-3xl font-bold">{totalOrders}</p>
                                 </div>
-                                <div className="bg-white/20 rounded-full p-3">
-                                    <FiShoppingCart className="w-8 h-8 text-white" />
+                                <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                    <FiShoppingCart className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
                                 </div>
                             </div>
                             <div className="flex items-center mt-4">
-                                <FiTrendingUp className="w-4 h-4 text-blue-200 mr-1" />
+                                <FiTrendingUp className="w-4 h-4 text-blue-200 mr-1 animate-pulse" />
                                 <span className="text-blue-200 text-sm">+{ordersGrowth}% from last month</span>
                             </div>
+                            {hoveredCard === 'orders' && (
+                                <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                            )}
                         </div>
                     </div>
 
                     {/* Users Card */}
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+                    <div 
+                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
+                        onMouseEnter={() => setHoveredCard('users')}
+                        onMouseLeave={() => setHoveredCard(null)}
+                    >
                         <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-6">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-purple-100 text-sm font-medium">Total Users</p>
                                     <p className="text-white text-3xl font-bold">{totalUsers}</p>
                                 </div>
-                                <div className="bg-white/20 rounded-full p-3">
-                                    <FiUsers className="w-8 h-8 text-white" />
+                                <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                    <FiUsers className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
                                 </div>
                             </div>
                             <div className="flex items-center mt-4">
-                                <FiTrendingUp className="w-4 h-4 text-purple-200 mr-1" />
+                                <FiTrendingUp className="w-4 h-4 text-purple-200 mr-1 animate-pulse" />
                                 <span className="text-purple-200 text-sm">+{usersGrowth}% from last month</span>
                             </div>
+                            {hoveredCard === 'users' && (
+                                <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                            )}
                         </div>
                     </div>
 
                     {/* Products Card */}
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+                    <div 
+                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
+                        onMouseEnter={() => setHoveredCard('products')}
+                        onMouseLeave={() => setHoveredCard(null)}
+                    >
                         <div className="bg-gradient-to-br from-orange-500 to-red-600 p-6">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-orange-100 text-sm font-medium">Total Products</p>
                                     <p className="text-white text-3xl font-bold">{totalProducts}</p>
                                 </div>
-                                <div className="bg-white/20 rounded-full p-3">
-                                    <FiPackage className="w-8 h-8 text-white" />
+                                <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                    <FiPackage className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
                                 </div>
                             </div>
                             <div className="flex items-center mt-4">
-                                <FiTrendingUp className="w-4 h-4 text-orange-200 mr-1" />
+                                <FiTrendingUp className="w-4 h-4 text-orange-200 mr-1 animate-pulse" />
                                 <span className="text-orange-200 text-sm">+{productsGrowth}% from last month</span>
                             </div>
+                            {hoveredCard === 'products' && (
+                                <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                            )}
                         </div>
                     </div>
                 </div>
 
-                {/* Secondary Metrics */}
+                {/* Enhanced Secondary Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-gray-600 text-sm font-medium">Packs Available</p>
                                 <p className="text-gray-900 text-2xl font-bold">{totalPacks}</p>
                             </div>
-                            <div className="bg-pink-100 rounded-full p-3">
-                                <FiPackage className="w-6 h-6 text-pink-600" />
+                            <div className="bg-pink-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                <FiPackage className="w-6 h-6 text-pink-600 group-hover:rotate-12 transition-transform duration-300" />
                             </div>
                         </div>
-                        <Link to="/admin/packs" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2">
-                            Manage Packs <FiArrowUpRight className="w-4 h-4 ml-1" />
+                        <Link to="/admin/packs" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2 group/link">
+                            Manage Packs <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
                         </Link>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-gray-600 text-sm font-medium">Custom Packs</p>
                                 <p className="text-gray-900 text-2xl font-bold">{totalCustomPacks}</p>
                             </div>
-                            <div className="bg-purple-100 rounded-full p-3">
-                                <FiTarget className="w-6 h-6 text-purple-600" />
+                            <div className="bg-purple-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                <FiTarget className="w-6 h-6 text-purple-600 group-hover:rotate-12 transition-transform duration-300" />
                             </div>
                         </div>
-                        <Link to="/admin/custom-packs" className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center mt-2">
-                            Manage Custom Packs <FiArrowUpRight className="w-4 h-4 ml-1" />
+                        <Link to="/admin/custom-packs" className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center mt-2 group/link">
+                            Manage Custom Packs <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
                         </Link>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-gray-600 text-sm font-medium">Categories</p>
                                 <p className="text-gray-900 text-2xl font-bold">{totalCategories}</p>
                             </div>
-                            <div className="bg-blue-100 rounded-full p-3">
-                                <FiBarChart className="w-6 h-6 text-blue-600" />
+                            <div className="bg-blue-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                <FiBarChart className="w-6 h-6 text-blue-600 group-hover:rotate-12 transition-transform duration-300" />
                             </div>
                         </div>
-                        <Link to="/admin/categories" className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center mt-2">
-                            Manage Categories <FiArrowUpRight className="w-4 h-4 ml-1" />
+                        <Link to="/admin/categories" className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center mt-2 group/link">
+                            Manage Categories <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
                         </Link>
                     </div>
 
-                    {/* Visitor Counter Status */}
-                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                    {/* Enhanced Visitor Counter Status */}
+                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-gray-600 text-sm font-medium">Visitor Counter</p>
                                 <div className="flex items-center mt-1">
-                                    <div className={`w-3 h-3 rounded-full mr-2 ${visitorCounterSettings?.enabled ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    <div className={`w-3 h-3 rounded-full mr-2 ${visitorCounterSettings?.enabled ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
                                     <p className="text-gray-900 text-lg font-bold">
                                         {visitorCounterSettings?.enabled ? 'Active' : 'Disabled'}
                                     </p>
@@ -277,12 +366,12 @@ const AdminDashboard = () => {
                                     </p>
                                 )}
                             </div>
-                            <div className={`rounded-full p-3 ${visitorCounterSettings?.enabled ? 'bg-green-100' : 'bg-red-100'}`}>
-                                <FiEye className={`w-6 h-6 ${visitorCounterSettings?.enabled ? 'text-green-600' : 'text-red-600'}`} />
+                            <div className={`rounded-full p-3 group-hover:scale-110 transition-transform duration-300 ${visitorCounterSettings?.enabled ? 'bg-green-100' : 'bg-red-100'}`}>
+                                <FiEye className={`w-6 h-6 group-hover:rotate-12 transition-transform duration-300 ${visitorCounterSettings?.enabled ? 'text-green-600' : 'text-red-600'}`} />
                             </div>
                         </div>
-                        <Link to="/admin/vistorcountsetting" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2">
-                            Configure Settings <FiArrowUpRight className="w-4 h-4 ml-1" />
+                        <Link to="/admin/vistorcountsetting" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2 group/link">
+                            Configure Settings <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
                         </Link>
                     </div>
                 </div>

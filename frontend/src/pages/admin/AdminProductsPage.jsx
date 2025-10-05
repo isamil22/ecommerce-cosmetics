@@ -8,7 +8,8 @@ import {
     FiStar, FiPackage, FiTrendingUp, FiTrendingDown, FiDownload,
     FiCheck, FiX, FiAlertTriangle, FiCheckCircle,
     FiGrid, FiList, FiRefreshCw, FiSettings, FiBarChart,
-    FiDollarSign, FiUsers
+    FiDollarSign, FiUsers, FiZap, FiHeart, FiShield, FiEye,
+    FiFilter, FiSortAsc, FiSortDesc, FiMoreVertical
 } from 'react-icons/fi';
 
 const AdminProductsPage = () => {
@@ -31,6 +32,11 @@ const AdminProductsPage = () => {
     // Quick Edit Modal State
     const [editingProduct, setEditingProduct] = useState(null);
     const [showQuickEdit, setShowQuickEdit] = useState(false);
+    
+    // Animation States
+    const [hoveredProduct, setHoveredProduct] = useState(null);
+    const [deletingProductId, setDeletingProductId] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
     const handleQuickEdit = (product) => {
         setEditingProduct(product);
@@ -60,6 +66,12 @@ const AdminProductsPage = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleRefresh = async () => {
+        setRefreshing(true);
+        await fetchProducts();
+        setRefreshing(false);
     };
 
     const fetchCategories = async () => {
@@ -365,53 +377,77 @@ const AdminProductsPage = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
-            {/* Header Section */}
+            {/* Enhanced Header Section */}
             <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-8">
                 <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-                            Product Management
-                        </h1>
-                        <p className="text-gray-600 mt-2">Manage your product catalog with advanced tools and insights</p>
-                        <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
-                            <span className="flex items-center">
-                                <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+N</kbd>
-                                <span className="ml-2">New Product</span>
-                            </span>
-                            <span className="flex items-center">
-                                <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+F</kbd>
-                                <span className="ml-2">Search</span>
-                            </span>
-                            <span className="flex items-center">
-                                <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Esc</kbd>
-                                <span className="ml-2">Close Modal</span>
-                            </span>
+                    <div className="flex items-center space-x-4">
+                        <div className="relative">
+                            <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <FiPackage className="w-8 h-8 text-white animate-pulse" />
+                            </div>
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-bounce">
+                                <FiCheckCircle className="w-3 h-3 text-white" />
+                            </div>
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-pink-600 to-blue-600 bg-clip-text text-transparent flex items-center space-x-3">
+                                <span>Product Management</span>
+                                <FiZap className="w-8 h-8 text-yellow-500 animate-pulse" />
+                            </h1>
+                            <p className="text-gray-600 mt-2 flex items-center space-x-2">
+                                <FiHeart className="w-4 h-4 text-pink-500" />
+                                <span>Manage your product catalog with advanced tools and insights</span>
+                            </p>
+                            <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
+                                <span className="flex items-center">
+                                    <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+N</kbd>
+                                    <span className="ml-2">New Product</span>
+                                </span>
+                                <span className="flex items-center">
+                                    <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+F</kbd>
+                                    <span className="ml-2">Search</span>
+                                </span>
+                                <span className="flex items-center">
+                                    <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Esc</kbd>
+                                    <span className="ml-2">Close Modal</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div className="flex items-center space-x-4">
                         <button 
-                            onClick={fetchProducts}
-                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors flex items-center"
+                            onClick={handleRefresh}
+                            disabled={refreshing}
+                            className="flex items-center space-x-2 bg-white text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-pink-300 transition-all duration-300 group"
                         >
-                            <FiRefreshCw className="w-4 h-4 mr-2" />
-                            Refresh
+                            <FiRefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-transform duration-500 ${refreshing ? 'animate-spin' : ''}`} />
+                            <span>Refresh</span>
                         </button>
+                        
+                        <button
+                            onClick={exportToCSV}
+                            className="flex items-center space-x-2 bg-white text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-pink-300 transition-all duration-300 group"
+                        >
+                            <FiDownload className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
+                            <span>Export CSV</span>
+                        </button>
+                        
                         <Link 
                             to="/admin/products/new" 
-                            className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl"
+                            className="flex items-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group"
                         >
-                            <FiPlus className="w-5 h-5 mr-2" />
-                    Add New Product
-                </Link>
+                            <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+                            <span className="font-medium">Add New Product</span>
+                        </Link>
                     </div>
                 </div>
             </div>
 
             <div className="p-6">
                 {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 animate-pulse">
                         <div className="flex items-center">
-                            <FiAlertTriangle className="mr-2" />
+                            <FiAlertTriangle className="mr-2 animate-bounce" />
                             <span className="font-semibold">Error:</span>
                             <span className="ml-2">{error}</span>
                         </div>
