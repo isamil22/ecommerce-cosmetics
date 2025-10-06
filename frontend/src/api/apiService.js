@@ -274,6 +274,26 @@ export const deleteUser = (userId) => {
     return apiService.delete(`/users/${userId}`);
 };
 
+export const getUserById = (userId) => {
+    return apiService.get(`/users/${userId}`);
+};
+
+export const updateUser = (userId, userData) => {
+    return apiService.put(`/users/${userId}`, userData);
+};
+
+export const toggleUserActive = (userId) => {
+    return apiService.put(`/users/${userId}/toggle-active`);
+};
+
+export const createUser = (userData) => {
+    return apiService.post('/users', userData);
+};
+
+export const exportUsersToCsv = () => {
+    return apiService.get('/users/export', { responseType: 'blob' });
+};
+
 export const addReview = (reviewData) => {
     return apiService.post('/reviews', reviewData);
 };

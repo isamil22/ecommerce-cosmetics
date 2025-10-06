@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Analytics API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Simple Analytics API Test</h1>
+    <p>This test directly calls the analytics API to check if the data is being returned correctly.</p>
+
+    <div class="container">
+        <h2>Test Configuration</h2>
+        <label>Admin Email: <input type="text" id="adminEmail" value="admin@example.com"></label><br><br>
+        <label>Admin Password: <input type="password" id="adminPassword" value="admin123"></label><br><br>
+        <button onclick="testAPI()">🚀 Test Analytics API</button>
+        <button onclick="clearResults()">🧹 Clear</button>
+    </div>
+
+    <div class="container">
+        <h2>Results</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let authToken = null;
+
+        function getAdminEmail() {
+            return document.getElementById('adminEmail').value;
+        }
+
+        function getAdminPassword() {
+            return document.getElementById('adminPassword').value;
+        }
+
+        function showResult(message, type = 'info', details = '') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = `<strong>${type.toUpperCase()}</strong>\n${message}\n${details}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        async function testAPI() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            try {
+                // Step 1: Login
+                showResult('Step 1: Logging in as admin...', 'info');
+                
+                const loginResponse = await fetch('http://localhost:8082/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: getAdminEmail(),
+                        password: getAdminPassword()
+                    })
+                });
+
+                if (!loginResponse.ok) {
+                    const errorText = await loginResponse.text();
+                    showResult(`Login failed: HTTP ${loginResponse.status}`, 'error', errorText);
+                    return;
+                }
+
+                const loginData = await loginResponse.json();
+                authToken = loginData.token;
+                showResult('✅ Login successful!', 'success', `Token: ${authToken.substring(0, 20)}...`);
+
+                // Step 2: Get Coupons
+                showResult('Step 2: Fetching coupons data...', 'info');
+                
+                const couponsResponse = await fetch('http://localhost:8082/api/coupons', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!couponsResponse.ok) {
+                    const errorText = await couponsResponse.text();
+                    showResult(`Failed to fetch coupons: HTTP ${couponsResponse.status}`, 'error', errorText);
+                    return;
+                }
+
+                const coupons = await couponsResponse.json();
+                showResult('✅ Coupons fetched successfully!', 'success', `Found ${coupons.length} coupons`);
+
+                // Step 3: Analyze each coupon
+                showResult('Step 3: Analyzing coupon data...', 'info');
+                
+                coupons.forEach((coupon, index) => {
+                    showResult(`Coupon ${index + 1}: ${coupon.name} (${coupon.code})`, 'info', 
+                        `ID: ${coupon.id}\nTimes Used: ${coupon.timesUsed}\nUsage Limit: ${coupon.usageLimit || 'Unlimited'}\nDiscount: ${coupon.discountValue}${coupon.discountType === 'PERCENTAGE' ? '%' : '$'}\nType: ${coupon.type}\nExpires: ${new Date(coupon.expiryDate).toLocaleDateString()}`);
+                });
+
+                // Step 4: Calculate analytics (same as frontend)
+                const totalUses = coupons.reduce((sum, coupon) => sum + (coupon.timesUsed || 0), 0);
+                const activeCoupons = coupons.filter(c => c.timesUsed > 0).length;
+                const totalSavings = coupons.reduce((sum, coupon) => {
+                    const discountValue = coupon.discountType === 'PERCENTAGE' 
+                        ? (coupon.discountValue || 0) 
+                        : (coupon.discountValue || 0);
+                    return sum + (discountValue * (coupon.timesUsed || 0));
+                }, 0);
+
+                showResult('Step 4: Calculated Analytics', 'success', 
+                    `Total Coupons: ${coupons.length}\nActive Coupons: ${activeCoupons}\nTotal Uses: ${totalUses}\nTotal Savings: ${totalSavings}`);
+
+                // Step 5: Test individual coupon analytics
+                showResult('Step 5: Testing individual coupon analytics...', 'info');
+                
+                for (const coupon of coupons) {
+                    if (coupon.timesUsed > 0) {
+                        try {
+                            const analyticsResponse = await fetch(`http://localhost:8082/api/coupons/${coupon.id}/usage-statistics`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': `Bearer ${authToken}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+
+                            if (analyticsResponse.ok) {
+                                const analyticsData = await analyticsResponse.json();
+                                showResult(`✅ Analytics for ${coupon.name}:`, 'success', 
+                                    `Data points: ${analyticsData.length}\nData: ${JSON.stringify(analyticsData, null, 2)}`);
+                            } else {
+                                const errorText = await analyticsResponse.text();
+                                showResult(`❌ Failed to get analytics for ${coupon.name}: HTTP ${analyticsResponse.status}`, 'error', errorText);
+                            }
+                        } catch (error) {
+                            showResult(`❌ Error getting analytics for ${coupon.name}: ${error.message}`, 'error');
+                        }
+                    }
+                }
+
+                showResult('🎉 Test completed successfully!', 'success', 
+                    'If you see this message, the API is working correctly. The issue might be in the frontend display.');
+
+            } catch (error) {
+                showResult(`❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            showResult('Ready to test! Click the "Test Analytics API" button to start.', 'info');
+        });
+    </script>
+</body>
+</html>

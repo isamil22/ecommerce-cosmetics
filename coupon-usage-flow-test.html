@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupon Usage Flow Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .step {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .metric {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .metric.before { background: #d4edda; }
+        .metric.after { background: #cce5ff; }
+        .metric.changed { background: #fff3cd; }
+    </style>
+</head>
+<body>
+    <h1>🔄 Coupon Usage Flow Test</h1>
+    <p>This test simulates the exact scenario: using a coupon code, then checking the dashboard.</p>
+
+    <div class="container">
+        <h2>Test Configuration</h2>
+        <div class="step">
+            <label>Coupon Code: <input type="text" id="couponCode" value="1234" style="font-weight: bold;"></label><br><br>
+            <label>Admin Email: <input type="text" id="adminEmail" value="admin@example.com"></label><br><br>
+            <label>Admin Password: <input type="password" id="adminPassword" value="admin123"></label><br><br>
+            <button onclick="runCompleteFlowTest()">🚀 Run Complete Flow Test</button>
+            <button onclick="clearResults()">🧹 Clear Results</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test Results</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let authToken = null;
+        let beforeMetrics = null;
+        let afterMetrics = null;
+
+        function getCouponCode() {
+            return document.getElementById('couponCode').value;
+        }
+
+        function getAdminEmail() {
+            return document.getElementById('adminEmail').value;
+        }
+
+        function getAdminPassword() {
+            return document.getElementById('adminPassword').value;
+        }
+
+        function log(message, type = 'info', details = '') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = `<strong>${type.toUpperCase()}</strong>\n${message}\n${details}`;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function loginAsAdmin() {
+            log('🔐 Step 1: Logging in as admin...', 'info');
+            
+            const response = await fetch('http://localhost:8082/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: getAdminEmail(),
+                    password: getAdminPassword()
+                })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                log(`❌ Login failed: HTTP ${response.status}`, 'error', errorText);
+                return false;
+            }
+
+            const data = await response.json();
+            authToken = data.token;
+            log('✅ Login successful!', 'success', `Token: ${authToken.substring(0, 20)}...`);
+            return true;
+        }
+
+        async function getCouponMetrics() {
+            log('📊 Fetching current coupon metrics...', 'info');
+            
+            const response = await fetch('http://localhost:8082/api/coupons', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                log(`❌ Failed to fetch coupons: HTTP ${response.status}`, 'error', errorText);
+                return null;
+            }
+
+            const coupons = await response.json();
+            const coupon = coupons.find(c => c.code === getCouponCode());
+            
+            if (!coupon) {
+                log(`❌ Coupon "${getCouponCode()}" not found!`, 'error', `Available coupons: ${coupons.map(c => c.code).join(', ')}`);
+                return null;
+            }
+
+            const metrics = {
+                couponId: coupon.id,
+                couponCode: coupon.code,
+                couponName: coupon.name,
+                timesUsed: coupon.timesUsed || 0,
+                usageLimit: coupon.usageLimit,
+                totalUses: coupons.reduce((sum, c) => sum + (c.timesUsed || 0), 0),
+                activeCoupons: coupons.filter(c => c.timesUsed > 0).length
+            };
+
+            log(`📈 Current metrics for "${coupon.name}" (${coupon.code}):`, 'info', 
+                `Times Used: ${metrics.timesUsed}\nUsage Limit: ${metrics.usageLimit || 'Unlimited'}\nTotal System Uses: ${metrics.totalUses}\nActive Coupons: ${metrics.activeCoupons}`);
+            
+            return metrics;
+        }
+
+        async function placeOrderWithCoupon() {
+            log('🛒 Step 2: Placing order with coupon...', 'info');
+            
+            const orderData = {
+                clientFullName: 'Test User ' + Date.now(),
+                email: `test${Date.now()}@example.com`,
+                city: 'Test City',
+                address: 'Test Address',
+                phoneNumber: '1234567890',
+                couponCode: getCouponCode(),
+                cartItems: [
+                    {
+                        productId: 1,
+                        quantity: 1
+                    }
+                ]
+            };
+
+            const response = await fetch('http://localhost:8082/api/orders/guest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                log(`❌ Failed to place order: HTTP ${response.status}`, 'error', errorText);
+                return false;
+            }
+
+            const order = await response.json();
+            log('✅ Order placed successfully!', 'success', 
+                `Order ID: ${order.id}\nCoupon Code: ${getCouponCode()}\nCustomer: ${orderData.clientFullName}`);
+            
+            return true;
+        }
+
+        async function checkUpdatedMetrics() {
+            log('📊 Step 3: Checking updated metrics...', 'info');
+            
+            // Wait a moment for the database to update
+            await wait(2000);
+            
+            const response = await fetch('http://localhost:8082/api/coupons', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                log(`❌ Failed to fetch updated coupons: HTTP ${response.status}`, 'error', errorText);
+                return null;
+            }
+
+            const coupons = await response.json();
+            const coupon = coupons.find(c => c.code === getCouponCode());
+            
+            if (!coupon) {
+                log(`❌ Coupon "${getCouponCode()}" not found after order!`, 'error');
+                return null;
+            }
+
+            const metrics = {
+                couponId: coupon.id,
+                couponCode: coupon.code,
+                couponName: coupon.name,
+                timesUsed: coupon.timesUsed || 0,
+                usageLimit: coupon.usageLimit,
+                totalUses: coupons.reduce((sum, c) => sum + (c.timesUsed || 0), 0),
+                activeCoupons: coupons.filter(c => c.timesUsed > 0).length
+            };
+
+            log(`📈 Updated metrics for "${coupon.name}" (${coupon.code}):`, 'info', 
+                `Times Used: ${metrics.timesUsed}\nUsage Limit: ${metrics.usageLimit || 'Unlimited'}\nTotal System Uses: ${metrics.totalUses}\nActive Coupons: ${metrics.activeCoupons}`);
+            
+            return metrics;
+        }
+
+        function compareMetrics(before, after) {
+            log('🔍 Step 4: Comparing metrics...', 'info');
+            
+            if (!before || !after) {
+                log('❌ Cannot compare - missing before or after data', 'error');
+                return;
+            }
+
+            const comparison = {
+                timesUsed: {
+                    before: before.timesUsed,
+                    after: after.timesUsed,
+                    changed: after.timesUsed > before.timesUsed
+                },
+                totalUses: {
+                    before: before.totalUses,
+                    after: after.totalUses,
+                    changed: after.totalUses > before.totalUses
+                },
+                activeCoupons: {
+                    before: before.activeCoupons,
+                    after: after.activeCoupons,
+                    changed: after.activeCoupons !== before.activeCoupons
+                }
+            };
+
+            let comparisonHTML = `
+<div style="margin: 10px 0;">
+    <div class="metric before">Before: ${comparison.timesUsed.before}</div>
+    <div class="metric after">After: ${comparison.timesUsed.after}</div>
+    <div class="metric ${comparison.timesUsed.changed ? 'changed' : ''}">Changed: ${comparison.timesUsed.changed ? '✅ Yes' : '❌ No'}</div>
+</div>
+<div style="margin: 10px 0;">
+    <strong>Times Used:</strong> ${comparison.timesUsed.before} → ${comparison.timesUsed.after} 
+    <span class="highlight">${comparison.timesUsed.changed ? '(INCREASED!)' : '(NO CHANGE)'}</span>
+</div>
+<div style="margin: 10px 0;">
+    <strong>Total System Uses:</strong> ${comparison.totalUses.before} → ${comparison.totalUses.after} 
+    <span class="highlight">${comparison.totalUses.changed ? '(INCREASED!)' : '(NO CHANGE)'}</span>
+</div>
+<div style="margin: 10px 0;">
+    <strong>Active Coupons:</strong> ${comparison.activeCoupons.before} → ${comparison.activeCoupons.after} 
+    <span class="highlight">${comparison.activeCoupons.changed ? '(CHANGED!)' : '(NO CHANGE)'}</span>
+</div>
+`;
+
+            if (comparison.timesUsed.changed && comparison.totalUses.changed) {
+                log('🎉 SUCCESS: Dashboard should show updated numbers!', 'success', comparisonHTML);
+            } else {
+                log('⚠️ ISSUE: Dashboard numbers did not update as expected', 'warning', comparisonHTML);
+            }
+
+            return comparison;
+        }
+
+        async function runCompleteFlowTest() {
+            clearResults();
+            
+            try {
+                // Step 1: Login
+                const loginSuccess = await loginAsAdmin();
+                if (!loginSuccess) return;
+
+                await wait(1000);
+
+                // Step 2: Get initial metrics
+                beforeMetrics = await getCouponMetrics();
+                if (!beforeMetrics) return;
+
+                await wait(1000);
+
+                // Step 3: Place order with coupon
+                const orderSuccess = await placeOrderWithCoupon();
+                if (!orderSuccess) return;
+
+                await wait(2000);
+
+                // Step 4: Get updated metrics
+                afterMetrics = await checkUpdatedMetrics();
+                if (!afterMetrics) return;
+
+                await wait(1000);
+
+                // Step 5: Compare results
+                const comparison = compareMetrics(beforeMetrics, afterMetrics);
+
+                // Step 6: Final summary
+                if (comparison && comparison.timesUsed.changed) {
+                    log('🎯 FINAL RESULT: The coupon usage tracking is working correctly!', 'success', 
+                        'When you go to the admin dashboard now, you should see the updated numbers.\n\n' +
+                        'If the dashboard still shows old numbers, try:\n' +
+                        '1. Click the "Refresh Data" button in the dashboard\n' +
+                        '2. Wait for the auto-refresh (every 30 seconds)\n' +
+                        '3. Check the browser console for any errors');
+                } else {
+                    log('🚨 FINAL RESULT: There is an issue with coupon usage tracking!', 'error', 
+                        'The database is not being updated when orders are placed with coupons.\n\n' +
+                        'This suggests an issue in the OrderService.createOrder method.');
+                }
+
+            } catch (error) {
+                log(`❌ Test failed with error: ${error.message}`, 'error');
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            beforeMetrics = null;
+            afterMetrics = null;
+        }
+
+        // Auto-start test on page load
+        window.addEventListener('load', () => {
+            log('Ready to test! Click "Run Complete Flow Test" to start.', 'info');
+        });
+    </script>
+</body>
+</html>

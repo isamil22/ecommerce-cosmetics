@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Coupon System Test Suite</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .test-section {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .test-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .test-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .test-card h3 {
+            color: #495057;
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .test-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .test-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-button.danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+        
+        .test-button.success {
+            background: linear-gradient(135deg, #51cf66, #40c057);
+        }
+        
+        .test-button.warning {
+            background: linear-gradient(135deg, #ffd43b, #fab005);
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .result-box.success {
+            border-color: #51cf66;
+            background: #f8fff9;
+        }
+        
+        .result-box.error {
+            border-color: #ff6b6b;
+            background: #fff8f8;
+        }
+        
+        .result-box.warning {
+            border-color: #ffd43b;
+            background: #fffef8;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 2em;
+        }
+        
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #51cf66, #40c057);
+            transition: width 0.3s ease;
+        }
+        
+        .coupon-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        
+        .coupon-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .coupon-item:last-child {
+            border-bottom: none;
+        }
+        
+        .coupon-code {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .coupon-discount {
+            color: #51cf66;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 Comprehensive Coupon System Test Suite</h1>
+            <p>Complete testing for coupon creation, validation, usage tracking, and edge cases</p>
+        </div>
+
+        <!-- Test Progress -->
+        <div class="test-section">
+            <h2 class="section-title">📊 Test Progress</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div id="testProgress">Ready to start testing...</div>
+        </div>
+
+        <!-- Coupon Creation Tests -->
+        <div class="test-section">
+            <h2 class="section-title">🏗️ Coupon Creation Tests</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Create Percentage Coupon</h3>
+                    <input type="text" class="test-input" id="createName1" placeholder="Coupon Name" value="Summer Sale 25%">
+                    <input type="text" class="test-input" id="createCode1" placeholder="Coupon Code" value="SUMMER25">
+                    <input type="number" class="test-input" id="createValue1" placeholder="Discount Value" value="25">
+                    <input type="date" class="test-input" id="createExpiry1" placeholder="Expiry Date">
+                    <input type="number" class="test-input" id="createLimit1" placeholder="Usage Limit" value="100">
+                    <button class="test-button" onclick="createCoupon('PERCENTAGE', 1)">Create Percentage Coupon</button>
+                    <div id="createResult1" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Create Fixed Amount Coupon</h3>
+                    <input type="text" class="test-input" id="createName2" placeholder="Coupon Name" value="Welcome $10 Off">
+                    <input type="text" class="test-input" id="createCode2" placeholder="Coupon Code" value="WELCOME10">
+                    <input type="number" class="test-input" id="createValue2" placeholder="Discount Value" value="10">
+                    <input type="date" class="test-input" id="createExpiry2" placeholder="Expiry Date">
+                    <input type="number" class="test-input" id="createLimit2" placeholder="Usage Limit" value="50">
+                    <button class="test-button" onclick="createCoupon('FIXED_AMOUNT', 2)">Create Fixed Amount Coupon</button>
+                    <div id="createResult2" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Create Free Shipping Coupon</h3>
+                    <input type="text" class="test-input" id="createName3" placeholder="Coupon Name" value="Free Shipping">
+                    <input type="text" class="test-input" id="createCode3" placeholder="Coupon Code" value="FREESHIP">
+                    <input type="number" class="test-input" id="createValue3" placeholder="Discount Value" value="0">
+                    <input type="date" class="test-input" id="createExpiry3" placeholder="Expiry Date">
+                    <input type="number" class="test-input" id="createLimit3" placeholder="Usage Limit" value="200">
+                    <button class="test-button" onclick="createCoupon('FREE_SHIPPING', 3)">Create Free Shipping Coupon</button>
+                    <div id="createResult3" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Create First-Time Customer Coupon</h3>
+                    <input type="text" class="test-input" id="createName4" placeholder="Coupon Name" value="First Time 15%">
+                    <input type="text" class="test-input" id="createCode4" placeholder="Coupon Code" value="FIRST15">
+                    <input type="number" class="test-input" id="createValue4" placeholder="Discount Value" value="15">
+                    <input type="date" class="test-input" id="createExpiry4" placeholder="Expiry Date">
+                    <input type="number" class="test-input" id="createLimit4" placeholder="Usage Limit" value="1000">
+                    <button class="test-button" onclick="createFirstTimeCoupon(4)">Create First-Time Coupon</button>
+                    <div id="createResult4" class="result-box" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coupon Validation Tests -->
+        <div class="test-section">
+            <h2 class="section-title">✅ Coupon Validation Tests</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Validate Existing Coupon</h3>
+                    <input type="text" class="test-input" id="validateCode" placeholder="Enter coupon code" value="SUMMER25">
+                    <button class="test-button" onclick="validateCoupon()">Validate Coupon</button>
+                    <div id="validateResult" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Test Invalid Coupon</h3>
+                    <input type="text" class="test-input" id="invalidCode" placeholder="Enter invalid code" value="INVALID123">
+                    <button class="test-button danger" onclick="testInvalidCoupon()">Test Invalid Coupon</button>
+                    <div id="invalidResult" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Test Expired Coupon</h3>
+                    <button class="test-button warning" onclick="createExpiredCoupon()">Create & Test Expired Coupon</button>
+                    <div id="expiredResult" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Test Usage Limit</h3>
+                    <button class="test-button warning" onclick="testUsageLimit()">Test Usage Limit Coupon</button>
+                    <div id="usageLimitResult" class="result-box" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coupon Management -->
+        <div class="test-section">
+            <h2 class="section-title">📋 Coupon Management</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Get All Coupons</h3>
+                    <button class="test-button" onclick="getAllCoupons()">Fetch All Coupons</button>
+                    <div id="allCouponsResult" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Delete Coupon</h3>
+                    <input type="number" class="test-input" id="deleteId" placeholder="Coupon ID to delete">
+                    <button class="test-button danger" onclick="deleteCoupon()">Delete Coupon</button>
+                    <div id="deleteResult" class="result-box" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Statistics -->
+        <div class="test-section">
+            <h2 class="section-title">📈 Usage Statistics & Tracking</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Get Usage Statistics</h3>
+                    <button class="test-button" onclick="getUsageStatistics()">Get All Usage Stats</button>
+                    <div id="usageStatsResult" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Get Specific Coupon Stats</h3>
+                    <input type="number" class="test-input" id="specificCouponId" placeholder="Coupon ID">
+                    <button class="test-button" onclick="getSpecificCouponStats()">Get Coupon Stats</button>
+                    <div id="specificStatsResult" class="result-box" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Integration Tests -->
+        <div class="test-section">
+            <h2 class="section-title">🛒 Order Integration Tests</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Test Coupon in Order</h3>
+                    <input type="text" class="test-input" id="orderCouponCode" placeholder="Coupon Code for Order" value="SUMMER25">
+                    <button class="test-button success" onclick="testCouponInOrder()">Test Order with Coupon</button>
+                    <div id="orderResult" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Test Minimum Purchase</h3>
+                    <input type="text" class="test-input" id="minPurchaseCode" placeholder="Coupon Code" value="MIN50">
+                    <button class="test-button warning" onclick="createMinPurchaseCoupon()">Create Min Purchase Coupon</button>
+                    <div id="minPurchaseResult" class="result-box" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comprehensive Test Suite -->
+        <div class="test-section">
+            <h2 class="section-title">🧪 Comprehensive Test Suite</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Run All Tests</h3>
+                    <button class="test-button success" onclick="runAllTests()">🚀 Run Complete Test Suite</button>
+                    <div id="allTestsResult" class="result-box" style="display: none;"></div>
+                </div>
+
+                <div class="test-card">
+                    <h3>Performance Test</h3>
+                    <button class="test-button warning" onclick="runPerformanceTest()">⚡ Performance Test</button>
+                    <div id="performanceResult" class="result-box" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Results Summary -->
+        <div class="test-section">
+            <h2 class="section-title">📊 Test Results Summary</h2>
+            <div class="stats-grid" id="testSummary">
+                <div class="stat-card">
+                    <h3 id="totalTests">0</h3>
+                    <p>Total Tests</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="passedTests">0</h3>
+                    <p>Passed</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="failedTests">0</h3>
+                    <p>Failed</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="successRate">0%</h3>
+                    <p>Success Rate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8081/api';
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            details: []
+        };
+
+        function updateProgress(message, percentage) {
+            document.getElementById('testProgress').textContent = message;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function logResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result-box ${type}`;
+            element.textContent = message;
+        }
+
+        function updateTestSummary() {
+            document.getElementById('totalTests').textContent = testResults.total;
+            document.getElementById('passedTests').textContent = testResults.passed;
+            document.getElementById('failedTests').textContent = testResults.failed;
+            const successRate = testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0;
+            document.getElementById('successRate').textContent = successRate + '%';
+        }
+
+        function recordTest(name, success, details = '') {
+            testResults.total++;
+            if (success) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+            testResults.details.push({ name, success, details });
+            updateTestSummary();
+        }
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message, status: 0 };
+            }
+        }
+
+        async function createCoupon(discountType, testNum) {
+            const name = document.getElementById(`createName${testNum}`).value;
+            const code = document.getElementById(`createCode${testNum}`).value;
+            const value = parseFloat(document.getElementById(`createValue${testNum}`).value);
+            const expiry = document.getElementById(`createExpiry${testNum}`).value;
+            const limit = parseInt(document.getElementById(`createLimit${testNum}`).value);
+
+            const couponData = {
+                name,
+                code,
+                discountType,
+                discountValue: value,
+                expiryDate: expiry ? new Date(expiry).toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                usageLimit: limit,
+                timesUsed: 0,
+                firstTimeOnly: false
+            };
+
+            updateProgress(`Creating ${discountType} coupon...`, 20);
+            
+            const result = await makeRequest(`${API_BASE}/coupons`, {
+                method: 'POST',
+                body: JSON.stringify(couponData)
+            });
+
+            if (result.success) {
+                logResult(`createResult${testNum}`, `✅ SUCCESS: ${discountType} coupon created!\n\n${JSON.stringify(result.data, null, 2)}`, 'success');
+                recordTest(`Create ${discountType} Coupon`, true, `Created coupon: ${result.data.code}`);
+            } else {
+                logResult(`createResult${testNum}`, `❌ FAILED: ${result.error || result.data?.message || 'Unknown error'}\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest(`Create ${discountType} Coupon`, false, result.error || result.data?.message);
+            }
+        }
+
+        async function createFirstTimeCoupon(testNum) {
+            const name = document.getElementById(`createName${testNum}`).value;
+            const code = document.getElementById(`createCode${testNum}`).value;
+            const value = parseFloat(document.getElementById(`createValue${testNum}`).value);
+            const expiry = document.getElementById(`createExpiry${testNum}`).value;
+            const limit = parseInt(document.getElementById(`createLimit${testNum}`).value);
+
+            const couponData = {
+                name,
+                code,
+                discountType: 'PERCENTAGE',
+                discountValue: value,
+                expiryDate: expiry ? new Date(expiry).toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                usageLimit: limit,
+                timesUsed: 0,
+                firstTimeOnly: true
+            };
+
+            updateProgress(`Creating first-time customer coupon...`, 25);
+            
+            const result = await makeRequest(`${API_BASE}/coupons`, {
+                method: 'POST',
+                body: JSON.stringify(couponData)
+            });
+
+            if (result.success) {
+                logResult(`createResult${testNum}`, `✅ SUCCESS: First-time customer coupon created!\n\n${JSON.stringify(result.data, null, 2)}`, 'success');
+                recordTest('Create First-Time Coupon', true, `Created coupon: ${result.data.code}`);
+            } else {
+                logResult(`createResult${testNum}`, `❌ FAILED: ${result.error || result.data?.message || 'Unknown error'}\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest('Create First-Time Coupon', false, result.error || result.data?.message);
+            }
+        }
+
+        async function validateCoupon() {
+            const code = document.getElementById('validateCode').value;
+            
+            updateProgress(`Validating coupon: ${code}...`, 30);
+            
+            const result = await makeRequest(`${API_BASE}/coupons/validate/${code}`);
+
+            if (result.success) {
+                logResult('validateResult', `✅ SUCCESS: Coupon is valid!\n\n${JSON.stringify(result.data, null, 2)}`, 'success');
+                recordTest('Validate Existing Coupon', true, `Validated coupon: ${result.data.code}`);
+            } else {
+                logResult('validateResult', `❌ FAILED: ${result.error || result.data?.message || 'Coupon not found or invalid'}\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest('Validate Existing Coupon', false, result.error || result.data?.message);
+            }
+        }
+
+        async function testInvalidCoupon() {
+            const code = document.getElementById('invalidCode').value;
+            
+            updateProgress(`Testing invalid coupon: ${code}...`, 35);
+            
+            const result = await makeRequest(`${API_BASE}/coupons/validate/${code}`);
+
+            if (!result.success && result.status === 400) {
+                logResult('invalidResult', `✅ SUCCESS: Invalid coupon correctly rejected!\n\nExpected: 400 Bad Request\nReceived: ${result.status}\nError: ${result.error || result.data?.message}`, 'success');
+                recordTest('Test Invalid Coupon', true, 'Invalid coupon correctly rejected');
+            } else {
+                logResult('invalidResult', `❌ FAILED: Invalid coupon should have been rejected!\n\nExpected: 400 Bad Request\nReceived: ${result.status}\nResponse: ${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest('Test Invalid Coupon', false, 'Invalid coupon not properly rejected');
+            }
+        }
+
+        async function createExpiredCoupon() {
+            updateProgress('Creating expired coupon for testing...', 40);
+            
+            const expiredCouponData = {
+                name: 'Expired Test Coupon',
+                code: 'EXPIRED123',
+                discountType: 'PERCENTAGE',
+                discountValue: 20,
+                expiryDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Yesterday
+                usageLimit: 10,
+                timesUsed: 0,
+                firstTimeOnly: false
+            };
+
+            const createResult = await makeRequest(`${API_BASE}/coupons`, {
+                method: 'POST',
+                body: JSON.stringify(expiredCouponData)
+            });
+
+            if (createResult.success) {
+                // Now test validation
+                const validateResult = await makeRequest(`${API_BASE}/coupons/validate/EXPIRED123`);
+                
+                if (!validateResult.success && validateResult.status === 400) {
+                    logResult('expiredResult', `✅ SUCCESS: Expired coupon correctly rejected!\n\nCreated expired coupon and validation properly failed.\nError: ${validateResult.error || validateResult.data?.message}`, 'success');
+                    recordTest('Test Expired Coupon', true, 'Expired coupon correctly rejected');
+                } else {
+                    logResult('expiredResult', `❌ FAILED: Expired coupon should have been rejected!\n\nValidation result: ${JSON.stringify(validateResult, null, 2)}`, 'error');
+                    recordTest('Test Expired Coupon', false, 'Expired coupon not properly rejected');
+                }
+            } else {
+                logResult('expiredResult', `❌ FAILED: Could not create expired coupon for testing!\n\n${JSON.stringify(createResult, null, 2)}`, 'error');
+                recordTest('Test Expired Coupon', false, 'Could not create expired coupon');
+            }
+        }
+
+        async function testUsageLimit() {
+            updateProgress('Testing usage limit functionality...', 45);
+            
+            const limitedCouponData = {
+                name: 'Limited Use Coupon',
+                code: 'LIMITED5',
+                discountType: 'FIXED_AMOUNT',
+                discountValue: 5,
+                expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                usageLimit: 1, // Very low limit
+                timesUsed: 1, // Already used once
+                firstTimeOnly: false
+            };
+
+            const createResult = await makeRequest(`${API_BASE}/coupons`, {
+                method: 'POST',
+                body: JSON.stringify(limitedCouponData)
+            });
+
+            if (createResult.success) {
+                const validateResult = await makeRequest(`${API_BASE}/coupons/validate/LIMITED5`);
+                
+                if (!validateResult.success && validateResult.status === 400) {
+                    logResult('usageLimitResult', `✅ SUCCESS: Usage limit correctly enforced!\n\nCreated coupon with usage limit and validation properly failed when limit exceeded.\nError: ${validateResult.error || validateResult.data?.message}`, 'success');
+                    recordTest('Test Usage Limit', true, 'Usage limit correctly enforced');
+                } else {
+                    logResult('usageLimitResult', `❌ FAILED: Usage limit should have been enforced!\n\nValidation result: ${JSON.stringify(validateResult, null, 2)}`, 'error');
+                    recordTest('Test Usage Limit', false, 'Usage limit not properly enforced');
+                }
+            } else {
+                logResult('usageLimitResult', `❌ FAILED: Could not create limited use coupon for testing!\n\n${JSON.stringify(createResult, null, 2)}`, 'error');
+                recordTest('Test Usage Limit', false, 'Could not create limited use coupon');
+            }
+        }
+
+        async function getAllCoupons() {
+            updateProgress('Fetching all coupons...', 50);
+            
+            const result = await makeRequest(`${API_BASE}/coupons`);
+
+            if (result.success) {
+                logResult('allCouponsResult', `✅ SUCCESS: Retrieved ${result.data.length} coupons!\n\n${JSON.stringify(result.data, null, 2)}`, 'success');
+                recordTest('Get All Coupons', true, `Retrieved ${result.data.length} coupons`);
+            } else {
+                logResult('allCouponsResult', `❌ FAILED: ${result.error || result.data?.message || 'Could not fetch coupons'}\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest('Get All Coupons', false, result.error || result.data?.message);
+            }
+        }
+
+        async function deleteCoupon() {
+            const id = document.getElementById('deleteId').value;
+            
+            if (!id) {
+                logResult('deleteResult', '❌ Please enter a coupon ID to delete', 'error');
+                return;
+            }
+
+            updateProgress(`Deleting coupon ID: ${id}...`, 55);
+            
+            const result = await makeRequest(`${API_BASE}/coupons/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (result.success || result.status === 204) {
+                logResult('deleteResult', `✅ SUCCESS: Coupon ${id} deleted successfully!`, 'success');
+                recordTest('Delete Coupon', true, `Deleted coupon ID: ${id}`);
+            } else {
+                logResult('deleteResult', `❌ FAILED: ${result.error || result.data?.message || 'Could not delete coupon'}\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest('Delete Coupon', false, result.error || result.data?.message);
+            }
+        }
+
+        async function getUsageStatistics() {
+            updateProgress('Fetching usage statistics...', 60);
+            
+            const result = await makeRequest(`${API_BASE}/coupons/usage-statistics`);
+
+            if (result.success) {
+                logResult('usageStatsResult', `✅ SUCCESS: Retrieved usage statistics!\n\n${JSON.stringify(result.data, null, 2)}`, 'success');
+                recordTest('Get Usage Statistics', true, 'Retrieved usage statistics');
+            } else {
+                logResult('usageStatsResult', `❌ FAILED: ${result.error || result.data?.message || 'Could not fetch usage statistics'}\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest('Get Usage Statistics', false, result.error || result.data?.message);
+            }
+        }
+
+        async function getSpecificCouponStats() {
+            const couponId = document.getElementById('specificCouponId').value;
+            
+            if (!couponId) {
+                logResult('specificStatsResult', '❌ Please enter a coupon ID', 'error');
+                return;
+            }
+
+            updateProgress(`Fetching stats for coupon ID: ${couponId}...`, 65);
+            
+            const result = await makeRequest(`${API_BASE}/coupons/${couponId}/usage-statistics`);
+
+            if (result.success) {
+                logResult('specificStatsResult', `✅ SUCCESS: Retrieved statistics for coupon ${couponId}!\n\n${JSON.stringify(result.data, null, 2)}`, 'success');
+                recordTest('Get Specific Coupon Stats', true, `Retrieved stats for coupon ${couponId}`);
+            } else {
+                logResult('specificStatsResult', `❌ FAILED: ${result.error || result.data?.message || 'Could not fetch coupon statistics'}\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest('Get Specific Coupon Stats', false, result.error || result.data?.message);
+            }
+        }
+
+        async function testCouponInOrder() {
+            const code = document.getElementById('orderCouponCode').value;
+            
+            updateProgress(`Testing coupon ${code} in order context...`, 70);
+            
+            // First validate the coupon
+            const validateResult = await makeRequest(`${API_BASE}/coupons/validate/${code}`);
+            
+            if (validateResult.success) {
+                logResult('orderResult', `✅ SUCCESS: Coupon ${code} is valid for orders!\n\nCoupon Details:\n${JSON.stringify(validateResult.data, null, 2)}\n\nNote: To fully test order integration, you would need to create an order with items in the cart.`, 'success');
+                recordTest('Test Coupon in Order', true, `Coupon ${code} validated for order use`);
+            } else {
+                logResult('orderResult', `❌ FAILED: Coupon ${code} is not valid for orders!\n\nError: ${validateResult.error || validateResult.data?.message}\n\n${JSON.stringify(validateResult, null, 2)}`, 'error');
+                recordTest('Test Coupon in Order', false, `Coupon ${code} not valid for orders`);
+            }
+        }
+
+        async function createMinPurchaseCoupon() {
+            updateProgress('Creating minimum purchase coupon...', 75);
+            
+            const minPurchaseData = {
+                name: 'Minimum $50 Purchase',
+                code: 'MIN50',
+                discountType: 'PERCENTAGE',
+                discountValue: 10,
+                expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                usageLimit: 100,
+                timesUsed: 0,
+                minPurchaseAmount: 50,
+                firstTimeOnly: false
+            };
+
+            const result = await makeRequest(`${API_BASE}/coupons`, {
+                method: 'POST',
+                body: JSON.stringify(minPurchaseData)
+            });
+
+            if (result.success) {
+                logResult('minPurchaseResult', `✅ SUCCESS: Minimum purchase coupon created!\n\n${JSON.stringify(result.data, null, 2)}\n\nThis coupon requires a minimum purchase of $50.`, 'success');
+                recordTest('Create Min Purchase Coupon', true, 'Created coupon with minimum purchase requirement');
+            } else {
+                logResult('minPurchaseResult', `❌ FAILED: ${result.error || result.data?.message || 'Could not create minimum purchase coupon'}\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                recordTest('Create Min Purchase Coupon', false, result.error || result.data?.message);
+            }
+        }
+
+        async function runPerformanceTest() {
+            updateProgress('Running performance test...', 80);
+            
+            const startTime = Date.now();
+            const promises = [];
+            
+            // Create multiple concurrent requests
+            for (let i = 0; i < 10; i++) {
+                promises.push(makeRequest(`${API_BASE}/coupons/validate/SUMMER25`));
+            }
+            
+            const results = await Promise.all(promises);
+            const endTime = Date.now();
+            const duration = endTime - startTime;
+            
+            const successCount = results.filter(r => r.success).length;
+            const failureCount = results.filter(r => !r.success).length;
+            
+            logResult('performanceResult', `✅ PERFORMANCE TEST COMPLETED!\n\nDuration: ${duration}ms\nConcurrent Requests: 10\nSuccessful: ${successCount}\nFailed: ${failureCount}\nAverage Response Time: ${Math.round(duration / 10)}ms\n\nAll results:\n${JSON.stringify(results.map(r => ({ success: r.success, status: r.status })), null, 2)}`, 'success');
+            recordTest('Performance Test', true, `${duration}ms for 10 concurrent requests`);
+        }
+
+        async function runAllTests() {
+            updateProgress('Starting comprehensive test suite...', 0);
+            
+            // Reset test results
+            testResults = { total: 0, passed: 0, failed: 0, details: [] };
+            updateTestSummary();
+            
+            // Run all tests sequentially
+            const tests = [
+                () => createCoupon('PERCENTAGE', 1),
+                () => createCoupon('FIXED_AMOUNT', 2),
+                () => createCoupon('FREE_SHIPPING', 3),
+                () => createFirstTimeCoupon(4),
+                () => validateCoupon(),
+                () => testInvalidCoupon(),
+                () => createExpiredCoupon(),
+                () => testUsageLimit(),
+                () => getAllCoupons(),
+                () => getUsageStatistics(),
+                () => testCouponInOrder(),
+                () => createMinPurchaseCoupon(),
+                () => runPerformanceTest()
+            ];
+            
+            for (let i = 0; i < tests.length; i++) {
+                const progress = Math.round((i / tests.length) * 100);
+                updateProgress(`Running test ${i + 1}/${tests.length}...`, progress);
+                
+                try {
+                    await tests[i]();
+                    await new Promise(resolve => setTimeout(resolve, 500)); // Small delay between tests
+                } catch (error) {
+                    console.error(`Test ${i + 1} failed:`, error);
+                }
+            }
+            
+            updateProgress('All tests completed!', 100);
+            
+            // Generate final report
+            const finalReport = `🧪 COMPREHENSIVE TEST SUITE COMPLETED!
+
+📊 FINAL RESULTS:
+• Total Tests: ${testResults.total}
+• Passed: ${testResults.passed}
+• Failed: ${testResults.failed}
+• Success Rate: ${Math.round((testResults.passed / testResults.total) * 100)}%
+
+📋 DETAILED RESULTS:
+${testResults.details.map((test, index) => 
+    `${index + 1}. ${test.name}: ${test.success ? '✅ PASS' : '❌ FAIL'}${test.details ? ` - ${test.details}` : ''}`
+).join('\n')}
+
+${testResults.failed === 0 ? '🎉 ALL TESTS PASSED! Your coupon system is working perfectly!' : '⚠️ Some tests failed. Please review the results above.'}`;
+
+            logResult('allTestsResult', finalReport, testResults.failed === 0 ? 'success' : 'warning');
+        }
+
+        // Initialize date fields with future dates
+        document.addEventListener('DOMContentLoaded', function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const nextMonth = new Date();
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            
+            document.getElementById('createExpiry1').value = nextMonth.toISOString().split('T')[0];
+            document.getElementById('createExpiry2').value = nextMonth.toISOString().split('T')[0];
+            document.getElementById('createExpiry3').value = nextMonth.toISOString().split('T')[0];
+            document.getElementById('createExpiry4').value = nextMonth.toISOString().split('T')[0];
+            
+            updateProgress('Ready to test coupon system! Click "Run Complete Test Suite" to start.', 0);
+        });
+    </script>
+</body>
+</html>

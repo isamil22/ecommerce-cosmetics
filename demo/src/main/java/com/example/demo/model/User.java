@@ -52,6 +52,39 @@ public class User implements UserDetails {
     @Transient
     private String recaptchaToken;
 
+    // Additional user fields for enhanced management
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+    
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    
+    @Column(name = "is_active")
+    private boolean isActive = true;
+    
+    @Column(name = "phone_number")
+    private String phoneNumber;
+    
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+    
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes; // Admin notes about the user
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));

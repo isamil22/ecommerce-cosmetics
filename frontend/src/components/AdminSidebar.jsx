@@ -122,6 +122,11 @@ const AdminSidebar = () => {
                         <span className="font-medium">Review Form Settings</span>
                         <FiChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
                     </NavLink>
+                    <NavLink to="/admin/analytics" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-300 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
+                        <FiBarChart2 className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                        <span className="font-medium">Analytics</span>
+                        <FiChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                    </NavLink>
                 </div>
 
                 {/* Settings */}

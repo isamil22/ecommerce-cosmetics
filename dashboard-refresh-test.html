@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Refresh Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success {
+            background-color: #28a745;
+        }
+        .status-error {
+            background-color: #dc3545;
+        }
+        .status-pending {
+            background-color: #ffc107;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: #f2f2f2;
+        }
+        .highlight {
+            background-color: #fff3cd;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 Dashboard Refresh Test</h1>
+    <p>This test verifies that the admin dashboard analytics update correctly when coupons are used.</p>
+
+    <div class="test-container">
+        <h2>Test Results Summary</h2>
+        <div id="summary">
+            <p><span class="status-indicator status-pending"></span>Tests not yet run</p>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test Configuration</h2>
+        <div class="test-section">
+            <h3>API Endpoints</h3>
+            <label>Backend URL: <input type="text" id="backendUrl" value="http://localhost:8082/api" readonly></label><br>
+            <label>Frontend URL: <input type="text" id="frontendUrl" value="http://localhost:8081" readonly></label><br>
+            <label>Admin Email: <input type="text" id="adminEmail" value="admin@example.com"></label><br>
+            <label>Admin Password: <input type="password" id="adminPassword" value="admin123"></label><br>
+            <label>Coupon Code: <input type="text" id="couponCode" value="1234"></label>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Step-by-Step Test</h2>
+        <div class="test-section">
+            <h3>Step 1: Login as Admin</h3>
+            <button onclick="loginAsAdmin()">Login as Admin</button>
+            <div id="loginResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Step 2: Get Initial Analytics</h3>
+            <button onclick="getInitialAnalytics()">Get Initial Analytics</button>
+            <div id="initialAnalyticsResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Step 3: Place Order with Coupon</h3>
+            <button onclick="placeOrderWithCoupon()">Place Order with Coupon</button>
+            <div id="orderResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Step 4: Get Updated Analytics</h3>
+            <button onclick="getUpdatedAnalytics()">Get Updated Analytics</button>
+            <div id="updatedAnalyticsResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Step 5: Compare Results</h3>
+            <button onclick="compareResults()">Compare Results</button>
+            <div id="comparisonResult" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Automated Test</h2>
+        <div class="test-section">
+            <h3>Run Complete Test</h3>
+            <button onclick="runCompleteTest()">🚀 Run Complete Test</button>
+            <button onclick="clearResults()">🧹 Clear Results</button>
+        </div>
+    </div>
+
+    <script>
+        let authToken = null;
+        let initialAnalytics = null;
+        let updatedAnalytics = null;
+        let testResults = {
+            login: null,
+            initialAnalytics: null,
+            order: null,
+            updatedAnalytics: null,
+            comparison: null
+        };
+
+        function getBackendUrl() {
+            return document.getElementById('backendUrl').value;
+        }
+
+        function getFrontendUrl() {
+            return document.getElementById('frontendUrl').value;
+        }
+
+        function getAdminEmail() {
+            return document.getElementById('adminEmail').value;
+        }
+
+        function getAdminPassword() {
+            return document.getElementById('adminPassword').value;
+        }
+
+        function getCouponCode() {
+            return document.getElementById('couponCode').value;
+        }
+
+        function showResult(elementId, success, message, details = '') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${success ? 'success' : 'error'}`;
+            element.innerHTML = `<strong>${success ? '✅ SUCCESS' : '❌ FAILED'}</strong>\n${message}\n${details}`;
+        }
+
+        function showInfo(elementId, message, details = '') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result info';
+            element.innerHTML = `<strong>ℹ️ INFO</strong>\n${message}\n${details}`;
+        }
+
+        function showWarning(elementId, message, details = '') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result warning';
+            element.innerHTML = `<strong>⚠️ WARNING</strong>\n${message}\n${details}`;
+        }
+
+        async function loginAsAdmin() {
+            const email = getAdminEmail();
+            const password = getAdminPassword();
+            const url = `${getBackendUrl()}/auth/login`;
+            
+            try {
+                showInfo('loginResult', 'Attempting to login as admin...', `URL: ${url}`);
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    authToken = data.token;
+                    testResults.login = true;
+                    showResult('loginResult', true, 
+                        `Successfully logged in as admin!`, 
+                        `Token: ${authToken.substring(0, 20)}...`);
+                } else {
+                    testResults.login = false;
+                    const errorText = await response.text();
+                    showResult('loginResult', false, 
+                        `Login failed: HTTP ${response.status}`, 
+                        `Error: ${errorText}`);
+                }
+            } catch (error) {
+                testResults.login = false;
+                showResult('loginResult', false, 
+                    `Network error: ${error.message}`, 
+                    `Check if backend is running on port 8082`);
+            }
+            
+            updateSummary();
+        }
+
+        async function getInitialAnalytics() {
+            if (!authToken) {
+                showResult('initialAnalyticsResult', false, 'Please login first!');
+                return;
+            }
+
+            const url = `${getBackendUrl()}/coupons`;
+            
+            try {
+                showInfo('initialAnalyticsResult', 'Fetching initial analytics...', `URL: ${url}`);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const coupons = await response.json();
+                    const totalUses = coupons.reduce((sum, coupon) => sum + (coupon.timesUsed || 0), 0);
+                    const activeCoupons = coupons.filter(c => c.timesUsed > 0).length;
+                    
+                    initialAnalytics = {
+                        totalCoupons: coupons.length,
+                        activeCoupons,
+                        totalUses,
+                        coupons: coupons
+                    };
+                    
+                    testResults.initialAnalytics = true;
+                    showResult('initialAnalyticsResult', true, 
+                        `Initial analytics fetched successfully!`, 
+                        `Total Coupons: ${initialAnalytics.totalCoupons}\nActive Coupons: ${initialAnalytics.activeCoupons}\nTotal Uses: ${initialAnalytics.totalUses}\n\nCoupons: ${JSON.stringify(coupons, null, 2)}`);
+                } else {
+                    testResults.initialAnalytics = false;
+                    const errorText = await response.text();
+                    showResult('initialAnalyticsResult', false, 
+                        `Failed to fetch analytics: HTTP ${response.status}`, 
+                        `Error: ${errorText}`);
+                }
+            } catch (error) {
+                testResults.initialAnalytics = false;
+                showResult('initialAnalyticsResult', false, 
+                    `Network error: ${error.message}`, 
+                    `Check if backend is running on port 8082`);
+            }
+            
+            updateSummary();
+        }
+
+        async function placeOrderWithCoupon() {
+            if (!authToken) {
+                showResult('orderResult', false, 'Please login first!');
+                return;
+            }
+
+            const couponCode = getCouponCode();
+            
+            // Create a test order with the coupon
+            const orderData = {
+                clientFullName: 'Test User',
+                email: 'test@example.com',
+                city: 'Test City',
+                address: 'Test Address',
+                phoneNumber: '1234567890',
+                couponCode: couponCode,
+                cartItems: [
+                    {
+                        productId: 1,
+                        quantity: 1
+                    }
+                ]
+            };
+
+            const url = `${getBackendUrl()}/orders/guest`;
+            
+            try {
+                showInfo('orderResult', 'Placing order with coupon...', `URL: ${url}\nOrder: ${JSON.stringify(orderData, null, 2)}`);
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    const order = await response.json();
+                    testResults.order = true;
+                    showResult('orderResult', true, 
+                        `Order placed successfully with coupon!`, 
+                        `Order ID: ${order.id}\nCoupon Code: ${couponCode}\nOrder: ${JSON.stringify(order, null, 2)}`);
+                } else {
+                    testResults.order = false;
+                    const errorText = await response.text();
+                    showResult('orderResult', false, 
+                        `Failed to place order: HTTP ${response.status}`, 
+                        `Error: ${errorText}`);
+                }
+            } catch (error) {
+                testResults.order = false;
+                showResult('orderResult', false, 
+                    `Network error: ${error.message}`, 
+                    `Check if backend is running on port 8082`);
+            }
+            
+            updateSummary();
+        }
+
+        async function getUpdatedAnalytics() {
+            if (!authToken) {
+                showResult('updatedAnalyticsResult', false, 'Please login first!');
+                return;
+            }
+
+            const url = `${getBackendUrl()}/coupons`;
+            
+            try {
+                showInfo('updatedAnalyticsResult', 'Fetching updated analytics...', `URL: ${url}`);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const coupons = await response.json();
+                    const totalUses = coupons.reduce((sum, coupon) => sum + (coupon.timesUsed || 0), 0);
+                    const activeCoupons = coupons.filter(c => c.timesUsed > 0).length;
+                    
+                    updatedAnalytics = {
+                        totalCoupons: coupons.length,
+                        activeCoupons,
+                        totalUses,
+                        coupons: coupons
+                    };
+                    
+                    testResults.updatedAnalytics = true;
+                    showResult('updatedAnalyticsResult', true, 
+                        `Updated analytics fetched successfully!`, 
+                        `Total Coupons: ${updatedAnalytics.totalCoupons}\nActive Coupons: ${updatedAnalytics.activeCoupons}\nTotal Uses: ${updatedAnalytics.totalUses}\n\nCoupons: ${JSON.stringify(coupons, null, 2)}`);
+                } else {
+                    testResults.updatedAnalytics = false;
+                    const errorText = await response.text();
+                    showResult('updatedAnalyticsResult', false, 
+                        `Failed to fetch analytics: HTTP ${response.status}`, 
+                        `Error: ${errorText}`);
+                }
+            } catch (error) {
+                testResults.updatedAnalytics = false;
+                showResult('updatedAnalyticsResult', false, 
+                    `Network error: ${error.message}`, 
+                    `Check if backend is running on port 8082`);
+            }
+            
+            updateSummary();
+        }
+
+        function compareResults() {
+            if (!initialAnalytics || !updatedAnalytics) {
+                showResult('comparisonResult', false, 'Please fetch both initial and updated analytics first!');
+                return;
+            }
+
+            const comparison = {
+                totalCoupons: {
+                    before: initialAnalytics.totalCoupons,
+                    after: updatedAnalytics.totalCoupons,
+                    changed: initialAnalytics.totalCoupons !== updatedAnalytics.totalCoupons
+                },
+                activeCoupons: {
+                    before: initialAnalytics.activeCoupons,
+                    after: updatedAnalytics.activeCoupons,
+                    changed: initialAnalytics.activeCoupons !== updatedAnalytics.activeCoupons
+                },
+                totalUses: {
+                    before: initialAnalytics.totalUses,
+                    after: updatedAnalytics.totalUses,
+                    changed: initialAnalytics.totalUses !== updatedAnalytics.totalUses
+                }
+            };
+
+            const usesIncreased = comparison.totalUses.after > comparison.totalUses.before;
+            const analyticsUpdated = comparison.totalUses.changed;
+
+            testResults.comparison = analyticsUpdated;
+
+            let comparisonHTML = `
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th>Metric</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Changed</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ${comparison.totalCoupons.changed ? 'class="highlight"' : ''}>
+            <td>Total Coupons</td>
+            <td>${comparison.totalCoupons.before}</td>
+            <td>${comparison.totalCoupons.after}</td>
+            <td>${comparison.totalCoupons.changed ? '✅ Yes' : '❌ No'}</td>
+        </tr>
+        <tr ${comparison.activeCoupons.changed ? 'class="highlight"' : ''}>
+            <td>Active Coupons</td>
+            <td>${comparison.activeCoupons.before}</td>
+            <td>${comparison.activeCoupons.after}</td>
+            <td>${comparison.activeCoupons.changed ? '✅ Yes' : '❌ No'}</td>
+        </tr>
+        <tr ${comparison.totalUses.changed ? 'class="highlight"' : ''}>
+            <td>Total Uses</td>
+            <td>${comparison.totalUses.before}</td>
+            <td>${comparison.totalUses.after}</td>
+            <td>${comparison.totalUses.changed ? '✅ Yes' : '❌ No'}</td>
+        </tr>
+    </tbody>
+</table>
+`;
+
+            if (analyticsUpdated && usesIncreased) {
+                comparisonHTML += `\n✅ SUCCESS: Analytics updated correctly! Total uses increased from ${comparison.totalUses.before} to ${comparison.totalUses.after}.`;
+            } else if (!analyticsUpdated) {
+                comparisonHTML += `\n❌ ISSUE: Analytics did not update after placing order with coupon.`;
+            } else {
+                comparisonHTML += `\n⚠️ WARNING: Analytics changed but not as expected.`;
+            }
+
+            const element = document.getElementById('comparisonResult');
+            element.style.display = 'block';
+            element.className = `result ${analyticsUpdated && usesIncreased ? 'success' : 'error'}`;
+            element.innerHTML = `<strong>${analyticsUpdated && usesIncreased ? '✅ SUCCESS' : '❌ FAILED'}</strong>\nAnalytics Comparison Results\n${comparisonHTML}`;
+            
+            updateSummary();
+        }
+
+        async function runCompleteTest() {
+            clearResults();
+            
+            // Run tests in sequence
+            await loginAsAdmin();
+            if (!authToken) {
+                alert('Login failed! Cannot proceed with other tests.');
+                return;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await getInitialAnalytics();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await placeOrderWithCoupon();
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await getUpdatedAnalytics();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            compareResults();
+        }
+
+        function clearResults() {
+            const resultElements = [
+                'loginResult',
+                'initialAnalyticsResult',
+                'orderResult',
+                'updatedAnalyticsResult',
+                'comparisonResult'
+            ];
+            
+            resultElements.forEach(id => {
+                const element = document.getElementById(id);
+                element.style.display = 'none';
+                element.innerHTML = '';
+            });
+            
+            initialAnalytics = null;
+            updatedAnalytics = null;
+            
+            testResults = {
+                login: null,
+                initialAnalytics: null,
+                order: null,
+                updatedAnalytics: null,
+                comparison: null
+            };
+            
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summary = document.getElementById('summary');
+            const results = Object.values(testResults);
+            const completed = results.filter(r => r !== null).length;
+            const passed = results.filter(r => r === true).length;
+            const failed = results.filter(r => r === false).length;
+            const total = results.length;
+            
+            if (completed === 0) {
+                summary.innerHTML = '<p><span class="status-indicator status-pending"></span>Tests not yet run</p>';
+            } else if (completed < total) {
+                summary.innerHTML = `
+                    <p><span class="status-indicator status-pending"></span>Tests in progress: ${completed}/${total} completed</p>
+                    <p>✅ Passed: ${passed} | ❌ Failed: ${failed}</p>
+                `;
+            } else {
+                const allPassed = failed === 0;
+                const analyticsWorking = testResults.comparison === true;
+                summary.innerHTML = `
+                    <p><span class="status-indicator ${allPassed ? 'status-success' : 'status-error'}"></span>All tests completed!</p>
+                    <p>✅ Passed: ${passed} | ❌ Failed: ${failed} | Total: ${total}</p>
+                    ${analyticsWorking ? 
+                        '<p><strong>🎉 SUCCESS: Dashboard analytics are updating correctly when coupons are used!</strong></p>' : 
+                        '<p><strong>⚠️ ISSUE: Dashboard analytics are not updating correctly. Check the comparison results above.</strong></p>'}
+                `;
+            }
+        }
+
+        // Initialize
+        updateSummary();
+    </script>
+</body>
+</html>

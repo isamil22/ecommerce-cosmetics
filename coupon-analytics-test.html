@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupon Analytics Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .coupon-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .coupon-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+        }
+        .coupon-card h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .coupon-meta {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success {
+            background-color: #28a745;
+        }
+        .status-error {
+            background-color: #dc3545;
+        }
+        .status-pending {
+            background-color: #ffc107;
+        }
+        .analytics-chart {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎫 Coupon Analytics Test Suite</h1>
+    <p>This test verifies that coupon analytics are working correctly in the admin dashboard.</p>
+
+    <div class="test-container">
+        <h2>Test Results Summary</h2>
+        <div id="summary">
+            <p><span class="status-indicator status-pending"></span>Tests not yet run</p>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test Configuration</h2>
+        <div class="test-section">
+            <h3>API Endpoints</h3>
+            <label>Backend URL: <input type="text" id="backendUrl" value="http://localhost:8082/api" readonly></label><br>
+            <label>Frontend URL: <input type="text" id="frontendUrl" value="http://localhost:8081/api" readonly></label><br>
+            <label>Admin Email: <input type="text" id="adminEmail" value="admin@example.com"></label><br>
+            <label>Admin Password: <input type="password" id="adminPassword" value="admin123"></label>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Authentication Test</h2>
+        <div class="test-section">
+            <h3>Step 1: Login as Admin</h3>
+            <button onclick="loginAsAdmin()">Login as Admin</button>
+            <div id="loginResult" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Coupon Data Test</h2>
+        <div class="test-section">
+            <h3>Step 2: Fetch All Coupons</h3>
+            <button onclick="fetchAllCoupons()">Fetch All Coupons</button>
+            <div id="couponsResult" class="result" style="display:none;"></div>
+            <div id="couponsList" class="coupon-list" style="display:none;"></div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Analytics API Test</h2>
+        <div class="test-section">
+            <h3>Step 3: Test Analytics Endpoints</h3>
+            <button onclick="testAnalyticsEndpoints()">Test Analytics APIs</button>
+            <div id="analyticsResult" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Order Data Test</h2>
+        <div class="test-section">
+            <h3>Step 4: Check Orders with Coupons</h3>
+            <button onclick="checkOrdersWithCoupons()">Check Orders</button>
+            <div id="ordersResult" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Comprehensive Test</h2>
+        <div class="test-section">
+            <h3>Run All Tests</h3>
+            <button onclick="runAllTests()">🚀 Run All Tests</button>
+            <button onclick="clearResults()">🧹 Clear Results</button>
+        </div>
+    </div>
+
+    <script>
+        let authToken = null;
+        let testResults = {
+            login: null,
+            coupons: null,
+            analytics: null,
+            orders: null
+        };
+
+        function getBackendUrl() {
+            return document.getElementById('backendUrl').value;
+        }
+
+        function getFrontendUrl() {
+            return document.getElementById('frontendUrl').value;
+        }
+
+        function getAdminEmail() {
+            return document.getElementById('adminEmail').value;
+        }
+
+        function getAdminPassword() {
+            return document.getElementById('adminPassword').value;
+        }
+
+        function showResult(elementId, success, message, details = '') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${success ? 'success' : 'error'}`;
+            element.innerHTML = `<strong>${success ? '✅ SUCCESS' : '❌ FAILED'}</strong>\n${message}\n${details}`;
+        }
+
+        function showInfo(elementId, message, details = '') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result info';
+            element.innerHTML = `<strong>ℹ️ INFO</strong>\n${message}\n${details}`;
+        }
+
+        async function loginAsAdmin() {
+            const email = getAdminEmail();
+            const password = getAdminPassword();
+            const url = `${getBackendUrl()}/auth/login`;
+            
+            try {
+                showInfo('loginResult', 'Attempting to login as admin...', `URL: ${url}`);
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    authToken = data.token;
+                    testResults.login = true;
+                    showResult('loginResult', true, 
+                        `Successfully logged in as admin!`, 
+                        `Token: ${authToken.substring(0, 20)}...`);
+                } else {
+                    testResults.login = false;
+                    const errorText = await response.text();
+                    showResult('loginResult', false, 
+                        `Login failed: HTTP ${response.status}`, 
+                        `Error: ${errorText}`);
+                }
+            } catch (error) {
+                testResults.login = false;
+                showResult('loginResult', false, 
+                    `Network error: ${error.message}`, 
+                    `Check if backend is running on port 8082`);
+            }
+            
+            updateSummary();
+        }
+
+        async function fetchAllCoupons() {
+            if (!authToken) {
+                showResult('couponsResult', false, 'Please login first!');
+                return;
+            }
+
+            const url = `${getBackendUrl()}/coupons`;
+            
+            try {
+                showInfo('couponsResult', 'Fetching all coupons...', `URL: ${url}`);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const coupons = await response.json();
+                    testResults.coupons = true;
+                    showResult('couponsResult', true, 
+                        `Successfully fetched ${coupons.length} coupons!`, 
+                        `Coupons: ${JSON.stringify(coupons, null, 2)}`);
+                    
+                    // Display coupons in a nice format
+                    displayCoupons(coupons);
+                } else {
+                    testResults.coupons = false;
+                    const errorText = await response.text();
+                    showResult('couponsResult', false, 
+                        `Failed to fetch coupons: HTTP ${response.status}`, 
+                        `Error: ${errorText}`);
+                }
+            } catch (error) {
+                testResults.coupons = false;
+                showResult('couponsResult', false, 
+                    `Network error: ${error.message}`, 
+                    `Check if backend is running on port 8082`);
+            }
+            
+            updateSummary();
+        }
+
+        function displayCoupons(coupons) {
+            const couponsList = document.getElementById('couponsList');
+            couponsList.style.display = 'block';
+            couponsList.innerHTML = '';
+            
+            coupons.forEach(coupon => {
+                const couponCard = document.createElement('div');
+                couponCard.className = 'coupon-card';
+                couponCard.innerHTML = `
+                    <h4>${coupon.name} (${coupon.code})</h4>
+                    <div class="coupon-meta">ID: ${coupon.id}</div>
+                    <div class="coupon-meta">Discount: ${coupon.discountValue}${coupon.discountType === 'PERCENTAGE' ? '%' : '$'}</div>
+                    <div class="coupon-meta">Times Used: ${coupon.timesUsed || 0}</div>
+                    <div class="coupon-meta">Usage Limit: ${coupon.usageLimit || 'Unlimited'}</div>
+                    <div class="coupon-meta">Expires: ${new Date(coupon.expiryDate).toLocaleDateString()}</div>
+                    <div class="coupon-meta">Type: ${coupon.type}</div>
+                    <button onclick="testCouponAnalytics(${coupon.id})" style="margin-top: 10px;">
+                        Test Analytics for this Coupon
+                    </button>
+                `;
+                couponsList.appendChild(couponCard);
+            });
+        }
+
+        async function testCouponAnalytics(couponId) {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+
+            const url = `${getBackendUrl()}/coupons/${couponId}/usage-statistics`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`Analytics for coupon ${couponId}:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    const errorText = await response.text();
+                    alert(`Failed to fetch analytics for coupon ${couponId}:\nHTTP ${response.status}\n${errorText}`);
+                }
+            } catch (error) {
+                alert(`Network error for coupon ${couponId}: ${error.message}`);
+            }
+        }
+
+        async function testAnalyticsEndpoints() {
+            if (!authToken) {
+                showResult('analyticsResult', false, 'Please login first!');
+                return;
+            }
+
+            // Test general analytics endpoint
+            const generalUrl = `${getBackendUrl()}/coupons/usage-statistics`;
+            let generalSuccess = false;
+            
+            try {
+                showInfo('analyticsResult', 'Testing analytics endpoints...', `General URL: ${generalUrl}`);
+                
+                const response = await fetch(generalUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    generalSuccess = true;
+                    showResult('analyticsResult', true, 
+                        `General analytics endpoint working!`, 
+                        `Data: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('analyticsResult', false, 
+                        `General analytics failed: HTTP ${response.status}`, 
+                        `Response: ${await response.text()}`);
+                }
+            } catch (error) {
+                showResult('analyticsResult', false, 
+                    `Network error: ${error.message}`, 
+                    `Check if backend is running on port 8082`);
+            }
+            
+            testResults.analytics = generalSuccess;
+            updateSummary();
+        }
+
+        async function checkOrdersWithCoupons() {
+            if (!authToken) {
+                showResult('ordersResult', false, 'Please login first!');
+                return;
+            }
+
+            const url = `${getBackendUrl()}/orders`;
+            
+            try {
+                showInfo('ordersResult', 'Checking orders with coupons...', `URL: ${url}`);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const orders = await response.json();
+                    const ordersWithCoupons = orders.filter(order => order.coupon);
+                    
+                    testResults.orders = true;
+                    showResult('ordersResult', true, 
+                        `Found ${orders.length} total orders, ${ordersWithCoupons.length} with coupons`, 
+                        `Orders with coupons: ${JSON.stringify(ordersWithCoupons, null, 2)}`);
+                } else {
+                    testResults.orders = false;
+                    const errorText = await response.text();
+                    showResult('ordersResult', false, 
+                        `Failed to fetch orders: HTTP ${response.status}`, 
+                        `Error: ${errorText}`);
+                }
+            } catch (error) {
+                testResults.orders = false;
+                showResult('ordersResult', false, 
+                    `Network error: ${error.message}`, 
+                    `Check if backend is running on port 8082`);
+            }
+            
+            updateSummary();
+        }
+
+        async function runAllTests() {
+            clearResults();
+            
+            // Run tests in sequence
+            await loginAsAdmin();
+            if (!authToken) {
+                alert('Login failed! Cannot proceed with other tests.');
+                return;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await fetchAllCoupons();
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testAnalyticsEndpoints();
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await checkOrdersWithCoupons();
+        }
+
+        function clearResults() {
+            const resultElements = [
+                'loginResult',
+                'couponsResult', 
+                'analyticsResult',
+                'ordersResult'
+            ];
+            
+            resultElements.forEach(id => {
+                const element = document.getElementById(id);
+                element.style.display = 'none';
+                element.innerHTML = '';
+            });
+            
+            document.getElementById('couponsList').style.display = 'none';
+            
+            testResults = {
+                login: null,
+                coupons: null,
+                analytics: null,
+                orders: null
+            };
+            
+            authToken = null;
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summary = document.getElementById('summary');
+            const results = Object.values(testResults);
+            const completed = results.filter(r => r !== null).length;
+            const passed = results.filter(r => r === true).length;
+            const failed = results.filter(r => r === false).length;
+            const total = results.length;
+            
+            if (completed === 0) {
+                summary.innerHTML = '<p><span class="status-indicator status-pending"></span>Tests not yet run</p>';
+            } else if (completed < total) {
+                summary.innerHTML = `
+                    <p><span class="status-indicator status-pending"></span>Tests in progress: ${completed}/${total} completed</p>
+                    <p>✅ Passed: ${passed} | ❌ Failed: ${failed}</p>
+                `;
+            } else {
+                const allPassed = failed === 0;
+                summary.innerHTML = `
+                    <p><span class="status-indicator ${allPassed ? 'status-success' : 'status-error'}"></span>All tests completed!</p>
+                    <p>✅ Passed: ${passed} | ❌ Failed: ${failed} | Total: ${total}</p>
+                    ${allPassed ? '<p><strong>🎉 All tests passed! Coupon analytics are working correctly.</strong></p>' : 
+                                 '<p><strong>⚠️ Some tests failed. Please check the individual test results above.</strong></p>'}
+                `;
+            }
+        }
+
+        // Initialize
+        updateSummary();
+    </script>
+</body>
+</html>

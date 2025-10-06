@@ -70,7 +70,8 @@ public class SecurityConfig {
                                 "/api/countdown",
                                 "/api/custom-packs/**", // Fixed: Allow access to all custom-packs endpoints
                                 "/api/products/packable",
-                                "/api/cart" // Allow guest users to view cart
+                                "/api/cart", // Allow guest users to view cart
+                                "/api/coupons/validate/**" // Allow coupon validation without authentication
                         )
                         .permitAll()
                         .requestMatchers("/", "/index.html", "/images/**", "/vite.svg").permitAll()
