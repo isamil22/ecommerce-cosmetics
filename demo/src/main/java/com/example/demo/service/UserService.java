@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.ChangePasswordRequest;
-import com.example.demo.dto.UpdateUserRequestDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.UserMapper;
@@ -96,31 +95,6 @@ public class UserService {
         return userMapper.toDTOs(userRepository.findAll());
     }
 
-    public UserDTO createUser(UpdateUserRequestDTO request) {
-        // Check if email already exists
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email already taken");
-        }
-        
-        User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
-        user.setEmailConfirmation(request.isEmailConfirmation());
-        user.setActive(request.isActive());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setProfileImageUrl(request.getProfileImageUrl());
-        user.setNotes(request.getNotes());
-        
-        // Set password if provided
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
-        
-        User savedUser = userRepository.save(user);
-        return userMapper.toDTO(savedUser);
-    }
-
     @Transactional
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
@@ -162,70 +136,5 @@ public class UserService {
         user.setResetPasswordToken(null);
         user.setResetPasswordTokenExpiry(null);
         userRepository.save(user);
-    }
-
-    public UserDTO getUserByIdDTO(Long id) {
-        User user = getUserById(id);
-        return userMapper.toDTO(user);
-    }
-
-    public UserDTO updateUser(Long id, UpdateUserRequestDTO request) {
-        User user = getUserById(id);
-        
-        // Check if email is being changed and if it's already taken
-        if (!user.getEmail().equals(request.getEmail()) && 
-            userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email already taken");
-        }
-        
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
-        user.setEmailConfirmation(request.isEmailConfirmation());
-        user.setActive(request.isActive());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setProfileImageUrl(request.getProfileImageUrl());
-        user.setNotes(request.getNotes());
-        
-        User updatedUser = userRepository.save(user);
-        return userMapper.toDTO(updatedUser);
-    }
-
-    public UserDTO toggleUserActive(Long id) {
-        User user = getUserById(id);
-        user.setActive(!user.isActive());
-        User updatedUser = userRepository.save(user);
-        return userMapper.toDTO(updatedUser);
-    }
-
-    public void updateLastLogin(String email) {
-        User user = getUserByEmail(email);
-        user.setLastLoginAt(LocalDateTime.now());
-        userRepository.save(user);
-    }
-
-    public String exportUsersToCsv() {
-        List<UserDTO> users = getAllUsers();
-        StringBuilder csv = new StringBuilder();
-        
-        // CSV Header
-        csv.append("ID,Full Name,Email,Role,Email Confirmed,Active,Phone Number,Profile Image URL,Created At,Last Login,Notes\n");
-        
-        // CSV Data
-        for (UserDTO user : users) {
-            csv.append(user.getId()).append(",");
-            csv.append("\"").append(user.getFullName() != null ? user.getFullName().replace("\"", "\"\"") : "").append("\",");
-            csv.append("\"").append(user.getEmail().replace("\"", "\"\"")).append("\",");
-            csv.append(user.getRole()).append(",");
-            csv.append(user.isEmailConfirmation()).append(",");
-            csv.append(user.isActive()).append(",");
-            csv.append("\"").append(user.getPhoneNumber() != null ? user.getPhoneNumber().replace("\"", "\"\"") : "").append("\",");
-            csv.append("\"").append(user.getProfileImageUrl() != null ? user.getProfileImageUrl().replace("\"", "\"\"") : "").append("\",");
-            csv.append("\"").append(user.getCreatedAt() != null ? user.getCreatedAt().toString() : "").append("\",");
-            csv.append("\"").append(user.getLastLoginAt() != null ? user.getLastLoginAt().toString() : "").append("\",");
-            csv.append("\"").append(user.getNotes() != null ? user.getNotes().replace("\"", "\"\"").replace("\n", " ").replace("\r", " ") : "").append("\"\n");
-        }
-        
-        return csv.toString();
     }
 }
