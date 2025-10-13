@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Add Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .product-form {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .products-list {
+            margin-top: 30px;
+        }
+        .product-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Add Products</h1>
+        
+        <div id="message"></div>
+        
+        <div class="product-form">
+            <h3>Add New Product</h3>
+            <form id="productForm">
+                <div class="form-group">
+                    <label for="name">Product Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">Price ($):</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="brand">Brand:</label>
+                    <input type="text" id="brand" name="brand" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="type">Product Type:</label>
+                    <select id="type" name="type" required>
+                        <option value="MEN">Men</option>
+                        <option value="WOMEN">Women</option>
+                        <option value="BOTH">Both</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Product Features:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bestseller" name="bestseller">
+                            <label for="bestseller">Bestseller</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="newArrival" name="newArrival">
+                            <label for="newArrival">New Arrival</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hasVariants" name="hasVariants">
+                            <label for="hasVariants">Has Variants</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="isPackable" name="isPackable">
+                            <label for="isPackable">Packable</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageUrl">Image URL:</label>
+                    <input type="url" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <button type="submit">Add Product</button>
+                <button type="button" onclick="loadProducts()">Load All Products</button>
+                <button type="button" onclick="addSampleProducts()">Add 4 Sample Products</button>
+            </form>
+        </div>
+        
+        <div class="products-list">
+            <h3>Existing Products</h3>
+            <div id="productsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        
+        // Load existing products
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_BASE}/products`);
+                const products = await response.json();
+                
+                const productsList = document.getElementById('productsList');
+                productsList.innerHTML = '';
+                
+                if (products.length === 0) {
+                    productsList.innerHTML = '<p>No products found.</p>';
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product-item';
+                    productDiv.innerHTML = `
+                        <h4>${product.name}</h4>
+                        <p><strong>Brand:</strong> ${product.brand || 'N/A'}</p>
+                        <p><strong>Price:</strong> $${product.price}</p>
+                        <p><strong>Quantity:</strong> ${product.quantity}</p>
+                        <p><strong>Type:</strong> ${product.type}</p>
+                        <p><strong>Features:</strong> 
+                            ${product.bestseller ? 'Bestseller ' : ''}
+                            ${product.newArrival ? 'New Arrival ' : ''}
+                            ${product.hasVariants ? 'Has Variants ' : ''}
+                            ${product.isPackable ? 'Packable ' : ''}
+                        </p>
+                        <p><strong>Description:</strong> ${product.description}</p>
+                    `;
+                    productsList.appendChild(productDiv);
+                });
+                
+                showMessage(`Loaded ${products.length} products`, 'success');
+            } catch (error) {
+                showMessage(`Error loading products: ${error.message}`, 'error');
+            }
+        }
+        
+        // Add sample products
+        async function addSampleProducts() {
+            const sampleProducts = [
+                {
+                    name: "Premium Wireless Headphones",
+                    description: "High-quality wireless headphones with noise cancellation and 30-hour battery life. Perfect for music lovers and professionals.",
+                    price: 199.99,
+                    quantity: 50,
+                    brand: "TechSound",
+                    bestseller: true,
+                    newArrival: false,
+                    hasVariants: false,
+                    isPackable: true,
+                    type: "BOTH",
+                    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"]
+                },
+                {
+                    name: "Classic Denim Jacket",
+                    description: "Timeless denim jacket made from premium cotton denim. Available in multiple washes and sizes. Perfect for casual wear.",
+                    price: 89.99,
+                    quantity: 75,
+                    brand: "DenimCo",
+                    bestseller: false,
+                    newArrival: true,
+                    hasVariants: true,
+                    isPackable: false,
+                    type: "BOTH",
+                    images: ["https://images.unsplash.com/photo-1544966503-7cc6d8a4a6d7?w=500"]
+                },
+                {
+                    name: "Smart Fitness Watch",
+                    description: "Advanced fitness tracking watch with heart rate monitor, GPS, and water resistance. Tracks your workouts and health metrics.",
+                    price: 299.99,
+                    quantity: 30,
+                    brand: "FitTech",
+                    bestseller: true,
+                    newArrival: false,
+                    hasVariants: false,
+                    isPackable: true,
+                    type: "BOTH",
+                    images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"]
+                },
+                {
+                    name: "Organic Cotton T-Shirt",
+                    description: "Soft and comfortable organic cotton t-shirt. Eco-friendly and ethically made. Available in various colors and sizes.",
+                    price: 24.99,
+                    quantity: 100,
+                    brand: "EcoWear",
+                    bestseller: false,
+                    newArrival: true,
+                    hasVariants: true,
+                    isPackable: true,
+                    type: "BOTH",
+                    images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"]
+                }
+            ];
+            
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const product of sampleProducts) {
+                try {
+                    await addProduct(product);
+                    successCount++;
+                } catch (error) {
+                    errorCount++;
+                    console.error(`Error adding ${product.name}:`, error);
+                }
+            }
+            
+            showMessage(`Sample products added: ${successCount} successful, ${errorCount} failed`, 
+                       successCount > 0 ? 'success' : 'error');
+            
+            // Reload products list
+            setTimeout(() => loadProducts(), 1000);
+        }
+        
+        // Add a single product
+        async function addProduct(productData) {
+            // First, get or create a category
+            let categoryId;
+            try {
+                const categoriesResponse = await fetch(`${API_BASE}/categories`);
+                if (categoriesResponse.ok) {
+                    const categories = await categoriesResponse.json();
+                    if (categories.length > 0) {
+                        categoryId = categories[0].id;
+                    } else {
+                        // Create a default category
+                        const newCategory = {
+                            name: "Electronics",
+                            description: "Default category for test products",
+                            imageUrl: ""
+                        };
+                        
+                        const categoryResponse = await fetch(`${API_BASE}/categories`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newCategory)
+                        });
+                        
+                        if (categoryResponse.ok) {
+                            const createdCategory = await categoryResponse.json();
+                            categoryId = createdCategory.id;
+                        } else {
+                            throw new Error('Failed to create category');
+                        }
+                    }
+                }
+            } catch (error) {
+                throw new Error(`Category error: ${error.message}`);
+            }
+            
+            // Add the product
+            const response = await fetch(`${API_BASE}/products`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...productData,
+                    categoryId: categoryId
+                })
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+            
+            return await response.json();
+        }
+        
+        // Handle form submission
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const productData = {
+                name: formData.get('name'),
+                description: formData.get('description'),
+                price: parseFloat(formData.get('price')),
+                quantity: parseInt(formData.get('quantity')),
+                brand: formData.get('brand'),
+                type: formData.get('type'),
+                bestseller: formData.has('bestseller'),
+                newArrival: formData.has('newArrival'),
+                hasVariants: formData.has('hasVariants'),
+                isPackable: formData.has('isPackable'),
+                images: formData.get('imageUrl') ? [formData.get('imageUrl')] : []
+            };
+            
+            try {
+                await addProduct(productData);
+                showMessage(`Product "${productData.name}" added successfully!`, 'success');
+                e.target.reset();
+                setTimeout(() => loadProducts(), 1000);
+            } catch (error) {
+                showMessage(`Error adding product: ${error.message}`, 'error');
+            }
+        });
+        
+        // Show message
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = type;
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Load products on page load
+        window.addEventListener('load', () => {
+            loadProducts();
+        });
+    </script>
+</body>
+</html>
