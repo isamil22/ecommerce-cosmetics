@@ -49,12 +49,43 @@ public class UserService {
         if(userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalStateException("Email already taken");
         }
+        
+        // Encode password and set user properties
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(User.Role.USER);
         user.setConfirmationCode(generateConfirmationCode());
         user.setEmailConfirmation(false);
-        emailService.sendConfirmationCode(user);
-        return userRepository.save(user);
+        
+        // Assign default RBAC role (ROLE_USER) to new users
+        try {
+            Role defaultRole = roleRepository.findByName("ROLE_USER")
+                .orElseGet(() -> {
+                    // If ROLE_USER doesn't exist in DB, log warning but continue
+                    return null;
+                });
+            if (defaultRole != null) {
+                user.addRole(defaultRole);
+            }
+        } catch (Exception e) {
+            // Log error but don't fail registration if RBAC role assignment fails
+            System.err.println("Warning: Could not assign RBAC role to new user: " + e.getMessage());
+        }
+        
+        // Save user to database first
+        User savedUser = userRepository.save(user);
+        
+        // Send confirmation email (non-blocking - don't fail registration if email fails)
+        try {
+            emailService.sendConfirmationCode(savedUser);
+        } catch (Exception e) {
+            // Log the error but don't fail the registration
+            System.err.println("ERROR: Failed to send confirmation email to " + savedUser.getEmail());
+            System.err.println("Email error details: " + e.getMessage());
+            e.printStackTrace();
+            // User is still created successfully, they just won't get the email
+        }
+        
+        return savedUser;
     }
 
     public User getUserByEmail(String email){

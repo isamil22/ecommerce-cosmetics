@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Email Confirmation</title>
+</head>
+<body>
+    <h1>Test Email Confirmation</h1>
+    <button onclick="testConfirmation()">Test Confirmation with Any Code</button>
+    <div id="result"></div>
+
+    <script>
+        async function testConfirmation() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('/api/auth/confirm-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'yesofcourse2024@gmail.com',
+                        confirmationCode: '123456'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    resultDiv.innerHTML = `<p style="color: green;">SUCCESS: ${data}</p>`;
+                } else {
+                    const error = await response.text();
+                    resultDiv.innerHTML = `<p style="color: red;">ERROR ${response.status}: ${error}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">NETWORK ERROR: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

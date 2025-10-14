@@ -79,6 +79,7 @@ public class AuthController {
 
         try {
             logger.info("Attempting to register user with email: {}", request.getEmail());
+            logger.debug("Registration request details - FullName: {}, Email: {}", request.getFullName(), request.getEmail());
 
             // Create the user object from the request DTO
             User user = new User();
@@ -91,9 +92,20 @@ public class AuthController {
             User registeredUser = userService.registerUser(user);
             logger.info("Successfully processed registration for user: {}", registeredUser.getEmail());
             return ResponseEntity.ok(registeredUser);
+        } catch (IllegalStateException e) {
+            // Handle specific case: email already exists
+            logger.warn("Registration failed - Email already exists: {}", request.getEmail());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already registered");
         } catch (Exception e) {
+            // Log the full exception with stack trace
             logger.error("!!! CRITICAL ERROR IN /api/auth/register !!!", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in AuthController: " + e.getMessage());
+            logger.error("Exception type: {}", e.getClass().getName());
+            logger.error("Exception message: {}", e.getMessage());
+            if (e.getCause() != null) {
+                logger.error("Root cause: {}", e.getCause().getMessage());
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Registration failed: " + e.getMessage());
         }
     }
 
