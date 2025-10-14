@@ -65,21 +65,41 @@ const AuthPage = ({ setIsAuthenticated }) => {
         setSuccess('');
         setFormData({ fullName: '', email: '', password: '' });
         setRecaptchaToken(null);
+        setShowPassword(false);
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+        <div className="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 overflow-hidden">
+            {/* Animated Background Layers */}
             <div className="absolute inset-0 bg-gradient-to-br from-pink-400/10 via-purple-400/10 to-blue-400/10"></div>
             
-            <div className="relative max-w-md w-full">
-                <div className="bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-2xl shadow-2xl border border-white/20">
+            {/* Floating Decorative Elements */}
+            <div className="absolute top-20 left-10 w-72 h-72 bg-pink-300/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+            <div className="absolute top-40 right-10 w-72 h-72 bg-purple-300/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-blue-300/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+            
+            <div className="relative max-w-md w-full z-10">
+                {/* Logo/Brand Area */}
+                <div className="text-center mb-6">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl shadow-lg mb-4 transform hover:rotate-6 transition-transform duration-300">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                    </div>
+                </div>
+
+                {/* Main Card */}
+                <div className="bg-white/90 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-2xl border border-white/50 relative overflow-hidden">
+                    {/* Decorative top gradient bar */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"></div>
+                    
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                            {isLogin ? 'Welcome Back' : 'Create Account'}
+                        <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                            {isLogin ? 'Welcome Back!' : 'Join Us Today'}
                         </h2>
-                        <p className="mt-2 text-sm text-gray-600">
-                            {isLogin ? 'Sign in to continue your journey' : 'Join us and start shopping'}
+                        <p className="text-sm text-gray-600 font-medium">
+                            {isLogin ? 'Sign in to continue your journey' : 'Create an account and start shopping'}
                         </p>
                     </div>
 
@@ -87,23 +107,30 @@ const AuthPage = ({ setIsAuthenticated }) => {
                     <form className="space-y-5" onSubmit={handleSubmit}>
                         {/* Full Name Field */}
                         {!isLogin && (
-                            <div className="space-y-2">
+                            <div className="space-y-2 transform transition-all duration-300">
                                 <label 
                                     htmlFor="full-name" 
-                                    className="block text-xs font-semibold text-gray-700 uppercase tracking-wide"
+                                    className="block text-xs font-bold text-gray-700 uppercase tracking-wider"
                                 >
                                     Full Name
                                 </label>
-                                <input
-                                    id="full-name"
-                                    name="fullName"
-                                    type="text"
-                                    required={!isLogin}
-                                    className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300"
-                                    placeholder="Enter your full name"
-                                    value={formData.fullName}
-                                    onChange={handleChange}
-                                />
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    </div>
+                                    <input
+                                        id="full-name"
+                                        name="fullName"
+                                        type="text"
+                                        required={!isLogin}
+                                        className="appearance-none block w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300 hover:shadow-md bg-white"
+                                        placeholder="John Doe"
+                                        value={formData.fullName}
+                                        onChange={handleChange}
+                                    />
+                                </div>
                             </div>
                         )}
 
@@ -111,42 +138,72 @@ const AuthPage = ({ setIsAuthenticated }) => {
                         <div className="space-y-2">
                             <label 
                                 htmlFor="email-address" 
-                                className="block text-xs font-semibold text-gray-700 uppercase tracking-wide"
+                                className="block text-xs font-bold text-gray-700 uppercase tracking-wider"
                             >
                                 Email Address
                             </label>
-                            <input
-                                id="email-address"
-                                name="email"
-                                type="email"
-                                autoComplete="email"
-                                required
-                                className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300"
-                                placeholder="Enter your email"
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="email-address"
+                                    name="email"
+                                    type="email"
+                                    autoComplete="email"
+                                    required
+                                    className="appearance-none block w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300 hover:shadow-md bg-white"
+                                    placeholder="you@example.com"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
 
                         {/* Password Field */}
                         <div className="space-y-2">
                             <label 
                                 htmlFor="password" 
-                                className="block text-xs font-semibold text-gray-700 uppercase tracking-wide"
+                                className="block text-xs font-bold text-gray-700 uppercase tracking-wider"
                             >
                                 Password
                             </label>
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                autoComplete={isLogin ? "current-password" : "new-password"}
-                                required
-                                className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300"
-                                placeholder="Enter your password"
-                                value={formData.password}
-                                onChange={handleChange}
-                            />
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type={showPassword ? "text" : "password"}
+                                    autoComplete={isLogin ? "current-password" : "new-password"}
+                                    required
+                                    className="appearance-none block w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300 hover:shadow-md bg-white"
+                                    placeholder="••••••••"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                >
+                                    {showPassword ? (
+                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                        </svg>
+                                    ) : (
+                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Forgot Password Link */}
@@ -154,7 +211,7 @@ const AuthPage = ({ setIsAuthenticated }) => {
                             <div className="flex justify-end">
                                 <Link 
                                     to="/forgot-password" 
-                                    className="text-sm font-medium text-pink-600 hover:text-pink-700 transition-colors duration-200"
+                                    className="text-sm font-semibold text-pink-600 hover:text-pink-700 transition-colors duration-200 hover:underline"
                                 >
                                     Forgot password?
                                 </Link>
@@ -163,24 +220,36 @@ const AuthPage = ({ setIsAuthenticated }) => {
 
                         {/* ReCAPTCHA */}
                         <div className="flex justify-center py-4">
-                            <ReCAPTCHA
-                                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || 'YOUR_FALLBACK_SITE_KEY'}
-                                onChange={handleRecaptchaChange}
-                                onExpired={() => setRecaptchaToken(null)}
-                            />
+                            <div className="transform transition-all duration-200 hover:scale-105">
+                                <ReCAPTCHA
+                                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || 'YOUR_FALLBACK_SITE_KEY'}
+                                    onChange={handleRecaptchaChange}
+                                    onExpired={() => setRecaptchaToken(null)}
+                                />
+                            </div>
                         </div>
 
                         {/* Success Message */}
                         {success && (
-                            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm font-medium text-center">
-                                ✓ {success}
+                            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 text-green-700 px-4 py-3.5 rounded-lg text-sm font-medium shadow-sm animate-slideIn">
+                                <div className="flex items-center">
+                                    <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                    <span>{success}</span>
+                                </div>
                             </div>
                         )}
 
                         {/* Error Message */}
                         {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm font-medium text-center">
-                                ✕ {error}
+                            <div className="bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500 text-red-700 px-4 py-3.5 rounded-lg text-sm font-medium shadow-sm animate-shake">
+                                <div className="flex items-center">
+                                    <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                    <span>{error}</span>
+                                </div>
                             </div>
                         )}
 
@@ -188,25 +257,52 @@ const AuthPage = ({ setIsAuthenticated }) => {
                         <div className="pt-2">
                             <button
                                 type="submit"
-                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
+                                className="group relative w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl text-sm font-bold text-white bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 hover:from-pink-700 hover:via-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-2xl"
                             >
+                                <span className="absolute left-0 inset-y-0 flex items-center pl-4">
+                                    <svg className="h-5 w-5 text-white/80 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        {isLogin ? (
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                        ) : (
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                        )}
+                                    </svg>
+                                </span>
                                 {isLogin ? 'Sign In' : 'Create Account'}
                             </button>
                         </div>
                     </form>
 
+                    {/* Divider */}
+                    <div className="relative my-8">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-200"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-4 bg-white text-gray-500 font-medium">OR</span>
+                        </div>
+                    </div>
+
                     {/* Toggle Form Link */}
-                    <div className="mt-6 text-center">
+                    <div className="text-center">
                         <p className="text-sm text-gray-600">
                             {isLogin ? "Don't have an account?" : 'Already have an account?'}
                             {' '}
                             <button 
                                 onClick={toggleForm} 
-                                className="font-semibold text-pink-600 hover:text-pink-700 transition-colors duration-200"
+                                className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 transition-all duration-200"
                             >
-                                {isLogin ? 'Create one' : 'Sign in'}
+                                {isLogin ? 'Create one now →' : 'Sign in here →'}
                             </button>
                         </p>
+                    </div>
+
+                    {/* Security Badge */}
+                    <div className="mt-6 flex items-center justify-center space-x-2 text-xs text-gray-500">
+                        <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="font-medium">Secured with reCAPTCHA & SSL encryption</span>
                     </div>
                 </div>
             </div>
