@@ -4,6 +4,7 @@ import { hydrateRoot } from 'react-dom/client'; // 1. Import hydrateRoot
 import './index.css';
 import App from './App.jsx';
 import { HelmetProvider } from 'react-helmet-async';
+import { PermissionProvider } from './contexts/PermissionContext';
 
 const container = document.getElementById('root');
 
@@ -12,7 +13,9 @@ hydrateRoot(
     container,
     <React.Fragment>
         <HelmetProvider>
-            <App />
+            <PermissionProvider>
+                <App />
+            </PermissionProvider>
         </HelmetProvider>
     </React.Fragment>
 );

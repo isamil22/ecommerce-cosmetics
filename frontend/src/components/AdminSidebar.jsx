@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare, FiChevronRight, FiActivity } from 'react-icons/fi';
+import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare, FiChevronRight, FiActivity, FiShield, FiKey, FiLock } from 'react-icons/fi';
 
 const AdminSidebar = () => {
     const activeLinkClass = "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg transform scale-105";
@@ -125,6 +125,24 @@ const AdminSidebar = () => {
                     <NavLink to="/admin/analytics" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-300 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
                         <FiBarChart2 className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
                         <span className="font-medium">Analytics</span>
+                        <FiChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                    </NavLink>
+                </div>
+
+                {/* RBAC Section */}
+                <div className="pt-2">
+                    <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-3 px-4 hover:text-pink-400 transition-colors duration-300 flex items-center">
+                        <FiShield className="w-3 h-3 mr-1" />
+                        Access Control
+                    </p>
+                    <NavLink to="/admin/roles" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-300 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
+                        <FiShield className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                        <span className="font-medium">Roles</span>
+                        <FiChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                    </NavLink>
+                    <NavLink to="/admin/permissions" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-300 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
+                        <FiKey className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                        <span className="font-medium">Permissions</span>
                         <FiChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
                     </NavLink>
                 </div>

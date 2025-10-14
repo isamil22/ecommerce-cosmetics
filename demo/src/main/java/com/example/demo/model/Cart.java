@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@lombok.EqualsAndHashCode(exclude = {"user", "items"})
+@lombok.ToString(exclude = {"user", "items"})
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

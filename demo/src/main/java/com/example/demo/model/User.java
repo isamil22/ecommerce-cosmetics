@@ -14,13 +14,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="users")
+@lombok.EqualsAndHashCode(exclude = {"cart", "roles"})
+@lombok.ToString(exclude = {"cart", "roles"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +43,15 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role; // Kept for backward compatibility - will be deprecated
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<com.example.demo.model.Role> roles = new HashSet<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
@@ -54,7 +67,57 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        
+        // Add role-based authorities from new RBAC system
+        if (roles != null && !roles.isEmpty()) {
+            for (com.example.demo.model.Role r : roles) {
+                // Add role itself as an authority
+                authorities.add(new SimpleGrantedAuthority(r.getName()));
+                
+                // Add all permissions from this role
+                if (r.getPermissions() != null) {
+                    for (Permission permission : r.getPermissions()) {
+                        authorities.add(new SimpleGrantedAuthority(permission.getName()));
+                    }
+                }
+            }
+        }
+        
+        // Fallback to old role enum for backward compatibility
+        if (authorities.isEmpty() && role != null) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        }
+        
+        return authorities;
+    }
+    
+    // Utility methods for managing roles
+    public void addRole(com.example.demo.model.Role roleToAdd) {
+        this.roles.add(roleToAdd);
+        roleToAdd.getUsers().add(this);
+    }
+    
+    public void removeRole(com.example.demo.model.Role roleToRemove) {
+        this.roles.remove(roleToRemove);
+        roleToRemove.getUsers().remove(this);
+    }
+    
+    public boolean hasRole(String roleName) {
+        return roles.stream()
+            .anyMatch(r -> r.getName().equals(roleName));
+    }
+    
+    public boolean hasPermission(String permissionName) {
+        return roles.stream()
+            .flatMap(r -> r.getPermissions().stream())
+            .anyMatch(p -> p.getName().equals(permissionName));
+    }
+    
+    public Set<Permission> getAllPermissions() {
+        return roles.stream()
+            .flatMap(r -> r.getPermissions().stream())
+            .collect(Collectors.toSet());
     }
 
     @Override

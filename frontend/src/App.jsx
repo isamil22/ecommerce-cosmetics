@@ -54,6 +54,8 @@ import AdminPackCommentsPage from './pages/admin/AdminPackCommentsPage.jsx';
 import AdminPackRecommendationsPage from './pages/admin/AdminPackRecommendationsPage.jsx';
 import ReviewFormSettingsPage from './pages/admin/ReviewFormSettingsPage.jsx';
 import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage.jsx';
+import AdminRolesPage from './pages/admin/AdminRolesPage.jsx';
+import AdminPermissionsPage from './pages/admin/AdminPermissionsPage.jsx';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -185,6 +187,8 @@ function App() {
                             <Route path="review-form-settings" element={<ReviewFormSettingsPage />} />
                             <Route path="analytics" element={<AdminAnalyticsPage />} />
                             <Route path="settings" element={<SettingsPage />} />
+                            <Route path="roles" element={<AdminRolesPage />} />
+                            <Route path="permissions" element={<AdminPermissionsPage />} />
                         </Route>
                     </Routes>
                 </main>

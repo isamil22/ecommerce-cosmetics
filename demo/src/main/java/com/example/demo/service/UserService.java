@@ -4,10 +4,12 @@ import com.example.demo.dto.ChangePasswordRequest;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repositories.CommentRepository;
 import com.example.demo.repositories.OrderRepository;
 import com.example.demo.repositories.ReviewRepository;
+import com.example.demo.repositories.RoleRepository;
 import com.example.demo.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class UserService {
     private final OrderRepository orderRepository;
     private final CommentRepository commentRepository;
     private final ReviewRepository reviewRepository;
+    private final RoleRepository roleRepository;
     // Removed RecaptchaService dependency as it's no longer used in this service for validation
     // private final RecaptchaService recaptchaService;
 
@@ -136,5 +139,57 @@ public class UserService {
         user.setResetPasswordToken(null);
         user.setResetPasswordTokenExpiry(null);
         userRepository.save(user);
+    }
+    
+    /**
+     * Assign roles to a user (replaces existing roles)
+     */
+    @Transactional
+    public UserDTO assignRoles(Long userId, java.util.Set<Long> roleIds) {
+        User user = getUserById(userId);
+        
+        // Clear existing roles
+        user.getRoles().clear();
+        
+        // Add new roles
+        if (roleIds != null && !roleIds.isEmpty()) {
+            java.util.Set<Role> roles = new java.util.HashSet<>(roleRepository.findAllById(roleIds));
+            for (Role role : roles) {
+                user.addRole(role);
+            }
+        }
+        
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDTO(updatedUser);
+    }
+    
+    /**
+     * Add a role to a user
+     */
+    @Transactional
+    public UserDTO addRole(Long userId, Long roleId) {
+        User user = getUserById(userId);
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + roleId));
+        
+        user.addRole(role);
+        
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDTO(updatedUser);
+    }
+    
+    /**
+     * Remove a role from a user
+     */
+    @Transactional
+    public UserDTO removeRole(Long userId, Long roleId) {
+        User user = getUserById(userId);
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + roleId));
+        
+        user.removeRole(role);
+        
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDTO(updatedUser);
     }
 }
