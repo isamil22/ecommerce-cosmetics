@@ -42,7 +42,7 @@ public class NotificationSettingController {
      * Restricted to ADMIN users only
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> updateSettings(@RequestBody NotificationSetting newSettings) {
         logger.info("Updating notification settings");
         

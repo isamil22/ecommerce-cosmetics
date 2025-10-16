@@ -72,8 +72,8 @@ public class User implements UserDetails {
         // Add role-based authorities from new RBAC system
         if (roles != null && !roles.isEmpty()) {
             for (com.example.demo.model.Role r : roles) {
-                // Add role itself as an authority
-                authorities.add(new SimpleGrantedAuthority(r.getName()));
+                // Add role itself as an authority with ROLE_ prefix for Spring Security
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + r.getName()));
                 
                 // Add all permissions from this role
                 if (r.getPermissions() != null) {

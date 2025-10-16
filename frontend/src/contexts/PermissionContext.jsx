@@ -44,10 +44,9 @@ export const PermissionProvider = ({ children }) => {
             const userPermissions = permissionsResponse.data || [];
             setPermissions(userPermissions);
 
-            // Extract unique roles from user profile or permissions
-            // For now, we'll use the old role field as a fallback
-            const userRole = profileResponse.data.role;
-            setRoles([userRole]); // Can be enhanced later to fetch actual RBAC roles
+            // Use the effective role from the backend which is determined from RBAC roles
+            const effectiveRole = profileResponse.data.effectiveRole;
+            setRoles([effectiveRole]);
 
         } catch (error) {
             console.error('Error fetching user permissions:', error);

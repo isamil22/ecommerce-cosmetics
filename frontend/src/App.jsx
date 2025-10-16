@@ -88,7 +88,7 @@ function App() {
                 setIsAuthenticated(true);
                 try {
                     const response = await getUserProfile();
-                    setUserRole(response.data.role);
+                    setUserRole(response.data.effectiveRole);
                 } catch (error) {
                     console.error("Could not fetch user profile", error);
                     setIsAuthenticated(false);

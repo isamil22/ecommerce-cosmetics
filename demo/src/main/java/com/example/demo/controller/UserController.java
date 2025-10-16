@@ -22,7 +22,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
 @Tag(name = "User Management", description = "APIs for managing users and their role assignments")
 public class UserController {
 

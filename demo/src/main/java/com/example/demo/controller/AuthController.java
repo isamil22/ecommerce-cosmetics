@@ -21,6 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -210,5 +213,30 @@ public class AuthController {
         String email = authentication.getName();
         User user = userService.getUserByEmail(email);
         return ResponseEntity.ok(userMapper.toDTO(user));
+    }
+
+    @GetMapping("/debug/authorities")
+    public ResponseEntity<?> getDebugAuthorities() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ResponseEntity.ok("No authentication");
+        }
+        
+        Map<String, Object> debug = new HashMap<>();
+        debug.put("name", authentication.getName());
+        debug.put("authenticated", authentication.isAuthenticated());
+        debug.put("authorities", authentication.getAuthorities().stream()
+            .map(auth -> auth.getAuthority())
+            .collect(java.util.stream.Collectors.toList()));
+        
+        // Also check if the user details are loaded correctly
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            debug.put("userDetailsAuthorities", userDetails.getAuthorities().stream()
+                .map(auth -> auth.getAuthority())
+                .collect(java.util.stream.Collectors.toList()));
+        }
+        
+        return ResponseEntity.ok(debug);
     }
 }

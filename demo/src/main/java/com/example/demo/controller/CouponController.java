@@ -20,7 +20,7 @@ public class CouponController {
     private final CouponService couponService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CouponDTO> createCoupon(@RequestBody CouponDTO couponDTO) {
         CouponDTO createdCoupon = couponService.createCoupon(couponDTO);
         return new ResponseEntity<>(createdCoupon, HttpStatus.CREATED);
@@ -37,28 +37,28 @@ public class CouponController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<CouponDTO>> getAllCoupons() {
         List<CouponDTO> coupons = couponService.getAllCoupons();
         return ResponseEntity.ok(coupons);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
         couponService.deleteCoupon(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/usage-statistics")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<Map<String, Object>>> getCouponUsageStatistics() {
         return ResponseEntity.ok(couponService.getCouponUsageStatistics());
     }
 
     // --- NEW ENDPOINT START ---
     @GetMapping("/{id}/usage-statistics")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<Map<String, Object>>> getCouponUsageStatisticsById(@PathVariable Long id) {
         return ResponseEntity.ok(couponService.getCouponUsageStatisticsById(id));
     }

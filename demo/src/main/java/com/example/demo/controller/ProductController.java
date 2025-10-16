@@ -35,7 +35,7 @@ public class ProductController {
      * to avoid Content-Type issues with multipart requests from clients like Swagger.
      */
     @PostMapping(consumes = { "multipart/form-data" })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<ProductDTO> addProduct(
             @RequestPart("product") String productJson, // Changed from ProductDTO to String
             @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
@@ -51,7 +51,7 @@ public class ProductController {
      * Updates an existing product with optional new images. The product data is sent as a JSON string.
      */
     @PutMapping(value = "/{id}", consumes = { "multipart/form-data" })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
             @RequestPart("product") String productJson, // Changed from ProductDTO to String
@@ -70,7 +70,7 @@ public class ProductController {
     }
 
     @PostMapping("/description-image")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> uploadDescriptionImage(@RequestParam("image") MultipartFile image) {
         try {
             String imageUrl = productService.uploadAndGetImageUrl(image);
@@ -116,7 +116,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
@@ -140,7 +140,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/frequently-bought-together")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> updateFrequentlyBoughtTogether(@PathVariable Long id, @RequestBody List<Long> frequentlyBoughtIds) {
         productService.updateFrequentlyBoughtTogether(id, frequentlyBoughtIds);
         return ResponseEntity.ok().build();

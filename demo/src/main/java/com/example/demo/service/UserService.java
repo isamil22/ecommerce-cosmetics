@@ -89,7 +89,7 @@ public class UserService {
     }
 
     public User getUserByEmail(String email){
-        return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User not found"));
+        return userRepository.findByEmailWithRolesAndPermissions(email).orElseThrow(()-> new ResourceNotFoundException("User not found"));
     }
 
     public void changePassword(String email, ChangePasswordRequest request){

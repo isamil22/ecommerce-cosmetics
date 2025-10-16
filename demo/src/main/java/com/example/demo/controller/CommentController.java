@@ -44,7 +44,7 @@ public class CommentController {
 
     // Add admin comment to product
     @PostMapping(value = "/admin/product/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CommentDTO> addAdminComment(@PathVariable Long productId,
                                                       @RequestParam("content") String content,
                                                       @RequestParam("score") Integer score,
@@ -55,7 +55,7 @@ public class CommentController {
 
     // Add admin comment to pack
     @PostMapping(value = "/admin/pack/{packId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CommentDTO> addAdminCommentToPack(@PathVariable Long packId,
                                                             @RequestParam("content") String content,
                                                             @RequestParam("score") Integer score,
@@ -78,14 +78,14 @@ public class CommentController {
 
     // Get all comments (admin only)
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<CommentDTO>> getAllComments() {
         return ResponseEntity.ok(commentService.getAllComments());
     }
 
     // Update product comment (admin only)
     @PutMapping("/product/{commentId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CommentDTO> updateProductComment(@PathVariable Long commentId,
                                                            @RequestPart("comment") @Valid CommentDTO commentDTO,
                                                            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
@@ -94,7 +94,7 @@ public class CommentController {
 
     // Update pack comment (admin only) - NEW
     @PutMapping(value = "/pack/{commentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CommentDTO> updatePackComment(@PathVariable Long commentId,
                                                         @RequestParam("content") String content,
                                                         @RequestParam("score") Integer score,
@@ -105,7 +105,7 @@ public class CommentController {
 
     // Delete product comment (admin only)
     @DeleteMapping("/product/{commentId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteProductComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.noContent().build();
@@ -113,7 +113,7 @@ public class CommentController {
 
     // Delete pack comment (admin only) - NEW
     @DeleteMapping("/pack/{commentId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deletePackComment(@PathVariable Long commentId) {
         commentService.deletePackComment(commentId);
         return ResponseEntity.noContent().build();
@@ -121,7 +121,7 @@ public class CommentController {
 
     // Delete comment image (admin only)
     @DeleteMapping("/{commentId}/images")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteCommentImage(@PathVariable Long commentId, @RequestParam String imageUrl) {
         commentService.deleteCommentImage(commentId, imageUrl);
         return ResponseEntity.noContent().build();

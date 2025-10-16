@@ -35,19 +35,19 @@ public class ReviewController {
     }
 
     @GetMapping("/pending")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<ReviewDTO>> getPendingReviews() {
         return ResponseEntity.ok(reviewService.getPendingReviews());
     }
 
     @PutMapping("/{id}/approve")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<ReviewDTO> approveReview(@PathVariable Long id) {
         return ResponseEntity.ok(reviewService.approveReview(id));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
         reviewService.deleteReview(id);
         return ResponseEntity.noContent().build();
@@ -55,7 +55,7 @@ public class ReviewController {
 
     // Admin creates a review
     @PostMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<ReviewDTO> createAdminReview(@Valid @RequestBody ReviewDTO reviewDTO) {
         ReviewDTO createdReview = reviewService.createAdminReview(reviewDTO);
         return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
@@ -63,7 +63,7 @@ public class ReviewController {
 
     // Admin updates a review
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @Valid @RequestBody ReviewDTO reviewDTO) {
         ReviewDTO updatedReview = reviewService.updateReview(id, reviewDTO);
         return ResponseEntity.ok(updatedReview);
@@ -71,7 +71,7 @@ public class ReviewController {
 
     // Admin gets all reviews (approved and pending)
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<ReviewDTO>> getAllReviews() {
         return ResponseEntity.ok(reviewService.getAllReviews());
     }

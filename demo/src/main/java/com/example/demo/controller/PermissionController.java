@@ -28,7 +28,7 @@ public class PermissionController {
      * Get all permissions
      */
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get all permissions", description = "Retrieve all permissions in the system")
     public ResponseEntity<List<PermissionDTO>> getAllPermissions() {
         List<PermissionDTO> permissions = permissionService.getAllPermissions();
@@ -39,7 +39,7 @@ public class PermissionController {
      * Get a permission by ID
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get permission by ID", description = "Retrieve a specific permission")
     public ResponseEntity<PermissionDTO> getPermissionById(@PathVariable Long id) {
         PermissionDTO permission = permissionService.getPermissionById(id);
@@ -50,7 +50,7 @@ public class PermissionController {
      * Get a permission by name
      */
     @GetMapping("/name/{name}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get permission by name", description = "Retrieve a permission by its name")
     public ResponseEntity<PermissionDTO> getPermissionByName(@PathVariable String name) {
         PermissionDTO permission = permissionService.getPermissionByName(name);
@@ -61,7 +61,7 @@ public class PermissionController {
      * Create a new permission
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Create new permission", description = "Create a new permission in the system")
     public ResponseEntity<PermissionDTO> createPermission(@Valid @RequestBody PermissionRequestDTO permissionRequestDTO) {
         PermissionDTO createdPermission = permissionService.createPermission(permissionRequestDTO);
@@ -72,7 +72,7 @@ public class PermissionController {
      * Update an existing permission
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Update permission", description = "Update an existing permission")
     public ResponseEntity<PermissionDTO> updatePermission(
             @PathVariable Long id,
@@ -85,7 +85,7 @@ public class PermissionController {
      * Delete a permission
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Delete permission", description = "Delete a permission (only if not assigned to any roles)")
     public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
         permissionService.deletePermission(id);
@@ -96,7 +96,7 @@ public class PermissionController {
      * Get permissions by resource
      */
     @GetMapping("/resource/{resource}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get permissions by resource", description = "Get all permissions for a specific resource")
     public ResponseEntity<List<PermissionDTO>> getPermissionsByResource(@PathVariable String resource) {
         List<PermissionDTO> permissions = permissionService.getPermissionsByResource(resource);
@@ -107,7 +107,7 @@ public class PermissionController {
      * Get permissions by action
      */
     @GetMapping("/action/{action}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get permissions by action", description = "Get all permissions with a specific action")
     public ResponseEntity<List<PermissionDTO>> getPermissionsByAction(@PathVariable String action) {
         List<PermissionDTO> permissions = permissionService.getPermissionsByAction(action);
@@ -118,7 +118,7 @@ public class PermissionController {
      * Get permissions for a specific role
      */
     @GetMapping("/role/{roleId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get role permissions", description = "Get all permissions assigned to a specific role")
     public ResponseEntity<Set<PermissionDTO>> getRolePermissions(@PathVariable Long roleId) {
         Set<PermissionDTO> permissions = permissionService.getRolePermissions(roleId);
@@ -129,7 +129,7 @@ public class PermissionController {
      * Get permissions for a specific user
      */
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get user permissions", description = "Get all permissions a user has through their roles")
     public ResponseEntity<Set<PermissionDTO>> getUserPermissions(@PathVariable Long userId) {
         Set<PermissionDTO> permissions = permissionService.getUserPermissions(userId);
@@ -140,7 +140,7 @@ public class PermissionController {
      * Get all unique resources
      */
     @GetMapping("/resources")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get all resources", description = "Get all unique resource names")
     public ResponseEntity<List<String>> getAllResources() {
         List<String> resources = permissionService.getAllResources();
@@ -151,7 +151,7 @@ public class PermissionController {
      * Get all unique actions
      */
     @GetMapping("/actions")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get all actions", description = "Get all unique action names")
     public ResponseEntity<List<String>> getAllActions() {
         List<String> actions = permissionService.getAllActions();
@@ -162,7 +162,7 @@ public class PermissionController {
      * Search permissions by name
      */
     @GetMapping("/search/name")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Search permissions by name", description = "Search permissions by name pattern")
     public ResponseEntity<List<PermissionDTO>> searchByName(@RequestParam String name) {
         List<PermissionDTO> permissions = permissionService.searchPermissionsByName(name);
@@ -173,7 +173,7 @@ public class PermissionController {
      * Search permissions by resource
      */
     @GetMapping("/search/resource")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Search permissions by resource", description = "Search permissions by resource pattern")
     public ResponseEntity<List<PermissionDTO>> searchByResource(@RequestParam String resource) {
         List<PermissionDTO> permissions = permissionService.searchPermissionsByResource(resource);
@@ -184,7 +184,7 @@ public class PermissionController {
      * Check if a user has a specific permission
      */
     @GetMapping("/check")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Check user permission", description = "Check if a user has a specific permission")
     public ResponseEntity<Map<String, Boolean>> checkUserPermission(
             @RequestParam Long userId,

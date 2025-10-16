@@ -27,7 +27,7 @@ public class RoleController {
      * Get all roles
      */
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get all roles", description = "Retrieve all roles with their permissions")
     public ResponseEntity<List<RoleDTO>> getAllRoles() {
         List<RoleDTO> roles = roleService.getAllRoles();
@@ -38,7 +38,7 @@ public class RoleController {
      * Get a role by ID
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get role by ID", description = "Retrieve a specific role with its permissions")
     public ResponseEntity<RoleDTO> getRoleById(@PathVariable Long id) {
         RoleDTO role = roleService.getRoleById(id);
@@ -49,7 +49,7 @@ public class RoleController {
      * Get a role by name
      */
     @GetMapping("/name/{name}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get role by name", description = "Retrieve a specific role by its name")
     public ResponseEntity<RoleDTO> getRoleByName(@PathVariable String name) {
         RoleDTO role = roleService.getRoleByName(name);
@@ -60,7 +60,7 @@ public class RoleController {
      * Create a new role
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Create new role", description = "Create a new role with optional permissions")
     public ResponseEntity<RoleDTO> createRole(@Valid @RequestBody RoleRequestDTO roleRequestDTO) {
         RoleDTO createdRole = roleService.createRole(roleRequestDTO);
@@ -71,7 +71,7 @@ public class RoleController {
      * Update an existing role
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Update role", description = "Update an existing role's details and permissions")
     public ResponseEntity<RoleDTO> updateRole(
             @PathVariable Long id,
@@ -84,7 +84,7 @@ public class RoleController {
      * Delete a role
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Delete role", description = "Delete a role (only if not assigned to any users)")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);
@@ -95,7 +95,7 @@ public class RoleController {
      * Assign permissions to a role (replaces existing permissions)
      */
     @PostMapping("/{id}/permissions")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Assign permissions to role", description = "Assign a set of permissions to a role")
     public ResponseEntity<RoleDTO> assignPermissions(
             @PathVariable Long id,
@@ -108,7 +108,7 @@ public class RoleController {
      * Add a single permission to a role
      */
     @PostMapping("/{roleId}/permissions/{permissionId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Add permission to role", description = "Add a single permission to a role")
     public ResponseEntity<RoleDTO> addPermission(
             @PathVariable Long roleId,
@@ -121,7 +121,7 @@ public class RoleController {
      * Remove a permission from a role
      */
     @DeleteMapping("/{roleId}/permissions/{permissionId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Remove permission from role", description = "Remove a permission from a role")
     public ResponseEntity<RoleDTO> removePermission(
             @PathVariable Long roleId,
@@ -134,7 +134,7 @@ public class RoleController {
      * Get roles for a specific user
      */
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get user's roles", description = "Get all roles assigned to a specific user")
     public ResponseEntity<Set<RoleDTO>> getUserRoles(@PathVariable Long userId) {
         Set<RoleDTO> roles = roleService.getUserRoles(userId);
@@ -145,7 +145,7 @@ public class RoleController {
      * Search roles by name
      */
     @GetMapping("/search")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Search roles", description = "Search roles by name pattern")
     public ResponseEntity<List<RoleDTO>> searchRoles(@RequestParam String name) {
         List<RoleDTO> roles = roleService.searchRolesByName(name);

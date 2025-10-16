@@ -20,6 +20,7 @@ public class MethodSecurityConfig {
     
     /**
      * Configure the method security expression handler to use our custom permission evaluator
+     * Only for hasPermission() calls, standard hasAuthority() and hasRole() work normally
      */
     @Bean
     public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {

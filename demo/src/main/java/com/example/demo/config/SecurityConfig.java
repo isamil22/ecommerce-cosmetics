@@ -71,7 +71,8 @@ public class SecurityConfig {
                                 "/api/custom-packs/**", // Fixed: Allow access to all custom-packs endpoints
                                 "/api/products/packable",
                                 "/api/cart", // Allow guest users to view cart
-                                "/api/coupons/validate/**" // Allow coupon validation without authentication
+                                "/api/coupons/validate/**", // Allow coupon validation without authentication
+                                "/api/auth/debug/authorities" // Allow debug endpoint for troubleshooting
                         )
                         .permitAll()
                         .requestMatchers("/", "/index.html", "/images/**", "/vite.svg").permitAll()
@@ -111,7 +112,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> (UserDetails) userRepository.findByEmail(username)
+        return username -> (UserDetails) userRepository.findByEmailWithRolesAndPermissions(username)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 }

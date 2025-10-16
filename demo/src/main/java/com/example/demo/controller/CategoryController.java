@@ -22,7 +22,7 @@ public class CategoryController {
 
     // Modified to handle multipart/form-data
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CategoryDTO> createCategory(@RequestPart("category") @Valid CategoryDTO categoryDTO,
                                                       @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
         CategoryDTO createdCategory = categoryService.createCategory(categoryDTO, image);
@@ -41,7 +41,7 @@ public class CategoryController {
 
     // Modified to handle multipart/form-data
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id,
                                                       @RequestPart("category") @Valid CategoryDTO categoryDTO,
                                                       @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
@@ -49,7 +49,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();

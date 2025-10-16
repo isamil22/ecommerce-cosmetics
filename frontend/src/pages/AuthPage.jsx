@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser, registerUser } from '../api/apiService';
+import { loginUser, registerUser, getUserProfile } from '../api/apiService';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 const AuthPage = ({ setIsAuthenticated }) => {
@@ -44,7 +44,19 @@ const AuthPage = ({ setIsAuthenticated }) => {
                 });
                 localStorage.setItem('token', response.data);
                 setIsAuthenticated(true);
-                navigate('/profile');
+                
+                // Get user profile to determine redirection based on dashboard access
+                try {
+                    const profileResponse = await getUserProfile();
+                    if (profileResponse.data.hasDashboardAccess) {
+                        navigate('/admin/dashboard');
+                    } else {
+                        navigate('/profile');
+                    }
+                } catch (error) {
+                    console.error("Could not fetch user profile for redirection", error);
+                    navigate('/profile'); // Fallback to profile page
+                }
             } else {
                 await registerUser({ ...formData, recaptchaToken });
                 setSuccess('Registration successful! A confirmation code has been sent to your email.');

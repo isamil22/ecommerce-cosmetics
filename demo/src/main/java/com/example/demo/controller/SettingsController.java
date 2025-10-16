@@ -40,7 +40,7 @@ public class SettingsController {
      * @return A success message.
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> saveSettings(@RequestBody Map<String, String> settings) {
         settings.forEach((key, value) -> {
             Setting setting = settingRepository.findBySettingKey(key)
