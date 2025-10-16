@@ -25,7 +25,7 @@ public class HeroController {
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('HERO:EDIT') or hasAuthority('HERO:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<HeroDTO> updateHero(@RequestPart("hero") @Valid HeroDTO heroDTO,
                                               @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
         return ResponseEntity.ok(heroService.updateHero(heroDTO, image));

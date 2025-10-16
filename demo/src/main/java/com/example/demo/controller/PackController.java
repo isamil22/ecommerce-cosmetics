@@ -29,7 +29,7 @@ public class PackController {
     private final PackMapper packMapper;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('PACK:CREATE') or hasAuthority('PACK:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<PackResponseDTO> createPack(@RequestPart("pack") PackRequestDTO packRequestDTO,
                                                       @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
         PackResponseDTO createdPack = packService.createPack(packRequestDTO, image);
@@ -37,7 +37,7 @@ public class PackController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('PACK:EDIT') or hasAuthority('PACK:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_EDITOR')")
     public ResponseEntity<PackResponseDTO> updatePack(@PathVariable Long id,
                                                       @RequestPart("pack") PackRequestDTO packRequestDTO,
                                                       @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
@@ -71,14 +71,14 @@ public class PackController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('PACK:DELETE') or hasAuthority('PACK:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deletePack(@PathVariable Long id) {
         packService.deletePack(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/recommendations")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('PACK:EDIT') or hasAuthority('PACK:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<PackResponseDTO> updateRecommendations(
             @PathVariable Long id,
             @RequestBody UpdateRecommendationsRequestDTO request) {
@@ -92,7 +92,7 @@ public class PackController {
     }
 
     @PutMapping("/{id}/recommendations/products")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('PACK:EDIT') or hasAuthority('PACK:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<PackResponseDTO> updateRecommendedProducts(
             @PathVariable Long id,
             @RequestBody List<Long> productIds) {
@@ -101,7 +101,7 @@ public class PackController {
     }
 
     @PutMapping("/{id}/recommendations/packs")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('PACK:EDIT') or hasAuthority('PACK:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<PackResponseDTO> updateRecommendedPacks(
             @PathVariable Long id,
             @RequestBody List<Long> packIds) {
@@ -110,7 +110,7 @@ public class PackController {
     }
 
     @PutMapping("/{id}/recommendations/custom-packs")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('PACK:EDIT') or hasAuthority('PACK:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<PackResponseDTO> updateRecommendedCustomPacks(
             @PathVariable Long id,
             @RequestBody List<Long> customPackIds) {

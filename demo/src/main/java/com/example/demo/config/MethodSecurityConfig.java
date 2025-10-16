@@ -18,15 +18,15 @@ public class MethodSecurityConfig {
     
     private final CustomPermissionEvaluator customPermissionEvaluator;
     
-    /**
-     * Configure the method security expression handler to use our custom permission evaluator
-     * Only for hasPermission() calls, standard hasAuthority() and hasRole() work normally
-     */
-    @Bean
-    public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
-        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setPermissionEvaluator(customPermissionEvaluator);
-        return expressionHandler;
-    }
+        /**
+         * Configure the method security expression handler to use our custom permission evaluator
+         * Only for hasPermission() calls, standard hasAuthority() and hasRole() work normally
+         */
+        @Bean
+        public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
+            DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+            expressionHandler.setPermissionEvaluator(customPermissionEvaluator);
+            return expressionHandler;
+        }
 }
 

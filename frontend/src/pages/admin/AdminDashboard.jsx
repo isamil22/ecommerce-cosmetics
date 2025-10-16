@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllProducts, getAllOrders, deleteProduct, getPendingReviews, getAllPacks, getAllCustomPacks, getAllCategories, getAllUsers, getSettings } from '/src/api/apiService.js';
 import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiShoppingCart, FiUsers, FiPackage, FiStar, FiEye, FiEdit3, FiTrash2, FiPlus, FiArrowUpRight, FiBarChart, FiActivity, FiTarget, FiSettings, FiRefreshCw, FiCheckCircle, FiAlertCircle, FiClock, FiZap, FiHeart, FiShield } from 'react-icons/fi';
+import { usePermissions } from '../../contexts/PermissionContext';
+import PermissionGuard from '../../components/PermissionGuard';
 
 const AdminDashboard = () => {
     const [products, setProducts] = useState([]);
@@ -16,34 +18,100 @@ const AdminDashboard = () => {
     const [error, setError] = useState('');
     const [hoveredCard, setHoveredCard] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
+    
+    // Get user permissions and roles
+    const { hasPermission, hasRole, hasAnyPermission, permissions, roles, loading: permissionsLoading } = usePermissions();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                // Fetch all dashboard data at the same time
-                const [productsResponse, ordersResponse, reviewsResponse, packsResponse, customPacksResponse, categoriesResponse, usersResponse, visitorCounterResponse] = await Promise.all([
-                    getAllProducts(),
-                    getAllOrders(),
-                    getPendingReviews(),
-                    getAllPacks(),
-                    getAllCustomPacks(),
-                    getAllCategories(),
-                    getAllUsers(),
-                    getSettings()
-                ]);
+                setError('');
+                
+                // Build array of promises based on user permissions
+                const promises = [];
+                const promiseNames = [];
+                
+                // Always try to fetch products and categories (basic data)
+                promises.push(getAllProducts());
+                promiseNames.push('products');
+                
+                promises.push(getAllCategories());
+                promiseNames.push('categories');
+                
+                // Only fetch data if user has permissions
+                if (hasAnyPermission(['ORDER:VIEW', 'ORDER:EDIT', 'ORDER:CREATE'])) {
+                    promises.push(getAllOrders());
+                    promiseNames.push('orders');
+                }
+                
+                if (hasAnyPermission(['REVIEW:VIEW', 'REVIEW:EDIT', 'REVIEW:CREATE'])) {
+                    promises.push(getPendingReviews());
+                    promiseNames.push('reviews');
+                }
+                
+                if (hasAnyPermission(['PACK:VIEW', 'PACK:EDIT', 'PACK:CREATE'])) {
+                    promises.push(getAllPacks());
+                    promiseNames.push('packs');
+                }
+                
+                if (hasAnyPermission(['CUSTOM_PACK:VIEW', 'CUSTOM_PACK:EDIT', 'CUSTOM_PACK:CREATE'])) {
+                    promises.push(getAllCustomPacks());
+                    promiseNames.push('customPacks');
+                }
+                
+                if (hasAnyPermission(['USER:VIEW', 'USER:EDIT', 'USER:CREATE'])) {
+                    promises.push(getAllUsers());
+                    promiseNames.push('users');
+                }
+                
+                if (hasAnyPermission(['VISITOR_COUNTER:VIEW', 'VISITOR_COUNTER:EDIT', 'VISITOR_COUNTER:CREATE'])) {
+                    promises.push(getSettings());
+                    promiseNames.push('visitorCounter');
+                }
 
-                // Handle products data
-                const productsArray = Array.isArray(productsResponse.data) ? productsResponse.data : productsResponse.data?.content || [];
-                setProducts(productsArray);
-
-                setOrders(ordersResponse.data || []);
-                setPendingReviews(reviewsResponse.data || []);
-                setPacks(packsResponse.data || []);
-                setCustomPacks(customPacksResponse.data || []);
-                setCategories(categoriesResponse.data || []);
-                setUsers(usersResponse.data || []);
-                setVisitorCounterSettings(visitorCounterResponse || null);
+                // Execute all promises
+                const responses = await Promise.allSettled(promises);
+                
+                // Process responses
+                responses.forEach((response, index) => {
+                    const promiseName = promiseNames[index];
+                    
+                    if (response.status === 'fulfilled') {
+                        const data = response.value.data;
+                        
+                        switch (promiseName) {
+                            case 'products':
+                                const productsArray = Array.isArray(data) ? data : data?.content || [];
+                                setProducts(productsArray);
+                                break;
+                            case 'orders':
+                                setOrders(data || []);
+                                break;
+                            case 'reviews':
+                                setPendingReviews(data || []);
+                                break;
+                            case 'packs':
+                                setPacks(data || []);
+                                break;
+                            case 'customPacks':
+                                setCustomPacks(data || []);
+                                break;
+                            case 'categories':
+                                setCategories(data || []);
+                                break;
+                            case 'users':
+                                setUsers(data || []);
+                                break;
+                            case 'visitorCounter':
+                                setVisitorCounterSettings(response.value || null);
+                                break;
+                        }
+                    } else {
+                        console.warn(`Failed to fetch ${promiseName}:`, response.reason);
+                    }
+                });
+                
             } catch (err) {
                 setError('Failed to fetch dashboard data.');
                 console.error(err);
@@ -51,8 +119,12 @@ const AdminDashboard = () => {
                 setLoading(false);
             }
         };
-        fetchData();
-    }, []);
+
+        // Only fetch data if permissions are loaded
+        if (!permissionsLoading) {
+            fetchData();
+        }
+    }, [permissionsLoading, hasAnyPermission, refreshing]);
 
     const handleDelete = async (productId) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
@@ -67,33 +139,8 @@ const AdminDashboard = () => {
 
     const handleRefresh = async () => {
         setRefreshing(true);
-        try {
-            const [productsResponse, ordersResponse, reviewsResponse, packsResponse, customPacksResponse, categoriesResponse, usersResponse, visitorCounterResponse] = await Promise.all([
-                getAllProducts(),
-                getAllOrders(),
-                getPendingReviews(),
-                getAllPacks(),
-                getAllCustomPacks(),
-                getAllCategories(),
-                getAllUsers(),
-                getSettings()
-            ]);
-
-            const productsArray = Array.isArray(productsResponse.data) ? productsResponse.data : productsResponse.data?.content || [];
-            setProducts(productsArray);
-            setOrders(ordersResponse.data || []);
-            setPendingReviews(reviewsResponse.data || []);
-            setPacks(packsResponse.data || []);
-            setCustomPacks(customPacksResponse.data || []);
-            setCategories(categoriesResponse.data || []);
-            setUsers(usersResponse.data || []);
-            setVisitorCounterSettings(visitorCounterResponse || null);
-        } catch (err) {
-            setError('Failed to refresh dashboard data.');
-            console.error(err);
-        } finally {
-            setRefreshing(false);
-        }
+        // The useEffect will handle the refresh when refreshing state changes
+        setTimeout(() => setRefreshing(false), 100);
     };
 
     // Calculate analytics
@@ -197,202 +244,224 @@ const AdminDashboard = () => {
 
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    {/* Revenue Card */}
-                    <div 
-                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
-                        onMouseEnter={() => setHoveredCard('revenue')}
-                        onMouseLeave={() => setHoveredCard(null)}
-                    >
-                        <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-green-100 text-sm font-medium">Total Revenue</p>
-                                    <p className="text-white text-3xl font-bold">${totalRevenue.toFixed(2)}</p>
+                    {/* Revenue Card - Only visible to users with ORDER:VIEW permission */}
+                    <PermissionGuard anyPermissions={['ORDER:VIEW', 'ORDER:EDIT', 'ORDER:CREATE']}>
+                        <div 
+                            className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
+                            onMouseEnter={() => setHoveredCard('revenue')}
+                            onMouseLeave={() => setHoveredCard(null)}
+                        >
+                            <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-green-100 text-sm font-medium">Total Revenue</p>
+                                        <p className="text-white text-3xl font-bold">${totalRevenue.toFixed(2)}</p>
+                                    </div>
+                                    <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                        <FiDollarSign className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                                    </div>
                                 </div>
-                                <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                                    <FiDollarSign className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                                <div className="flex items-center mt-4">
+                                    <FiTrendingUp className="w-4 h-4 text-green-200 mr-1 animate-pulse" />
+                                    <span className="text-green-200 text-sm">+{revenueGrowth}% from last month</span>
                                 </div>
+                                {hoveredCard === 'revenue' && (
+                                    <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                                )}
                             </div>
-                            <div className="flex items-center mt-4">
-                                <FiTrendingUp className="w-4 h-4 text-green-200 mr-1 animate-pulse" />
-                                <span className="text-green-200 text-sm">+{revenueGrowth}% from last month</span>
-                            </div>
-                            {hoveredCard === 'revenue' && (
-                                <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
-                            )}
                         </div>
-                    </div>
+                    </PermissionGuard>
 
-                    {/* Orders Card */}
-                    <div 
-                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
-                        onMouseEnter={() => setHoveredCard('orders')}
-                        onMouseLeave={() => setHoveredCard(null)}
-                    >
-                        <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-blue-100 text-sm font-medium">Total Orders</p>
-                                    <p className="text-white text-3xl font-bold">{totalOrders}</p>
+                    {/* Orders Card - Only visible to users with ORDER:VIEW permission */}
+                    <PermissionGuard anyPermissions={['ORDER:VIEW', 'ORDER:EDIT', 'ORDER:CREATE']}>
+                        <div 
+                            className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
+                            onMouseEnter={() => setHoveredCard('orders')}
+                            onMouseLeave={() => setHoveredCard(null)}
+                        >
+                            <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-blue-100 text-sm font-medium">Total Orders</p>
+                                        <p className="text-white text-3xl font-bold">{totalOrders}</p>
+                                    </div>
+                                    <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                        <FiShoppingCart className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                                    </div>
                                 </div>
-                                <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                                    <FiShoppingCart className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                                <div className="flex items-center mt-4">
+                                    <FiTrendingUp className="w-4 h-4 text-blue-200 mr-1 animate-pulse" />
+                                    <span className="text-blue-200 text-sm">+{ordersGrowth}% from last month</span>
                                 </div>
+                                {hoveredCard === 'orders' && (
+                                    <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                                )}
                             </div>
-                            <div className="flex items-center mt-4">
-                                <FiTrendingUp className="w-4 h-4 text-blue-200 mr-1 animate-pulse" />
-                                <span className="text-blue-200 text-sm">+{ordersGrowth}% from last month</span>
-                            </div>
-                            {hoveredCard === 'orders' && (
-                                <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
-                            )}
                         </div>
-                    </div>
+                    </PermissionGuard>
 
-                    {/* Users Card */}
-                    <div 
-                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
-                        onMouseEnter={() => setHoveredCard('users')}
-                        onMouseLeave={() => setHoveredCard(null)}
-                    >
-                        <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-purple-100 text-sm font-medium">Total Users</p>
-                                    <p className="text-white text-3xl font-bold">{totalUsers}</p>
+                    {/* Users Card - Only visible to users with USER:VIEW permission */}
+                    <PermissionGuard anyPermissions={['USER:VIEW', 'USER:EDIT', 'USER:CREATE']}>
+                        <div 
+                            className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
+                            onMouseEnter={() => setHoveredCard('users')}
+                            onMouseLeave={() => setHoveredCard(null)}
+                        >
+                            <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-purple-100 text-sm font-medium">Total Users</p>
+                                        <p className="text-white text-3xl font-bold">{totalUsers}</p>
+                                    </div>
+                                    <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                        <FiUsers className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                                    </div>
                                 </div>
-                                <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                                    <FiUsers className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                                <div className="flex items-center mt-4">
+                                    <FiTrendingUp className="w-4 h-4 text-purple-200 mr-1 animate-pulse" />
+                                    <span className="text-purple-200 text-sm">+{usersGrowth}% from last month</span>
                                 </div>
+                                {hoveredCard === 'users' && (
+                                    <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                                )}
                             </div>
-                            <div className="flex items-center mt-4">
-                                <FiTrendingUp className="w-4 h-4 text-purple-200 mr-1 animate-pulse" />
-                                <span className="text-purple-200 text-sm">+{usersGrowth}% from last month</span>
-                            </div>
-                            {hoveredCard === 'users' && (
-                                <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
-                            )}
                         </div>
-                    </div>
+                    </PermissionGuard>
 
-                    {/* Products Card */}
-                    <div 
-                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
-                        onMouseEnter={() => setHoveredCard('products')}
-                        onMouseLeave={() => setHoveredCard(null)}
-                    >
-                        <div className="bg-gradient-to-br from-orange-500 to-red-600 p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-orange-100 text-sm font-medium">Total Products</p>
-                                    <p className="text-white text-3xl font-bold">{totalProducts}</p>
+                    {/* Products Card - Only visible to users with PRODUCT:VIEW permission */}
+                    <PermissionGuard anyPermissions={['PRODUCT:VIEW', 'PRODUCT:EDIT', 'PRODUCT:CREATE']}>
+                        <div 
+                            className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
+                            onMouseEnter={() => setHoveredCard('products')}
+                            onMouseLeave={() => setHoveredCard(null)}
+                        >
+                            <div className="bg-gradient-to-br from-orange-500 to-red-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-orange-100 text-sm font-medium">Total Products</p>
+                                        <p className="text-white text-3xl font-bold">{totalProducts}</p>
+                                    </div>
+                                    <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                        <FiPackage className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                                    </div>
                                 </div>
-                                <div className="bg-white/20 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                                    <FiPackage className="w-8 h-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+                                <div className="flex items-center mt-4">
+                                    <FiTrendingUp className="w-4 h-4 text-orange-200 mr-1 animate-pulse" />
+                                    <span className="text-orange-200 text-sm">+{productsGrowth}% from last month</span>
                                 </div>
+                                {hoveredCard === 'products' && (
+                                    <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                                )}
                             </div>
-                            <div className="flex items-center mt-4">
-                                <FiTrendingUp className="w-4 h-4 text-orange-200 mr-1 animate-pulse" />
-                                <span className="text-orange-200 text-sm">+{productsGrowth}% from last month</span>
-                            </div>
-                            {hoveredCard === 'products' && (
-                                <div className="absolute top-2 right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
-                            )}
                         </div>
-                    </div>
+                    </PermissionGuard>
                 </div>
 
                 {/* Enhanced Secondary Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-600 text-sm font-medium">Packs Available</p>
-                                <p className="text-gray-900 text-2xl font-bold">{totalPacks}</p>
-                            </div>
-                            <div className="bg-pink-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                                <FiPackage className="w-6 h-6 text-pink-600 group-hover:rotate-12 transition-transform duration-300" />
-                            </div>
-                        </div>
-                        <Link to="/admin/packs" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2 group/link">
-                            Manage Packs <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
-                        </Link>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-600 text-sm font-medium">Custom Packs</p>
-                                <p className="text-gray-900 text-2xl font-bold">{totalCustomPacks}</p>
-                            </div>
-                            <div className="bg-purple-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                                <FiTarget className="w-6 h-6 text-purple-600 group-hover:rotate-12 transition-transform duration-300" />
-                            </div>
-                        </div>
-                        <Link to="/admin/custom-packs" className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center mt-2 group/link">
-                            Manage Custom Packs <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
-                        </Link>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-600 text-sm font-medium">Categories</p>
-                                <p className="text-gray-900 text-2xl font-bold">{totalCategories}</p>
-                            </div>
-                            <div className="bg-blue-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-                                <FiBarChart className="w-6 h-6 text-blue-600 group-hover:rotate-12 transition-transform duration-300" />
-                            </div>
-                        </div>
-                        <Link to="/admin/categories" className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center mt-2 group/link">
-                            Manage Categories <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
-                        </Link>
-                    </div>
-
-                    {/* Enhanced Visitor Counter Status */}
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-600 text-sm font-medium">Visitor Counter</p>
-                                <div className="flex items-center mt-1">
-                                    <div className={`w-3 h-3 rounded-full mr-2 ${visitorCounterSettings?.enabled ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-                                    <p className="text-gray-900 text-lg font-bold">
-                                        {visitorCounterSettings?.enabled ? 'Active' : 'Disabled'}
-                                    </p>
+                    {/* Packs Available - Only visible to users with PACK:VIEW permission */}
+                    <PermissionGuard anyPermissions={['PACK:VIEW', 'PACK:EDIT', 'PACK:CREATE']}>
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-gray-600 text-sm font-medium">Packs Available</p>
+                                    <p className="text-gray-900 text-2xl font-bold">{totalPacks}</p>
                                 </div>
-                                {visitorCounterSettings?.enabled && (
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        Range: {visitorCounterSettings.min}-{visitorCounterSettings.max}
-                                    </p>
-                                )}
+                                <div className="bg-pink-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                    <FiPackage className="w-6 h-6 text-pink-600 group-hover:rotate-12 transition-transform duration-300" />
+                                </div>
                             </div>
-                            <div className={`rounded-full p-3 group-hover:scale-110 transition-transform duration-300 ${visitorCounterSettings?.enabled ? 'bg-green-100' : 'bg-red-100'}`}>
-                                <FiEye className={`w-6 h-6 group-hover:rotate-12 transition-transform duration-300 ${visitorCounterSettings?.enabled ? 'text-green-600' : 'text-red-600'}`} />
-                            </div>
+                            <Link to="/admin/packs" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2 group/link">
+                                Manage Packs <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
+                            </Link>
                         </div>
-                        <Link to="/admin/vistorcountsetting" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2 group/link">
-                            Configure Settings <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
-                        </Link>
-                    </div>
+                    </PermissionGuard>
+
+                    {/* Custom Packs - Only visible to users with CUSTOM_PACK:VIEW permission */}
+                    <PermissionGuard anyPermissions={['CUSTOM_PACK:VIEW', 'CUSTOM_PACK:EDIT', 'CUSTOM_PACK:CREATE']}>
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-gray-600 text-sm font-medium">Custom Packs</p>
+                                    <p className="text-gray-900 text-2xl font-bold">{totalCustomPacks}</p>
+                                </div>
+                                <div className="bg-purple-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                    <FiTarget className="w-6 h-6 text-purple-600 group-hover:rotate-12 transition-transform duration-300" />
+                                </div>
+                            </div>
+                            <Link to="/admin/custom-packs" className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center mt-2 group/link">
+                                Manage Custom Packs <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
+                            </Link>
+                        </div>
+                    </PermissionGuard>
+
+                    {/* Categories - Only visible to users with CATEGORY:VIEW permission */}
+                    <PermissionGuard anyPermissions={['CATEGORY:VIEW', 'CATEGORY:EDIT', 'CATEGORY:CREATE']}>
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-gray-600 text-sm font-medium">Categories</p>
+                                    <p className="text-gray-900 text-2xl font-bold">{totalCategories}</p>
+                                </div>
+                                <div className="bg-blue-100 rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
+                                    <FiBarChart className="w-6 h-6 text-blue-600 group-hover:rotate-12 transition-transform duration-300" />
+                                </div>
+                            </div>
+                            <Link to="/admin/categories" className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center mt-2 group/link">
+                                Manage Categories <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
+                            </Link>
+                        </div>
+                    </PermissionGuard>
+
+                    {/* Enhanced Visitor Counter Status - Only visible to users with VISITOR_COUNTER:VIEW permission */}
+                    <PermissionGuard anyPermissions={['VISITOR_COUNTER:VIEW', 'VISITOR_COUNTER:EDIT', 'VISITOR_COUNTER:CREATE']}>
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 border border-gray-100 group">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-gray-600 text-sm font-medium">Visitor Counter</p>
+                                    <div className="flex items-center mt-1">
+                                        <div className={`w-3 h-3 rounded-full mr-2 ${visitorCounterSettings?.enabled ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+                                        <p className="text-gray-900 text-lg font-bold">
+                                            {visitorCounterSettings?.enabled ? 'Active' : 'Disabled'}
+                                        </p>
+                                    </div>
+                                    {visitorCounterSettings?.enabled && (
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Range: {visitorCounterSettings.min}-{visitorCounterSettings.max}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className={`rounded-full p-3 group-hover:scale-110 transition-transform duration-300 ${visitorCounterSettings?.enabled ? 'bg-green-100' : 'bg-red-100'}`}>
+                                    <FiEye className={`w-6 h-6 group-hover:rotate-12 transition-transform duration-300 ${visitorCounterSettings?.enabled ? 'text-green-600' : 'text-red-600'}`} />
+                                </div>
+                            </div>
+                            <Link to="/admin/vistorcountsetting" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2 group/link">
+                                Configure Settings <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
+                            </Link>
+                        </div>
+                    </PermissionGuard>
                 </div>
 
                 {/* Main Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Recent Products */}
-                    <div className="lg:col-span-2">
-                        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                            <div className="bg-gradient-to-r from-pink-50 to-purple-50 px-6 py-4 border-b border-gray-100">
-                                <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                                        <FiPackage className="w-5 h-5 mr-2 text-pink-600" />
-                                        Recent Products
-                                    </h2>
-                                    <Link to="/admin/products/new" className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center">
-                                        <FiPlus className="w-4 h-4 mr-2" />
-                                        Add New
-                                    </Link>
+                    {/* Recent Products - Only visible to users with PRODUCT:VIEW permission */}
+                    <PermissionGuard anyPermissions={['PRODUCT:VIEW', 'PRODUCT:EDIT', 'PRODUCT:CREATE']}>
+                        <div className="lg:col-span-2">
+                            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                                <div className="bg-gradient-to-r from-pink-50 to-purple-50 px-6 py-4 border-b border-gray-100">
+                                    <div className="flex items-center justify-between">
+                                        <h2 className="text-xl font-bold text-gray-900 flex items-center">
+                                            <FiPackage className="w-5 h-5 mr-2 text-pink-600" />
+                                            Recent Products
+                                        </h2>
+                                        <PermissionGuard anyPermissions={['PRODUCT:CREATE', 'PRODUCT:EDIT']}>
+                                            <Link to="/admin/products/new" className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center">
+                                                <FiPlus className="w-4 h-4 mr-2" />
+                                                Add New
+                                            </Link>
+                                        </PermissionGuard>
+                                    </div>
                                 </div>
-                            </div>
                             <div className="p-6">
                                 <div className="space-y-4">
                                     {products.slice(0, 6).map((product, index) => (
@@ -422,18 +491,20 @@ const AdminDashboard = () => {
                                 </Link>
                             </div>
                         </div>
-                    </div>
+                        </div>
+                    </PermissionGuard>
 
                     {/* Sidebar */}
                     <div className="space-y-6">
-                        {/* Recent Orders */}
-                        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-4 border-b border-gray-100">
-                                <h2 className="text-lg font-bold text-gray-900 flex items-center">
-                                    <FiShoppingCart className="w-5 h-5 mr-2 text-blue-600" />
-                                    Recent Orders
-                                </h2>
-                            </div>
+                        {/* Recent Orders - Only visible to users with ORDER:VIEW permission */}
+                        <PermissionGuard anyPermissions={['ORDER:VIEW', 'ORDER:EDIT', 'ORDER:CREATE']}>
+                            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-4 border-b border-gray-100">
+                                    <h2 className="text-lg font-bold text-gray-900 flex items-center">
+                                        <FiShoppingCart className="w-5 h-5 mr-2 text-blue-600" />
+                                        Recent Orders
+                                    </h2>
+                                </div>
                             <div className="p-6">
                                 <div className="space-y-4">
                                     {orders.slice(0, 4).map(order => (
@@ -458,20 +529,22 @@ const AdminDashboard = () => {
                                 </Link>
                             </div>
                         </div>
+                        </PermissionGuard>
 
-                        {/* Pending Reviews */}
-                        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                            <div className="bg-gradient-to-r from-orange-50 to-red-50 px-6 py-4 border-b border-gray-100">
-                                <div className="flex items-center justify-between">
-                                    <h2 className="text-lg font-bold text-gray-900 flex items-center">
-                                        <FiStar className="w-5 h-5 mr-2 text-orange-600" />
-                                        Pending Reviews
-                                    </h2>
-                                    <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-bold">
-                                        {pendingReviewsCount}
-                                    </span>
+                        {/* Pending Reviews - Only visible to users with REVIEW:VIEW permission */}
+                        <PermissionGuard anyPermissions={['REVIEW:VIEW', 'REVIEW:EDIT', 'REVIEW:CREATE']}>
+                            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                                <div className="bg-gradient-to-r from-orange-50 to-red-50 px-6 py-4 border-b border-gray-100">
+                                    <div className="flex items-center justify-between">
+                                        <h2 className="text-lg font-bold text-gray-900 flex items-center">
+                                            <FiStar className="w-5 h-5 mr-2 text-orange-600" />
+                                            Pending Reviews
+                                        </h2>
+                                        <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-bold">
+                                            {pendingReviewsCount}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
                             <div className="p-6">
                                 <div className="space-y-4">
                                     {pendingReviews.slice(0, 3).map(review => (
@@ -486,8 +559,9 @@ const AdminDashboard = () => {
                                 </Link>
                             </div>
                         </div>
+                        </PermissionGuard>
 
-                        {/* Quick Actions */}
+                        {/* Quick Actions - Only show actions user has permissions for */}
                         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                             <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-100">
                                 <h2 className="text-lg font-bold text-gray-900 flex items-center">
@@ -496,26 +570,45 @@ const AdminDashboard = () => {
                                 </h2>
                             </div>
                             <div className="p-6 space-y-3">
-                                <Link to="/admin/products/new" className="flex items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                                    <FiPlus className="w-5 h-5 text-green-600 mr-3" />
-                                    <span className="text-green-800 font-medium">Add New Product</span>
-                                </Link>
-                                <Link to="/admin/packs/new" className="flex items-center p-3 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors">
-                                    <FiPackage className="w-5 h-5 text-pink-600 mr-3" />
-                                    <span className="text-pink-800 font-medium">Create New Pack</span>
-                                </Link>
-                                <Link to="/admin/custom-packs/new" className="flex items-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                                    <FiTarget className="w-5 h-5 text-purple-600 mr-3" />
-                                    <span className="text-purple-800 font-medium">New Custom Pack</span>
-                                </Link>
-                                <Link to="/admin/categories/new" className="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                                    <FiBarChart className="w-5 h-5 text-blue-600 mr-3" />
-                                    <span className="text-blue-800 font-medium">Add Category</span>
-                                </Link>
-                                <Link to="/admin/review-form-settings" className="flex items-center p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
-                                    <FiSettings className="w-5 h-5 text-orange-600 mr-3" />
-                                    <span className="text-orange-800 font-medium">Review Form Settings</span>
-                                </Link>
+                                {/* Add New Product - Only visible to users with PRODUCT:CREATE permission */}
+                                <PermissionGuard anyPermissions={['PRODUCT:CREATE', 'PRODUCT:EDIT']}>
+                                    <Link to="/admin/products/new" className="flex items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                                        <FiPlus className="w-5 h-5 text-green-600 mr-3" />
+                                        <span className="text-green-800 font-medium">Add New Product</span>
+                                    </Link>
+                                </PermissionGuard>
+
+                                {/* Create New Pack - Only visible to users with PACK:CREATE permission */}
+                                <PermissionGuard anyPermissions={['PACK:CREATE', 'PACK:EDIT']}>
+                                    <Link to="/admin/packs/new" className="flex items-center p-3 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors">
+                                        <FiPackage className="w-5 h-5 text-pink-600 mr-3" />
+                                        <span className="text-pink-800 font-medium">Create New Pack</span>
+                                    </Link>
+                                </PermissionGuard>
+
+                                {/* New Custom Pack - Only visible to users with CUSTOM_PACK:CREATE permission */}
+                                <PermissionGuard anyPermissions={['CUSTOM_PACK:CREATE', 'CUSTOM_PACK:EDIT']}>
+                                    <Link to="/admin/custom-packs/new" className="flex items-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                                        <FiTarget className="w-5 h-5 text-purple-600 mr-3" />
+                                        <span className="text-purple-800 font-medium">New Custom Pack</span>
+                                    </Link>
+                                </PermissionGuard>
+
+                                {/* Add Category - Only visible to users with CATEGORY:CREATE permission */}
+                                <PermissionGuard anyPermissions={['CATEGORY:CREATE', 'CATEGORY:EDIT']}>
+                                    <Link to="/admin/categories/new" className="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                                        <FiBarChart className="w-5 h-5 text-blue-600 mr-3" />
+                                        <span className="text-blue-800 font-medium">Add Category</span>
+                                    </Link>
+                                </PermissionGuard>
+
+                                {/* Review Form Settings - Only visible to users with REVIEW:EDIT permission */}
+                                <PermissionGuard anyPermissions={['REVIEW:EDIT', 'REVIEW:CREATE']}>
+                                    <Link to="/admin/review-form-settings" className="flex items-center p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
+                                        <FiSettings className="w-5 h-5 text-orange-600 mr-3" />
+                                        <span className="text-orange-800 font-medium">Review Form Settings</span>
+                                    </Link>
+                                </PermissionGuard>
                             </div>
                         </div>
                     </div>

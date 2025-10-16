@@ -20,7 +20,7 @@ public class CouponController {
     private final CouponService couponService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('COUPON:CREATE') or hasAuthority('COUPON:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CouponDTO> createCoupon(@RequestBody CouponDTO couponDTO) {
         CouponDTO createdCoupon = couponService.createCoupon(couponDTO);
         return new ResponseEntity<>(createdCoupon, HttpStatus.CREATED);
@@ -37,28 +37,28 @@ public class CouponController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('COUPON:VIEW') or hasAuthority('COUPON:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<CouponDTO>> getAllCoupons() {
         List<CouponDTO> coupons = couponService.getAllCoupons();
         return ResponseEntity.ok(coupons);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('COUPON:DELETE') or hasAuthority('COUPON:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
         couponService.deleteCoupon(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/usage-statistics")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('COUPON:VIEW') or hasAuthority('COUPON:ANALYTICS') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<Map<String, Object>>> getCouponUsageStatistics() {
         return ResponseEntity.ok(couponService.getCouponUsageStatistics());
     }
 
     // --- NEW ENDPOINT START ---
     @GetMapping("/{id}/usage-statistics")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('COUPON:VIEW') or hasAuthority('COUPON:ANALYTICS') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<Map<String, Object>>> getCouponUsageStatisticsById(@PathVariable Long id) {
         return ResponseEntity.ok(couponService.getCouponUsageStatisticsById(id));
     }

@@ -20,7 +20,7 @@ public class AnnouncementController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ANNOUNCEMENT:EDIT') or hasAuthority('ANNOUNCEMENT:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<AnnouncementDTO> updateAnnouncement(@RequestBody AnnouncementDTO announcementDTO) {
         return ResponseEntity.ok(announcementService.updateAnnouncement(announcementDTO));
     }

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step-by-Step Permission System Testing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold mb-8 text-center">🧪 Step-by-Step Permission System Testing</h1>
+        
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">📋 Testing Checklist</h2>
+            <div class="space-y-2 text-blue-700">
+                <p>✅ <strong>Test 1:</strong> Create new role with custom permissions</p>
+                <p>✅ <strong>Test 2:</strong> Add permissions to existing roles instantly</p>
+                <p>✅ <strong>Test 3:</strong> Mix and match permissions across different roles</p>
+                <p>✅ <strong>Test 4:</strong> Verify backend authorization works</p>
+                <p>✅ <strong>Test 5:</strong> Verify frontend dashboard adapts</p>
+            </div>
+        </div>
+
+        <!-- Test 1: Create New Role -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-green-800 mb-4">🧪 Test 1: Create New Role with Custom Permissions</h3>
+            
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-green-700 mb-2">Step 1.1: Create "Marketing Specialist" Role</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Role Name:</strong> Marketing Specialist</p>
+                    <p><strong>Description:</strong> Manages marketing campaigns and content</p>
+                    <p><strong>Permissions to Add:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• COUPON:CREATE</li>
+                        <li>• COUPON:EDIT</li>
+                        <li>• COUPON:VIEW</li>
+                        <li>• COUPON:ANALYTICS</li>
+                        <li>• ANNOUNCEMENT:EDIT</li>
+                        <li>• HERO:EDIT</li>
+                        <li>• PRODUCT:VIEW</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-blue-700 mb-2">Step 1.2: Test API Endpoints</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Test Endpoints:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• POST /api/coupons (should work with COUPON:CREATE)</li>
+                        <li>• GET /api/coupons (should work with COUPON:VIEW)</li>
+                        <li>• PUT /api/announcement (should work with ANNOUNCEMENT:EDIT)</li>
+                        <li>• PUT /api/hero (should work with HERO:EDIT)</li>
+                        <li>• GET /api/products (should work with PRODUCT:VIEW)</li>
+                        <li>• GET /api/orders (should fail - no ORDER:VIEW permission)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h4 class="font-semibold text-yellow-700 mb-2">Step 1.3: Expected Results</h4>
+                <div class="space-y-2 text-sm">
+                    <p>✅ <strong>Success:</strong> User can access coupon, announcement, hero, and product endpoints</p>
+                    <p>❌ <strong>Failure:</strong> User gets 403 Forbidden for order endpoints</p>
+                    <p>✅ <strong>Dashboard:</strong> Only shows marketing-related sections</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 2: Add Permissions to Existing Role -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-purple-800 mb-4">🧪 Test 2: Add Permissions to Existing Role Instantly</h3>
+            
+            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-purple-700 mb-2">Step 2.1: Modify "Manage Product" Role</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Existing Role:</strong> Manage Product</p>
+                    <p><strong>Current Permissions:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• PRODUCT:VIEW</li>
+                        <li>• PRODUCT:CREATE</li>
+                        <li>• PRODUCT:EDIT</li>
+                        <li>• PRODUCT:DELETE</li>
+                        <li>• CATEGORY:VIEW</li>
+                        <li>• PACK:EDIT (recently added)</li>
+                    </ul>
+                    <p><strong>Add New Permissions:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• ORDER:VIEW</li>
+                        <li>• ORDER:EXPORT</li>
+                        <li>• USER:VIEW</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-blue-700 mb-2">Step 2.2: Test Immediate Effect</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Before Adding Permissions:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• GET /api/orders → 403 Forbidden</li>
+                        <li>• GET /api/users → 403 Forbidden</li>
+                        <li>• GET /api/orders/export → 403 Forbidden</li>
+                    </ul>
+                    <p><strong>After Adding Permissions:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• GET /api/orders → 200 OK</li>
+                        <li>• GET /api/users → 200 OK</li>
+                        <li>• GET /api/orders/export → 200 OK</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h4 class="font-semibold text-yellow-700 mb-2">Step 2.3: Expected Results</h4>
+                <div class="space-y-2 text-sm">
+                    <p>✅ <strong>Immediate Effect:</strong> New permissions work without server restart</p>
+                    <p>✅ <strong>Dashboard Updates:</strong> New sections appear instantly</p>
+                    <p>✅ <strong>No Downtime:</strong> System continues working during permission changes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 3: Mix and Match Permissions -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-orange-800 mb-4">🧪 Test 3: Mix and Match Permissions Across Roles</h3>
+            
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-orange-700 mb-2">Step 3.1: Create Multiple Specialized Roles</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="border-l-4 border-orange-500 pl-3">
+                        <strong class="text-orange-700">"Content Editor":</strong>
+                        <ul class="text-orange-600 mt-1 ml-4 space-y-1">
+                            <li>• PRODUCT:VIEW, PRODUCT:EDIT</li>
+                            <li>• CATEGORY:VIEW, CATEGORY:EDIT</li>
+                            <li>• HERO:EDIT</li>
+                            <li>• ANNOUNCEMENT:EDIT</li>
+                            <li>• REVIEW:VIEW, REVIEW:EDIT</li>
+                        </ul>
+                    </div>
+                    <div class="border-l-4 border-orange-500 pl-3">
+                        <strong class="text-orange-700">"Analytics Specialist":</strong>
+                        <ul class="text-orange-600 mt-1 ml-4 space-y-1">
+                            <li>• ORDER:VIEW, ORDER:EXPORT</li>
+                            <li>• COUPON:VIEW, COUPON:ANALYTICS</li>
+                            <li>• USER:VIEW</li>
+                            <li>• REVIEW:VIEW</li>
+                            <li>• PRODUCT:VIEW</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-blue-700 mb-2">Step 3.2: Test Role Combinations</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Create User with Multiple Roles:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• Assign "Content Editor" + "Analytics Specialist" to one user</li>
+                        <li>• User should have combined permissions from both roles</li>
+                        <li>• Test endpoints that require permissions from different roles</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h4 class="font-semibold text-yellow-700 mb-2">Step 3.3: Expected Results</h4>
+                <div class="space-y-2 text-sm">
+                    <p>✅ <strong>Combined Permissions:</strong> User has access to both content and analytics features</p>
+                    <p>✅ <strong>Flexible Combinations:</strong> Can create any role combination</p>
+                    <p>✅ <strong>No Conflicts:</strong> Multiple roles work together seamlessly</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 4: Backend Authorization -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-red-800 mb-4">🧪 Test 4: Verify Backend Authorization</h3>
+            
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-red-700 mb-2">Step 4.1: Test Controller Endpoints</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Test Each Controller:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• ProductController - Test with/without PRODUCT:CREATE</li>
+                        <li>• OrderController - Test with/without ORDER:VIEW</li>
+                        <li>• ReviewController - Test with/without REVIEW:APPROVE</li>
+                        <li>• CommentController - Test with/without COMMENT:DELETE</li>
+                        <li>• CouponController - Test with/without COUPON:ANALYTICS</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-blue-700 mb-2">Step 4.2: Check Backend Logs</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Monitor Backend Logs:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• Look for "Access Denied" messages</li>
+                        <li>• Verify permission checks are working</li>
+                        <li>• Check for any 403 Forbidden responses</li>
+                        <li>• Ensure no 500 errors from authorization</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h4 class="font-semibold text-yellow-700 mb-2">Step 4.3: Expected Results</h4>
+                <div class="space-y-2 text-sm">
+                    <p>✅ <strong>Proper Authorization:</strong> Controllers respect permission-based access</p>
+                    <p>✅ <strong>Clear Error Messages:</strong> 403 Forbidden for unauthorized access</p>
+                    <p>✅ <strong>No System Errors:</strong> Authorization works without crashes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 5: Frontend Dashboard -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-indigo-800 mb-4">🧪 Test 5: Verify Frontend Dashboard Adapts</h3>
+            
+            <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-indigo-700 mb-2">Step 5.1: Test Dashboard Sections</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Login with Different Roles:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• "Marketing Specialist" - Should see coupon, announcement, hero sections</li>
+                        <li>• "Manage Product" - Should see product, category, pack sections</li>
+                        <li>• "Content Editor" - Should see content management sections</li>
+                        <li>• "Analytics Specialist" - Should see analytics and reporting sections</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h4 class="font-semibold text-blue-700 mb-2">Step 5.2: Test Dynamic UI</h4>
+                <div class="space-y-2 text-sm">
+                    <p><strong>Check UI Elements:</strong></p>
+                    <ul class="ml-4 space-y-1">
+                        <li>• Metric cards appear/disappear based on permissions</li>
+                        <li>• Quick action buttons show/hide appropriately</li>
+                        <li>• Sidebar navigation adapts to user permissions</li>
+                        <li>• Tables and data sections load only when permitted</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h4 class="font-semibold text-yellow-700 mb-2">Step 5.3: Expected Results</h4>
+                <div class="space-y-2 text-sm">
+                    <p>✅ <strong>Dynamic UI:</strong> Dashboard adapts to user permissions</p>
+                    <p>✅ <strong>No Errors:</strong> No React context errors or 500 errors</p>
+                    <p>✅ <strong>Smooth Experience:</strong> Users only see what they can access</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testing Commands -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">🔧 Testing Commands & Tools</h3>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">Backend Logs:</h4>
+                    <code class="bg-gray-200 p-2 rounded block">docker-compose logs backend --tail=50</code>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">Test API Endpoints:</h4>
+                    <code class="bg-gray-200 p-2 rounded block">
+                        curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/products<br>
+                        curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/orders<br>
+                        curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/api/coupons
+                    </code>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">Check User Permissions:</h4>
+                    <code class="bg-gray-200 p-2 rounded block">
+                        GET /api/users/{userId}/permissions<br>
+                        GET /api/users/{userId}/roles
+                    </code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Criteria -->
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-xl font-semibold text-green-800 mb-4">🎯 Success Criteria</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                <div>
+                    <h4 class="font-semibold text-green-700 mb-2">✅ Backend Tests Pass:</h4>
+                    <ul class="space-y-1 text-green-600">
+                        <li>• All controllers respect permission-based authorization</li>
+                        <li>• 403 Forbidden for unauthorized access</li>
+                        <li>• 200 OK for authorized access</li>
+                        <li>• No 500 errors from authorization</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-green-700 mb-2">✅ Frontend Tests Pass:</h4>
+                    <ul class="space-y-1 text-green-600">
+                        <li>• Dashboard adapts to user permissions</li>
+                        <li>• No React context errors</li>
+                        <li>• UI elements show/hide appropriately</li>
+                        <li>• Smooth user experience</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <p class="text-gray-600">🧪 <strong>Ready to test your permission-based authorization system!</strong></p>
+            <p class="text-sm text-gray-500 mt-2">Follow each test step by step to verify everything works correctly.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -27,7 +27,7 @@ public class RoleController {
      * Get all roles
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE:VIEW') or hasAuthority('ROLE:MANAGE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get all roles", description = "Retrieve all roles with their permissions")
     public ResponseEntity<List<RoleDTO>> getAllRoles() {
         List<RoleDTO> roles = roleService.getAllRoles();
@@ -38,7 +38,7 @@ public class RoleController {
      * Get a role by ID
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE:VIEW') or hasAuthority('ROLE:MANAGE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get role by ID", description = "Retrieve a specific role with its permissions")
     public ResponseEntity<RoleDTO> getRoleById(@PathVariable Long id) {
         RoleDTO role = roleService.getRoleById(id);
@@ -49,7 +49,7 @@ public class RoleController {
      * Get a role by name
      */
     @GetMapping("/name/{name}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE:VIEW') or hasAuthority('ROLE:MANAGE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get role by name", description = "Retrieve a specific role by its name")
     public ResponseEntity<RoleDTO> getRoleByName(@PathVariable String name) {
         RoleDTO role = roleService.getRoleByName(name);
@@ -60,7 +60,7 @@ public class RoleController {
      * Create a new role
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE:CREATE') or hasAuthority('ROLE:MANAGE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Create new role", description = "Create a new role with optional permissions")
     public ResponseEntity<RoleDTO> createRole(@Valid @RequestBody RoleRequestDTO roleRequestDTO) {
         RoleDTO createdRole = roleService.createRole(roleRequestDTO);
@@ -71,7 +71,7 @@ public class RoleController {
      * Update an existing role
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE:EDIT') or hasAuthority('ROLE:MANAGE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Update role", description = "Update an existing role's details and permissions")
     public ResponseEntity<RoleDTO> updateRole(
             @PathVariable Long id,
@@ -84,7 +84,7 @@ public class RoleController {
      * Delete a role
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE:DELETE') or hasAuthority('ROLE:MANAGE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Delete role", description = "Delete a role (only if not assigned to any users)")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);

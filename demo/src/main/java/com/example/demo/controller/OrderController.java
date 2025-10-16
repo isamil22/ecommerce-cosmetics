@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_EDITOR')")
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         List<OrderDTO> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
@@ -58,7 +58,7 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}/status")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ORDER:EDIT') or hasAuthority('ORDER:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable Long orderId,
                                                       @RequestParam Order.OrderStatus status) {
         OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, status);
@@ -66,35 +66,35 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ORDER:DELETE') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
         orderService.softDeleteOrder(orderId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{orderId}/restore")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ORDER:EDIT') or hasAuthority('ORDER:RESTORE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> restoreOrder(@PathVariable Long orderId) {
         orderService.restoreOrder(orderId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/deleted")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_EDITOR')")
     public ResponseEntity<List<OrderDTO>> getDeletedOrders() {
         List<OrderDTO> orders = orderService.getDeletedOrders();
         return ResponseEntity.ok(orders);
     }
 
     @DeleteMapping("/all")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ORDER:DELETE') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteAllOrders() {
         orderService.deleteAllOrders();
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/export")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EXPORT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<String> exportOrders() {
         String csv = orderService.exportOrdersToCsv();
         return ResponseEntity.ok()

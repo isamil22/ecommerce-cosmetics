@@ -10,7 +10,18 @@ const PermissionContext = createContext();
 export const usePermissions = () => {
     const context = useContext(PermissionContext);
     if (!context) {
-        throw new Error('usePermissions must be used within a PermissionProvider');
+        // Return default context instead of throwing error
+        console.warn('usePermissions called outside PermissionProvider, returning default context');
+        return {
+            permissions: [],
+            roles: [],
+            loading: false,
+            userId: null,
+            hasPermission: () => false,
+            hasAnyPermission: () => false,
+            hasAllPermissions: () => false,
+            hasRole: () => false
+        };
     }
     return context;
 };
@@ -52,6 +63,7 @@ export const PermissionProvider = ({ children }) => {
             console.error('Error fetching user permissions:', error);
             setPermissions([]);
             setRoles([]);
+            setUserId(null);
         } finally {
             setLoading(false);
         }

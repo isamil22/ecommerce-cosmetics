@@ -21,7 +21,7 @@ public class CustomPackController {
     private final ProductMapper productMapper;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('CUSTOM_PACK:CREATE') or hasAuthority('CUSTOM_PACK:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CustomPackDTO> createCustomPack(@RequestBody CustomPackDTO customPackDTO) {
         return ResponseEntity.ok(customPackService.createCustomPack(customPackDTO));
     }
@@ -37,13 +37,13 @@ public class CustomPackController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('CUSTOM_PACK:EDIT') or hasAuthority('CUSTOM_PACK:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_EDITOR')")
     public ResponseEntity<CustomPackDTO> updateCustomPack(@PathVariable Long id, @RequestBody CustomPackDTO customPackDTO) {
         return ResponseEntity.ok(customPackService.updateCustomPack(id, customPackDTO));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('CUSTOM_PACK:DELETE') or hasAuthority('CUSTOM_PACK:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteCustomPack(@PathVariable Long id) {
         customPackService.deleteCustomPack(id);
         return ResponseEntity.noContent().build();

@@ -31,28 +31,28 @@ public interface UserMapper {
         // Check for roles in priority order
         for (com.example.demo.model.Role role : user.getRoles()) {
             String roleName = role.getName();
-            if (roleName.equals("ROLE_ADMIN")) {
+            if (roleName.equals("ADMIN")) {
                 return "ADMIN";
             }
         }
         
         for (com.example.demo.model.Role role : user.getRoles()) {
             String roleName = role.getName();
-            if (roleName.equals("ROLE_MANAGER")) {
+            if (roleName.equals("MANAGER")) {
                 return "MANAGER";
             }
         }
         
         for (com.example.demo.model.Role role : user.getRoles()) {
             String roleName = role.getName();
-            if (roleName.equals("ROLE_EDITOR")) {
+            if (roleName.equals("EDITOR")) {
                 return "EDITOR";
             }
         }
         
         for (com.example.demo.model.Role role : user.getRoles()) {
             String roleName = role.getName();
-            if (roleName.equals("ROLE_VIEWER")) {
+            if (roleName.equals("VIEWER")) {
                 return "VIEWER";
             }
         }
@@ -85,10 +85,10 @@ public interface UserMapper {
         
         // Check for admin/manager/editor/viewer roles
         boolean hasAdminRole = user.getRoles().stream()
-            .anyMatch(r -> r.getName().equals("ROLE_ADMIN") || 
-                          r.getName().equals("ROLE_MANAGER") || 
-                          r.getName().equals("ROLE_EDITOR") || 
-                          r.getName().equals("ROLE_VIEWER"));
+            .anyMatch(r -> r.getName().equals("ADMIN") || 
+                          r.getName().equals("MANAGER") || 
+                          r.getName().equals("EDITOR") || 
+                          r.getName().equals("VIEWER"));
         
         if (hasAdminRole) {
             return true;

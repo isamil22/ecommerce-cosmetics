@@ -12,6 +12,7 @@ const PermissionGuard = ({
     fallback = null, 
     children 
 }) => {
+    // Always call the hook - React hooks must be called unconditionally
     const { hasPermission, hasAnyPermission, hasAllPermissions, hasRole, loading } = usePermissions();
 
     if (loading) {
