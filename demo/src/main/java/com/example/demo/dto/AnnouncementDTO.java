@@ -11,4 +11,5 @@ public class AnnouncementDTO {
     private String animationType;
     private boolean isSticky; // New field for stickiness
     private String fontWeight; // New field for font weight
+    private boolean showOnlineCounter = true; // New field for online counter
 }

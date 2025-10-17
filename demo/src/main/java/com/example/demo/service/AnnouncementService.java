@@ -24,6 +24,7 @@ public class AnnouncementService {
             defaultAnnouncement.setAnimationType("none");
             defaultAnnouncement.setSticky(false); // Default value
             defaultAnnouncement.setFontWeight("normal"); // Default value
+            defaultAnnouncement.setShowOnlineCounter(true); // Default value
             return defaultAnnouncement;
         });
         return toDto(announcement);
@@ -39,6 +40,7 @@ public class AnnouncementService {
         announcement.setAnimationType(dto.getAnimationType());
         announcement.setSticky(dto.isSticky()); // Update sticky
         announcement.setFontWeight(dto.getFontWeight()); // Update font weight
+        announcement.setShowOnlineCounter(dto.isShowOnlineCounter()); // Update online counter
         Announcement savedAnnouncement = announcementRepository.save(announcement);
         return toDto(savedAnnouncement);
     }
@@ -52,6 +54,7 @@ public class AnnouncementService {
         dto.setAnimationType(announcement.getAnimationType());
         dto.setSticky(announcement.isSticky()); // Map sticky
         dto.setFontWeight(announcement.getFontWeight()); // Map font weight
+        dto.setShowOnlineCounter(announcement.isShowOnlineCounter()); // Map online counter
         return dto;
     }
 }

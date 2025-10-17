@@ -55,25 +55,6 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated, userRole, cartCount }) =>
 
     return (
         <>
-            {/* Enhanced Announcement Bar */}
-            <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white text-center py-3 text-sm font-semibold relative overflow-hidden">
-                {/* Animated background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse"></div>
-                
-                <div className="relative z-10 flex items-center justify-center gap-3">
-                    <span className="text-lg animate-bounce">🎉</span>
-                    <span className="animate-pulse">شحن مجاني للطلبات فوق $50 / Free Shipping on Orders Over $50!</span>
-                    <span className="text-lg animate-bounce">✨</span>
-                    
-                    {/* Live counter */}
-                    <div className="hidden sm:flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span className="text-xs">
-                            {Math.floor(Math.random() * 50) + 20} متصل الآن / Online now
-                        </span>
-                    </div>
-                </div>
-            </div>
 
             {/* Main Navbar */}
             <nav className={`bg-white sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-xl' : 'shadow-md'}`}>
