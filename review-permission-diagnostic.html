@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Permission Diagnostic Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">🔍 Review Permission Diagnostic Tool</h1>
+        
+        <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-red-800 mb-4">❌ Your Current Error</h2>
+            <div class="bg-white p-4 rounded border">
+                <p class="text-red-700 font-mono text-sm">
+                    POST /api/reviews/admin → 500 Internal Server Error<br>
+                    AuthorizationDeniedException: Access Denied
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-blue-800 mb-4">✅ Required Permissions</h2>
+            <div class="bg-white p-4 rounded border">
+                <p class="text-blue-700 mb-2"><strong>For Creating Admin Reviews:</strong></p>
+                <div class="bg-green-100 p-3 rounded font-mono text-sm">
+                    ✅ REVIEW:CREATE<br>
+                    ✅ REVIEW:EDIT<br>
+                    ✅ ROLE_ADMIN<br>
+                    ✅ ROLE_MANAGER
+                </div>
+                <p class="text-blue-600 text-sm mt-2">You need AT LEAST ONE of these permissions.</p>
+            </div>
+        </div>
+
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-yellow-800 mb-4">🔧 Step-by-Step Fix</h2>
+            <div class="space-y-4 text-yellow-700">
+                <div class="flex items-start space-x-3">
+                    <span class="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">1</span>
+                    <div>
+                        <strong>Go to Admin Panel → Role Management</strong>
+                        <p class="text-yellow-600">Navigate to your admin dashboard</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">2</span>
+                    <div>
+                        <strong>Find Your Role</strong>
+                        <p class="text-yellow-600">Look for "Manage Product" or whatever role you're using</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">3</span>
+                    <div>
+                        <strong>Remove Wrong Permission</strong>
+                        <p class="text-yellow-600">Remove any permission named "review" (lowercase, wrong format)</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">4</span>
+                    <div>
+                        <strong>Add Correct Permissions</strong>
+                        <p class="text-yellow-600">Add these EXACT permission names:</p>
+                        <div class="bg-white p-2 rounded font-mono text-xs mt-2">
+                            REVIEW:CREATE<br>
+                            REVIEW:EDIT<br>
+                            REVIEW:VIEW<br>
+                            REVIEW:APPROVE<br>
+                            REVIEW:DELETE<br>
+                            REVIEW:UPDATE
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">5</span>
+                    <div>
+                        <strong>Save and Refresh</strong>
+                        <p class="text-yellow-600">Save the role changes and refresh your browser</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-green-800 mb-4">🎯 Permission Name Format</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-red-100 p-4 rounded border">
+                    <h3 class="font-semibold text-red-800 mb-2">❌ WRONG Format</h3>
+                    <div class="space-y-1 text-red-700 font-mono text-sm">
+                        <div>❌ "review"</div>
+                        <div>❌ "Review"</div>
+                        <div>❌ "review_create"</div>
+                        <div>❌ "manage_review"</div>
+                        <div>❌ "REVIEW"</div>
+                    </div>
+                </div>
+                <div class="bg-green-100 p-4 rounded border">
+                    <h3 class="font-semibold text-green-800 mb-2">✅ CORRECT Format</h3>
+                    <div class="space-y-1 text-green-700 font-mono text-sm">
+                        <div>✅ "REVIEW:CREATE"</div>
+                        <div>✅ "REVIEW:EDIT"</div>
+                        <div>✅ "REVIEW:VIEW"</div>
+                        <div>✅ "REVIEW:APPROVE"</div>
+                        <div>✅ "REVIEW:DELETE"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-purple-800 mb-4">🔍 Quick Check</h2>
+            <div class="bg-white p-4 rounded border">
+                <p class="text-purple-700 mb-2"><strong>To verify your current permissions:</strong></p>
+                <ol class="list-decimal list-inside space-y-1 text-purple-600 text-sm">
+                    <li>Open browser console (F12)</li>
+                    <li>Run: <code class="bg-gray-100 px-2 py-1 rounded">fetch('/api/users/14/permissions').then(r=>r.json()).then(console.log)</code></li>
+                    <li>Look for permissions starting with "REVIEW:"</li>
+                    <li>If you see "review" (lowercase), that's the problem!</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">📋 Complete Review Permission List</h2>
+            <div class="bg-white p-4 rounded border">
+                <p class="text-gray-700 mb-3">Here are ALL the review-related permissions you can add:</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2 font-mono text-sm">
+                    <div class="bg-green-100 p-2 rounded">REVIEW:CREATE</div>
+                    <div class="bg-green-100 p-2 rounded">REVIEW:EDIT</div>
+                    <div class="bg-green-100 p-2 rounded">REVIEW:VIEW</div>
+                    <div class="bg-green-100 p-2 rounded">REVIEW:APPROVE</div>
+                    <div class="bg-green-100 p-2 rounded">REVIEW:DELETE</div>
+                    <div class="bg-green-100 p-2 rounded">REVIEW:UPDATE</div>
+                </div>
+                <p class="text-gray-600 text-sm mt-3">
+                    <strong>Note:</strong> The format is always RESOURCE:ACTION (uppercase, colon-separated)
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <p class="text-xl font-bold text-green-600">🎯 Fix: Add REVIEW:CREATE to your role!</p>
+            <p class="text-gray-600 mt-2">This will resolve the 500 error and allow you to create reviews.</p>
+        </div>
+    </div>
+
+    <script>
+        // Quick diagnostic function
+        function checkPermissions() {
+            fetch('/api/users/14/permissions')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Current permissions:', data);
+                    const reviewPermissions = data.filter(p => p.name.includes('REVIEW') || p.name.includes('review'));
+                    console.log('Review permissions:', reviewPermissions);
+                    
+                    if (reviewPermissions.length === 0) {
+                        alert('❌ No review permissions found! Add REVIEW:CREATE permission to your role.');
+                    } else {
+                        const hasCorrectFormat = reviewPermissions.some(p => p.name.startsWith('REVIEW:'));
+                        if (hasCorrectFormat) {
+                            alert('✅ Correct review permissions found!');
+                        } else {
+                            alert('❌ Wrong permission format! Remove "review" and add "REVIEW:CREATE" instead.');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking permissions:', error);
+                    alert('❌ Could not check permissions. Make sure you are logged in.');
+                });
+        }
+
+        // Add button to check permissions
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.createElement('button');
+            button.textContent = '🔍 Check My Current Permissions';
+            button.className = 'fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow-lg hover:bg-blue-600';
+            button.onclick = checkPermissions;
+            document.body.appendChild(button);
+        });
+    </script>
+</body>
+</html>

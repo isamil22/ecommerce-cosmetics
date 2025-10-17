@@ -21,7 +21,7 @@ public class EnhancedVisitorCounterSettingsController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('VISITOR_COUNTER:EDIT') or hasAuthority('VISITOR_COUNTER:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<EnhancedVisitorCounterSettings> updateSettings(@RequestBody EnhancedVisitorCounterSettings newSettings) {
         EnhancedVisitorCounterSettings updatedSettings = service.updateSettings(newSettings);
         return ResponseEntity.ok(updatedSettings);
@@ -34,7 +34,7 @@ public class EnhancedVisitorCounterSettingsController {
     }
 
     @PostMapping("/metric/{metricType}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('VISITOR_COUNTER:EDIT') or hasAuthority('VISITOR_COUNTER:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Object> updateMetricSettings(@PathVariable String metricType, @RequestBody Object metricData) {
         // This endpoint can be used to update specific metrics
         // Implementation depends on your specific needs
