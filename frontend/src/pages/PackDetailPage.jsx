@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { getPackById, addToCart as apiAddToCart } from '../api/apiService';
 import Loader from '../components/Loader';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
-import CountdownBar from '../components/CountdownBar';
 import { toast } from 'react-toastify';
 import CommentForm from '../components/CommentForm';
 import PackRecommendations from '../components/PackRecommendations';
@@ -547,13 +546,11 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 </div>
             )}
 
-            <CountdownBar />
-            
-            {/* Enhanced Countdown Timer */}
+            {/* Enhanced Countdown Timer - Admin Controllable */}
             {pack && (
                 <EnhancedCountdown 
-                    endTime={new Date().getTime() + (24 * 60 * 60 * 1000)} // 24 hours from now
                     packName={pack.name}
+                    fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)} // Fallback: 24 hours from now
                     onExpire={() => {
                         toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
                     }}

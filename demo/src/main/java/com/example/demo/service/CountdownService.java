@@ -32,11 +32,44 @@ public class CountdownService {
         } else {
             countdown = countdowns.get(0);
         }
+        // Basic Settings
         countdown.setTitle(countdownDTO.getTitle());
         countdown.setEndDate(countdownDTO.getEndDate());
         countdown.setEnabled(countdownDTO.isEnabled());
+        
+        // Color Settings
         countdown.setBackgroundColor(countdownDTO.getBackgroundColor());
         countdown.setTextColor(countdownDTO.getTextColor());
+        countdown.setBorderColor(countdownDTO.getBorderColor());
+        countdown.setTimerBoxColor(countdownDTO.getTimerBoxColor());
+        countdown.setTimerTextColor(countdownDTO.getTimerTextColor());
+        countdown.setUrgentBgColor(countdownDTO.getUrgentBgColor());
+        countdown.setUrgentTextColor(countdownDTO.getUrgentTextColor());
+        
+        // Text Settings
+        countdown.setSubtitle(countdownDTO.getSubtitle());
+        countdown.setUrgentMessage(countdownDTO.getUrgentMessage());
+        countdown.setExpiredMessage(countdownDTO.getExpiredMessage());
+        countdown.setPackName(countdownDTO.getPackName());
+        
+        // Display Settings
+        countdown.setShowDays(countdownDTO.isShowDays());
+        countdown.setShowHours(countdownDTO.isShowHours());
+        countdown.setShowMinutes(countdownDTO.isShowMinutes());
+        countdown.setShowSeconds(countdownDTO.isShowSeconds());
+        countdown.setShowPackName(countdownDTO.isShowPackName());
+        countdown.setShowSubtitle(countdownDTO.isShowSubtitle());
+        
+        // Animation Settings
+        countdown.setEnablePulse(countdownDTO.isEnablePulse());
+        countdown.setEnableBounce(countdownDTO.isEnableBounce());
+        countdown.setUrgentThreshold(countdownDTO.getUrgentThreshold());
+        
+        // Layout Settings
+        countdown.setBorderRadius(countdownDTO.getBorderRadius());
+        countdown.setPadding(countdownDTO.getPadding());
+        countdown.setFontSize(countdownDTO.getFontSize());
+        countdown.setTimerFontSize(countdownDTO.getTimerFontSize());
         Countdown savedCountdown = countdownRepository.save(countdown);
         return countdownMapper.toDto(savedCountdown);
     }

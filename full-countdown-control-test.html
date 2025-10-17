@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎛️ Full Countdown Control Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .color-input {
+            width: 60px !important;
+            height: 40px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        button {
+            background: #e91e63;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #c2185b;
+        }
+        .test-button {
+            background: #4caf50;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+        .preview {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .preview h4 {
+            margin-top: 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎛️ Full Countdown Control Test</h1>
+        <p>Test all the new countdown customization features from the enhanced admin panel.</p>
+
+        <!-- Basic Settings Test -->
+        <div class="section">
+            <h3>📝 Basic Settings Test</h3>
+            <div class="form-group">
+                <label>Title:</label>
+                <input type="text" id="title" value="🔥 Mega Sale! / Limited Time!" placeholder="Enter countdown title">
+            </div>
+            <div class="form-group">
+                <label>End Date & Time:</label>
+                <input type="datetime-local" id="endDate" value="">
+            </div>
+            <div class="form-group">
+                <label>Subtitle:</label>
+                <input type="text" id="subtitle" value="💰 Save up to 50%! / Don't miss out!" placeholder="Enter subtitle">
+            </div>
+            <div class="form-group">
+                <label>Pack/Product Name:</label>
+                <input type="text" id="packName" value="Black Friday Special / عروض الجمعة السوداء" placeholder="Enter pack name">
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="enabled" checked>
+                <label for="enabled">Enable Countdown</label>
+            </div>
+        </div>
+
+        <!-- Color Settings Test -->
+        <div class="section">
+            <h3>🎨 Color Settings Test</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="form-group">
+                    <label>Background Color:</label>
+                    <input type="color" id="backgroundColor" value="#ff6b6b" class="color-input">
+                </div>
+                <div class="form-group">
+                    <label>Text Color:</label>
+                    <input type="color" id="textColor" value="#ffffff" class="color-input">
+                </div>
+                <div class="form-group">
+                    <label>Border Color:</label>
+                    <input type="color" id="borderColor" value="#e74c3c" class="color-input">
+                </div>
+                <div class="form-group">
+                    <label>Timer Box Color:</label>
+                    <input type="color" id="timerBoxColor" value="#ffffff" class="color-input">
+                </div>
+                <div class="form-group">
+                    <label>Timer Text Color:</label>
+                    <input type="color" id="timerTextColor" value="#2c3e50" class="color-input">
+                </div>
+                <div class="form-group">
+                    <label>Urgent Background:</label>
+                    <input type="color" id="urgentBgColor" value="#fef2f2" class="color-input">
+                </div>
+                <div class="form-group">
+                    <label>Urgent Text Color:</label>
+                    <input type="color" id="urgentTextColor" value="#dc2626" class="color-input">
+                </div>
+            </div>
+        </div>
+
+        <!-- Display Settings Test -->
+        <div class="section">
+            <h3>👁️ Display Settings Test</h3>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="showDays">
+                    <label for="showDays">Show Days</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="showHours" checked>
+                    <label for="showHours">Show Hours</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="showMinutes" checked>
+                    <label for="showMinutes">Show Minutes</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="showSeconds" checked>
+                    <label for="showSeconds">Show Seconds</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="showPackName" checked>
+                    <label for="showPackName">Show Pack Name</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="showSubtitle" checked>
+                    <label for="showSubtitle">Show Subtitle</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animation Settings Test -->
+        <div class="section">
+            <h3>⚡ Animation Settings Test</h3>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="enablePulse" checked>
+                    <label for="enablePulse">Enable Pulse Animation</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="enableBounce" checked>
+                    <label for="enableBounce">Enable Bounce Animation</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Urgent Threshold (seconds):</label>
+                <input type="number" id="urgentThreshold" value="1800" placeholder="1800 = 30 minutes">
+            </div>
+        </div>
+
+        <!-- Layout Settings Test -->
+        <div class="section">
+            <h3>📐 Layout Settings Test</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                <div class="form-group">
+                    <label>Border Radius (px):</label>
+                    <input type="number" id="borderRadius" value="20">
+                </div>
+                <div class="form-group">
+                    <label>Padding (px):</label>
+                    <input type="number" id="padding" value="24">
+                </div>
+                <div class="form-group">
+                    <label>Font Size (px):</label>
+                    <input type="number" id="fontSize" value="20">
+                </div>
+                <div class="form-group">
+                    <label>Timer Font Size (px):</label>
+                    <input type="number" id="timerFontSize" value="28">
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Buttons -->
+        <div class="section">
+            <h3>🧪 Test Actions</h3>
+            <button onclick="setTestDate()">Set Test Date (2 hours from now)</button>
+            <button onclick="setUrgentDate()">Set Urgent Date (5 minutes from now)</button>
+            <button onclick="saveSettings()" class="test-button">💾 Save All Settings</button>
+            <button onclick="getSettings()" class="test-button">📥 Get Current Settings</button>
+            <button onclick="testAllFeatures()" class="test-button">🎯 Test All Features</button>
+        </div>
+
+        <!-- Results -->
+        <div id="result" class="result" style="display: none;">
+            <h4>Test Results:</h4>
+            <div id="resultContent"></div>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview">
+            <h4>📱 Live Preview</h4>
+            <p>After saving settings, check your website to see the countdown with your custom settings!</p>
+            <div id="previewContent">
+                <p><em>Save settings to see preview...</em></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default test date (2 hours from now)
+        function setTestDate() {
+            const now = new Date();
+            now.setHours(now.getHours() + 2);
+            document.getElementById('endDate').value = now.toISOString().slice(0, 16);
+            showResult('✅ Test date set to 2 hours from now', 'success');
+        }
+
+        // Set urgent test date (5 minutes from now)
+        function setUrgentDate() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 5);
+            document.getElementById('endDate').value = now.toISOString().slice(0, 16);
+            showResult('⚡ Urgent date set to 5 minutes from now', 'success');
+        }
+
+        // Save all settings
+        async function saveSettings() {
+            const settings = {
+                title: document.getElementById('title').value,
+                endDate: new Date(document.getElementById('endDate').value).toISOString(),
+                enabled: document.getElementById('enabled').checked,
+                
+                // Color Settings
+                backgroundColor: document.getElementById('backgroundColor').value,
+                textColor: document.getElementById('textColor').value,
+                borderColor: document.getElementById('borderColor').value,
+                timerBoxColor: document.getElementById('timerBoxColor').value,
+                timerTextColor: document.getElementById('timerTextColor').value,
+                urgentBgColor: document.getElementById('urgentBgColor').value,
+                urgentTextColor: document.getElementById('urgentTextColor').value,
+                
+                // Text Settings
+                subtitle: document.getElementById('subtitle').value,
+                packName: document.getElementById('packName').value,
+                
+                // Display Settings
+                showDays: document.getElementById('showDays').checked,
+                showHours: document.getElementById('showHours').checked,
+                showMinutes: document.getElementById('showMinutes').checked,
+                showSeconds: document.getElementById('showSeconds').checked,
+                showPackName: document.getElementById('showPackName').checked,
+                showSubtitle: document.getElementById('showSubtitle').checked,
+                
+                // Animation Settings
+                enablePulse: document.getElementById('enablePulse').checked,
+                enableBounce: document.getElementById('enableBounce').checked,
+                urgentThreshold: parseInt(document.getElementById('urgentThreshold').value),
+                
+                // Layout Settings
+                borderRadius: parseInt(document.getElementById('borderRadius').value),
+                padding: parseInt(document.getElementById('padding').value),
+                fontSize: parseInt(document.getElementById('fontSize').value),
+                timerFontSize: parseInt(document.getElementById('timerFontSize').value)
+            };
+
+            try {
+                const response = await fetch('http://localhost:8082/api/countdown', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(settings)
+                });
+
+                if (response.ok) {
+                    showResult('✅ All settings saved successfully! Countdown is now fully customizable.', 'success');
+                    updatePreview(settings);
+                } else {
+                    const error = await response.text();
+                    showResult(`❌ Error saving settings: ${response.status} - ${error}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Get current settings
+        async function getSettings() {
+            try {
+                const response = await fetch('http://localhost:8082/api/countdown');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`✅ Current settings retrieved: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult(`❌ Error getting settings: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test all features
+        async function testAllFeatures() {
+            showResult('🧪 Testing all countdown features...', 'success');
+            
+            // Test 1: Save settings
+            await saveSettings();
+            
+            // Test 2: Get settings
+            await getSettings();
+            
+            // Test 3: Test different configurations
+            const testConfigs = [
+                {
+                    name: 'Red Theme',
+                    backgroundColor: '#ff4757',
+                    textColor: '#ffffff',
+                    borderColor: '#ff3742'
+                },
+                {
+                    name: 'Blue Theme',
+                    backgroundColor: '#3742fa',
+                    textColor: '#ffffff',
+                    borderColor: '#2f3542'
+                },
+                {
+                    name: 'Green Theme',
+                    backgroundColor: '#2ed573',
+                    textColor: '#ffffff',
+                    borderColor: '#1e90ff'
+                }
+            ];
+
+            for (let i = 0; i < testConfigs.length; i++) {
+                const config = testConfigs[i];
+                showResult(`🎨 Testing ${config.name}...`, 'success');
+                
+                // Update colors
+                document.getElementById('backgroundColor').value = config.backgroundColor;
+                document.getElementById('textColor').value = config.textColor;
+                document.getElementById('borderColor').value = config.borderColor;
+                
+                // Save and wait
+                await saveSettings();
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            
+            showResult('🎉 All tests completed! Check your website to see the different countdown themes.', 'success');
+        }
+
+        // Show result
+        function showResult(message, type = 'success') {
+            const resultDiv = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.className = `result ${type}`;
+            resultContent.innerHTML = message;
+        }
+
+        // Update preview
+        function updatePreview(settings) {
+            const previewContent = document.getElementById('previewContent');
+            previewContent.innerHTML = `
+                <div style="
+                    background-color: ${settings.backgroundColor};
+                    color: ${settings.textColor};
+                    border: 2px solid ${settings.borderColor};
+                    border-radius: ${settings.borderRadius}px;
+                    padding: ${settings.padding}px;
+                    text-align: center;
+                    margin: 10px 0;
+                ">
+                    <h3 style="font-size: ${settings.fontSize}px; margin: 0 0 10px 0;">
+                        ${settings.title}
+                    </h3>
+                    <div style="display: flex; justify-content: center; gap: 10px; margin: 10px 0;">
+                        <div style="
+                            background-color: ${settings.timerBoxColor};
+                            color: ${settings.timerTextColor};
+                            border: 2px solid ${settings.borderColor};
+                            border-radius: 8px;
+                            padding: 10px;
+                            min-width: 60px;
+                        ">
+                            <div style="font-size: ${settings.timerFontSize}px; font-weight: bold;">23</div>
+                            <div style="font-size: 12px;">Hours</div>
+                        </div>
+                        <div style="
+                            background-color: ${settings.timerBoxColor};
+                            color: ${settings.timerTextColor};
+                            border: 2px solid ${settings.borderColor};
+                            border-radius: 8px;
+                            padding: 10px;
+                            min-width: 60px;
+                        ">
+                            <div style="font-size: ${settings.timerFontSize}px; font-weight: bold;">59</div>
+                            <div style="font-size: 12px;">Minutes</div>
+                        </div>
+                        <div style="
+                            background-color: ${settings.timerBoxColor};
+                            color: ${settings.timerTextColor};
+                            border: 2px solid ${settings.borderColor};
+                            border-radius: 8px;
+                            padding: 10px;
+                            min-width: 60px;
+                        ">
+                            <div style="font-size: ${settings.timerFontSize}px; font-weight: bold;">59</div>
+                            <div style="font-size: 12px;">Seconds</div>
+                        </div>
+                    </div>
+                    <p style="font-size: ${settings.fontSize}px; margin: 10px 0;">
+                        ${settings.subtitle}
+                    </p>
+                    ${settings.showPackName ? `<p style="font-size: 12px; margin: 5px 0;">Special offer for ${settings.packName}</p>` : ''}
+                </div>
+            `;
+        }
+
+        // Initialize with test date
+        setTestDate();
+    </script>
+</body>
+</html>

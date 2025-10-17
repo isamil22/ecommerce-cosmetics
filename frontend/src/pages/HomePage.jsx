@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getBestsellers, getNewArrivals, getApprovedReviews, getAllCategories, getHero } from '../api/apiService';
 import ProductCard from '../components/ProductCard';
-import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
 import EnhancedCountdown from '../components/EnhancedCountdown';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter';
@@ -110,13 +109,10 @@ const HomePage = () => {
 
     return (
         <div className="min-h-screen">
-            {/* Countdown Bar - Top Priority */}
-            <CountdownBar />
-
-            {/* Enhanced Countdown Timer */}
+            {/* Enhanced Countdown Timer - Admin Controllable */}
             <div className="container-xl section-spacing">
                 <EnhancedCountdown 
-                    endTime={new Date().getTime() + (24 * 60 * 60 * 1000)}
+                    fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)}
                     packName="عروض اليوم الخاصة / Today's Special Offers"
                     onExpire={() => {
                         toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');

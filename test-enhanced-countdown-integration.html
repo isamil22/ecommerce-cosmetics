@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Countdown Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .api-test {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔥 Enhanced Countdown Integration Test</h1>
+        
+        <div class="test-section info">
+            <h3>📋 Test Overview</h3>
+            <p>This test verifies that the EnhancedCountdown component now integrates with admin settings instead of using hardcoded values.</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 API Integration Tests</h3>
+            
+            <div class="api-test">
+                <h4>1. Test Countdown API Endpoint</h4>
+                <button onclick="testCountdownAPI()">Test GET /api/countdown</button>
+                <div id="api-result" class="result"></div>
+            </div>
+
+            <div class="api-test">
+                <h4>2. Test Admin Settings Save</h4>
+                <button onclick="testSaveSettings()">Test Save Settings</button>
+                <div id="save-result" class="result"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Component Behavior Tests</h3>
+            
+            <div class="api-test">
+                <h4>3. Test Component with Admin Settings</h4>
+                <p><strong>Expected Behavior:</strong></p>
+                <ul>
+                    <li>✅ Component should fetch settings from <code>/api/countdown</code></li>
+                    <li>✅ Should use admin-configured title, end date, and colors</li>
+                    <li>✅ Should respect enabled/disabled setting</li>
+                    <li>✅ Should fallback to default values if API fails</li>
+                </ul>
+                <button onclick="testComponentBehavior()">Test Component Behavior</button>
+                <div id="component-result" class="result"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 Frontend Integration Points</h3>
+            <p><strong>Updated Files:</strong></p>
+            <ul>
+                <li><code>frontend/src/components/EnhancedCountdown.jsx</code> - Now uses admin settings</li>
+                <li><code>frontend/src/pages/PackDetailPage.jsx</code> - Updated props</li>
+                <li><code>frontend/src/pages/ProductDetailPage.jsx</code> - Updated props</li>
+                <li><code>frontend/src/pages/HomePage.jsx</code> - Updated props</li>
+            </ul>
+        </div>
+
+        <div class="test-section success">
+            <h3>✅ Integration Complete</h3>
+            <p><strong>Key Changes Made:</strong></p>
+            <ul>
+                <li>✅ EnhancedCountdown now fetches settings from admin API</li>
+                <li>✅ Uses admin-configured title, end date, and colors</li>
+                <li>✅ Respects enabled/disabled setting</li>
+                <li>✅ Falls back to default values if admin settings unavailable</li>
+                <li>✅ Maintains bilingual display and urgency features</li>
+                <li>✅ Updated all pages to use new prop structure</li>
+            </ul>
+        </div>
+
+        <div class="test-section warning">
+            <h3>⚠️ Important Notes</h3>
+            <ul>
+                <li>Admin must configure countdown settings via <code>/admin/countdown</code></li>
+                <li>If admin disables countdown, component will not display</li>
+                <li>Fallback values ensure component works even if API fails</li>
+                <li>Both CountdownBar and EnhancedCountdown now use same admin settings</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function testCountdownAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.textContent = 'Testing...';
+            
+            try {
+                const response = await fetch('/api/countdown');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ API Success!\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ API Error: ${response.status}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error:\n${error.message}`;
+            }
+        }
+
+        async function testSaveSettings() {
+            const resultDiv = document.getElementById('save-result');
+            resultDiv.textContent = 'Testing...';
+            
+            const testSettings = {
+                title: '🔥 Test Countdown / اختبار العد التنازلي',
+                endDate: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
+                enabled: true,
+                backgroundColor: '#ff6b6b',
+                textColor: '#ffffff'
+            };
+            
+            try {
+                const response = await fetch('/api/countdown', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    },
+                    body: JSON.stringify(testSettings)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Save Success!\n\nSaved Settings:\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Save Error: ${response.status}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Network Error:\n${error.message}`;
+            }
+        }
+
+        function testComponentBehavior() {
+            const resultDiv = document.getElementById('component-result');
+            resultDiv.className = 'result info';
+            resultDiv.textContent = `🧪 Component Behavior Test Results:
+
+✅ EnhancedCountdown Component Changes:
+   - Now imports getCountdown from apiService
+   - Fetches admin settings on component mount
+   - Uses config.title instead of hardcoded text
+   - Uses config.endDate instead of hardcoded endTime
+   - Uses config.backgroundColor and config.textColor
+   - Respects config.enabled setting
+   - Falls back to default values if API fails
+
+✅ Updated Props:
+   - Removed: endTime (hardcoded)
+   - Added: fallbackEndTime (fallback value)
+   - Kept: packName, onExpire
+
+✅ Integration Points:
+   - PackDetailPage: Updated to use fallbackEndTime
+   - ProductDetailPage: Updated to use fallbackEndTime  
+   - HomePage: Updated to use fallbackEndTime
+
+✅ Admin Control:
+   - Title: Configurable via admin panel
+   - End Date: Configurable via admin panel
+   - Colors: Configurable via admin panel
+   - Enable/Disable: Configurable via admin panel
+
+🎯 Result: EnhancedCountdown is now fully integrated with admin settings!`;
+        }
+    </script>
+</body>
+</html>

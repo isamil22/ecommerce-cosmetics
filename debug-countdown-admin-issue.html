@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Countdown Admin Issue</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .debug-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .debug-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .critical { background-color: #f8d7da; border-color: #dc3545; border-width: 2px; }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .debug-test {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .steps {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .steps h4 {
+            color: #0066cc;
+            margin-top: 0;
+        }
+        .steps ol {
+            margin: 10px 0;
+        }
+        .steps li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <h1>🐛 Debug Countdown Admin Control Issue</h1>
+        
+        <div class="debug-section critical">
+            <h3>🚨 ISSUE: Admin Settings Not Controlling Countdown</h3>
+            <p><strong>Problem:</strong> The countdown timer is still showing hardcoded values instead of admin settings.</p>
+            <p><strong>Expected:</strong> Admin changes at <code>/admin/countdown</code> should control the countdown display.</p>
+        </div>
+
+        <div class="steps">
+            <h4>🔍 Debug Steps:</h4>
+            <ol>
+                <li><strong>Test API Endpoints:</strong> Check if GET/POST /api/countdown are working</li>
+                <li><strong>Check Admin Panel:</strong> Verify admin panel can save settings</li>
+                <li><strong>Check Console Logs:</strong> Look for countdown debug logs in browser console</li>
+                <li><strong>Test Manual API:</strong> Try saving settings via API directly</li>
+                <li><strong>Verify Component:</strong> Check if EnhancedCountdown is fetching admin data</li>
+            </ol>
+        </div>
+
+        <div class="debug-section">
+            <h3>🔧 API Debug Tests</h3>
+            
+            <div class="debug-test">
+                <h4>1. Test GET /api/countdown (Current Settings)</h4>
+                <button onclick="debugGetCountdown()">Get Current Settings</button>
+                <div id="get-debug" class="result"></div>
+            </div>
+
+            <div class="debug-test">
+                <h4>2. Test POST /api/countdown (Save Settings)</h4>
+                <button onclick="debugSaveCountdown()">Save Test Settings</button>
+                <div id="save-debug" class="result"></div>
+            </div>
+
+            <div class="debug-test">
+                <h4>3. Test Component API Call</h4>
+                <button onclick="debugComponentAPI()">Test Component API Call</button>
+                <div id="component-debug" class="result"></div>
+            </div>
+
+            <div class="debug-test">
+                <h4>4. Check Browser Console</h4>
+                <button onclick="debugConsole()">Check Console Instructions</button>
+                <div id="console-debug" class="result"></div>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h3>🎯 Potential Issues & Solutions</h3>
+            <div class="debug-test">
+                <h4>Issue 1: API Not Working</h4>
+                <p>If API calls fail, check:</p>
+                <ul>
+                    <li>Backend server is running</li>
+                    <li>Database connection is working</li>
+                    <li>API endpoints are accessible</li>
+                </ul>
+            </div>
+
+            <div class="debug-test">
+                <h4>Issue 2: Component Not Fetching</h4>
+                <p>If component doesn't fetch admin data:</p>
+                <ul>
+                    <li>Check browser console for errors</li>
+                    <li>Verify EnhancedCountdown is imported correctly</li>
+                    <li>Check if component is mounted on pages</li>
+                </ul>
+            </div>
+
+            <div class="debug-test">
+                <h4>Issue 3: Admin Panel Not Saving</h4>
+                <p>If admin panel doesn't save:</p>
+                <ul>
+                    <li>Check authentication/permissions</li>
+                    <li>Verify form submission is working</li>
+                    <li>Check for JavaScript errors</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="debug-section info">
+            <h3>📋 Manual Testing Checklist</h3>
+            <ol>
+                <li>Open browser dev tools (F12)</li>
+                <li>Go to Console tab</li>
+                <li>Navigate to any page with countdown</li>
+                <li>Look for logs starting with "Countdown API Response:"</li>
+                <li>Go to <code>/admin/countdown</code></li>
+                <li>Change settings and save</li>
+                <li>Go back to countdown page and check console</li>
+                <li>Look for "Using admin settings:" logs</li>
+            </ol>
+        </div>
+
+        <div class="debug-section warning">
+            <h3>⚠️ Common Issues</h3>
+            <ul>
+                <li><strong>CORS Issues:</strong> API calls might be blocked</li>
+                <li><strong>Authentication:</strong> Admin might not be logged in</li>
+                <li><strong>Component Not Mounted:</strong> EnhancedCountdown might not be on the page</li>
+                <li><strong>API Errors:</strong> Backend might have errors</li>
+                <li><strong>Cache Issues:</strong> Browser might be caching old data</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function debugGetCountdown() {
+            const resultDiv = document.getElementById('get-debug');
+            resultDiv.textContent = 'Testing GET /api/countdown...';
+            
+            try {
+                const response = await fetch('/api/countdown');
+                const data = await response.json();
+                
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ GET /api/countdown Response:
+Status: ${response.status}
+Headers: ${JSON.stringify([...response.headers.entries()], null, 2)}
+Data: ${JSON.stringify(data, null, 2)}
+
+${data ? '✅ Data found - admin settings exist' : '❌ No data - admin settings not set yet'}`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ GET /api/countdown Error:
+${error.message}
+
+Possible issues:
+- Backend server not running
+- API endpoint not accessible
+- Network/CORS issues`;
+            }
+        }
+
+        async function debugSaveCountdown() {
+            const resultDiv = document.getElementById('save-debug');
+            resultDiv.textContent = 'Testing POST /api/countdown...';
+            
+            const testSettings = {
+                title: '🔥 TEST COUNTDOWN / اختبار العد التنازلي',
+                endDate: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(), // 1 hour from now
+                enabled: true,
+                backgroundColor: '#ff0000',
+                textColor: '#ffffff'
+            };
+            
+            try {
+                const response = await fetch('/api/countdown', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    },
+                    body: JSON.stringify(testSettings)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ POST /api/countdown Success:
+Status: ${response.status}
+Saved Data: ${JSON.stringify(data, null, 2)}
+
+🎯 Settings saved! Check if countdown updates within 30 seconds.`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ POST /api/countdown Error:
+Status: ${response.status}
+Response: ${JSON.stringify(data, null, 2)}
+
+Possible issues:
+- Authentication required
+- Permission denied
+- Invalid data format`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ POST /api/countdown Network Error:
+${error.message}
+
+Possible issues:
+- Backend server not running
+- Network connectivity issues
+- CORS configuration problems`;
+            }
+        }
+
+        async function debugComponentAPI() {
+            const resultDiv = document.getElementById('component-debug');
+            resultDiv.textContent = 'Testing component API call...';
+            
+            try {
+                // Simulate the same API call the component makes
+                const response = await fetch('/api/countdown');
+                const data = await response.json();
+                
+                resultDiv.className = 'result info';
+                resultDiv.textContent = `🔍 Component API Call Simulation:
+URL: /api/countdown
+Method: GET
+Response: ${JSON.stringify(data, null, 2)}
+
+Component Logic:
+- If data exists: Use admin settings
+- If data is null: Use fallback values
+- Current result: ${data ? 'Will use admin settings' : 'Will use fallback values'}
+
+Check browser console for "Countdown API Response:" logs.`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Component API Call Error:
+${error.message}
+
+The component will use fallback values.`;
+            }
+        }
+
+        function debugConsole() {
+            const resultDiv = document.getElementById('console-debug');
+            resultDiv.className = 'result info';
+            resultDiv.textContent = `🔍 Console Debug Instructions:
+
+1. Open Browser Dev Tools (F12)
+2. Go to Console tab
+3. Navigate to a page with countdown
+4. Look for these logs:
+   - "Countdown API Response: [data]"
+   - "Using admin settings: [config]" OR "No admin settings found, using fallback"
+
+5. Go to /admin/countdown
+6. Change settings and save
+7. Go back to countdown page
+8. Look for updated logs
+
+Expected logs:
+✅ "Countdown API Response: {title: '...', enabled: true, ...}"
+✅ "Using admin settings: {title: '...', endDate: ..., ...}"
+
+If you see:
+❌ "No admin settings found, using fallback" - Admin settings not saved
+❌ Network errors - API not working
+❌ No logs at all - Component not mounted`;
+        }
+    </script>
+</body>
+</html>

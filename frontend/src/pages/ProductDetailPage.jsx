@@ -6,7 +6,6 @@ import { getProductById, addToCart, getCart, getSettings } from '../api/apiServi
 import Loader from '../components/Loader';
 import CommentForm from '../components/CommentForm';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
-import CountdownBar from '../components/CountdownBar';
 import TrustBadges from '../components/TrustBadges';
 import SocialShare from '../components/SocialShare';
 import FrequentlyBoughtTogether from '../components/FrequentlyBoughtTogether';
@@ -274,11 +273,9 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 
                 <div className="relative z-10 container-xl section-spacing">
                     <Breadcrumbs categoryId={product.categoryId} categoryName={product.categoryName} productName={product.name} />
-                    <CountdownBar />
-                    
-                    {/* Enhanced Countdown Timer */}
+                    {/* Enhanced Countdown Timer - Admin Controllable */}
                     <EnhancedCountdown 
-                        endTime={new Date().getTime() + (24 * 60 * 60 * 1000)} // 24 hours from now
+                        fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)} // Fallback: 24 hours from now
                         packName={product.name}
                         onExpire={() => {
                             toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
