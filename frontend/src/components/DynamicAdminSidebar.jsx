@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare, FiChevronRight, FiActivity, FiShield, FiKey } from 'react-icons/fi';
+import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare, FiChevronRight, FiActivity, FiShield, FiKey, FiFacebook } from 'react-icons/fi';
 import { usePermissions } from '../contexts/PermissionContext';
 import PermissionGuard from './PermissionGuard';
 
@@ -206,12 +206,12 @@ const DynamicAdminSidebar = () => {
                     </div>
                 </PermissionGuard>
 
-                {/* Settings */}
+                {/* Facebook Pixel */}
                 <PermissionGuard anyPermissions={['SETTINGS:VIEW', 'SETTINGS:EDIT']}>
                     <div className="pt-4 border-t border-gray-700">
                         <NavLink to="/admin/settings" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-300 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
-                            <FiSettings className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-90 transition-transform duration-300" />
-                            <span className="font-medium">Settings</span>
+                            <FiFacebook className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                            <span className="font-medium">Facebook Pixel</span>
                             <FiChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
                         </NavLink>
                     </div>
