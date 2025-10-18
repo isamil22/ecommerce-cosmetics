@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiService = axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8082/api' : '/api',
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/api' : '/api',
 });
 
 // Add JWT token to every request if it exists
@@ -436,11 +436,39 @@ export const deleteCoupon = (id) => {
 };
 
 export const getCouponUsageStatistics = () => {
-    return apiService.get('/coupons/usage-statistics');
+    console.log('🔍 Fetching general coupon usage statistics...');
+    return apiService.get('/coupons/usage-statistics')
+        .then(response => {
+            console.log('✅ General usage statistics response:', response.data);
+            return response;
+        })
+        .catch(error => {
+            console.error('❌ Error fetching general usage statistics:', {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                message: error.message
+            });
+            throw error;
+        });
 };
 
 export const getCouponUsageStatisticsById = (couponId) => {
-    return apiService.get(`/coupons/${couponId}/usage-statistics`);
+    console.log(`🔍 Fetching usage statistics for coupon ID: ${couponId}`);
+    return apiService.get(`/coupons/${couponId}/usage-statistics`)
+        .then(response => {
+            console.log(`✅ Usage statistics for coupon ${couponId}:`, response.data);
+            return response;
+        })
+        .catch(error => {
+            console.error(`❌ Error fetching usage statistics for coupon ${couponId}:`, {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                message: error.message
+            });
+            throw error;
+        });
 };
 
 export const getProductSuggestions = (query) => {

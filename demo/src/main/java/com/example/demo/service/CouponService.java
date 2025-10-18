@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Set; // Import Set
 import java.util.stream.Collectors;
 
 @Service
@@ -72,12 +71,43 @@ public class CouponService {
     }
 
     public List<Map<String, Object>> getCouponUsageStatistics() {
-        return orderRepository.countByCouponUsageByDay();
+        System.out.println("🔍 CouponService: Fetching general coupon usage statistics...");
+        List<Map<String, Object>> result = orderRepository.countByCouponUsageByDay();
+        System.out.println("✅ CouponService: General statistics result: " + result);
+        return result;
     }
 
     // --- NEW METHOD START ---
     public List<Map<String, Object>> getCouponUsageStatisticsById(Long couponId) {
-        return orderRepository.countByCouponUsageByDayForCoupon(couponId);
+        System.out.println("🔍 CouponService: Fetching usage statistics for coupon ID: " + couponId);
+        
+        // Validate coupon exists first
+        if (couponId == null) {
+            System.out.println("❌ CouponService: Coupon ID is null");
+            return List.of();
+        }
+        
+        // Check if coupon exists
+        boolean couponExists = couponRepository.existsById(couponId);
+        System.out.println("🔍 CouponService: Coupon exists: " + couponExists);
+        
+        if (!couponExists) {
+            System.out.println("❌ CouponService: Coupon with ID " + couponId + " not found");
+            return List.of();
+        }
+        
+        List<Map<String, Object>> result = orderRepository.countByCouponUsageByDayForCoupon(couponId);
+        System.out.println("✅ CouponService: Usage statistics for coupon " + couponId + ": " + result);
+        
+        // Log the structure of the returned data
+        if (result != null && !result.isEmpty()) {
+            System.out.println("📊 CouponService: Sample data structure: " + result.get(0));
+            System.out.println("📊 CouponService: Total records returned: " + result.size());
+        } else {
+            System.out.println("📊 CouponService: No usage data found for coupon " + couponId);
+        }
+        
+        return result;
     }
     // --- NEW METHOD END ---
 }

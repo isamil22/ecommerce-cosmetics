@@ -53,14 +53,32 @@ public class CouponController {
     @GetMapping("/usage-statistics")
     @PreAuthorize("hasAuthority('COUPON:VIEW') or hasAuthority('COUPON:ANALYTICS') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<Map<String, Object>>> getCouponUsageStatistics() {
-        return ResponseEntity.ok(couponService.getCouponUsageStatistics());
+        System.out.println("🔍 CouponController: GET /usage-statistics endpoint called");
+        try {
+            List<Map<String, Object>> result = couponService.getCouponUsageStatistics();
+            System.out.println("✅ CouponController: Returning general usage statistics: " + result);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            System.out.println("❌ CouponController: Error in general usage statistics: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(List.of());
+        }
     }
 
     // --- NEW ENDPOINT START ---
     @GetMapping("/{id}/usage-statistics")
     @PreAuthorize("hasAuthority('COUPON:VIEW') or hasAuthority('COUPON:ANALYTICS') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<Map<String, Object>>> getCouponUsageStatisticsById(@PathVariable Long id) {
-        return ResponseEntity.ok(couponService.getCouponUsageStatisticsById(id));
+        System.out.println("🔍 CouponController: GET /" + id + "/usage-statistics endpoint called");
+        try {
+            List<Map<String, Object>> result = couponService.getCouponUsageStatisticsById(id);
+            System.out.println("✅ CouponController: Returning usage statistics for coupon " + id + ": " + result);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            System.out.println("❌ CouponController: Error in usage statistics for coupon " + id + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(List.of());
+        }
     }
     // --- NEW ENDPOINT END ---
 }

@@ -11,7 +11,7 @@ import {
     ShoppingCartOutlined,
     ReloadOutlined
 } from '@ant-design/icons';
-import { getAllCoupons } from '../../api/apiService';
+import { getAllCoupons, getCouponUsageStatistics } from '../../api/apiService';
 
 const { Title, Text } = Typography;
 
@@ -26,6 +26,8 @@ const AdminAnalyticsPage = () => {
         totalUses: 0,
         totalSavings: 0
     });
+    const [usageStatistics, setUsageStatistics] = useState([]);
+    const [usageLoading, setUsageLoading] = useState(false);
 
     const fetchAnalytics = async () => {
         try {
@@ -56,10 +58,46 @@ const AdminAnalyticsPage = () => {
             console.log('📈 Calculated analytics:', calculatedAnalytics);
             setAnalytics(calculatedAnalytics);
             setLastUpdated(new Date());
+            
+            // Fetch usage statistics
+            await fetchUsageStatistics();
         } catch (error) {
             console.error('❌ Failed to fetch analytics:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchUsageStatistics = async () => {
+        try {
+            setUsageLoading(true);
+            console.log('🔄 Fetching usage statistics...');
+            const response = await getCouponUsageStatistics();
+            const data = response.data || [];
+            
+            console.log('📊 Usage statistics response:', data);
+            
+            // Process and transform the data
+            let processedData = [];
+            if (Array.isArray(data)) {
+                processedData = data.map(item => ({
+                    date: item.date || item.created_at || new Date().toISOString().split('T')[0],
+                    count: item.count || item.usage_count || item.times_used || 0
+                }));
+            } else if (data && typeof data === 'object') {
+                processedData = [{
+                    date: data.date || new Date().toISOString().split('T')[0],
+                    count: data.count || data.usage_count || data.times_used || 0
+                }];
+            }
+            
+            console.log('📊 Processed usage statistics:', processedData);
+            setUsageStatistics(processedData);
+        } catch (error) {
+            console.error('❌ Failed to fetch usage statistics:', error);
+            setUsageStatistics([]);
+        } finally {
+            setUsageLoading(false);
         }
     };
 
@@ -197,6 +235,74 @@ const AdminAnalyticsPage = () => {
                             prefix={<DollarOutlined />}
                             valueStyle={{ color: 'white', fontSize: '32px', fontWeight: 'bold' }}
                         />
+                    </Card>
+                </Col>
+            </Row>
+
+            {/* Usage Statistics Section */}
+            <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
+                <Col xs={24}>
+                    <Card 
+                        title={
+                            <Space>
+                                <BarChartOutlined style={{ color: '#667eea' }} />
+                                <span>Usage Analytics</span>
+                            </Space>
+                        }
+                        style={{ borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
+                        loading={usageLoading}
+                    >
+                        {usageStatistics.length > 0 ? (
+                            <div>
+                                <Row gutter={[16, 16]}>
+                                    <Col xs={24} md={12}>
+                                        <div style={{ textAlign: 'center', padding: '20px' }}>
+                                            <Title level={4} style={{ color: '#667eea', marginBottom: '16px' }}>
+                                                Daily Usage Trend
+                                            </Title>
+                                            <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <div>
+                                                    <Text style={{ fontSize: '24px', fontWeight: 'bold', color: '#667eea' }}>
+                                                        {usageStatistics.reduce((sum, item) => sum + item.count, 0)}
+                                                    </Text>
+                                                    <br />
+                                                    <Text type="secondary">Total Daily Uses</Text>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Col>
+                                    <Col xs={24} md={12}>
+                                        <div style={{ textAlign: 'center', padding: '20px' }}>
+                                            <Title level={4} style={{ color: '#f093fb', marginBottom: '16px' }}>
+                                                Recent Activity
+                                            </Title>
+                                            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                                {usageStatistics.slice(-5).map((item, index) => (
+                                                    <div key={index} style={{ 
+                                                        display: 'flex', 
+                                                        justifyContent: 'space-between', 
+                                                        alignItems: 'center',
+                                                        padding: '8px 0',
+                                                        borderBottom: index < 4 ? '1px solid #f0f0f0' : 'none'
+                                                    }}>
+                                                        <Text>{new Date(item.date).toLocaleDateString()}</Text>
+                                                        <Text strong style={{ color: '#667eea' }}>{item.count} uses</Text>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </div>
+                        ) : (
+                            <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+                                <ShoppingCartOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+                                <Title level={4} style={{ color: '#d9d9d9' }}>No Usage Data Available</Title>
+                                <Text type="secondary">
+                                    Usage statistics will appear here once customers start using coupons.
+                                </Text>
+                            </div>
+                        )}
                     </Card>
                 </Col>
             </Row>

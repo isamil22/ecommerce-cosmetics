@@ -110,6 +110,15 @@ const CouponUsageChart = ({ couponId, couponName }) => {
     const [loading, setLoading] = useState(true);
     const [usageData, setUsageData] = useState([]);
     const [selectedChartType, setSelectedChartType] = useState('dualAxes');
+    
+    // Debug selectedChartType changes and ensure it's always valid
+    useEffect(() => {
+        console.log('🎨 CouponUsageChart: selectedChartType changed to:', selectedChartType);
+        if (!selectedChartType) {
+            console.log('🎨 CouponUsageChart: selectedChartType is undefined, resetting to dualAxes');
+            setSelectedChartType('dualAxes');
+        }
+    }, [selectedChartType]);
     const [dateRange, setDateRange] = useState([dayjs().subtract(30, 'day'), dayjs()]);
     const [showDrawer, setShowDrawer] = useState(false);
     const [aiInsights, setAiInsights] = useState([]);
@@ -137,17 +146,71 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const data = await getCouponUsageStatisticsById(couponId);
-                setUsageData(data || []);
+                console.log(`📊 CouponUsageChart: Fetching data for coupon ID: ${couponId}`);
+                
+                const response = await getCouponUsageStatisticsById(couponId);
+                const data = response.data || [];
+                
+                console.log(`📊 CouponUsageChart: Received raw response:`, response);
+                console.log(`📊 CouponUsageChart: Received data:`, data);
+                console.log(`📊 CouponUsageChart: Data type:`, typeof data, 'Array?', Array.isArray(data));
+                console.log(`📊 CouponUsageChart: Data length:`, data.length);
+                
+                // Validate and transform data if needed
+                let processedData = [];
+                if (Array.isArray(data)) {
+                    processedData = data.map(item => {
+                        console.log(`📊 CouponUsageChart: Processing item:`, item);
+                        // Ensure the data has the expected structure
+                        return {
+                            date: item.date || item.created_at || new Date().toISOString().split('T')[0],
+                            count: item.count || item.usage_count || item.times_used || 0
+                        };
+                    });
+                } else if (data && typeof data === 'object') {
+                    // Handle single object response
+                    processedData = [{
+                        date: data.date || new Date().toISOString().split('T')[0],
+                        count: data.count || data.usage_count || data.times_used || 0
+                    }];
+                }
+                
+                console.log(`📊 CouponUsageChart: Processed data:`, processedData);
+                setUsageData(processedData);
+                
+                if (processedData.length === 0) {
+                    console.log('📊 CouponUsageChart: No usage data found for this coupon');
+                    message.info('No usage data available for this coupon yet');
+                } else {
+                    console.log('📊 CouponUsageChart: Successfully loaded usage data');
+                }
             } catch (error) {
-                console.error('Error fetching coupon usage data:', error);
-                message.error('Failed to load coupon usage data');
+                console.error('❌ CouponUsageChart: Error fetching coupon usage data:', error);
+                
+                // Show more specific error messages
+                if (error.response?.status === 403) {
+                    message.error('Access denied. You need proper permissions to view usage statistics.');
+                } else if (error.response?.status === 404) {
+                    message.error('Coupon not found or usage statistics not available.');
+                } else if (error.response?.status === 400) {
+                    message.error('Invalid request. Please check the coupon ID.');
+                } else {
+                    message.error(`Failed to load coupon usage data: ${error.message}`);
+                }
+                
+                setUsageData([]);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchData();
+        if (couponId) {
+            fetchData();
+        } else {
+            console.log('📊 CouponUsageChart: No coupon ID provided');
+            setUsageData([]);
+            setLoading(false);
+        }
     }, [couponId]);
 
     // Generate AI insights
@@ -252,7 +315,6 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         dualAxes: {
             xField: 'date',
             yField: ['count'],
-            data: usageData,
             geometryOptions: [
                 {
                     geometry: 'column',
@@ -263,75 +325,99 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         line: {
             xField: 'date',
             yField: 'count',
-            data: usageData,
             smooth: true,
             color: '#f093fb'
         },
         column: {
             xField: 'date',
             yField: 'count',
-            data: usageData,
             color: '#4facfe'
         },
         area: {
             xField: 'date',
             yField: 'count',
-            data: usageData,
             smooth: true,
             color: '#43e97b'
         },
         radar: {
             xField: 'date',
             yField: 'count',
-            data: usageData,
             color: '#fa709a'
         },
         funnel: {
             xField: 'date',
             yField: 'count',
-            data: usageData,
             color: '#ffecd2'
         },
         heatmap: {
             xField: 'date',
             yField: 'count',
-            data: usageData,
             color: '#a8edea'
         },
         pie: {
             angleField: 'count',
             colorField: 'date',
-            data: usageData,
             color: '#d299c2'
         },
         scatter: {
             xField: 'date',
             yField: 'count',
-            data: usageData,
             color: '#fad0c4'
         },
         rose: {
             xField: 'date',
             yField: 'count',
-            data: usageData,
             color: '#ff9a9e'
         }
     };
 
     // Render chart based on selected type
     const renderChart = () => {
+        console.log('🎨 CouponUsageChart: renderChart called');
+        console.log('🎨 CouponUsageChart: usageData:', usageData);
+        console.log('🎨 CouponUsageChart: selectedChartType:', selectedChartType);
+        
+        // Ensure selectedChartType has a valid value
+        const chartType = selectedChartType || 'dualAxes';
+        console.log('🎨 CouponUsageChart: Using chart type:', chartType);
+        
         if (!usageData || !Array.isArray(usageData) || usageData.length === 0) {
+            console.log('🎨 CouponUsageChart: No usage data, showing empty state');
             return <Empty description="No usage data available" />;
         }
 
         // Validate data structure for charts
         const validData = usageData.filter(item => item && typeof item.count === 'number');
+        console.log('🎨 CouponUsageChart: validData:', validData);
+        
         if (validData.length === 0) {
+            console.log('🎨 CouponUsageChart: No valid data, showing empty state');
             return <Empty description="No valid usage data available" />;
         }
+        
+        // For single data point, use a simpler chart type to avoid rendering issues
+        if (validData.length === 1 && chartType !== 'column') {
+            console.log('🎨 CouponUsageChart: Single data point detected, using column chart for better rendering');
+            const columnConfig = chartConfigs.column;
+            const columnProps = {
+                ...columnConfig,
+                data: validData,
+                animation: {
+                    appear: {
+                        animation: 'path-in',
+                        duration: animationSpeed * 1000
+                    }
+                }
+            };
+            return <Column {...columnProps} />;
+        }
 
-        const config = chartConfigs[selectedChartType];
-        if (!config) return null;
+        const config = chartConfigs[chartType];
+        console.log('🎨 CouponUsageChart: config:', config);
+        if (!config) {
+            console.log('🎨 CouponUsageChart: No config found for chart type:', chartType);
+            return null;
+        }
 
         const commonProps = {
             ...config,
@@ -343,30 +429,91 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                 }
             }
         };
+        
+        console.log('🎨 CouponUsageChart: commonProps:', commonProps);
 
-        switch (selectedChartType) {
-            case 'dualAxes':
-                return <DualAxes {...commonProps} />;
-            case 'line':
-                return <Line {...commonProps} />;
-            case 'column':
-                return <Column {...commonProps} />;
-            case 'area':
-                return <Area {...commonProps} />;
-            case 'radar':
-                return <Radar {...commonProps} />;
-            case 'funnel':
-                return <Funnel {...commonProps} />;
-            case 'heatmap':
-                return <Heatmap {...commonProps} />;
-            case 'pie':
-                return <Pie {...commonProps} />;
-            case 'scatter':
-                return <Scatter {...commonProps} />;
-            case 'rose':
-                return <Rose {...commonProps} />;
-            default:
-                return <DualAxes {...commonProps} />;
+        console.log('🎨 CouponUsageChart: Rendering chart type:', chartType);
+        
+        try {
+            // Try to render the chart component
+            let chartComponent;
+            switch (chartType) {
+                case 'dualAxes':
+                    console.log('🎨 CouponUsageChart: Rendering DualAxes chart');
+                    chartComponent = <DualAxes {...commonProps} />;
+                    break;
+                case 'line':
+                    console.log('🎨 CouponUsageChart: Rendering Line chart');
+                    chartComponent = <Line {...commonProps} />;
+                    break;
+                case 'column':
+                    console.log('🎨 CouponUsageChart: Rendering Column chart');
+                    chartComponent = <Column {...commonProps} />;
+                    break;
+                case 'area':
+                    console.log('🎨 CouponUsageChart: Rendering Area chart');
+                    chartComponent = <Area {...commonProps} />;
+                    break;
+                case 'radar':
+                    console.log('🎨 CouponUsageChart: Rendering Radar chart');
+                    chartComponent = <Radar {...commonProps} />;
+                    break;
+                case 'funnel':
+                    console.log('🎨 CouponUsageChart: Rendering Funnel chart');
+                    chartComponent = <Funnel {...commonProps} />;
+                    break;
+                case 'heatmap':
+                    console.log('🎨 CouponUsageChart: Rendering Heatmap chart');
+                    chartComponent = <Heatmap {...commonProps} />;
+                    break;
+                case 'pie':
+                    console.log('🎨 CouponUsageChart: Rendering Pie chart');
+                    chartComponent = <Pie {...commonProps} />;
+                    break;
+                case 'scatter':
+                    console.log('🎨 CouponUsageChart: Rendering Scatter chart');
+                    chartComponent = <Scatter {...commonProps} />;
+                    break;
+                case 'rose':
+                    console.log('🎨 CouponUsageChart: Rendering Rose chart');
+                    chartComponent = <Rose {...commonProps} />;
+                    break;
+                default:
+                    console.log('🎨 CouponUsageChart: Rendering default DualAxes chart');
+                    chartComponent = <DualAxes {...commonProps} />;
+                    break;
+            }
+            
+            console.log('🎨 CouponUsageChart: Chart component created successfully');
+            return chartComponent;
+        } catch (error) {
+            console.error('🎨 CouponUsageChart: Chart rendering error:', error);
+            return (
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                    <div style={{ marginBottom: '16px', fontSize: '18px', fontWeight: 'bold', color: '#667eea' }}>
+                        📊 Usage Data Available
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+                        {validData.map((item, index) => (
+                            <div key={index} style={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between', 
+                                alignItems: 'center',
+                                padding: '8px 16px',
+                                background: '#f8f9fa',
+                                borderRadius: '4px',
+                                minWidth: '200px'
+                            }}>
+                                <span>{new Date(item.date).toLocaleDateString()}</span>
+                                <span style={{ fontWeight: 'bold', color: '#667eea' }}>{item.count} uses</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div style={{ marginTop: '16px', fontSize: '12px', color: '#666' }}>
+                        Chart rendering failed, showing data in table format
+                    </div>
+                </div>
+            );
         }
     };
 
