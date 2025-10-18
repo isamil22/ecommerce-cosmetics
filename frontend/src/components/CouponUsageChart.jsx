@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { getCouponUsageStatisticsById } from '../api/apiService';
-import { DualAxes, Line, Column, Area, Gauge } from '@ant-design/plots';
+import { DualAxes, Line, Column, Area, Gauge, Radar, Funnel, Heatmap, Pie, Scatter, Rose } from '@ant-design/plots';
 import { 
     message, 
     Card, 
@@ -20,7 +20,20 @@ import {
     Switch, 
     Badge, 
     Modal, 
-    Segmented 
+    Segmented,
+    Typography,
+    Divider,
+    Alert,
+    Affix,
+    FloatButton,
+    Drawer,
+    Tabs,
+    Timeline,
+    Avatar,
+    Rate,
+    Slider,
+    Input,
+    AutoComplete
 } from 'antd';
 import { 
     RiseOutlined, 
@@ -35,490 +48,736 @@ import {
     ThunderboltOutlined,
     BulbOutlined,
     RobotOutlined,
-    RocketOutlined,
-    SettingOutlined,
-    ShareAltOutlined,
-    FullscreenOutlined,
-    SyncOutlined,
-    CheckCircleOutlined,
-    WarningOutlined,
+    EyeOutlined,
+    SoundOutlined,
+    CloudDownloadOutlined,
+    ShareAltOutlined as ShareIcon,
+    LikeOutlined,
+    CommentOutlined,
+    RetweetOutlined,
+    StarOutlined as BookmarkOutlined,
+    FlagOutlined,
+    BellOutlined,
+    SearchOutlined,
+    PlusOutlined,
+    MinusOutlined,
+    ReloadOutlined,
+    LoadingOutlined,
+    SyncOutlined as SyncIcon,
+    RedoOutlined,
+    UndoOutlined,
+    SaveOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    CopyOutlined,
+    ScissorOutlined,
+    PrinterOutlined,
+    MailOutlined,
+    PhoneOutlined,
+    MessageOutlined,
+    TeamOutlined,
+    UserOutlined,
+    UsergroupAddOutlined,
+    UserAddOutlined,
+    UserDeleteOutlined,
+    UserSwitchOutlined,
+    SafetyOutlined,
+    SecurityScanOutlined,
+    SafetyOutlined as ShieldOutlined,
+    LockOutlined,
+    UnlockOutlined,
+    KeyOutlined,
+    SafetyCertificateOutlined,
+    VerifiedOutlined,
     LineChartOutlined,
     AreaChartOutlined,
-    DotChartOutlined
+    DotChartOutlined,
+    BarChartOutlined as RoseChartOutlined,
+    FireOutlined,
+    CrownOutlined,
+    StarOutlined as DiamondOutlined,
+    HeartOutlined,
+    StarOutlined as MagicOutlined,
+    StarOutlined as SparklesOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
-// ============================================================================
-// STYLES AND CONSTANTS
-// ============================================================================
+const { Title, Text } = Typography;
+const { RangePicker } = DatePicker;
+const { TabPane } = Tabs;
 
-const styles = {
-    container: {
-        padding: '16px',
-        background: '#f8fafc',
-        minHeight: '400px'
-    },
-    card: {
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-        marginBottom: '16px'
-    },
-    header: {
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        padding: '20px',
-        borderRadius: '12px',
-        marginBottom: '20px'
-    },
-    metricCard: {
-        textAlign: 'center',
-        padding: '20px',
-        borderRadius: '12px',
-        background: 'white',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-    },
-    chartContainer: {
-        padding: '20px',
-        background: 'white',
-        borderRadius: '12px',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-    },
-    trendIndicator: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
-        fontSize: '12px',
-        fontWeight: '600',
-        padding: '2px 8px',
-        borderRadius: '12px'
-    }
-};
-
-const chartTypes = [
-    { value: 'dual', label: 'Dual Axis', icon: <BarChartOutlined /> },
-    { value: 'line', label: 'Line Chart', icon: <LineChartOutlined /> },
-    { value: 'column', label: 'Column Chart', icon: <BarChartOutlined /> },
-    { value: 'area', label: 'Area Chart', icon: <AreaChartOutlined /> }
-];
-
-
-// ============================================================================
-// MAIN COMPONENT
-// ============================================================================
-
-const CouponUsageChart = ({ couponId }) => {
-    // Core state
-    const [usageData, setUsageData] = useState([]);
+const CouponUsageChart = ({ couponId, couponName }) => {
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    
-    // UI state
-    const [chartType, setChartType] = useState('dual');
-    const [showAdvanced, setShowAdvanced] = useState(false);
-    const [dateRange, setDateRange] = useState([dayjs().subtract(30, 'days'), dayjs()]);
-    
-    // Refs
-    const chartRef = useRef(null);
+    const [usageData, setUsageData] = useState([]);
+    const [selectedChartType, setSelectedChartType] = useState('dualAxes');
+    const [dateRange, setDateRange] = useState([dayjs().subtract(30, 'day'), dayjs()]);
+    const [showDrawer, setShowDrawer] = useState(false);
+    const [aiInsights, setAiInsights] = useState([]);
+    const [realTimeMode, setRealTimeMode] = useState(false);
+    const [animationSpeed, setAnimationSpeed] = useState(1);
+    const [showFullscreen, setShowFullscreen] = useState(false);
+    const [selectedMetric, setSelectedMetric] = useState('usage');
 
-    // ============================================================================
-    // DATA FETCHING
-    // ============================================================================
-    
+    // Chart types configuration
+    const chartTypes = [
+        { key: 'dualAxes', label: 'Dual Axis', icon: <BarChartOutlined />, color: '#667eea' },
+        { key: 'line', label: 'Line Chart', icon: <LineChartOutlined />, color: '#f093fb' },
+        { key: 'column', label: 'Column Chart', icon: <BarChartOutlined />, color: '#4facfe' },
+        { key: 'area', label: 'Area Chart', icon: <AreaChartOutlined />, color: '#43e97b' },
+        { key: 'radar', label: 'Radar Chart', icon: <DotChartOutlined />, color: '#fa709a' },
+        { key: 'funnel', label: 'Funnel Chart', icon: <BarChartOutlined />, color: '#ffecd2' },
+        { key: 'heatmap', label: 'Heatmap', icon: <BarChartOutlined />, color: '#a8edea' },
+        { key: 'pie', label: 'Pie Chart', icon: <BarChartOutlined />, color: '#d299c2' },
+        { key: 'scatter', label: 'Scatter Plot', icon: <DotChartOutlined />, color: '#fad0c4' },
+        { key: 'rose', label: 'Rose Chart', icon: <RoseChartOutlined />, color: '#ff9a9e' }
+    ];
+
+    // Fetch usage data
     useEffect(() => {
-        const fetchUsageData = async () => {
-            if (!couponId) return;
-            
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                setError(null);
-                
-                const response = await getCouponUsageStatisticsById(couponId);
-                
-                if (!response?.data || !Array.isArray(response.data)) {
-                    setUsageData([]);
-                    return;
-                }
-
-                // Process and format data
-                const formattedData = response.data
-                    .map(item => ({
-                        ...item,
-                        date: dayjs(item.date).format('YYYY-MM-DD'),
-                        count: item.count || 0
-                    }))
-                    .sort((a, b) => dayjs(a.date).unix() - dayjs(b.date).unix());
-
-                // Calculate cumulative usage
-                let cumulative = 0;
-                const processedData = formattedData.map(item => {
-                    cumulative += item.count;
-                    return { ...item, cumulative };
-                });
-
-                setUsageData(processedData);
-            } catch (err) {
-                console.error('Error fetching usage data:', err);
-                setError('Failed to load usage data');
-                message.error('Failed to load usage data for this coupon');
+                const data = await getCouponUsageStatisticsById(couponId);
+                setUsageData(data || []);
+            } catch (error) {
+                console.error('Error fetching coupon usage data:', error);
+                message.error('Failed to load coupon usage data');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchUsageData();
+        fetchData();
     }, [couponId]);
 
-    // ============================================================================
-    // ANALYTICS CALCULATION
-    // ============================================================================
-    
+    // Generate AI insights
+    const generateAIInsights = useMemo(() => {
+        if (!usageData || !Array.isArray(usageData) || usageData.length === 0) return [];
+
+        // Validate data structure
+        const validData = usageData.filter(item => item && typeof item.count === 'number');
+        if (validData.length === 0) return [];
+
+        const totalUsage = validData.reduce((sum, item) => sum + (item.count || 0), 0);
+        const avgUsage = totalUsage / validData.length;
+        const maxUsage = Math.max(...validData.map(item => item.count || 0));
+        const growthRate = validData.length > 1 ? 
+            ((validData[validData.length - 1].count - validData[0].count) / validData[0].count) * 100 : 0;
+
+        const insights = [];
+
+        if (growthRate > 20) {
+            insights.push({
+                type: 'success',
+                title: 'Excellent Growth',
+                description: `Your coupon shows ${growthRate.toFixed(1)}% growth rate. This indicates strong customer engagement.`,
+                icon: <RiseOutlined />
+            });
+        }
+
+        if (maxUsage > avgUsage * 2) {
+            insights.push({
+                type: 'info',
+                title: 'Peak Performance Detected',
+                description: `Your coupon had a peak usage of ${maxUsage} on ${usageData.find(item => item.count === maxUsage)?.date}. Consider analyzing what drove this success.`,
+                icon: <TrophyOutlined />
+            });
+        }
+
+        if (totalUsage > 100) {
+            insights.push({
+                type: 'warning',
+                title: 'High Usage Volume',
+                description: `Your coupon has been used ${totalUsage} times. Consider monitoring for potential abuse or creating usage limits.`,
+                icon: <BellOutlined />
+            });
+        }
+
+        return insights;
+    }, [usageData]);
+
+    // Calculate analytics
     const analytics = useMemo(() => {
-        if (!usageData?.length) {
+        // Ensure usageData is an array and has data
+        if (!usageData || !Array.isArray(usageData) || usageData.length === 0) {
             return {
                 totalUses: 0,
                 peakUsage: 0,
-                averageUses: 0,
+                averageDaily: 0,
                 growthRate: 0,
-                trend: 'neutral',
-                performanceScore: 0
+                consistency: 0,
+                engagement: 0
             };
         }
 
-        const total = usageData.reduce((sum, item) => sum + item.count, 0);
-        const peak = Math.max(...usageData.map(item => item.count));
-        const average = total / usageData.length;
+        // Validate that each item has a count property
+        const validData = usageData.filter(item => item && typeof item.count === 'number');
         
-        // Calculate growth rate
-        const midPoint = Math.floor(usageData.length / 2);
-        const firstHalf = usageData.slice(0, midPoint);
-        const secondHalf = usageData.slice(midPoint);
+        if (validData.length === 0) {
+            return {
+                totalUses: 0,
+                peakUsage: 0,
+                averageDaily: 0,
+                growthRate: 0,
+                consistency: 0,
+                engagement: 0
+            };
+        }
+
+        const totalUses = validData.reduce((sum, item) => sum + (item.count || 0), 0);
+        const peakUsage = Math.max(...validData.map(item => item.count || 0));
+        const averageDaily = totalUses / validData.length;
+        const growthRate = validData.length > 1 ? 
+            ((validData[validData.length - 1].count - validData[0].count) / validData[0].count) * 100 : 0;
         
-        const firstHalfAvg = firstHalf.reduce((sum, item) => sum + item.count, 0) / firstHalf.length;
-        const secondHalfAvg = secondHalf.reduce((sum, item) => sum + item.count, 0) / secondHalf.length;
-        const growthRate = firstHalfAvg > 0 ? ((secondHalfAvg - firstHalfAvg) / firstHalfAvg) * 100 : 0;
+        // Calculate consistency (lower variance = higher consistency)
+        const variance = validData.reduce((sum, item) => sum + Math.pow((item.count || 0) - averageDaily, 2), 0) / validData.length;
+        const consistency = Math.max(0, 100 - (variance / averageDaily) * 100);
         
-        // Calculate performance score
-        const performanceScore = Math.min(100, Math.max(0, 
-            (total * 0.4) + (peak * 0.3) + (average * 0.2) + (Math.max(0, growthRate) * 0.1)
-        ));
+        // Calculate engagement (based on usage frequency and growth)
+        const engagement = Math.min(100, (totalUses / 10) + (growthRate / 2));
 
         return {
-            totalUses: total,
-            peakUsage: peak,
-            averageUses: average.toFixed(1),
-            growthRate: growthRate.toFixed(1),
-            trend: growthRate > 5 ? 'positive' : growthRate < -5 ? 'negative' : 'neutral',
-            performanceScore: Math.round(performanceScore)
+            totalUses,
+            peakUsage,
+            averageDaily,
+            growthRate,
+            consistency: Math.round(consistency),
+            engagement: Math.round(engagement)
         };
     }, [usageData]);
 
-    // ============================================================================
-    // HELPER FUNCTIONS
-    // ============================================================================
-    
-    const getTrendColor = (trend) => {
-        switch (trend) {
-            case 'positive': return '#52c41a';
-            case 'negative': return '#ff4d4f';
-            default: return '#8c8c8c';
-        }
-    };
-
-    const getTrendIcon = (trend) => {
-        switch (trend) {
-            case 'positive': return <ArrowUpOutlined />;
-            case 'negative': return <ArrowDownOutlined />;
-            default: return null;
-        }
-    };
-
-    // ============================================================================
-    // RENDER FUNCTIONS
-    // ============================================================================
-    
-    if (loading) {
-        return (
-            <div style={styles.container}>
-                <Card style={styles.card}>
-                    <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                        <Spin size="large" />
-                        <p style={{ marginTop: '16px', color: '#666' }}>Loading analytics...</p>
-                    </div>
-                </Card>
-            </div>
-        );
-    }
-
-    if (error || !usageData?.length) {
-        return (
-            <div style={styles.container}>
-                <Card style={styles.card}>
-                    <Empty
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                        description="No usage data available for this coupon"
-                    />
-                </Card>
-            </div>
-        );
-    }
-
-    // ============================================================================
-    // CHART CONFIGURATIONS
-    // ============================================================================
-    
+    // Chart configurations
     const chartConfigs = {
-        dual: {
-            data: [usageData, usageData],
+        dualAxes: {
             xField: 'date',
-            yField: ['count', 'cumulative'],
+            yField: ['count'],
+            data: usageData,
             geometryOptions: [
                 {
                     geometry: 'column',
-                    color: '#667eea',
-                    columnStyle: { radius: [4, 4, 0, 0] }
-                },
-                {
-                    geometry: 'line',
-                    color: '#52c41a',
-                    lineStyle: { lineWidth: 3 }
+                    color: '#667eea'
                 }
-            ],
-            xAxis: { tickCount: 5 },
-            yAxis: {
-                count: { title: { text: 'Daily Usage' } },
-                cumulative: { title: { text: 'Total Usage' } }
-            }
+            ]
         },
         line: {
-            data: usageData,
             xField: 'date',
             yField: 'count',
+            data: usageData,
             smooth: true,
-            color: '#667eea',
-            lineStyle: { lineWidth: 3 },
-            point: { size: 4, shape: 'circle' }
+            color: '#f093fb'
         },
         column: {
-            data: usageData,
             xField: 'date',
             yField: 'count',
-            color: '#667eea',
-            columnStyle: { radius: [4, 4, 0, 0] }
+            data: usageData,
+            color: '#4facfe'
         },
         area: {
-            data: usageData,
             xField: 'date',
             yField: 'count',
+            data: usageData,
             smooth: true,
-            color: '#667eea',
-            areaStyle: { fillOpacity: 0.6 }
+            color: '#43e97b'
+        },
+        radar: {
+            xField: 'date',
+            yField: 'count',
+            data: usageData,
+            color: '#fa709a'
+        },
+        funnel: {
+            xField: 'date',
+            yField: 'count',
+            data: usageData,
+            color: '#ffecd2'
+        },
+        heatmap: {
+            xField: 'date',
+            yField: 'count',
+            data: usageData,
+            color: '#a8edea'
+        },
+        pie: {
+            angleField: 'count',
+            colorField: 'date',
+            data: usageData,
+            color: '#d299c2'
+        },
+        scatter: {
+            xField: 'date',
+            yField: 'count',
+            data: usageData,
+            color: '#fad0c4'
+        },
+        rose: {
+            xField: 'date',
+            yField: 'count',
+            data: usageData,
+            color: '#ff9a9e'
         }
     };
 
-    // ============================================================================
-    // CHART RENDERING
-    // ============================================================================
-    
+    // Render chart based on selected type
     const renderChart = () => {
-        const config = chartConfigs[chartType];
+        if (!usageData || !Array.isArray(usageData) || usageData.length === 0) {
+            return <Empty description="No usage data available" />;
+        }
+
+        // Validate data structure for charts
+        const validData = usageData.filter(item => item && typeof item.count === 'number');
+        if (validData.length === 0) {
+            return <Empty description="No valid usage data available" />;
+        }
+
+        const config = chartConfigs[selectedChartType];
+        if (!config) return null;
+
         const commonProps = {
             ...config,
-            ref: chartRef,
-            style: { height: '300px' }
+            data: validData,
+            animation: {
+                appear: {
+                    animation: 'path-in',
+                    duration: animationSpeed * 1000
+                }
+            }
         };
 
-        switch (chartType) {
-            case 'line': return <Line {...commonProps} />;
-            case 'column': return <Column {...commonProps} />;
-            case 'area': return <Area {...commonProps} />;
-            default: return <DualAxes {...commonProps} />;
+        switch (selectedChartType) {
+            case 'dualAxes':
+                return <DualAxes {...commonProps} />;
+            case 'line':
+                return <Line {...commonProps} />;
+            case 'column':
+                return <Column {...commonProps} />;
+            case 'area':
+                return <Area {...commonProps} />;
+            case 'radar':
+                return <Radar {...commonProps} />;
+            case 'funnel':
+                return <Funnel {...commonProps} />;
+            case 'heatmap':
+                return <Heatmap {...commonProps} />;
+            case 'pie':
+                return <Pie {...commonProps} />;
+            case 'scatter':
+                return <Scatter {...commonProps} />;
+            case 'rose':
+                return <Rose {...commonProps} />;
+            default:
+                return <DualAxes {...commonProps} />;
         }
     };
 
-    // ============================================================================
-    // MAIN RENDER
-    // ============================================================================
-    
+    // Table columns
+    const columns = [
+        {
+            title: 'Date',
+            dataIndex: 'date',
+            key: 'date',
+            render: (date) => dayjs(date).format('MMM DD, YYYY')
+        },
+        {
+            title: 'Usage Count',
+            dataIndex: 'count',
+            key: 'count',
+            render: (count) => (
+                <Badge count={count} style={{ backgroundColor: '#52c41a' }} />
+            )
+        },
+        {
+            title: 'Cumulative Usage',
+            key: 'cumulative',
+            render: (_, record, index) => {
+                if (!usageData || !Array.isArray(usageData)) return <Progress percent={0} size="small" strokeColor="#52c41a" />;
+                const validData = usageData.filter(item => item && typeof item.count === 'number');
+                const cumulative = validData.slice(0, index + 1).reduce((sum, item) => sum + (item.count || 0), 0);
+                return (
+                    <Progress 
+                        percent={analytics.totalUses > 0 ? Math.round((cumulative / analytics.totalUses) * 100) : 0} 
+                        size="small" 
+                        strokeColor="#52c41a"
+                    />
+                );
+            }
+        }
+    ];
+
+    if (loading) {
+        return (
+            <div style={{ textAlign: 'center', padding: '50px' }}>
+                <Spin size="large" />
+                <div style={{ marginTop: '16px' }}>Loading coupon usage data...</div>
+            </div>
+        );
+    }
+
     return (
-        <div style={styles.container}>
+        <div style={{ 
+            padding: '24px', 
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            minHeight: '100vh',
+            position: 'relative'
+        }}>
             {/* Header */}
-            <div style={styles.header}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <ThunderboltOutlined style={{ fontSize: '24px' }} />
-                        <div>
-                            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>
-                                Coupon Analytics
-                            </h2>
-                            <p style={{ margin: '4px 0 0 0', opacity: 0.9, fontSize: '14px' }}>
-                                Usage statistics and performance metrics
-                            </p>
-                        </div>
+            <Card style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                marginBottom: '24px',
+                borderRadius: '20px',
+                border: 'none'
+            }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <Title level={2} style={{ color: 'white', margin: 0 }}>
+                            📊 Coupon Usage Analytics
+                        </Title>
+                        <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '16px' }}>
+                            {couponName} - Advanced Analytics Dashboard
+                        </Text>
                     </div>
                     <Space>
                         <Button 
-                            icon={<SettingOutlined />} 
                             type="primary" 
-                            ghost
-                            size="small"
-                            onClick={() => setShowAdvanced(!showAdvanced)}
+                            icon={<RobotOutlined />}
+                            onClick={() => setShowDrawer(true)}
+                            style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)' }}
                         >
-                            Settings
+                            AI Insights
+                        </Button>
+                        <Button 
+                            type="primary" 
+                            icon={<DownloadOutlined />}
+                            style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)' }}
+                        >
+                            Export
                         </Button>
                     </Space>
                 </div>
-            </div>
+            </Card>
 
             {/* Key Metrics */}
-            <Row gutter={[16, 16]} style={{ marginBottom: '20px' }}>
-                <Col xs={12} sm={6}>
-                    <Card style={styles.metricCard}>
+            <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+                <Col xs={24} sm={12} md={6}>
+                    <Card style={{ 
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '20px',
+                        textAlign: 'center'
+                    }}>
                         <Statistic
                             title="Total Uses"
                             value={analytics.totalUses}
-                            prefix={<RiseOutlined />}
-                            suffix={
-                                <div style={{
-                                    ...styles.trendIndicator,
-                                    color: getTrendColor(analytics.trend),
-                                    background: `${getTrendColor(analytics.trend)}20`
-                                }}>
-                                    {getTrendIcon(analytics.trend)}
-                                    {analytics.growthRate}%
-                                </div>
-                            }
+                            prefix={<TrophyOutlined style={{ color: '#52c41a' }} />}
+                            valueStyle={{ color: '#52c41a' }}
                         />
                     </Card>
                 </Col>
-                <Col xs={12} sm={6}>
-                    <Card style={styles.metricCard}>
+                <Col xs={24} sm={12} md={6}>
+                    <Card style={{ 
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '20px',
+                        textAlign: 'center'
+                    }}>
                         <Statistic
                             title="Peak Usage"
                             value={analytics.peakUsage}
-                            prefix={<TrophyOutlined />}
+                            prefix={<RiseOutlined style={{ color: '#1890ff' }} />}
+                            valueStyle={{ color: '#1890ff' }}
                         />
                     </Card>
                 </Col>
-                <Col xs={12} sm={6}>
-                    <Card style={styles.metricCard}>
+                <Col xs={24} sm={12} md={6}>
+                    <Card style={{ 
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '20px',
+                        textAlign: 'center'
+                    }}>
                         <Statistic
                             title="Average Daily"
-                            value={analytics.averageUses}
-                            prefix={<BarChartOutlined />}
+                            value={analytics.averageDaily.toFixed(1)}
+                            prefix={<BarChartOutlined style={{ color: '#722ed1' }} />}
+                            valueStyle={{ color: '#722ed1' }}
                         />
                     </Card>
                 </Col>
-                <Col xs={12} sm={6}>
-                    <Card style={styles.metricCard}>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '16px', color: '#666', marginBottom: '8px' }}>
-                                Performance Score
-                            </div>
-                            <Gauge
-                                percent={analytics.performanceScore / 100}
-                                range={{ color: '#52c41a' }}
-                                indicator={{ pointer: { style: { stroke: '#52c41a' } } }}
-                                statistic={{ content: { formatter: () => `${analytics.performanceScore}` } }}
-                            />
-                        </div>
+                <Col xs={24} sm={12} md={6}>
+                    <Card style={{ 
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '20px',
+                        textAlign: 'center'
+                    }}>
+                        <Statistic
+                            title="Growth Rate"
+                            value={analytics.growthRate.toFixed(1)}
+                            suffix="%"
+                            prefix={analytics.growthRate > 0 ? <ArrowUpOutlined style={{ color: '#52c41a' }} /> : <ArrowDownOutlined style={{ color: '#ff4d4f' }} />}
+                            valueStyle={{ color: analytics.growthRate > 0 ? '#52c41a' : '#ff4d4f' }}
+                        />
+                    </Card>
+                </Col>
+            </Row>
+
+            {/* Additional Metrics */}
+            <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+                <Col xs={24} sm={8}>
+                    <Card style={{ 
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '20px',
+                        textAlign: 'center'
+                    }}>
+                        <Statistic
+                            title="Consistency"
+                            value={analytics.consistency}
+                            suffix="%"
+                            prefix={<StarOutlined style={{ color: '#faad14' }} />}
+                            valueStyle={{ color: '#faad14' }}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                    <Card style={{ 
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '20px',
+                        textAlign: 'center'
+                    }}>
+                        <Statistic
+                            title="Engagement"
+                            value={analytics.engagement}
+                            suffix="%"
+                            prefix={<HeartOutlined style={{ color: '#eb2f96' }} />}
+                            valueStyle={{ color: '#eb2f96' }}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                    <Card style={{ 
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '20px',
+                        textAlign: 'center'
+                    }}>
+                        <Statistic
+                            title="Real-time Status"
+                            value={realTimeMode ? "Live" : "Static"}
+                            prefix={realTimeMode ? <SyncIcon spin style={{ color: '#52c41a' }} /> : <BellOutlined style={{ color: '#8c8c8c' }} />}
+                            valueStyle={{ color: realTimeMode ? '#52c41a' : '#8c8c8c' }}
+                        />
                     </Card>
                 </Col>
             </Row>
 
             {/* Chart Controls */}
-            {showAdvanced && (
-                <Card style={styles.card} title="Chart Settings">
-                    <Row gutter={[16, 16]}>
-                        <Col span={12}>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                                    Chart Type
-                                </label>
-                                <Segmented
-                                    options={chartTypes}
-                                    value={chartType}
-                                    onChange={setChartType}
-                                    style={{ width: '100%' }}
-                                />
-                            </div>
-                        </Col>
-                        <Col span={12}>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                                    Date Range
-                                </label>
-                                <DatePicker.RangePicker
-                                    value={dateRange}
-                                    onChange={setDateRange}
-                                    style={{ width: '100%' }}
-                                />
-                            </div>
-                        </Col>
-                    </Row>
-                </Card>
-            )}
+            <Card style={{ 
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '20px',
+                marginBottom: '24px'
+            }}>
+                <Tabs defaultActiveKey="visualization">
+                    <TabPane tab="Visualization" key="visualization">
+                        <Row gutter={[16, 16]}>
+                            <Col xs={24} md={12}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <Text strong>Chart Type:</Text>
+                                    <Segmented
+                                        options={chartTypes}
+                                        value={selectedChartType}
+                                        onChange={setSelectedChartType}
+                                        style={{ marginTop: '8px' }}
+                                    />
+                                </div>
+                            </Col>
+                            <Col xs={24} md={12}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <Text strong>Date Range:</Text>
+                                    <RangePicker
+                                        value={dateRange}
+                                        onChange={setDateRange}
+                                        style={{ marginTop: '8px', width: '100%' }}
+                                    />
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row gutter={[16, 16]}>
+                            <Col xs={24} md={8}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <Text strong>Animation Speed:</Text>
+                                    <Slider
+                                        min={0.5}
+                                        max={3}
+                                        step={0.5}
+                                        value={animationSpeed}
+                                        onChange={setAnimationSpeed}
+                                        style={{ marginTop: '8px' }}
+                                    />
+                                </div>
+                            </Col>
+                            <Col xs={24} md={8}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <Text strong>Real-time Mode:</Text>
+                                    <Switch
+                                        checked={realTimeMode}
+                                        onChange={setRealTimeMode}
+                                        style={{ marginTop: '8px' }}
+                                    />
+                                </div>
+                            </Col>
+                            <Col xs={24} md={8}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <Text strong>Fullscreen:</Text>
+                                    <Button
+                                        icon={<EyeOutlined />}
+                                        onClick={() => setShowFullscreen(!showFullscreen)}
+                                        style={{ marginTop: '8px' }}
+                                    >
+                                        Toggle
+                                    </Button>
+                                </div>
+                            </Col>
+                        </Row>
+                    </TabPane>
+                    <TabPane tab="Filters" key="filters">
+                        <Row gutter={[16, 16]}>
+                            <Col xs={24} md={12}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <Text strong>Metric:</Text>
+                                    <Select
+                                        value={selectedMetric}
+                                        onChange={setSelectedMetric}
+                                        style={{ width: '100%', marginTop: '8px' }}
+                                        options={[
+                                            { value: 'usage', label: 'Usage Count' },
+                                            { value: 'growth', label: 'Growth Rate' },
+                                            { value: 'consistency', label: 'Consistency' }
+                                        ]}
+                                    />
+                                </div>
+                            </Col>
+                            <Col xs={24} md={12}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <Text strong>Export Format:</Text>
+                                    <Select
+                                        defaultValue="png"
+                                        style={{ width: '100%', marginTop: '8px' }}
+                                        options={[
+                                            { value: 'png', label: 'PNG Image' },
+                                            { value: 'pdf', label: 'PDF Document' },
+                                            { value: 'csv', label: 'CSV Data' }
+                                        ]}
+                                    />
+                                </div>
+                            </Col>
+                        </Row>
+                    </TabPane>
+                </Tabs>
+            </Card>
 
             {/* Chart Section */}
-            <Card style={styles.card} title="Usage Chart">
-                <div style={styles.chartContainer}>
+            <Card style={{ 
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '20px',
+                marginBottom: '24px'
+            }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <Title level={3} style={{ margin: 0 }}>
+                        📈 Usage Analytics Chart
+                    </Title>
+                    <Space>
+                        <Button icon={<DownloadOutlined />}>Export</Button>
+                        <Button icon={<ShareIcon />}>Share</Button>
+                    </Space>
+                </div>
+                <div style={{ height: '400px' }}>
                     {renderChart()}
                 </div>
             </Card>
 
             {/* Data Table */}
-            <Card style={styles.card} title="Usage Data">
-                <Table 
-                    columns={[
-                        { 
-                            title: 'Date', 
-                            dataIndex: 'date', 
-                            key: 'date',
-                            render: (date) => dayjs(date).format('MMM DD, YYYY')
-                        },
-                        { 
-                            title: 'Usage Count', 
-                            dataIndex: 'count', 
-                            key: 'count',
-                            render: (count, record, index) => (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <span>{count}</span>
-                                    {index > 0 && (
-                                        <div style={{
-                                            ...styles.trendIndicator,
-                                            color: count > usageData[index - 1].count ? '#52c41a' : 
-                                                   count < usageData[index - 1].count ? '#ff4d4f' : '#8c8c8c',
-                                            background: `${count > usageData[index - 1].count ? '#52c41a' : 
-                                                       count < usageData[index - 1].count ? '#ff4d4f' : '#8c8c8c'}20`
-                                        }}>
-                                            {count > usageData[index - 1].count ? <ArrowUpOutlined /> : 
-                                             count < usageData[index - 1].count ? <ArrowDownOutlined /> : null}
-                                        </div>
-                                    )}
-                                </div>
-                            )
-                        },
-                        {
-                            title: 'Cumulative',
-                            dataIndex: 'cumulative',
-                            key: 'cumulative',
-                            render: (cumulative) => (
-                                <Progress 
-                                    percent={Math.min(100, (cumulative / analytics.totalUses) * 100)} 
-                                    size="small"
-                                    showInfo={false}
-                                />
-                            )
-                        }
-                    ]} 
-                    dataSource={usageData} 
-                    rowKey="date" 
-                    pagination={{ 
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} records`
-                    }}
+            <Card style={{ 
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '20px'
+            }}>
+                <Title level={3} style={{ marginBottom: '16px' }}>
+                    📋 Detailed Usage Data
+                </Title>
+                <Table
+                    columns={columns}
+                    dataSource={usageData && Array.isArray(usageData) ? usageData.filter(item => item && typeof item.count === 'number') : []}
+                    rowKey="date"
+                    pagination={{ pageSize: 10 }}
+                    scroll={{ x: 400 }}
                 />
             </Card>
+
+            {/* AI Insights Drawer */}
+            <Drawer
+                title="🤖 AI-Powered Insights"
+                placement="right"
+                width={400}
+                open={showDrawer}
+                onClose={() => setShowDrawer(false)}
+            >
+                <Timeline>
+                    {generateAIInsights.map((insight, index) => (
+                        <Timeline.Item
+                            key={index}
+                            dot={insight.icon}
+                            color={insight.type === 'success' ? 'green' : insight.type === 'warning' ? 'orange' : 'blue'}
+                        >
+                            <Alert
+                                message={insight.title}
+                                description={insight.description}
+                                type={insight.type}
+                                showIcon
+                                style={{ marginBottom: '16px' }}
+                            />
+                        </Timeline.Item>
+                    ))}
+                </Timeline>
+            </Drawer>
+
+            {/* Floating Action Buttons */}
+            <FloatButton.Group
+                trigger="hover"
+                type="primary"
+                style={{ right: 24 }}
+                icon={<PlusOutlined />}
+            >
+                <FloatButton
+                    icon={<EyeOutlined />}
+                    tooltip="Fullscreen"
+                    onClick={() => setShowFullscreen(!showFullscreen)}
+                />
+                <FloatButton
+                    icon={<SyncIcon />}
+                    tooltip="Real-time"
+                    onClick={() => setRealTimeMode(!realTimeMode)}
+                />
+                <FloatButton
+                    icon={<RobotOutlined />}
+                    tooltip="AI Insights"
+                    onClick={() => setShowDrawer(true)}
+                />
+            </FloatButton.Group>
         </div>
     );
 };
