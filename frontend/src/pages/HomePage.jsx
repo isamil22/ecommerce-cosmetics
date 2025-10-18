@@ -612,7 +612,10 @@ const HomePage = () => {
             {/* Purchase Notifications */}
             <PurchaseNotifications 
                 packName="منتجات المتجر / Store Products" 
-                productImage="/placeholder-image.jpg"
+                productImage={bestsellers.length > 0 && bestsellers[0].images && bestsellers[0].images.length > 0 
+                    ? bestsellers[0].images[0] 
+                    : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"
+                }
             />
             
         </div>

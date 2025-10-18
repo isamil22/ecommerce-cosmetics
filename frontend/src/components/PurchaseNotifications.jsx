@@ -75,6 +75,10 @@ const PurchaseNotifications = ({ packName, productImage }) => {
                                 src={productImage} 
                                 alt={packName || 'Product'} 
                                 className="w-full h-full object-cover rounded-md"
+                                onError={(e) => {
+                                    // Fallback to a placeholder if image fails to load
+                                    e.target.src = `https://placehold.co/64x64/fde4f2/E91E63?text=${encodeURIComponent('Product')}`;
+                                }}
                             />
                         </div>
                     )}
