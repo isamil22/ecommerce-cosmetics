@@ -70,6 +70,10 @@ public class CountdownService {
         countdown.setPadding(countdownDTO.getPadding());
         countdown.setFontSize(countdownDTO.getFontSize());
         countdown.setTimerFontSize(countdownDTO.getTimerFontSize());
+        
+        // Default Design Setting
+        countdown.setUseDefaultDesign(countdownDTO.isUseDefaultDesign());
+        
         Countdown savedCountdown = countdownRepository.save(countdown);
         return countdownMapper.toDto(savedCountdown);
     }

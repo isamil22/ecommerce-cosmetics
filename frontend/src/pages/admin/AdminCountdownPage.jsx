@@ -41,7 +41,211 @@ const AdminCountdownPage = () => {
     const [fontSize, setFontSize] = useState(18);
     const [timerFontSize, setTimerFontSize] = useState(24);
     
+    // Default Design Toggle
+    const [useDefaultDesign, setUseDefaultDesign] = useState(false);
+    const [selectedTheme, setSelectedTheme] = useState('darkPremium');
+    
     const [message, setMessage] = useState('');
+
+    // Multiple Design Presets for Website Compatibility
+    const designPresets = {
+        // 1. DARK PREMIUM THEME (Original Beautiful Design)
+        darkPremium: {
+            title: '🔥 عرض حصري محدود! / EXCLUSIVE Limited Offer!',
+            subtitle: '💎 وفر حتى 70% - العرض ينتهي قريباً! / Save up to 70% - Offer ends soon!',
+            packName: 'عروض VIP الحصرية / VIP Exclusive Offers',
+            urgentMessage: '⚡ أسرع! أقل من ساعة متبقية! / ⚡ Hurry! Less than 1 hour left!',
+            expiredMessage: 'انتهت الفترة المحدودة! شكراً لاهتمامكم / Limited Time Expired! Thank you for your interest',
+            backgroundColor: '#1a1a2e', // Deep dark blue-purple
+            textColor: '#ffffff', // Pure white text
+            borderColor: '#ff6b6b', // Vibrant coral red border
+            timerBoxColor: '#16213e', // Dark blue timer boxes
+            timerTextColor: '#ffd700', // Gold timer numbers
+            urgentBgColor: '#ff4757', // Bright red urgent background
+            urgentTextColor: '#ffffff', // White urgent text
+            showDays: true,
+            showHours: true,
+            showMinutes: true,
+            showSeconds: true,
+            showPackName: true,
+            showSubtitle: true,
+            enablePulse: true,
+            enableBounce: true,
+            urgentThreshold: 1800,
+            borderRadius: 20,
+            padding: 24,
+            fontSize: 20,
+            timerFontSize: 32,
+        },
+        
+        // 2. LIGHT PROFESSIONAL THEME (Website Compatible)
+        lightProfessional: {
+            title: '🔥 عرض محدود! / Limited Offer!',
+            subtitle: '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends',
+            packName: 'عروض اليوم الخاصة / Today\'s Special Offers',
+            urgentMessage: '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out',
+            expiredMessage: 'انتهت الفترة المحدودة! / Limited Time Expired!',
+            backgroundColor: '#ffffff', // Clean white background
+            textColor: '#1f2937', // Dark gray text
+            borderColor: '#3b82f6', // Professional blue border
+            timerBoxColor: '#f8fafc', // Light gray timer boxes
+            timerTextColor: '#1f2937', // Dark gray timer numbers
+            urgentBgColor: '#fef2f2', // Light red urgent background
+            urgentTextColor: '#dc2626', // Red urgent text
+            showDays: false,
+            showHours: true,
+            showMinutes: true,
+            showSeconds: true,
+            showPackName: true,
+            showSubtitle: true,
+            enablePulse: true,
+            enableBounce: false,
+            urgentThreshold: 3600,
+            borderRadius: 12,
+            padding: 20,
+            fontSize: 18,
+            timerFontSize: 28,
+        },
+        
+        // 3. MODERN GRADIENT THEME (Contemporary)
+        modernGradient: {
+            title: '⚡ عرض سريع! / Flash Sale!',
+            subtitle: '🎯 لا تفوت الفرصة! / Don\'t miss out!',
+            packName: 'عروض البرق / Lightning Deals',
+            urgentMessage: '🚨 آخر ساعات! / Last hours!',
+            expiredMessage: 'انتهى العرض! / Sale ended!',
+            backgroundColor: '#667eea', // Modern blue-purple
+            textColor: '#ffffff', // White text
+            borderColor: '#f093fb', // Pink gradient border
+            timerBoxColor: '#764ba2', // Purple timer boxes
+            timerTextColor: '#ffffff', // White timer numbers
+            urgentBgColor: '#ff6b6b', // Coral urgent background
+            urgentTextColor: '#ffffff', // White urgent text
+            showDays: true,
+            showHours: true,
+            showMinutes: true,
+            showSeconds: true,
+            showPackName: true,
+            showSubtitle: true,
+            enablePulse: true,
+            enableBounce: true,
+            urgentThreshold: 1800,
+            borderRadius: 16,
+            padding: 22,
+            fontSize: 19,
+            timerFontSize: 30,
+        },
+        
+        // 4. ELEGANT MINIMAL THEME (Clean & Simple)
+        elegantMinimal: {
+            title: '✨ عرض خاص / Special Offer',
+            subtitle: '🎁 هدية لك! / Gift for you!',
+            packName: 'عروض أنيقة / Elegant Offers',
+            urgentMessage: '⏰ وقت محدود! / Limited time!',
+            expiredMessage: 'انتهى العرض الأنيق! / Elegant offer ended!',
+            backgroundColor: '#f8fafc', // Very light gray
+            textColor: '#374151', // Medium gray text
+            borderColor: '#d1d5db', // Light gray border
+            timerBoxColor: '#ffffff', // White timer boxes
+            timerTextColor: '#1f2937', // Dark gray timer numbers
+            urgentBgColor: '#fef3c7', // Light yellow urgent background
+            urgentTextColor: '#d97706', // Orange urgent text
+            showDays: false,
+            showHours: true,
+            showMinutes: true,
+            showSeconds: true,
+            showPackName: true,
+            showSubtitle: true,
+            enablePulse: false,
+            enableBounce: false,
+            urgentThreshold: 3600,
+            borderRadius: 8,
+            padding: 16,
+            fontSize: 16,
+            timerFontSize: 24,
+        },
+        
+        // 5. VIBRANT ENERGY THEME (High Energy)
+        vibrantEnergy: {
+            title: '🚀 عرض صاروخي! / Rocket Sale!',
+            subtitle: '💥 انفجار العروض! / Explosive deals!',
+            packName: 'عروض الطاقة / Energy Deals',
+            urgentMessage: '🔥 نار! نار! / Fire! Fire!',
+            expiredMessage: 'انفجر العرض! / Deal exploded!',
+            backgroundColor: '#ff6b6b', // Vibrant coral
+            textColor: '#ffffff', // White text
+            borderColor: '#ffd700', // Gold border
+            timerBoxColor: '#ff4757', // Bright red timer boxes
+            timerTextColor: '#ffffff', // White timer numbers
+            urgentBgColor: '#ffd700', // Gold urgent background
+            urgentTextColor: '#1a1a2e', // Dark urgent text
+            showDays: true,
+            showHours: true,
+            showMinutes: true,
+            showSeconds: true,
+            showPackName: true,
+            showSubtitle: true,
+            enablePulse: true,
+            enableBounce: true,
+            urgentThreshold: 900, // 15 minutes for high energy
+            borderRadius: 25,
+            padding: 28,
+            fontSize: 22,
+            timerFontSize: 36,
+        }
+    };
+
+    // Default Design Preset (Dark Premium)
+    const defaultDesignPreset = designPresets.darkPremium;
+
+    // Function to apply selected theme
+    const applySelectedTheme = (themeKey) => {
+        const theme = designPresets[themeKey];
+        if (!theme) return;
+        
+        setTitle(theme.title);
+        setSubtitle(theme.subtitle);
+        setPackName(theme.packName);
+        setUrgentMessage(theme.urgentMessage);
+        setExpiredMessage(theme.expiredMessage);
+        
+        setBackgroundColor(theme.backgroundColor);
+        setTextColor(theme.textColor);
+        setBorderColor(theme.borderColor);
+        setTimerBoxColor(theme.timerBoxColor);
+        setTimerTextColor(theme.timerTextColor);
+        setUrgentBgColor(theme.urgentBgColor);
+        setUrgentTextColor(theme.urgentTextColor);
+        
+        setShowDays(theme.showDays);
+        setShowHours(theme.showHours);
+        setShowMinutes(theme.showMinutes);
+        setShowSeconds(theme.showSeconds);
+        setShowPackName(theme.showPackName);
+        setShowSubtitle(theme.showSubtitle);
+        
+        setEnablePulse(theme.enablePulse);
+        setEnableBounce(theme.enableBounce);
+        setUrgentThreshold(theme.urgentThreshold);
+        
+        setBorderRadius(theme.borderRadius);
+        setPadding(theme.padding);
+        setFontSize(theme.fontSize);
+        setTimerFontSize(theme.timerFontSize);
+    };
+
+    // Function to apply default design (backward compatibility)
+    const applyDefaultDesign = () => {
+        applySelectedTheme(selectedTheme);
+    };
+
+    // Handle default design toggle
+    const handleDefaultDesignToggle = (checked) => {
+        setUseDefaultDesign(checked);
+        if (checked) {
+            applyDefaultDesign();
+        }
+    };
 
     useEffect(() => {
         getCountdown().then(response => {
@@ -85,6 +289,9 @@ const AdminCountdownPage = () => {
                 setPadding(data.padding || 16);
                 setFontSize(data.fontSize || 18);
                 setTimerFontSize(data.timerFontSize || 24);
+                
+                // Default Design Setting
+                setUseDefaultDesign(data.useDefaultDesign || false);
             }
         }).catch(error => console.error("Could not fetch countdown settings", error));
     }, []);
@@ -130,6 +337,9 @@ const AdminCountdownPage = () => {
             padding,
             fontSize,
             timerFontSize,
+            
+            // Default Design Setting
+            useDefaultDesign,
         };
         saveCountdown(countdownData)
             .then(() => {
@@ -149,12 +359,160 @@ const AdminCountdownPage = () => {
             
             <form onSubmit={handleSubmit} className="max-w-6xl mx-auto space-y-8">
                 
+                        {/* Design Theme Selector */}
+                        <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 p-6 rounded-lg shadow-md border-2 border-purple-200">
+                            <h2 className="text-xl font-bold mb-4 text-gray-800">🎨 WEBSITE-COMPATIBLE DESIGN THEMES</h2>
+                            
+                            {/* Theme Selection */}
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-gray-700 mb-3">Choose a Design Theme:</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {/* Dark Premium Theme */}
+                                    <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                                        selectedTheme === 'darkPremium' 
+                                            ? 'border-purple-500 bg-purple-50' 
+                                            : 'border-gray-200 hover:border-gray-300'
+                                    }`} onClick={() => setSelectedTheme('darkPremium')}>
+                                        <div className="flex items-center mb-2">
+                                            <div className="w-4 h-4 rounded-full bg-gray-800 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-yellow-400 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-red-400"></div>
+                                        </div>
+                                        <h3 className="font-semibold text-gray-800">🌙 Dark Premium</h3>
+                                        <p className="text-sm text-gray-600">Luxury dark theme with gold accents</p>
+                                    </div>
+                                    
+                                    {/* Light Professional Theme */}
+                                    <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                                        selectedTheme === 'lightProfessional' 
+                                            ? 'border-blue-500 bg-blue-50' 
+                                            : 'border-gray-200 hover:border-gray-300'
+                                    }`} onClick={() => setSelectedTheme('lightProfessional')}>
+                                        <div className="flex items-center mb-2">
+                                            <div className="w-4 h-4 rounded-full bg-white border border-gray-300 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-blue-500 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-gray-300"></div>
+                                        </div>
+                                        <h3 className="font-semibold text-gray-800">☀️ Light Professional</h3>
+                                        <p className="text-sm text-gray-600">Clean white theme for business sites</p>
+                                    </div>
+                                    
+                                    {/* Modern Gradient Theme */}
+                                    <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                                        selectedTheme === 'modernGradient' 
+                                            ? 'border-pink-500 bg-pink-50' 
+                                            : 'border-gray-200 hover:border-gray-300'
+                                    }`} onClick={() => setSelectedTheme('modernGradient')}>
+                                        <div className="flex items-center mb-2">
+                                            <div className="w-4 h-4 rounded-full bg-blue-400 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-purple-400 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-pink-400"></div>
+                                        </div>
+                                        <h3 className="font-semibold text-gray-800">🌈 Modern Gradient</h3>
+                                        <p className="text-sm text-gray-600">Contemporary gradient design</p>
+                                    </div>
+                                    
+                                    {/* Elegant Minimal Theme */}
+                                    <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                                        selectedTheme === 'elegantMinimal' 
+                                            ? 'border-gray-500 bg-gray-50' 
+                                            : 'border-gray-200 hover:border-gray-300'
+                                    }`} onClick={() => setSelectedTheme('elegantMinimal')}>
+                                        <div className="flex items-center mb-2">
+                                            <div className="w-4 h-4 rounded-full bg-gray-100 border border-gray-300 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-gray-300 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-gray-400"></div>
+                                        </div>
+                                        <h3 className="font-semibold text-gray-800">✨ Elegant Minimal</h3>
+                                        <p className="text-sm text-gray-600">Clean and simple design</p>
+                                    </div>
+                                    
+                                    {/* Vibrant Energy Theme */}
+                                    <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                                        selectedTheme === 'vibrantEnergy' 
+                                            ? 'border-red-500 bg-red-50' 
+                                            : 'border-gray-200 hover:border-gray-300'
+                                    }`} onClick={() => setSelectedTheme('vibrantEnergy')}>
+                                        <div className="flex items-center mb-2">
+                                            <div className="w-4 h-4 rounded-full bg-red-400 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-yellow-400 mr-2"></div>
+                                            <div className="w-4 h-4 rounded-full bg-orange-400"></div>
+                                        </div>
+                                        <h3 className="font-semibold text-gray-800">🚀 Vibrant Energy</h3>
+                                        <p className="text-sm text-gray-600">High-energy colorful design</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Apply Theme Button */}
+                            <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                    <p className="text-gray-700 mb-2">
+                                        <strong>Apply the selected theme instantly!</strong>
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                        This will set all colors, text, animations, and layout to match your website's style and branding.
+                                    </p>
+                                </div>
+                                <div className="ml-6">
+                                    <button 
+                                        type="button"
+                                        onClick={() => applySelectedTheme(selectedTheme)}
+                                        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all"
+                                    >
+                                        🎨 Apply {selectedTheme === 'darkPremium' ? 'Dark Premium' : 
+                                                 selectedTheme === 'lightProfessional' ? 'Light Professional' :
+                                                 selectedTheme === 'modernGradient' ? 'Modern Gradient' :
+                                                 selectedTheme === 'elegantMinimal' ? 'Elegant Minimal' :
+                                                 'Vibrant Energy'} Theme
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {/* Theme Preview */}
+                            <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
+                                <h4 className="font-semibold text-gray-800 mb-2">🎯 Selected Theme Preview:</h4>
+                                <div className="text-sm text-gray-600">
+                                    {selectedTheme === 'darkPremium' && (
+                                        <div>
+                                            <p>🌙 <strong>Dark Premium:</strong> Deep dark blue-purple background with gold timer numbers and coral borders</p>
+                                            <p>Perfect for luxury brands and premium products</p>
+                                        </div>
+                                    )}
+                                    {selectedTheme === 'lightProfessional' && (
+                                        <div>
+                                            <p>☀️ <strong>Light Professional:</strong> Clean white background with professional blue accents</p>
+                                            <p>Perfect for business websites and corporate brands</p>
+                                        </div>
+                                    )}
+                                    {selectedTheme === 'modernGradient' && (
+                                        <div>
+                                            <p>🌈 <strong>Modern Gradient:</strong> Blue-purple gradient with pink accents</p>
+                                            <p>Perfect for modern, trendy websites</p>
+                                        </div>
+                                    )}
+                                    {selectedTheme === 'elegantMinimal' && (
+                                        <div>
+                                            <p>✨ <strong>Elegant Minimal:</strong> Light gray background with subtle accents</p>
+                                            <p>Perfect for minimalist and clean designs</p>
+                                        </div>
+                                    )}
+                                    {selectedTheme === 'vibrantEnergy' && (
+                                        <div>
+                                            <p>🚀 <strong>Vibrant Energy:</strong> Bright coral background with gold accents</p>
+                                            <p>Perfect for energetic brands and flash sales</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                
                 {/* Basic Settings */}
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h2 className="text-xl font-bold mb-4 text-gray-800">📝 Basic Settings</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+                <div>
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
                             <input type="text" id="title" value={title} onChange={e => setTitle(e.target.value)} 
                                    placeholder="🔥 عرض محدود! / Limited Offer!" 
                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500" />
@@ -231,8 +589,8 @@ const AdminCountdownPage = () => {
                             <label htmlFor="urgentBgColor" className="block text-sm font-medium text-gray-700">Urgent Background</label>
                             <input type="color" id="urgentBgColor" value={urgentBgColor} onChange={e => setUrgentBgColor(e.target.value)} 
                                    className="mt-1 block w-full h-10 rounded-md border-gray-300 shadow-sm" />
-                        </div>
-                        <div>
+                </div>
+                <div>
                             <label htmlFor="urgentTextColor" className="block text-sm font-medium text-gray-700">Urgent Text</label>
                             <input type="color" id="urgentTextColor" value={urgentTextColor} onChange={e => setUrgentTextColor(e.target.value)} 
                                    className="mt-1 block w-full h-10 rounded-md border-gray-300 shadow-sm" />
@@ -290,8 +648,8 @@ const AdminCountdownPage = () => {
                             <input type="checkbox" id="enableBounce" checked={enableBounce} onChange={e => setEnableBounce(e.target.checked)} 
                                    className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500" />
                             <label htmlFor="enableBounce" className="ml-2 block text-sm text-gray-900">Enable Bounce Animation</label>
-                        </div>
-                        <div>
+                </div>
+                <div>
                             <label htmlFor="urgentThreshold" className="block text-sm font-medium text-gray-700">Urgent Threshold (seconds)</label>
                             <input type="number" id="urgentThreshold" value={urgentThreshold} onChange={e => setUrgentThreshold(parseInt(e.target.value))} 
                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500" />

@@ -42,6 +42,9 @@ public class CountdownDTO {
     private int padding;
     private int fontSize;
     private int timerFontSize;
+    
+    // Default Design Setting
+    private boolean useDefaultDesign;
 
     // Getters and Setters
     // Basic Settings
@@ -264,5 +267,14 @@ public class CountdownDTO {
 
     public void setTimerFontSize(int timerFontSize) {
         this.timerFontSize = timerFontSize;
+    }
+
+    // Default Design Setting
+    public boolean isUseDefaultDesign() {
+        return useDefaultDesign;
+    }
+
+    public void setUseDefaultDesign(boolean useDefaultDesign) {
+        this.useDefaultDesign = useDefaultDesign;
     }
 }

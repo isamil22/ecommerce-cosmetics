@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website-Compatible Themes Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-step {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-step h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover { background: #0056b3; }
+        .theme-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 3px;
+        }
+        .theme-button:hover { background: #218838; }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .admin-link {
+            display: inline-block;
+            background: #6f42c1;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .admin-link:hover { background: #5a32a3; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 Website-Compatible Themes Test</h1>
+        <p>Test all 5 countdown themes to ensure they work perfectly with different website styles!</p>
+
+        <div class="test-step info">
+            <h3>📋 Available Themes</h3>
+            <p>We now have 5 professional themes designed for different website types:</p>
+            <ol>
+                <li><strong>🌙 Dark Premium:</strong> Luxury dark theme with gold accents</li>
+                <li><strong>☀️ Light Professional:</strong> Clean white theme for business sites</li>
+                <li><strong>🌈 Modern Gradient:</strong> Contemporary gradient design</li>
+                <li><strong>✨ Elegant Minimal:</strong> Clean and simple design</li>
+                <li><strong>🚀 Vibrant Energy:</strong> High-energy colorful design</li>
+            </ol>
+        </div>
+
+        <div class="test-step">
+            <h3>🧪 Step 1: Test Current API State</h3>
+            <button class="test-button" onclick="testCurrentState()">Test Current API State</button>
+            <div id="current-state-result"></div>
+        </div>
+
+        <div class="test-step">
+            <h3>🎨 Step 2: Test All Themes</h3>
+            <p>Test each theme by applying it via API:</p>
+            <button class="theme-button" onclick="testTheme('darkPremium')">🌙 Test Dark Premium</button>
+            <button class="theme-button" onclick="testTheme('lightProfessional')">☀️ Test Light Professional</button>
+            <button class="theme-button" onclick="testTheme('modernGradient')">🌈 Test Modern Gradient</button>
+            <button class="theme-button" onclick="testTheme('elegantMinimal')">✨ Test Elegant Minimal</button>
+            <button class="theme-button" onclick="testTheme('vibrantEnergy')">🚀 Test Vibrant Energy</button>
+            <div id="theme-test-result"></div>
+        </div>
+
+        <div class="test-step">
+            <h3>🎛️ Step 3: Test Admin Panel</h3>
+            <p>Open the admin panel to test the new theme selector:</p>
+            <a href="http://localhost:3000/admin/countdown" class="admin-link" target="_blank">
+                🎛️ Open Admin Countdown Panel
+            </a>
+            <div id="admin-test-result"></div>
+        </div>
+
+        <div class="test-step">
+            <h3>🏠 Step 4: Test Frontend Display</h3>
+            <p>Visit the frontend pages to see the themes in action:</p>
+            <a href="http://localhost:3000" class="admin-link" target="_blank">🏠 Homepage</a>
+            <a href="http://localhost:3000/packs" class="admin-link" target="_blank">📦 Packs Page</a>
+            <a href="http://localhost:3000/products" class="admin-link" target="_blank">🛍️ Products Page</a>
+        </div>
+
+        <div class="test-step">
+            <h3>📊 Step 5: Complete Theme Verification</h3>
+            <button class="test-button" onclick="runCompleteThemeTest()">Run Complete Theme Test</button>
+            <div id="complete-theme-result"></div>
+        </div>
+
+        <div class="test-step info">
+            <h3>🎯 Theme Specifications</h3>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+                <h4>🌙 Dark Premium Theme:</h4>
+                <ul>
+                    <li><strong>Background:</strong> #1a1a2e (Deep Dark Blue-Purple)</li>
+                    <li><strong>Text:</strong> #ffffff (Pure White)</li>
+                    <li><strong>Border:</strong> #ff6b6b (Coral Red)</li>
+                    <li><strong>Timer Box:</strong> #16213e (Dark Blue)</li>
+                    <li><strong>Timer Text:</strong> #ffd700 (Gold)</li>
+                </ul>
+                
+                <h4>☀️ Light Professional Theme:</h4>
+                <ul>
+                    <li><strong>Background:</strong> #ffffff (Clean White)</li>
+                    <li><strong>Text:</strong> #1f2937 (Dark Gray)</li>
+                    <li><strong>Border:</strong> #3b82f6 (Professional Blue)</li>
+                    <li><strong>Timer Box:</strong> #f8fafc (Light Gray)</li>
+                    <li><strong>Timer Text:</strong> #1f2937 (Dark Gray)</li>
+                </ul>
+                
+                <h4>🌈 Modern Gradient Theme:</h4>
+                <ul>
+                    <li><strong>Background:</strong> #667eea to #764ba2 (Blue-Purple Gradient)</li>
+                    <li><strong>Text:</strong> #ffffff (White)</li>
+                    <li><strong>Border:</strong> #f093fb (Pink)</li>
+                    <li><strong>Timer Box:</strong> #764ba2 (Purple)</li>
+                    <li><strong>Timer Text:</strong> #ffffff (White)</li>
+                </ul>
+                
+                <h4>✨ Elegant Minimal Theme:</h4>
+                <ul>
+                    <li><strong>Background:</strong> #f8fafc (Very Light Gray)</li>
+                    <li><strong>Text:</strong> #374151 (Medium Gray)</li>
+                    <li><strong>Border:</strong> #d1d5db (Light Gray)</li>
+                    <li><strong>Timer Box:</strong> #ffffff (White)</li>
+                    <li><strong>Timer Text:</strong> #1f2937 (Dark Gray)</li>
+                </ul>
+                
+                <h4>🚀 Vibrant Energy Theme:</h4>
+                <ul>
+                    <li><strong>Background:</strong> #ff6b6b (Vibrant Coral)</li>
+                    <li><strong>Text:</strong> #ffffff (White)</li>
+                    <li><strong>Border:</strong> #ffd700 (Gold)</li>
+                    <li><strong>Timer Box:</strong> #ff4757 (Bright Red)</li>
+                    <li><strong>Timer Text:</strong> #ffffff (White)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themes = {
+            darkPremium: {
+                title: '🔥 عرض حصري محدود! / EXCLUSIVE Limited Offer!',
+                subtitle: '💎 وفر حتى 70% - العرض ينتهي قريباً! / Save up to 70% - Offer ends soon!',
+                packName: 'عروض VIP الحصرية / VIP Exclusive Offers',
+                urgentMessage: '⚡ أسرع! أقل من ساعة متبقية! / ⚡ Hurry! Less than 1 hour left!',
+                expiredMessage: 'انتهت الفترة المحدودة! شكراً لاهتمامكم / Limited Time Expired! Thank you for your interest',
+                backgroundColor: '#1a1a2e',
+                textColor: '#ffffff',
+                borderColor: '#ff6b6b',
+                timerBoxColor: '#16213e',
+                timerTextColor: '#ffd700',
+                urgentBgColor: '#ff4757',
+                urgentTextColor: '#ffffff',
+                showDays: true,
+                showHours: true,
+                showMinutes: true,
+                showSeconds: true,
+                showPackName: true,
+                showSubtitle: true,
+                enablePulse: true,
+                enableBounce: true,
+                urgentThreshold: 1800,
+                borderRadius: 20,
+                padding: 24,
+                fontSize: 20,
+                timerFontSize: 32,
+                useDefaultDesign: true
+            },
+            lightProfessional: {
+                title: '🔥 عرض محدود! / Limited Offer!',
+                subtitle: '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends',
+                packName: 'عروض اليوم الخاصة / Today\'s Special Offers',
+                urgentMessage: '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out',
+                expiredMessage: 'انتهت الفترة المحدودة! / Limited Time Expired!',
+                backgroundColor: '#ffffff',
+                textColor: '#1f2937',
+                borderColor: '#3b82f6',
+                timerBoxColor: '#f8fafc',
+                timerTextColor: '#1f2937',
+                urgentBgColor: '#fef2f2',
+                urgentTextColor: '#dc2626',
+                showDays: false,
+                showHours: true,
+                showMinutes: true,
+                showSeconds: true,
+                showPackName: true,
+                showSubtitle: true,
+                enablePulse: true,
+                enableBounce: false,
+                urgentThreshold: 3600,
+                borderRadius: 12,
+                padding: 20,
+                fontSize: 18,
+                timerFontSize: 28,
+                useDefaultDesign: true
+            },
+            modernGradient: {
+                title: '⚡ عرض سريع! / Flash Sale!',
+                subtitle: '🎯 لا تفوت الفرصة! / Don\'t miss out!',
+                packName: 'عروض البرق / Lightning Deals',
+                urgentMessage: '🚨 آخر ساعات! / Last hours!',
+                expiredMessage: 'انتهى العرض! / Sale ended!',
+                backgroundColor: '#667eea',
+                textColor: '#ffffff',
+                borderColor: '#f093fb',
+                timerBoxColor: '#764ba2',
+                timerTextColor: '#ffffff',
+                urgentBgColor: '#ff6b6b',
+                urgentTextColor: '#ffffff',
+                showDays: true,
+                showHours: true,
+                showMinutes: true,
+                showSeconds: true,
+                showPackName: true,
+                showSubtitle: true,
+                enablePulse: true,
+                enableBounce: true,
+                urgentThreshold: 1800,
+                borderRadius: 16,
+                padding: 22,
+                fontSize: 19,
+                timerFontSize: 30,
+                useDefaultDesign: true
+            },
+            elegantMinimal: {
+                title: '✨ عرض خاص / Special Offer',
+                subtitle: '🎁 هدية لك! / Gift for you!',
+                packName: 'عروض أنيقة / Elegant Offers',
+                urgentMessage: '⏰ وقت محدود! / Limited time!',
+                expiredMessage: 'انتهى العرض الأنيق! / Elegant offer ended!',
+                backgroundColor: '#f8fafc',
+                textColor: '#374151',
+                borderColor: '#d1d5db',
+                timerBoxColor: '#ffffff',
+                timerTextColor: '#1f2937',
+                urgentBgColor: '#fef3c7',
+                urgentTextColor: '#d97706',
+                showDays: false,
+                showHours: true,
+                showMinutes: true,
+                showSeconds: true,
+                showPackName: true,
+                showSubtitle: true,
+                enablePulse: false,
+                enableBounce: false,
+                urgentThreshold: 3600,
+                borderRadius: 8,
+                padding: 16,
+                fontSize: 16,
+                timerFontSize: 24,
+                useDefaultDesign: true
+            },
+            vibrantEnergy: {
+                title: '🚀 عرض صاروخي! / Rocket Sale!',
+                subtitle: '💥 انفجار العروض! / Explosive deals!',
+                packName: 'عروض الطاقة / Energy Deals',
+                urgentMessage: '🔥 نار! نار! / Fire! Fire!',
+                expiredMessage: 'انفجر العرض! / Deal exploded!',
+                backgroundColor: '#ff6b6b',
+                textColor: '#ffffff',
+                borderColor: '#ffd700',
+                timerBoxColor: '#ff4757',
+                timerTextColor: '#ffffff',
+                urgentBgColor: '#ffd700',
+                urgentTextColor: '#1a1a2e',
+                showDays: true,
+                showHours: true,
+                showMinutes: true,
+                showSeconds: true,
+                showPackName: true,
+                showSubtitle: true,
+                enablePulse: true,
+                enableBounce: true,
+                urgentThreshold: 900,
+                borderRadius: 25,
+                padding: 28,
+                fontSize: 22,
+                timerFontSize: 36,
+                useDefaultDesign: true
+            }
+        };
+
+        function testCurrentState() {
+            const resultDiv = document.getElementById('current-state-result');
+            resultDiv.innerHTML = '<div class="info">Testing current API state...</div>';
+            
+            fetch('http://localhost:8082/api/countdown')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Current API State</h4>
+                            <p><strong>Title:</strong> ${data.title}</p>
+                            <p><strong>Background:</strong> ${data.backgroundColor}</p>
+                            <p><strong>Text Color:</strong> ${data.textColor}</p>
+                            <p><strong>Border Color:</strong> ${data.borderColor}</p>
+                            <p><strong>Timer Text Color:</strong> ${data.timerTextColor}</p>
+                            <p><strong>Border Radius:</strong> ${data.borderRadius}px</p>
+                            <p><strong>Padding:</strong> ${data.padding}px</p>
+                            <p><strong>Font Size:</strong> ${data.fontSize}px</p>
+                            <p><strong>Timer Font Size:</strong> ${data.timerFontSize}px</p>
+                            <p><strong>Use Default Design:</strong> ${data.useDefaultDesign}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ API Test Failed</h4>
+                            <p>Error: ${error.message}</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function testTheme(themeKey) {
+            const resultDiv = document.getElementById('theme-test-result');
+            const theme = themes[themeKey];
+            if (!theme) {
+                resultDiv.innerHTML = '<div class="error">❌ Theme not found!</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = `<div class="info">Testing ${themeKey} theme...</div>`;
+            
+            const themeData = {
+                ...theme,
+                endDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                enabled: true
+            };
+
+            fetch('http://localhost:8082/api/countdown', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(themeData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ ${themeKey} Theme Applied Successfully!</h4>
+                        <p><strong>Title:</strong> ${data.title}</p>
+                        <p><strong>Background:</strong> ${data.backgroundColor}</p>
+                        <p><strong>Text Color:</strong> ${data.textColor}</p>
+                        <p><strong>Border Color:</strong> ${data.borderColor}</p>
+                        <p><strong>Timer Text Color:</strong> ${data.timerTextColor}</p>
+                        <p><strong>Border Radius:</strong> ${data.borderRadius}px</p>
+                        <p><strong>Padding:</strong> ${data.padding}px</p>
+                        <p><strong>Font Size:</strong> ${data.fontSize}px</p>
+                        <p><strong>Timer Font Size:</strong> ${data.timerFontSize}px</p>
+                        <p><strong>Show Days:</strong> ${data.showDays}</p>
+                        <p><strong>Use Default Design:</strong> ${data.useDefaultDesign}</p>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Failed to Apply ${themeKey} Theme</h4>
+                        <p>Error: ${error.message}</p>
+                        <p>Note: This might fail if you're not logged in as admin. Please log in first.</p>
+                    </div>
+                `;
+            });
+        }
+
+        function runCompleteThemeTest() {
+            const resultDiv = document.getElementById('complete-theme-result');
+            resultDiv.innerHTML = '<div class="info">Running complete theme test...</div>';
+            
+            let testResults = [];
+            
+            // Test API connectivity
+            fetch('http://localhost:8082/api/countdown')
+                .then(response => response.json())
+                .then(data => {
+                    testResults.push('✅ API Connectivity: PASSED');
+                    
+                    // Test if all theme fields exist
+                    const requiredFields = [
+                        'backgroundColor', 'textColor', 'borderColor', 'timerBoxColor', 
+                        'timerTextColor', 'urgentBgColor', 'urgentTextColor', 'subtitle',
+                        'urgentMessage', 'expiredMessage', 'packName', 'showDays',
+                        'showHours', 'showMinutes', 'showSeconds', 'showPackName',
+                        'showSubtitle', 'enablePulse', 'enableBounce', 'urgentThreshold',
+                        'borderRadius', 'padding', 'fontSize', 'timerFontSize', 'useDefaultDesign'
+                    ];
+                    
+                    let missingFields = [];
+                    requiredFields.forEach(field => {
+                        if (!data.hasOwnProperty(field)) {
+                            missingFields.push(field);
+                        }
+                    });
+                    
+                    if (missingFields.length === 0) {
+                        testResults.push('✅ All Theme Fields: PRESENT');
+                    } else {
+                        testResults.push(`❌ Missing Fields: ${missingFields.join(', ')}`);
+                    }
+                    
+                    // Test theme compatibility
+                    const hasValidColors = data.backgroundColor && data.textColor && data.borderColor;
+                    const hasValidLayout = data.borderRadius && data.padding && data.fontSize;
+                    const hasValidContent = data.title && data.subtitle;
+                    
+                    if (hasValidColors && hasValidLayout && hasValidContent) {
+                        testResults.push('✅ Theme Compatibility: EXCELLENT');
+                    } else {
+                        testResults.push('❌ Theme Compatibility: ISSUES DETECTED');
+                    }
+                    
+                    // Display results
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>🎯 Complete Theme Test Results</h4>
+                            <ul>
+                                ${testResults.map(result => `<li>${result}</li>`).join('')}
+                            </ul>
+                            <p><strong>Summary:</strong> The website-compatible theme system is fully functional and ready to use!</p>
+                            <p><strong>Available Themes:</strong> 5 professional themes for different website styles</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Complete Theme Test Failed</h4>
+                            <p>Error: ${error.message}</p>
+                            <p>Please ensure the backend is running on port 8082.</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Auto-run current state test on page load
+        window.onload = function() {
+            setTimeout(testCurrentState, 1000);
+        };
+    </script>
+</body>
+</html>

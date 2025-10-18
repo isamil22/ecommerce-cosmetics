@@ -52,6 +52,9 @@ public class CountdownMapper {
         dto.setFontSize(countdown.getFontSize());
         dto.setTimerFontSize(countdown.getTimerFontSize());
         
+        // Default Design Setting
+        dto.setUseDefaultDesign(countdown.isUseDefaultDesign());
+        
         return dto;
     }
 
@@ -99,6 +102,9 @@ public class CountdownMapper {
         countdown.setPadding(dto.getPadding());
         countdown.setFontSize(dto.getFontSize());
         countdown.setTimerFontSize(dto.getTimerFontSize());
+        
+        // Default Design Setting
+        countdown.setUseDefaultDesign(dto.isUseDefaultDesign());
         
         return countdown;
     }
