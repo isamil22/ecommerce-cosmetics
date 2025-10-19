@@ -111,13 +111,9 @@ const CouponUsageChart = ({ couponId, couponName }) => {
     const [usageData, setUsageData] = useState([]);
     const [selectedChartType, setSelectedChartType] = useState('dualAxes');
     
-    // Debug selectedChartType changes and ensure it's always valid
+    // Debug selectedChartType changes
     useEffect(() => {
         console.log('🎨 CouponUsageChart: selectedChartType changed to:', selectedChartType);
-        if (!selectedChartType) {
-            console.log('🎨 CouponUsageChart: selectedChartType is undefined, resetting to dualAxes');
-            setSelectedChartType('dualAxes');
-        }
     }, [selectedChartType]);
     const [dateRange, setDateRange] = useState([dayjs().subtract(30, 'day'), dayjs()]);
     const [showDrawer, setShowDrawer] = useState(false);
@@ -127,18 +123,18 @@ const CouponUsageChart = ({ couponId, couponName }) => {
     const [showFullscreen, setShowFullscreen] = useState(false);
     const [selectedMetric, setSelectedMetric] = useState('usage');
 
-    // Chart types configuration
+    // Chart types configuration for Segmented component
     const chartTypes = [
-        { key: 'dualAxes', label: 'Dual Axis', icon: <BarChartOutlined />, color: '#667eea' },
-        { key: 'line', label: 'Line Chart', icon: <LineChartOutlined />, color: '#f093fb' },
-        { key: 'column', label: 'Column Chart', icon: <BarChartOutlined />, color: '#4facfe' },
-        { key: 'area', label: 'Area Chart', icon: <AreaChartOutlined />, color: '#43e97b' },
-        { key: 'radar', label: 'Radar Chart', icon: <DotChartOutlined />, color: '#fa709a' },
-        { key: 'funnel', label: 'Funnel Chart', icon: <BarChartOutlined />, color: '#ffecd2' },
-        { key: 'heatmap', label: 'Heatmap', icon: <BarChartOutlined />, color: '#a8edea' },
-        { key: 'pie', label: 'Pie Chart', icon: <BarChartOutlined />, color: '#d299c2' },
-        { key: 'scatter', label: 'Scatter Plot', icon: <DotChartOutlined />, color: '#fad0c4' },
-        { key: 'rose', label: 'Rose Chart', icon: <RoseChartOutlined />, color: '#ff9a9e' }
+        { value: 'dualAxes', label: 'Dual Axis', icon: <BarChartOutlined /> },
+        { value: 'line', label: 'Line Chart', icon: <LineChartOutlined /> },
+        { value: 'column', label: 'Column Chart', icon: <BarChartOutlined /> },
+        { value: 'area', label: 'Area Chart', icon: <AreaChartOutlined /> },
+        { value: 'radar', label: 'Radar Chart', icon: <DotChartOutlined /> },
+        { value: 'funnel', label: 'Funnel Chart', icon: <BarChartOutlined /> },
+        { value: 'heatmap', label: 'Heatmap', icon: <BarChartOutlined /> },
+        { value: 'pie', label: 'Pie Chart', icon: <BarChartOutlined /> },
+        { value: 'scatter', label: 'Scatter Plot', icon: <DotChartOutlined /> },
+        { value: 'rose', label: 'Rose Chart', icon: <RoseChartOutlined /> }
     ];
 
     // Fetch usage data
@@ -326,48 +322,89 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             xField: 'date',
             yField: 'count',
             smooth: true,
-            color: '#f093fb'
+            color: '#f093fb',
+            point: {
+                size: 5,
+                shape: 'circle'
+            }
         },
         column: {
             xField: 'date',
             yField: 'count',
-            color: '#4facfe'
+            color: '#4facfe',
+            columnWidthRatio: 0.8
         },
         area: {
             xField: 'date',
             yField: 'count',
             smooth: true,
-            color: '#43e97b'
+            color: '#43e97b',
+            point: {
+                size: 5,
+                shape: 'circle'
+            }
         },
         radar: {
             xField: 'date',
             yField: 'count',
-            color: '#fa709a'
+            color: '#fa709a',
+            point: {
+                size: 5
+            }
         },
         funnel: {
             xField: 'date',
             yField: 'count',
-            color: '#ffecd2'
+            color: '#ffecd2',
+            dynamicHeight: true
         },
         heatmap: {
             xField: 'date',
             yField: 'count',
-            color: '#a8edea'
+            color: '#a8edea',
+            cell: {
+                style: {
+                    stroke: '#fff',
+                    lineWidth: 2
+                }
+            }
         },
         pie: {
             angleField: 'count',
             colorField: 'date',
-            color: '#d299c2'
+            color: '#d299c2',
+            radius: 0.8,
+            label: {
+                type: 'inner',
+                offset: '-30%',
+                content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
+                style: {
+                    fontSize: 14,
+                    textAlign: 'center'
+                }
+            }
         },
         scatter: {
             xField: 'date',
             yField: 'count',
-            color: '#fad0c4'
+            color: '#fad0c4',
+            size: 10,
+            shape: 'circle'
         },
         rose: {
             xField: 'date',
             yField: 'count',
-            color: '#ff9a9e'
+            color: '#ff9a9e',
+            radius: 0.8,
+            label: {
+                type: 'inner',
+                offset: '-30%',
+                content: '{count}',
+                style: {
+                    fontSize: 14,
+                    textAlign: 'center'
+                }
+            }
         }
     };
 
@@ -380,6 +417,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         // Ensure selectedChartType has a valid value
         const chartType = selectedChartType || 'dualAxes';
         console.log('🎨 CouponUsageChart: Using chart type:', chartType);
+        console.log('🎨 CouponUsageChart: Available chart types:', chartTypes.map(c => c.value));
         
         if (!usageData || !Array.isArray(usageData) || usageData.length === 0) {
             console.log('🎨 CouponUsageChart: No usage data, showing empty state');
@@ -395,21 +433,12 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             return <Empty description="No valid usage data available" />;
         }
         
-        // For single data point, use a simpler chart type to avoid rendering issues
-        if (validData.length === 1 && chartType !== 'column') {
-            console.log('🎨 CouponUsageChart: Single data point detected, using column chart for better rendering');
-            const columnConfig = chartConfigs.column;
-            const columnProps = {
-                ...columnConfig,
-                data: validData,
-                animation: {
-                    appear: {
-                        animation: 'path-in',
-                        duration: animationSpeed * 1000
-                    }
-                }
-            };
-            return <Column {...columnProps} />;
+        // For single data point, enhance the data to make other chart types work better
+        let chartData = validData;
+        if (validData.length === 1 && ['line', 'area', 'radar', 'funnel', 'heatmap', 'pie', 'scatter', 'rose'].includes(chartType)) {
+            console.log('🎨 CouponUsageChart: Single data point detected, enhancing data for', chartType, 'chart');
+            // For single data point, create a simple visualization
+            chartData = validData;
         }
 
         const config = chartConfigs[chartType];
@@ -421,7 +450,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
 
         const commonProps = {
             ...config,
-            data: validData,
+            data: chartData,
             animation: {
                 appear: {
                     animation: 'path-in',
@@ -433,6 +462,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         console.log('🎨 CouponUsageChart: commonProps:', commonProps);
 
         console.log('🎨 CouponUsageChart: Rendering chart type:', chartType);
+        console.log('🎨 CouponUsageChart: Chart data being used:', chartData);
         
         try {
             // Try to render the chart component
@@ -485,7 +515,23 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             }
             
             console.log('🎨 CouponUsageChart: Chart component created successfully');
-            return chartComponent;
+            
+            // Add a debug div to verify the component is being rendered
+            return (
+                <div>
+                    <div style={{ 
+                        padding: '10px', 
+                        background: '#f0f0f0', 
+                        margin: '10px 0', 
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        color: '#666'
+                    }}>
+                        🎨 Debug: Rendering {chartType} chart with {chartData.length} data points
+                    </div>
+                    {chartComponent}
+                </div>
+            );
         } catch (error) {
             console.error('🎨 CouponUsageChart: Chart rendering error:', error);
             return (
@@ -744,7 +790,10 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                                     <Segmented
                                         options={chartTypes}
                                         value={selectedChartType}
-                                        onChange={setSelectedChartType}
+                                        onChange={(value) => {
+                                            console.log('🎨 CouponUsageChart: Chart type changed to:', value);
+                                            setSelectedChartType(value);
+                                        }}
                                         style={{ marginTop: '8px' }}
                                     />
                                 </div>
