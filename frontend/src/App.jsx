@@ -1,7 +1,7 @@
 // frontend/src/App.jsx
 
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
@@ -154,7 +154,7 @@ function App() {
                         <Route path="/shipping" element={<ShippingPage />} />
 
                         {/* Authenticated User Routes */}
-                        <Route path="/profile" element={<ProfilePage />} />
+                        {userRole !== 'ADMIN' && <Route path="/profile" element={<ProfilePage />} />}
                         <Route path="/cart" element={<CartPage fetchCartCount={fetchCartCount} />} />
                         <Route path="/order" element={<OrderPage />} />
 
@@ -190,6 +190,9 @@ function App() {
                             <Route path="roles" element={<AdminRolesPage />} />
                             <Route path="permissions" element={<AdminPermissionsPage />} />
                         </Route>
+
+                        {/* Redirect admin users from profile to dashboard */}
+                        {userRole === 'ADMIN' && <Route path="/profile" element={<Navigate to="/admin/dashboard" replace />} />}
                     </Routes>
                 </main>
                 <Footer />
