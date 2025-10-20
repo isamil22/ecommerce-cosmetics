@@ -31,6 +31,8 @@ public class Product {
     private Integer quantity;
 
     @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "images")
     private List<String> images = new ArrayList<>();
 
     private String brand;
