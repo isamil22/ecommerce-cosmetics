@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,5 +17,7 @@ public class Hero {
     private String subtitle;
     private String linkText;
     private String linkUrl;
+    
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 }

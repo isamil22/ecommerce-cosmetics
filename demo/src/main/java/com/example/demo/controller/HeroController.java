@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.HeroDTO;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.HeroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/hero")
@@ -26,8 +28,17 @@ public class HeroController {
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('HERO:EDIT') or hasAuthority('HERO:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<HeroDTO> updateHero(@RequestPart("hero") @Valid HeroDTO heroDTO,
-                                              @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
-        return ResponseEntity.ok(heroService.updateHero(heroDTO, image));
+    public ResponseEntity<?> updateHero(@RequestPart("hero") @Valid HeroDTO heroDTO,
+                                              @RequestPart(value = "image", required = false) MultipartFile image) {
+        try {
+            HeroDTO updatedHero = heroService.updateHero(heroDTO, image);
+            return ResponseEntity.ok(updatedHero);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body(Map.of("error", "Hero section not found"));
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to update hero section: " + e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "An unexpected error occurred: " + e.getMessage()));
+        }
     }
 }

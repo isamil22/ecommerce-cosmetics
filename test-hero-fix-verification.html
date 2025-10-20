@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Fix Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hero Section Fix Verification</h1>
+    
+    <div class="test-section">
+        <h2>Test: Update Hero Without Image (Should Work Now)</h2>
+        <p>This test updates hero text fields without uploading an image. The database column length issue has been fixed.</p>
+        
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" value="Welcome to Our Fixed Store">
+        </div>
+        <div class="form-group">
+            <label for="subtitle">Subtitle:</label>
+            <textarea id="subtitle" rows="3">The hero section is now working properly!</textarea>
+        </div>
+        <div class="form-group">
+            <label for="linkText">Link Text:</label>
+            <input type="text" id="linkText" value="Shop Now">
+        </div>
+        <div class="form-group">
+            <label for="linkUrl">Link URL:</label>
+            <input type="text" id="linkUrl" value="/products">
+        </div>
+        
+        <button onclick="testHeroUpdate()">Update Hero Section</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        
+        function showResult(message, isError = false) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${isError ? 'error' : 'success'}`;
+            resultDiv.innerHTML = `<pre>${JSON.stringify(message, null, 2)}</pre>`;
+        }
+        
+        async function testHeroUpdate() {
+            try {
+                const formData = new FormData();
+                
+                const heroData = {
+                    title: document.getElementById('title').value,
+                    subtitle: document.getElementById('subtitle').value,
+                    linkText: document.getElementById('linkText').value,
+                    linkUrl: document.getElementById('linkUrl').value
+                };
+                
+                formData.append('hero', JSON.stringify(heroData));
+                
+                const response = await fetch(`${API_BASE}/hero`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult({
+                        status: 'SUCCESS',
+                        message: 'Hero section updated successfully! The database column length issue has been fixed.',
+                        data: data
+                    });
+                } else {
+                    showResult({
+                        status: 'ERROR',
+                        message: 'Hero update failed',
+                        statusCode: response.status,
+                        error: data
+                    }, true);
+                }
+            } catch (error) {
+                showResult({
+                    status: 'ERROR',
+                    message: 'Network error: ' + error.message
+                }, true);
+            }
+        }
+    </script>
+</body>
+</html>

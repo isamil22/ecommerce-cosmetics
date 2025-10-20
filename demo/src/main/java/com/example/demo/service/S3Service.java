@@ -23,6 +23,11 @@ public class S3Service {
     private String bucketName;
 
     public String saveImage(MultipartFile file) throws IOException {
+        // Check if S3 is properly configured
+        if (s3client == null || bucketName == null || bucketName.isEmpty()) {
+            throw new IOException("S3 service not configured. Please set AWS environment variables.");
+        }
+        
         String originalFilename = file.getOriginalFilename();
         String key = "images/" + UUID.randomUUID().toString() + "-" + originalFilename;
 
@@ -44,6 +49,11 @@ public class S3Service {
      * @throws IOException If the input stream from the byte array cannot be read.
      */
     public String saveImage(byte[] imageBytes, String fileName) throws IOException {
+        // Check if S3 is properly configured
+        if (s3client == null || bucketName == null || bucketName.isEmpty()) {
+            throw new IOException("S3 service not configured. Please set AWS environment variables.");
+        }
+        
         String key = "images/" + UUID.randomUUID().toString() + "-" + fileName;
 
         ObjectMetadata metadata = new ObjectMetadata();

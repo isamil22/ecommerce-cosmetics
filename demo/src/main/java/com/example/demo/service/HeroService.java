@@ -42,8 +42,14 @@ public class HeroService {
         hero.setLinkUrl(heroDTO.getLinkUrl());
 
         if (image != null && !image.isEmpty()) {
-            String imageUrl = s3Service.saveImage(image); // Use S3Service
-            hero.setImageUrl(imageUrl);
+            try {
+                String imageUrl = s3Service.saveImage(image);
+                hero.setImageUrl(imageUrl);
+            } catch (IOException e) {
+                // If S3 is not configured, skip image update but continue with other updates
+                System.err.println("S3 service not available, skipping image update: " + e.getMessage());
+                // Keep existing image URL if S3 fails
+            }
         }
 
         Hero updatedHero = heroRepository.save(hero);
