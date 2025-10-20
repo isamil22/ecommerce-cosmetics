@@ -26,6 +26,7 @@ public class OrderFeedback {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = true)
+    @JsonIgnore // Added to break circular reference
     private User user;
     
     @Column(nullable = false, length = 20)

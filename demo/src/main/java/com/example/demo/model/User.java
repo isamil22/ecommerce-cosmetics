@@ -56,6 +56,7 @@ public class User implements UserDetails {
     private Set<com.example.demo.model.Role> roles = new HashSet<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Added to break circular reference
     private Cart cart;
 
     private boolean emailConfirmation;
