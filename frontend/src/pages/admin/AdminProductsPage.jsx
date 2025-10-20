@@ -177,8 +177,11 @@ const AdminProductsPage = () => {
                 toast.success('Product deleted successfully!');
                 setProducts(products.filter(p => p.id !== id));
             } catch (err) {
-                setError('Failed to delete product.');
-                toast.error('Failed to delete product.');
+                // Extract error message from API response
+                const errorMessage = err.response?.data?.message || 'Failed to delete product.';
+                setError(errorMessage);
+                toast.error(errorMessage);
+                console.error('Product deletion error:', err.response?.data || err.message);
             }
         }
     };
@@ -204,7 +207,17 @@ const AdminProductsPage = () => {
                 }
                 
                 if (failed > 0) {
-                    toast.error(`Failed to delete ${failed} product(s). Please try again.`);
+                    // Show specific error messages for failed deletions
+                    const failedResults = results.filter(result => result.status === 'rejected');
+                    const errorMessages = failedResults.map(result => result.reason?.response?.data?.message || 'Unknown error');
+                    const uniqueErrors = [...new Set(errorMessages)];
+                    
+                    if (uniqueErrors.length === 1) {
+                        toast.error(uniqueErrors[0]);
+                    } else {
+                        toast.error(`Failed to delete ${failed} product(s). Check console for details.`);
+                        console.error('Bulk delete errors:', failedResults);
+                    }
                 }
                 
                 setSelectedProducts([]);

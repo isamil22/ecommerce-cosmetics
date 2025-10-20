@@ -41,6 +41,7 @@ public class Product {
 
     private boolean hasVariants = false;
     private boolean isPackable = false;
+    private boolean deleted = false; // Soft delete flag
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10)

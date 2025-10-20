@@ -132,7 +132,10 @@ const AdminDashboard = () => {
                 await deleteProduct(productId);
                 setProducts(products.filter(p => p.id !== productId));
             } catch (err) {
-                setError('Failed to delete product.');
+                // Extract error message from API response
+                const errorMessage = err.response?.data?.message || 'Failed to delete product.';
+                setError(errorMessage);
+                console.error('Product deletion error:', err.response?.data || err.message);
             }
         }
     };
@@ -464,27 +467,42 @@ const AdminDashboard = () => {
                                 </div>
                             <div className="p-6">
                                 <div className="space-y-4">
-                                    {products.slice(0, 6).map((product, index) => (
-                                        <div key={product.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
-                                            <div className="flex items-center space-x-4">
-                                                <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
-                                                    {product.name?.charAt(0) || 'P'}
+                                    {products.slice(0, 6).map((product, index) => {
+                                        // Get the first image or use a placeholder
+                                        const productImage = product.images && product.images.length > 0 
+                                            ? product.images[0] 
+                                            : 'https://placehold.co/48x48/E91E63/FFFFFF?text=No+Image';
+                                        
+                                        return (
+                                            <div key={product.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                                                <div className="flex items-center space-x-4">
+                                                    <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                                                        <img
+                                                            src={productImage}
+                                                            alt={product.name}
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                e.currentTarget.onerror = null;
+                                                                e.currentTarget.src = 'https://placehold.co/48x48/E91E63/FFFFFF?text=No+Image';
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-semibold text-gray-900 truncate max-w-xs">{product.name}</h3>
+                                                        <p className="text-sm text-gray-600">${product.price?.toFixed(2)}</p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <h3 className="font-semibold text-gray-900 truncate max-w-xs">{product.name}</h3>
-                                                    <p className="text-sm text-gray-600">${product.price?.toFixed(2)}</p>
+                                                <div className="flex items-center space-x-2">
+                                                    <Link to={`/admin/products/edit/${product.id}`} className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors">
+                                                        <FiEdit3 className="w-4 h-4" />
+                                                    </Link>
+                                                    <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors">
+                                                        <FiTrash2 className="w-4 h-4" />
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center space-x-2">
-                                                <Link to={`/admin/products/edit/${product.id}`} className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors">
-                                                    <FiEdit3 className="w-4 h-4" />
-                                                </Link>
-                                                <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors">
-                                                    <FiTrash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                                 <Link to="/admin/products" className="text-pink-600 hover:text-pink-700 font-medium flex items-center justify-center mt-6">
                                     View all products <FiArrowUpRight className="w-4 h-4 ml-1" />
@@ -507,22 +525,55 @@ const AdminDashboard = () => {
                                 </div>
                             <div className="p-6">
                                 <div className="space-y-4">
-                                    {orders.slice(0, 4).map(order => (
-                                        <div key={order.id} className="flex items-center justify-between">
-                                            <div>
-                                                <p className="font-semibold text-gray-900">#{order.id}</p>
-                                                <p className="text-sm text-gray-600">${order.totalAmount?.toFixed(2) || '0.00'}</p>
+                                    {orders.slice(0, 4).map(order => {
+                                        const orderTotal = order.orderItems?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || order.totalAmount || 0;
+                                        const itemCount = order.orderItems?.length || 0;
+                                        const firstProduct = order.orderItems?.[0];
+                                        const orderDate = new Date(order.createdAt).toLocaleDateString('en-US', { 
+                                            month: 'short', 
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        });
+                                        
+                                        return (
+                                            <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center space-x-3">
+                                                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                                            <FiShoppingCart className="w-5 h-5 text-white" />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <p className="font-semibold text-gray-900">
+                                                                {firstProduct ? `${firstProduct.productName}${itemCount > 1 ? ` +${itemCount - 1} more` : ''}` : `Order #${order.id}`}
+                                                            </p>
+                                                            <div className="flex items-center space-x-2 text-sm text-gray-600">
+                                                                <span>${orderTotal.toFixed(2)}</span>
+                                                                <span>•</span>
+                                                                <span>{orderDate}</span>
+                                                                {order.clientFullName && (
+                                                                    <>
+                                                                        <span>•</span>
+                                                                        <span>{order.clientFullName}</span>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                                    order.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
+                                                    order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                                    order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                                                    order.status === 'PREPARING' ? 'bg-blue-100 text-blue-800' :
+                                                    order.status === 'SHIPPED' ? 'bg-purple-100 text-purple-800' :
+                                                    'bg-gray-100 text-gray-800'
+                                                }`}>
+                                                    {order.status}
+                                                </span>
                                             </div>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                                order.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                                                order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                                order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
-                                                'bg-gray-100 text-gray-800'
-                                            }`}>
-                                                {order.status}
-                                            </span>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                                 <Link to="/admin/orders" className="text-blue-600 hover:text-blue-700 font-medium flex items-center justify-center mt-4">
                                     View all orders <FiArrowUpRight className="w-4 h-4 ml-1" />

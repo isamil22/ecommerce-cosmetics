@@ -9,6 +9,9 @@ import com.example.demo.mapper.ProductMapper;
 import com.example.demo.model.*;
 import com.example.demo.repositories.CategoryRepository;
 import com.example.demo.repositories.ProductRepository;
+import com.example.demo.repositories.OrderItemRepository;
+import com.example.demo.repositories.CartItemRepository;
+import com.example.demo.repositories.PackItemRepository;
 import com.example.demo.specification.ProductSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +34,15 @@ public class ProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+    
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+    
+    @Autowired
+    private CartItemRepository cartItemRepository;
+    
+    @Autowired
+    private PackItemRepository packItemRepository;
 
     @Autowired
     private S3Service s3Service;
@@ -250,6 +262,9 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<ProductDTO> getAllProducts(String search, Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, String brand, Boolean bestseller, Boolean newArrival, String type, Pageable pageable) {
         Specification<Product> spec = productSpecification.getProducts(search, minPrice, maxPrice, brand, bestseller, newArrival, categoryId, type);
+        // Add condition to exclude deleted products
+        spec = spec.and((root, query, criteriaBuilder) -> 
+            criteriaBuilder.equal(root.get("deleted"), false));
         return productRepository.findAll(spec, pageable)
                 .map(productMapper::toDTO);
     }
@@ -264,21 +279,21 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductDTO> getBestsellers() {
-        return productRepository.findByBestsellerIsTrue(Pageable.unpaged()).getContent().stream()
+        return productRepository.findByBestsellerIsTrueAndDeletedFalse(Pageable.unpaged()).getContent().stream()
                 .map(productMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<ProductDTO> getNewArrivals() {
-        return productRepository.findByNewArrivalIsTrue(Pageable.unpaged()).getContent().stream()
+        return productRepository.findByNewArrivalIsTrueAndDeletedFalse(Pageable.unpaged()).getContent().stream()
                 .map(productMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public ProductDTO getProductById(Long id) {
-        Product product = productRepository.findById(id)
+        Product product = productRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         
         // Ensure product has all required fields
@@ -344,6 +359,72 @@ public class ProductService {
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        
+        // Check if product is already deleted
+        if (product.isDeleted()) {
+            throw new IllegalStateException("Product with ID " + id + " is already deleted.");
+        }
+        
+        // Check if product is in any cart items
+        List<CartItem> cartItems = cartItemRepository.findByProductId(id);
+        if (!cartItems.isEmpty()) {
+            // Remove from all carts first
+            cartItemRepository.deleteAll(cartItems);
+        }
+        
+        // Check if product is in any packs
+        List<PackItem> packItems = packItemRepository.findByDefaultProductId(id);
+        if (!packItems.isEmpty()) {
+            // Remove from all packs first
+            packItemRepository.deleteAll(packItems);
+        }
+        
+        // Soft delete the product (mark as deleted instead of removing from database)
+        product.setDeleted(true);
+        productRepository.save(product);
+    }
+    
+    @Transactional
+    public void restoreProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        
+        if (!product.isDeleted()) {
+            throw new IllegalStateException("Product with ID " + id + " is not deleted.");
+        }
+        
+        product.setDeleted(false);
+        productRepository.save(product);
+    }
+    
+    @Transactional
+    public void permanentDeleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        
+        // Check if product has any order items
+        List<OrderItem> orderItems = orderItemRepository.findByProductId(id);
+        if (!orderItems.isEmpty()) {
+            throw new IllegalStateException("Cannot permanently delete product with ID " + id + 
+                " because it has " + orderItems.size() + " associated order items. " +
+                "Please remove the product from all orders first.");
+        }
+        
+        // Check if product is in any cart items
+        List<CartItem> cartItems = cartItemRepository.findByProductId(id);
+        if (!cartItems.isEmpty()) {
+            // Remove from all carts first
+            cartItemRepository.deleteAll(cartItems);
+        }
+        
+        // Check if product is in any packs
+        List<PackItem> packItems = packItemRepository.findByDefaultProductId(id);
+        if (!packItems.isEmpty()) {
+            // Remove from all packs first
+            packItemRepository.deleteAll(packItems);
+        }
+        
+        // Now safe to permanently delete the product
         productRepository.delete(product);
     }
 }

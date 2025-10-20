@@ -122,6 +122,20 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{id}/restore")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<Void> restoreProduct(@PathVariable Long id) {
+        productService.restoreProduct(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/permanent")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Void> permanentDeleteProduct(@PathVariable Long id) {
+        productService.permanentDeleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}/variants")
     public ResponseEntity<List<ProductVariantDto>> getProductVariants(@PathVariable Long id) {
         // You would need to add a 'getProductVariants' method to your service

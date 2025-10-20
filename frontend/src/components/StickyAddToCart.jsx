@@ -50,8 +50,25 @@ const StickyAddToCart = ({
                     <div className="flex items-center justify-between gap-2">
                         {/* Pack Info */}
                         <div className="flex items-center flex-1 min-w-0">
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
-                                <span className="text-lg sm:text-2xl">📦</span>
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0 overflow-hidden">
+                                {pack.images && pack.images.length > 0 ? (
+                                    <img 
+                                        src={pack.images[0]} 
+                                        alt={pack.name || 'Product'} 
+                                        className="w-full h-full object-cover rounded-lg"
+                                        onError={(e) => {
+                                            // Fallback to emoji if image fails to load
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'block';
+                                        }}
+                                    />
+                                ) : null}
+                                <span 
+                                    className="text-lg sm:text-2xl"
+                                    style={{ display: pack.images && pack.images.length > 0 ? 'none' : 'block' }}
+                                >
+                                    📦
+                                </span>
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-bold text-gray-800 text-xs sm:text-sm truncate">
