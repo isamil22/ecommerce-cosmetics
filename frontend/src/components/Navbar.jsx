@@ -159,12 +159,14 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated, userRole, cartCount }) =>
                                                     <span>حسابي / Profile</span>
                                                 </Link>
                                             )}
-                                            <Link to="/orders" className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors">
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                                                </svg>
-                                                <span>طلباتي / My Orders</span>
-                                            </Link>
+                                            {userRole !== 'ADMIN' && (
+                                                <Link to="/orders" className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors">
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                                    </svg>
+                                                    <span>طلباتي / My Orders</span>
+                                                </Link>
+                                            )}
                                             <hr className="my-2" />
                                 <button
                                     onClick={handleLogout}

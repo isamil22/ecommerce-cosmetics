@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiService = axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/api' : '/api',
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8082/api' : '/api',
 });
 
 // Add JWT token to every request if it exists
@@ -417,6 +417,38 @@ export const exportOrders = () => {
     return apiService.get('/orders/export', {
         responseType: 'blob',
     });
+};
+
+// ===== ORDER FEEDBACK API FUNCTIONS =====
+
+export const submitOrderFeedback = (orderId, rating, comment = '') => {
+    const params = new URLSearchParams();
+    params.append('rating', rating);
+    if (comment) {
+        params.append('comment', comment);
+    }
+    return apiService.post(`/orders/${orderId}/feedback`, params);
+};
+
+export const submitGuestOrderFeedback = (orderId, rating, comment = '') => {
+    const params = new URLSearchParams();
+    params.append('rating', rating);
+    if (comment) {
+        params.append('comment', comment);
+    }
+    return apiService.post(`/orders/${orderId}/feedback/guest`, params);
+};
+
+export const getOrderFeedback = (orderId) => {
+    return apiService.get(`/orders/${orderId}/feedback`);
+};
+
+export const getAllOrderFeedback = () => {
+    return apiService.get('/orders/feedback');
+};
+
+export const getOrderFeedbackByRating = (rating) => {
+    return apiService.get(`/orders/feedback/rating/${rating}`);
 };
 
 export const createCoupon = (couponData) => {

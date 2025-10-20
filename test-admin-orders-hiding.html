@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Orders Page Hiding Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .test-steps {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 Admin Orders Page Hiding Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Overview</h2>
+        <p>This test verifies that admin users cannot access the orders page and are redirected appropriately.</p>
+        
+        <div class="test-steps">
+            <h3>Test Steps:</h3>
+            <ol>
+                <li>Login as admin user (admin@example.com)</li>
+                <li>Check that orders links are hidden in navigation</li>
+                <li>Try to access /orders directly via URL</li>
+                <li>Verify redirect to admin dashboard</li>
+                <li>Login as regular user and verify orders page works</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Manual Testing Instructions</h2>
+        
+        <div class="test-result info">
+            <strong>Step 1:</strong> Open the application at <code>http://localhost:8081</code>
+        </div>
+        
+        <div class="test-result info">
+            <strong>Step 2:</strong> Login as admin user:
+            <ul>
+                <li>Email: admin@example.com</li>
+                <li>Password: adminpassword</li>
+            </ul>
+        </div>
+        
+        <div class="test-result info">
+            <strong>Step 3:</strong> Check navigation menu - orders links should be hidden
+        </div>
+        
+        <div class="test-result info">
+            <strong>Step 4:</strong> Try to access <code>http://localhost:8081/orders</code> directly
+        </div>
+        
+        <div class="test-result info">
+            <strong>Step 5:</strong> Should be redirected to <code>http://localhost:8081/admin/dashboard</code>
+        </div>
+        
+        <div class="test-result info">
+            <strong>Step 6:</strong> Login as regular user and verify orders page works normally
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Results</h2>
+        
+        <div class="test-result success">
+            <strong>✅ Admin User:</strong>
+            <ul>
+                <li>Orders links hidden in navigation dropdown</li>
+                <li>Direct access to /orders redirects to /admin/dashboard</li>
+                <li>No orders page route available for admin users</li>
+            </ul>
+        </div>
+        
+        <div class="test-result success">
+            <strong>✅ Regular User:</strong>
+            <ul>
+                <li>Orders links visible in navigation dropdown</li>
+                <li>Can access /orders page normally</li>
+                <li>Orders page displays user's order history</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Implementation Details</h2>
+        
+        <div class="test-result info">
+            <strong>Changes Made:</strong>
+            <ul>
+                <li><strong>App.jsx:</strong> Added UserOrdersPage import</li>
+                <li><strong>App.jsx:</strong> Conditionally render orders route only for non-admin users</li>
+                <li><strong>App.jsx:</strong> Added redirect route for admin users accessing /orders</li>
+                <li><strong>Navbar.jsx:</strong> Hide orders links in navigation dropdown for admin users</li>
+            </ul>
+        </div>
+        
+        <div class="test-result info">
+            <strong>Code Logic:</strong>
+            <ul>
+                <li>Orders route: <code>{userRole !== 'ADMIN' && &lt;Route path="/orders" element={&lt;UserOrdersPage /&gt;} /&gt;}</code></li>
+                <li>Admin redirect: <code>{userRole === 'ADMIN' && &lt;Route path="/orders" element={&lt;Navigate to="/admin/dashboard" replace /&gt;} /&gt;}</code></li>
+                <li>Navigation: <code>{userRole !== 'ADMIN' && &lt;Link to="/orders"&gt;...&lt;/Link&gt;}</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Page Comparison</h2>
+        
+        <div class="test-result info">
+            <strong>Admin Orders vs User Orders:</strong>
+            <ul>
+                <li><strong>Admin Orders:</strong> <code>/admin/orders</code> - Full order management with all orders</li>
+                <li><strong>User Orders:</strong> <code>/orders</code> - User's own order history only</li>
+                <li><strong>Admin Access:</strong> Admins use <code>/admin/orders</code> for management</li>
+                <li><strong>User Access:</strong> Regular users use <code>/orders</code> for their history</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="test-results">
+            <p>Run the manual tests above and record results here:</p>
+            <button onclick="recordTestResult('admin-orders-hidden', true)">✅ Admin Orders Hidden</button>
+            <button onclick="recordTestResult('admin-redirect', true)">✅ Admin Redirect Works</button>
+            <button onclick="recordTestResult('user-orders-works', true)">✅ User Orders Works</button>
+            <button onclick="recordTestResult('navigation-hidden', true)">✅ Navigation Hidden</button>
+        </div>
+    </div>
+
+    <script>
+        function recordTestResult(testName, passed) {
+            const result = document.createElement('div');
+            result.className = `test-result ${passed ? 'success' : 'error'}`;
+            result.innerHTML = `<strong>${testName}:</strong> ${passed ? 'PASSED' : 'FAILED'}`;
+            document.getElementById('test-results').appendChild(result);
+        }
+    </script>
+</body>
+</html>

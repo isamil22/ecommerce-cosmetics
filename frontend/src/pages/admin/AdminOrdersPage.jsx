@@ -7,6 +7,7 @@ import {
     restoreOrder,
     exportOrders
 } from '../../api/apiService';
+import OrderFeedbackSection from '../../components/OrderFeedbackSection';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -1149,6 +1150,9 @@ const AdminOrdersPage = () => {
                                                 )}
                                             </div>
                                         </div>
+
+                                        {/* Customer Feedback Section */}
+                                        <OrderFeedbackSection orderId={selectedOrder.id} />
                                     </div>
                                 </div>
 

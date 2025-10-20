@@ -3,8 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.dto.GuestOrderRequestDTO;
 import com.example.demo.dto.OrderDTO;
 import com.example.demo.model.Order;
+import com.example.demo.model.OrderFeedback;
 import com.example.demo.model.User;
 import com.example.demo.service.OrderService;
+import com.example.demo.service.OrderFeedbackService;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +24,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
+    private final OrderFeedbackService orderFeedbackService;
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
@@ -101,5 +104,68 @@ public class OrderController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"orders.csv\"")
                 .contentType(org.springframework.http.MediaType.TEXT_PLAIN)
                 .body(csv);
+    }
+
+    // ===== ORDER FEEDBACK ENDPOINTS =====
+
+    @PostMapping("/{orderId}/feedback")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<OrderFeedback> submitOrderFeedback(@PathVariable Long orderId,
+                                                           @RequestParam String rating,
+                                                           @RequestParam(required = false) String comment,
+                                                           @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            Long userId = ((User) userDetails).getId();
+            OrderFeedback feedback = orderFeedbackService.saveFeedback(orderId, rating, comment, userId);
+            return ResponseEntity.ok(feedback);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{orderId}/feedback/guest")
+    public ResponseEntity<OrderFeedback> submitGuestOrderFeedback(@PathVariable Long orderId,
+                                                                @RequestParam String rating,
+                                                                @RequestParam(required = false) String comment) {
+        try {
+            OrderFeedback feedback = orderFeedbackService.saveFeedback(orderId, rating, comment, null);
+            return ResponseEntity.ok(feedback);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/{orderId}/feedback")
+    @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_EDITOR')")
+    public ResponseEntity<OrderFeedback> getOrderFeedback(@PathVariable Long orderId) {
+        try {
+            return orderFeedbackService.getFeedbackByOrderId(orderId)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/feedback")
+    @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_EDITOR')")
+    public ResponseEntity<List<OrderFeedback>> getAllOrderFeedback() {
+        try {
+            List<OrderFeedback> feedback = orderFeedbackService.getAllFeedback();
+            return ResponseEntity.ok(feedback);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/feedback/rating/{rating}")
+    @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_EDITOR')")
+    public ResponseEntity<List<OrderFeedback>> getOrderFeedbackByRating(@PathVariable String rating) {
+        try {
+            List<OrderFeedback> feedback = orderFeedbackService.getFeedbackByRating(rating);
+            return ResponseEntity.ok(feedback);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

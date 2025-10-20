@@ -12,6 +12,7 @@ import AuthPage from './pages/AuthPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import CartPage from './pages/CartPage.jsx';
 import OrderPage from './pages/OrderPage.jsx';
+import UserOrdersPage from './pages/UserOrdersPage.jsx';
 import AdminLayout from './components/AdminLayout.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import AdminProductsPage from './pages/admin/AdminProductsPage.jsx';
@@ -155,6 +156,7 @@ function App() {
 
                         {/* Authenticated User Routes */}
                         {userRole !== 'ADMIN' && <Route path="/profile" element={<ProfilePage />} />}
+                        {userRole !== 'ADMIN' && <Route path="/orders" element={<UserOrdersPage />} />}
                         <Route path="/cart" element={<CartPage fetchCartCount={fetchCartCount} />} />
                         <Route path="/order" element={<OrderPage />} />
 
@@ -191,8 +193,9 @@ function App() {
                             <Route path="permissions" element={<AdminPermissionsPage />} />
                         </Route>
 
-                        {/* Redirect admin users from profile to dashboard */}
+                        {/* Redirect admin users from profile and orders to dashboard */}
                         {userRole === 'ADMIN' && <Route path="/profile" element={<Navigate to="/admin/dashboard" replace />} />}
+                        {userRole === 'ADMIN' && <Route path="/orders" element={<Navigate to="/admin/dashboard" replace />} />}
                     </Routes>
                 </main>
                 <Footer />

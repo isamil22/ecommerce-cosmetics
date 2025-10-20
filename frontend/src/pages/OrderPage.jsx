@@ -99,11 +99,17 @@ const OrderPage = () => {
         }
 
         try {
+            let orderResponse;
             if (isAuthenticated) {
-                await createOrder({ ...formData, couponCode: appliedCoupon });
+                orderResponse = await createOrder({ ...formData, couponCode: appliedCoupon });
             } else {
-                await createGuestOrder({ ...formData, cartItems: cart.items, couponCode: appliedCoupon });
+                orderResponse = await createGuestOrder({ ...formData, cartItems: cart.items, couponCode: appliedCoupon });
                 localStorage.removeItem('cart');
+            }
+            
+            // Set the actual order ID from the response
+            if (orderResponse && orderResponse.data && orderResponse.data.id) {
+                setOrderId(orderResponse.data.id.toString());
             }
 
             // --- FACEBOOK PIXEL: PURCHASE EVENT ---
@@ -201,7 +207,7 @@ const OrderPage = () => {
                                     <span className="font-semibold">رقم الطلب / Order ID:</span> #{orderId}
                                 </p>
                             </div>
-                    <FeedbackForm />
+                    <FeedbackForm orderId={orderId} isAuthenticated={isAuthenticated} />
                         </div>
                 </div>
             ) : (
