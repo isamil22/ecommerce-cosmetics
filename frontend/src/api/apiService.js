@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiService = axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8082/api' : '/api',
+    baseURL: '/api', // Use relative path - Vite proxy will handle the routing
 });
 
 // Add JWT token to every request if it exists
