@@ -72,6 +72,6 @@ public class Product {
     private Set<Product> frequentlyBoughtTogether = new HashSet<>();
 
     public enum ProductType {
-        MEN, WOMEN, BOTH
+        MEN, WOMEN, BOTH, ELECTRONIC
     }
 }
