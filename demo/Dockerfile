@@ -1,5 +1,5 @@
-# Use a slim OpenJDK image for a smaller footprint
-FROM openjdk:17-jdk-slim
+# Use Eclipse Temurin (formerly AdoptOpenJDK) - Ubuntu-based slim image
+FROM eclipse-temurin:17-jdk-jammy
 
 # Set the working directory inside the container
 WORKDIR /app

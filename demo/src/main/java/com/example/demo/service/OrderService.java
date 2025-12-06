@@ -26,7 +26,6 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -426,19 +425,64 @@ public class OrderService {
     }
 
     public String exportOrdersToCsv() {
-        List<Order> orders = orderRepository.findByDeleted(false);
+        List<Order> orders = orderRepository.findAllForExportWithRelations();
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        pw.println("Order ID,Customer Name,City,Address,Phone Number,Status,Created At");
+        
+        // Enhanced CSV header with comprehensive order information
+        pw.println("Order ID,User ID,Customer Name,City,Address,Phone Number,Status,Created At," +
+                  "Coupon Code,Discount Amount,Shipping Cost,Total Items,Total Quantity," +
+                  "Order Items Details,Total Amount");
+        
         for (Order order : orders) {
+            // Calculate order totals
+            int totalItems = order.getItems().size();
+            int totalQuantity = order.getItems().stream()
+                    .mapToInt(OrderItem::getQuantity)
+                    .sum();
+            
+            // Calculate total amount from items
+            BigDecimal itemsTotal = order.getItems().stream()
+                    .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            // Calculate final total (items total - discount + shipping)
+            BigDecimal discountAmount = order.getDiscountAmount() != null ? order.getDiscountAmount() : BigDecimal.ZERO;
+            BigDecimal shippingCost = order.getShippingCost() != null ? order.getShippingCost() : BigDecimal.ZERO;
+            BigDecimal finalTotal = itemsTotal.subtract(discountAmount).add(shippingCost);
+            
+            // Format order items details
+            StringBuilder itemsDetails = new StringBuilder();
+            for (OrderItem item : order.getItems()) {
+                if (itemsDetails.length() > 0) {
+                    itemsDetails.append("; ");
+                }
+                itemsDetails.append(item.getProduct().getName())
+                          .append(" (Qty: ").append(item.getQuantity())
+                          .append(", Price: $").append(item.getPrice())
+                          .append(")");
+            }
+            
+            // Escape CSV values that contain commas or quotes
+            String escapedItemsDetails = "\"" + itemsDetails.toString().replace("\"", "\"\"") + "\"";
+            String escapedAddress = "\"" + order.getAddress().replace("\"", "\"\"") + "\"";
+            
             pw.println(String.join(",",
                     String.valueOf(order.getId()),
-                    order.getClientFullName(),
-                    order.getCity(),
-                    order.getAddress(),
-                    order.getPhoneNumber(),
+                    order.getUser() != null ? String.valueOf(order.getUser().getId()) : "N/A",
+                    "\"" + order.getClientFullName().replace("\"", "\"\"") + "\"",
+                    "\"" + order.getCity().replace("\"", "\"\"") + "\"",
+                    escapedAddress,
+                    "\"" + order.getPhoneNumber().replace("\"", "\"\"") + "\"",
                     String.valueOf(order.getStatus()),
-                    String.valueOf(order.getCreatedAt())
+                    String.valueOf(order.getCreatedAt()),
+                    order.getCoupon() != null ? "\"" + order.getCoupon().getCode().replace("\"", "\"\"") + "\"" : "N/A",
+                    discountAmount.toString(),
+                    shippingCost.toString(),
+                    String.valueOf(totalItems),
+                    String.valueOf(totalQuantity),
+                    escapedItemsDetails,
+                    finalTotal.toString()
             ));
         }
         return sw.toString();
