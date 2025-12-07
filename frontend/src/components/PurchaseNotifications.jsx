@@ -56,19 +56,19 @@ const PurchaseNotifications = ({ packName, productImage }) => {
     if (!currentNotification) return null;
 
     return (
-        <div className="fixed top-24 right-3 sm:right-6 z-40 animate-fade-in-down w-full max-w-xs">
-            {/* Minimalist Card */}
-            <div className="bg-white rounded-lg shadow-lg border-l-4 border-pink-500 overflow-hidden hover:shadow-xl transition-shadow">
+        <div className="fixed top-20 right-2 sm:right-4 z-40 animate-fade-in-down">
+            {/* Compact Card */}
+            <div className="bg-white rounded-lg shadow-lg border-l-4 border-pink-500 overflow-hidden hover:shadow-xl transition-shadow w-64">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2">
+                <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-3 py-1.5">
                     <span className="text-xs font-semibold">✨ عملية شراء / Purchase</span>
                 </div>
 
                 {/* Content */}
-                <div className="p-3 space-y-2">
-                    {/* Product Image - Small */}
+                <div className="p-2 space-y-1.5">
+                    {/* Product Image - Smaller */}
                     {productImage && (
-                        <div className="rounded-md overflow-hidden h-24">
+                        <div className="rounded-md overflow-hidden h-16">
                             <img 
                                 src={productImage} 
                                 alt={packName} 
@@ -81,14 +81,14 @@ const PurchaseNotifications = ({ packName, productImage }) => {
                     )}
 
                     {/* Customer + Product Info */}
-                    <div className="space-y-1">
-                        <p className="text-sm font-bold text-gray-800">
+                    <div className="space-y-0.5">
+                        <p className="text-xs font-bold text-gray-800">
                             👩 {currentNotification.name.ar}
                         </p>
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-gray-600 line-clamp-1">
                             اشترت للتو · just purchased
                         </p>
-                        <p className="text-sm font-semibold text-gray-800 truncate">
+                        <p className="text-xs font-semibold text-gray-800 line-clamp-1">
                             {currentNotification.packName}
                         </p>
                         <p className="text-xs text-gray-500">
