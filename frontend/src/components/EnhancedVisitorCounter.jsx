@@ -95,73 +95,29 @@ const EnhancedVisitorCounter = () => {
         return null;
     }
 
-    const containerStyle = {
-        backgroundColor: settings.backgroundColor || '#f3f4f6',
-        borderColor: settings.borderColor || '#d1d5db',
-        color: settings.textColor || '#374151'
-    };
-
     return (
         <div 
-            className={`rounded-2xl p-6 border-2 shadow-lg transition-all duration-500 hover:shadow-xl ${settings.enableFadeEffect ? 'opacity-100' : ''}`}
-            style={containerStyle}
+            className={`bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-4 sm:p-5 border border-pink-200 shadow-md transition-all duration-300 hover:shadow-lg hover:border-pink-300`}
         >
-            {settings.customTitle && (
-                <div className="text-center mb-6">
-                    <h4 className="text-xl font-bold mb-2 flex items-center justify-center space-x-2">
-                        <FiGlobe className="w-6 h-6 text-blue-600" />
-                        <span>{settings.customTitle}</span>
-                    </h4>
-                    <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto"></div>
-                </div>
-            )}
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Current Viewers */}
+            {/* Only 2 most important metrics */}
+            <div className="grid grid-cols-2 gap-3">
+                {/* Current Viewers - MOST IMPORTANT */}
                 {settings.currentViewersEnabled && (
-                    <MetricCard
+                    <CompactMetricCard
                         icon={<FiUsers className="w-5 h-5" />}
                         title={settings.showBilingualText ? "مشاهد الآن / Viewing" : "Viewing"}
                         value={metrics.currentViewers}
-                        color="orange"
-                        animation="pulse"
-                        description="People currently viewing"
+                        color="pink"
                     />
                 )}
 
-                {/* Total Views */}
-                {settings.totalViewsEnabled && (
-                    <MetricCard
-                        icon={<FiEye className="w-5 h-5" />}
-                        title={settings.showBilingualText ? "مشاهدة / Viewed" : "Viewed"}
-                        value={metrics.totalViews}
-                        color="blue"
-                        animation="bounce"
-                        description="Total page views"
-                    />
-                )}
-
-                {/* Added Today */}
+                {/* Added Today - MOST IMPORTANT */}
                 {settings.addedTodayEnabled && (
-                    <MetricCard
+                    <CompactMetricCard
                         icon={<FiCalendar className="w-5 h-5" />}
-                        title={settings.showBilingualText ? "أضاف اليوم / Added today" : "Added today"}
+                        title={settings.showBilingualText ? "أضاف اليوم / Added" : "Added"}
                         value={metrics.addedToday}
-                        color="yellow"
-                        animation="ping"
-                        description="New additions today"
-                    />
-                )}
-
-                {/* Activity */}
-                {settings.activityEnabled && (
-                    <MetricCard
-                        icon={<FiActivity className="w-5 h-5" />}
-                        title={settings.showBilingualText ? "نشاط مديت / Activity" : "Activity"}
-                        value={metrics.activity}
-                        color="green"
-                        animation="pulse"
-                        description="Current activity level"
+                        color="purple"
                     />
                 )}
             </div>
@@ -169,74 +125,67 @@ const EnhancedVisitorCounter = () => {
     );
 };
 
-// MetricCard Component for individual metrics
-const MetricCard = ({ icon, title, value, color, animation, description }) => {
+// Compact Metric Card - Simplified version for smaller space
+const CompactMetricCard = ({ icon, title, value, color }) => {
     const colorClasses = {
+        pink: {
+            bg: 'bg-white',
+            border: 'border-pink-200',
+            icon: 'text-pink-500',
+            value: 'text-pink-600',
+            hover: 'hover:border-pink-300 hover:shadow-md'
+        },
+        purple: {
+            bg: 'bg-white',
+            border: 'border-purple-200',
+            icon: 'text-purple-500',
+            value: 'text-purple-600',
+            hover: 'hover:border-purple-300 hover:shadow-md'
+        },
+        blue: {
+            bg: 'bg-white',
+            border: 'border-blue-200',
+            icon: 'text-blue-500',
+            value: 'text-blue-600',
+            hover: 'hover:border-blue-300 hover:shadow-md'
+        },
         orange: {
             bg: 'bg-orange-50',
             border: 'border-orange-200',
             icon: 'text-orange-600',
-            dot: 'bg-orange-500',
             value: 'text-orange-700'
-        },
-        blue: {
-            bg: 'bg-blue-50',
-            border: 'border-blue-200',
-            icon: 'text-blue-600',
-            dot: 'bg-blue-500',
-            value: 'text-blue-700'
         },
         yellow: {
             bg: 'bg-yellow-50',
             border: 'border-yellow-200',
             icon: 'text-yellow-600',
-            dot: 'bg-yellow-500',
             value: 'text-yellow-700'
         },
         green: {
             bg: 'bg-green-50',
             border: 'border-green-200',
             icon: 'text-green-600',
-            dot: 'bg-green-500',
             value: 'text-green-700'
         }
-    };
-
-    const animationClasses = {
-        pulse: 'animate-pulse',
-        bounce: 'animate-bounce',
-        ping: 'animate-ping'
     };
 
     const colors = colorClasses[color] || colorClasses.blue;
 
     return (
         <div 
-            className={`${colors.bg} ${colors.border} border-2 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-md group`}
-            title={description}
+            className={`${colors.bg} ${colors.border} border rounded-lg p-3 sm:p-4 transition-all duration-200 ${colors.hover}`}
         >
-            <div className="flex items-center justify-between mb-2">
-                <div className={`p-2 rounded-lg ${colors.bg} ${colors.border} border`}>
-                    <div className={`${colors.icon} ${animationClasses[animation] || ''}`}>
-                        {icon}
-                    </div>
+            <div className="flex items-center gap-2.5">
+                <div className={`${colors.icon} flex-shrink-0`}>
+                    {icon}
                 </div>
-                <div className={`w-3 h-3 ${colors.dot} rounded-full ${animationClasses[animation] || ''}`}></div>
-            </div>
-            
-            <div className="space-y-1">
-                <h5 className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
-                    {title}
-                </h5>
-                <div className="flex items-center space-x-2">
-                    <span className={`text-2xl font-bold ${colors.value} transition-all duration-500`}>
+                <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-semibold text-gray-600 truncate">
+                        {title}
+                    </p>
+                    <p className={`text-xl sm:text-2xl font-bold ${colors.value}`}>
                         {value}
-                    </span>
-                    <div className="flex space-x-1">
-                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`}></div>
-                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`} style={{ animationDelay: '0.2s' }}></div>
-                        <div className={`w-1 h-1 ${colors.dot} rounded-full animate-pulse`} style={{ animationDelay: '0.4s' }}></div>
-                    </div>
+                    </p>
                 </div>
             </div>
         </div>

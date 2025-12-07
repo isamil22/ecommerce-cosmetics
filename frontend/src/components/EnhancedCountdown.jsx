@@ -26,14 +26,14 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     endDate: response.data.endDate ? new Date(response.data.endDate).getTime() : (fallbackEndTime || (new Date().getTime() + (24 * 60 * 60 * 1000))),
                     enabled: response.data.enabled !== undefined ? response.data.enabled : true,
                     
-                    // Color Settings with defaults
-                    backgroundColor: response.data.backgroundColor || '#fef3c7',
-                    textColor: response.data.textColor || '#ea580c',
-                    borderColor: response.data.borderColor || '#f97316',
+                // Color Settings with defaults
+                    backgroundColor: response.data.backgroundColor || '#faf5ff', // Light purple
+                    textColor: response.data.textColor || '#c2185b', // Pink
+                    borderColor: response.data.borderColor || '#ec407a', // Bright pink
                     timerBoxColor: response.data.timerBoxColor || '#ffffff',
-                    timerTextColor: response.data.timerTextColor || '#ea580c',
-                    urgentBgColor: response.data.urgentBgColor || '#fef2f2',
-                    urgentTextColor: response.data.urgentTextColor || '#dc2626',
+                    timerTextColor: response.data.timerTextColor || '#c2185b', // Pink
+                    urgentBgColor: response.data.urgentBgColor || '#fce4ec', // Light pink
+                    urgentTextColor: response.data.urgentTextColor || '#c2185b', // Dark pink,
                     
                     // Text Settings with defaults
                     subtitle: response.data.subtitle || '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends',
@@ -68,13 +68,13 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                 setConfig({
                     title: 'عرض محدود! / Limited Offer!',
                     endDate: fallbackEndTime || (new Date().getTime() + (24 * 60 * 60 * 1000)),
-                    backgroundColor: '#fef3c7',
-                    textColor: '#ea580c',
-                    borderColor: '#f97316',
+                    backgroundColor: '#faf5ff', // Light purple
+                    textColor: '#c2185b', // Pink
+                    borderColor: '#ec407a', // Bright pink
                     timerBoxColor: '#ffffff',
-                    timerTextColor: '#ea580c',
-                    urgentBgColor: '#fef2f2',
-                    urgentTextColor: '#dc2626',
+                    timerTextColor: '#c2185b', // Pink
+                    urgentBgColor: '#fce4ec', // Light pink
+                    urgentTextColor: '#c2185b', // Dark pink
                     subtitle: '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends',
                     urgentMessage: '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out',
                     expiredMessage: 'انتهت الفترة المحدودة! / Limited Time Expired!',
@@ -88,10 +88,10 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     enablePulse: true,
                     enableBounce: true,
                     urgentThreshold: 3600,
-                    borderRadius: 12,
-                    padding: 16,
+                    borderRadius: 16,
+                    padding: 20,
                     fontSize: 18,
-                    timerFontSize: 24,
+                    timerFontSize: 28,
                     enabled: true
                 });
             }

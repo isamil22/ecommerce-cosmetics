@@ -62,6 +62,8 @@ public class PackService {
         pack.setDescription(packRequestDTO.getDescription());
         pack.setPrice(packRequestDTO.getPrice());
         pack.setHideCommentForm(packRequestDTO.isHideCommentForm());
+        pack.setShowPurchaseNotifications(packRequestDTO.isShowPurchaseNotifications());
+        pack.setShowCountdownTimer(packRequestDTO.isShowCountdownTimer());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = localFileService.saveImage(imageFile, "packs");
@@ -120,6 +122,8 @@ public class PackService {
         pack.setDescription(packRequestDTO.getDescription());
         pack.setPrice(packRequestDTO.getPrice());
         pack.setHideCommentForm(packRequestDTO.isHideCommentForm());
+        pack.setShowPurchaseNotifications(packRequestDTO.isShowPurchaseNotifications());
+        pack.setShowCountdownTimer(packRequestDTO.isShowCountdownTimer());
 
         if (imageFile != null && !imageFile.isEmpty()) {
             String newImageUrl = localFileService.saveImage(imageFile, "packs");

@@ -34,7 +34,14 @@ public class ImageCompositionService {
         // 2. Safely read images and log errors for any that fail.
         for (String urlString : validImageUrls) {
             try {
-                URL url = new URL(urlString);
+                // Convert relative URLs to absolute URLs for local image fetching
+                String fullUrl = urlString;
+                if (urlString.startsWith("/")) {
+                    // Relative URL - use local file fetch via ImageIO
+                    fullUrl = "http://localhost:8080" + urlString;
+                    logger.debug("Converting relative URL to absolute URL: {} -> {}", urlString, fullUrl);
+                }
+                URL url = new URL(fullUrl);
                 BufferedImage image = ImageIO.read(url);
                 if (image != null) {
                     images.add(image);

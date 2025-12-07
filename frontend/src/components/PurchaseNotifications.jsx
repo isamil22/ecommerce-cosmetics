@@ -1,60 +1,59 @@
-// Purchase Notifications - Shows when others buy to create urgency
+// Purchase Notifications - Professional design with women customers
 import React, { useState, useEffect } from 'react';
 
 const PurchaseNotifications = ({ packName, productImage }) => {
-    const [notifications, setNotifications] = useState([]);
     const [currentNotification, setCurrentNotification] = useState(null);
 
-    // Moroccan names for realistic notifications
-    const moroccanNames = [
-        { ar: 'أحمد', en: 'Ahmed', city: 'الرباط / Rabat' },
-        { ar: 'فاطمة', en: 'Fatima', city: 'الدار البيضاء / Casablanca' },
-        { ar: 'محمد', en: 'Mohammed', city: 'فاس / Fes' },
-        { ar: 'خديجة', en: 'Khadija', city: 'مراكش / Marrakech' },
-        { ar: 'يوسف', en: 'Youssef', city: 'طنجة / Tangier' },
-        { ar: 'عائشة', en: 'Aisha', city: 'أكادير / Agadir' },
-        { ar: 'عبد الله', en: 'Abdullah', city: 'مكناس / Meknes' },
-        { ar: 'زينب', en: 'Zeinab', city: 'وجدة / Oujda' },
-        { ar: 'حسن', en: 'Hassan', city: 'تطوان / Tetouan' },
-        { ar: 'مريم', en: 'Maryam', city: 'الجديدة / El Jadida' }
+    // Female names only for realistic notifications
+    const femaleNames = [
+        { ar: 'فاطمة', en: 'Fatima' },
+        { ar: 'خديجة', en: 'Khadija' },
+        { ar: 'عائشة', en: 'Aisha' },
+        { ar: 'زينب', en: 'Zeinab' },
+        { ar: 'مريم', en: 'Maryam' },
+        { ar: 'نور', en: 'Nour' },
+        { ar: 'ليلى', en: 'Layla' },
+        { ar: 'هناء', en: 'Hana' },
+        { ar: 'سارة', en: 'Sarah' },
+        { ar: 'رانيا', en: 'Rania' },
+        { ar: 'دينا', en: 'Dina' },
+        { ar: 'أمينة', en: 'Amina' }
     ];
 
     const purchaseMessages = [
-        { ar: 'اشترى للتو', en: 'just purchased' },
-        { ar: 'أضاف للسلة', en: 'added to cart' },
-        { ar: 'اشترى', en: 'bought' },
-        { ar: 'طلب', en: 'ordered' }
+        { ar: 'اشترت للتو', en: 'just purchased' },
+        { ar: 'أضافت للسلة', en: 'added to cart' },
+        { ar: 'اشترت', en: 'bought' },
+        { ar: 'طلبت', en: 'ordered' }
     ];
 
     useEffect(() => {
         const showNotification = () => {
-            const randomName = moroccanNames[Math.floor(Math.random() * moroccanNames.length)];
+            const randomName = femaleNames[Math.floor(Math.random() * femaleNames.length)];
             const randomMessage = purchaseMessages[Math.floor(Math.random() * purchaseMessages.length)];
-            const timeAgo = Math.floor(Math.random() * 15) + 1; // 1-15 minutes ago
 
             const notification = {
                 id: Date.now(),
                 name: randomName,
                 message: randomMessage,
-                timeAgo,
-                packName: packName || 'هذه الحزمة / this pack'
+                packName: packName || 'منتج / Product'
             };
 
             setCurrentNotification(notification);
 
-            // Hide notification after 6 seconds
+            // Hide notification after 5 seconds
             setTimeout(() => {
                 setCurrentNotification(null);
-            }, 6000);
+            }, 5000);
         };
 
-        // Show first notification after 3 seconds
-        const initialTimer = setTimeout(showNotification, 3000);
+        // Show first notification after 4 seconds
+        const initialTimer = setTimeout(showNotification, 4000);
 
-        // Then show notifications every 25-45 seconds
+        // Then show notifications every 40-60 seconds (less frequent)
         const interval = setInterval(() => {
             showNotification();
-        }, 25000 + Math.random() * 20000);
+        }, 40000 + Math.random() * 20000);
 
         return () => {
             clearTimeout(initialTimer);
@@ -65,71 +64,83 @@ const PurchaseNotifications = ({ packName, productImage }) => {
     if (!currentNotification) return null;
 
     return (
-        <div className="fixed bottom-20 left-2 sm:left-4 z-50 animate-slide-in-left max-w-[calc(100vw-1rem)] sm:max-w-sm">
-            <div className="bg-white border-t-4 border-green-400 rounded-xl shadow-2xl p-3 sm:p-4">
-                <div className="flex items-start sm:items-center">
-                    {/* Product Image */}
+        <div className="fixed top-24 right-3 sm:right-6 z-40 animate-fade-in-down max-w-sm w-full sm:w-80">
+            {/* Professional Card Design */}
+            <div className="bg-white rounded-xl shadow-xl border-l-4 border-pink-500 overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+                {/* Header Section */}
+                <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-3">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="text-xl">✨</span>
+                            <span className="text-sm font-bold">عملية شراء / Purchase</span>
+                        </div>
+                        <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full">الآن / Now</span>
+                    </div>
+                </div>
+
+                {/* Content Section */}
+                <div className="p-4">
+                    {/* Product/Pack Image - Large & Prominent */}
                     {productImage && (
-                        <div className="w-16 h-16 mr-3 flex-shrink-0">
+                        <div className="mb-4 rounded-lg overflow-hidden border-2 border-gray-100">
                             <img 
                                 src={productImage} 
                                 alt={packName || 'Product'} 
-                                className="w-full h-full object-cover rounded-md"
+                                className="w-full h-48 object-cover"
                                 onError={(e) => {
-                                    // Fallback to a placeholder if image fails to load
-                                    e.target.src = `https://placehold.co/64x64/fde4f2/E91E63?text=${encodeURIComponent('Product')}`;
+                                    e.target.src = `https://placehold.co/300x200/fde4f2/E91E63?text=${encodeURIComponent('Product')}`;
                                 }}
                             />
                         </div>
                     )}
-                    
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                        {/* Name and Location */}
-                        <div className="mb-1">
-                            <span className="font-bold text-gray-800 text-sm">
-                                {currentNotification.name.ar} / {currentNotification.name.en}
-                            </span>
-                            <span className="text-xs text-gray-500 ml-1">
-                                من {currentNotification.name.city}
-                            </span>
-                        </div>
-                        
-                        {/* Action */}
-                        <div className="mb-1">
-                            <span className="text-green-600 font-semibold text-sm">
-                                {currentNotification.message.ar} / {currentNotification.message.en}
-                            </span>
-                        </div>
-                        
-                        {/* Product Name */}
-                        <div className="mb-2">
-                            <span className="text-gray-600 text-sm">
-                                {currentNotification.packName}
-                            </span>
-                        </div>
-                        
-                        {/* Time and Verification */}
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-500">
-                                منذ {currentNotification.timeAgo} دقيقة / {currentNotification.timeAgo} min ago
-                            </span>
-                            <div className="flex items-center">
-                                <span className="text-green-500 text-xs">✓</span>
-                                <span className="text-xs text-green-600 ml-1">مؤكد / Verified</span>
+
+                    {/* Customer Info */}
+                    <div className="space-y-3">
+                        {/* Name */}
+                        <div className="flex items-center gap-2">
+                            <span className="text-lg">👩</span>
+                            <div>
+                                <p className="text-sm text-gray-500">عميل / Customer</p>
+                                <p className="text-lg font-bold text-gray-800">
+                                    {currentNotification.name.ar}
+                                </p>
                             </div>
                         </div>
-                    </div>
-                    
-                    {/* Success Icon */}
-                    <div className="text-gray-400 text-lg ml-2">
-                        🛒
+
+                        {/* Action */}
+                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-3 border border-pink-100">
+                            <p className="text-sm">
+                                <span className="font-bold text-pink-600">
+                                    {currentNotification.name.ar}
+                                </span>
+                                <span className="text-gray-700 mx-1">
+                                    {currentNotification.message.ar}
+                                </span>
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                                {currentNotification.message.en}
+                            </p>
+                        </div>
+
+                        {/* Product/Pack Name */}
+                        <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                            <p className="text-xs text-gray-500 mb-1">المنتج / Product</p>
+                            <p className="text-sm font-semibold text-gray-800 truncate">
+                                {currentNotification.packName}
+                            </p>
+                        </div>
+
+                        {/* Footer Action Indicator */}
+                        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                            <span className="text-xs text-gray-500">✅ تم التحقق / Verified</span>
+                            <span className="text-xs font-semibold text-pink-600">🔥 محط اهتمام / Trending</span>
+                        </div>
                     </div>
                 </div>
-                
+
                 {/* Progress bar */}
-                <div className="mt-3 w-full bg-gray-200 rounded-full h-1">
-                    <div className="bg-green-500 h-1 rounded-full animate-progress-bar"></div>
+                <div className="h-1 w-full bg-gray-200">
+                    <div className="h-full bg-gradient-to-r from-pink-500 to-purple-600 animate-progress-bar"></div>
                 </div>
             </div>
         </div>

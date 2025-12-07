@@ -16,4 +16,6 @@ public class PackResponseDTO {
     private List<PackSummaryDTO> recommendedPacks;
     private List<CustomPackDTO> recommendedCustomPacks;
     private boolean hideCommentForm = false;
+    private boolean showPurchaseNotifications = true;
+    private boolean showCountdownTimer = true;
 }

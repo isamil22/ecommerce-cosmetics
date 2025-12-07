@@ -25,7 +25,7 @@ public class Pack {
     private String name;
 
     @Lob
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
 
     private double price;
@@ -65,4 +65,10 @@ public class Pack {
 
     @Column(name = "hide_comment_form", nullable = false)
     private boolean hideCommentForm = false;
+
+    @Column(name = "show_purchase_notifications", nullable = false)
+    private boolean showPurchaseNotifications = true;
+
+    @Column(name = "show_countdown_timer", nullable = false)
+    private boolean showCountdownTimer = true;
 }

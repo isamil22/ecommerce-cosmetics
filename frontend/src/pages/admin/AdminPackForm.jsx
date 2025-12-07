@@ -34,6 +34,8 @@ const AdminPackForm = () => {
         recommendedProductIds: [],
         recommendedPackIds: [],
         hideCommentForm: false,
+        showPurchaseNotifications: true,
+        showCountdownTimer: true,
     });
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
@@ -328,8 +330,9 @@ const AdminPackForm = () => {
     const steps = [
         { id: 1, name: 'Basic Info', icon: FiPackage },
         { id: 2, name: 'Pack Items', icon: FiPlus },
-        { id: 3, name: 'Recommendations', icon: FiFilter },
-        { id: 4, name: 'Review', icon: FiEye }
+        { id: 3, name: 'Display Settings', icon: FiEye },
+        { id: 4, name: 'Recommendations', icon: FiFilter },
+        { id: 5, name: 'Review', icon: FiEye }
     ];
 
     // Custom Product Select Component with Images
@@ -876,7 +879,57 @@ const AdminPackForm = () => {
                     </div>
                 </div>
 
-                {/* Recommendations Section */}
+                {/* Step 3: Display Settings */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                    <div className="flex items-center mb-4">
+                        <FiEye className="w-5 h-5 text-pink-500 mr-2" />
+                        <h3 className="text-lg font-semibold text-gray-800">Display Settings</h3>
+                    </div>
+                    
+                    <div className="space-y-4">
+                        {/* Purchase Notifications Toggle */}
+                        <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
+                            <input
+                                type="checkbox"
+                                checked={packData.showPurchaseNotifications || false}
+                                onChange={(e) => {
+                                    setPackData({...packData, showPurchaseNotifications: e.target.checked});
+                                    setIsDirty(true);
+                                }}
+                                className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
+                            />
+                            <span className="ml-3 flex-1">
+                                <span className="block font-semibold text-gray-800">🛍️ Show Purchase Notifications</span>
+                                <span className="text-sm text-gray-600">Display notifications when customers buy this pack</span>
+                            </span>
+                            <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${packData.showPurchaseNotifications ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                                {packData.showPurchaseNotifications ? 'Enabled' : 'Disabled'}
+                            </span>
+                        </label>
+
+                        {/* Countdown Timer Toggle */}
+                        <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
+                            <input
+                                type="checkbox"
+                                checked={packData.showCountdownTimer || false}
+                                onChange={(e) => {
+                                    setPackData({...packData, showCountdownTimer: e.target.checked});
+                                    setIsDirty(true);
+                                }}
+                                className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
+                            />
+                            <span className="ml-3 flex-1">
+                                <span className="block font-semibold text-gray-800">⏱️ Show Countdown Timer</span>
+                                <span className="text-sm text-gray-600">Display flash sale countdown timer for urgency</span>
+                            </span>
+                            <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${packData.showCountdownTimer ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                                {packData.showCountdownTimer ? 'Enabled' : 'Disabled'}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                {/* Step 4: Recommendations Section */}
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center mb-6">
                         <FiFilter className="w-5 h-5 text-pink-500 mr-2" />

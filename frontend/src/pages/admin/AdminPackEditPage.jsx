@@ -62,6 +62,8 @@ const AdminPackEditPage = () => {
                     description: fetchedPack.description,
                     price: fetchedPack.price,
                     hideCommentForm: fetchedPack.hideCommentForm || false,
+                    showPurchaseNotifications: fetchedPack.showPurchaseNotifications !== false,
+                    showCountdownTimer: fetchedPack.showCountdownTimer !== false,
                     items: fetchedPack.items.map(item => ({
                         // Ensure IDs are correctly mapped for the request
                         defaultProductId: item.defaultProduct.id,
@@ -633,41 +635,7 @@ const AdminPackEditPage = () => {
                     </div>
                 </div>
 
-                {/* Step 2: Description */}
-                <div className="bg-white rounded-lg shadow-md p-6">
-                    <div className="flex items-center mb-4">
-                        <FiEye className="w-5 h-5 text-pink-500 mr-2" />
-                        <h3 className="text-lg font-semibold text-gray-800">Pack Description</h3>
-                    </div>
-                    <div>
-                        <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
-                            Description
-                        </label>
-                        <Editor
-                            apiKey='jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'
-                            onInit={(evt, editor) => editorRef.current = editor}
-                            initialValue={packData.description}
-                            init={{
-                                height: 300,
-                                menubar: false,
-                                plugins: [
-                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                ],
-                                toolbar: 'undo redo | blocks | ' +
-                                    'bold italic forecolor | alignleft aligncenter ' +
-                                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                                    'removeformat | help',
-                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                                branding: false,
-                                promotion: false
-                            }}
-                        />
-                    </div>
-                </div>
-
-                {/* Step 3: Pack Items */}
+                {/* Step 2: Pack Items */}
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center">
@@ -753,6 +721,91 @@ const AdminPackEditPage = () => {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+
+                {/* Step 3: Display Settings */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                    <div className="flex items-center mb-4">
+                        <FiEye className="w-5 h-5 text-pink-500 mr-2" />
+                        <h3 className="text-lg font-semibold text-gray-800">Display Settings</h3>
+                    </div>
+                    
+                    <div className="space-y-4">
+                        {/* Purchase Notifications Toggle */}
+                        <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
+                            <input
+                                type="checkbox"
+                                checked={packData.showPurchaseNotifications || false}
+                                onChange={(e) => {
+                                    setPackData({...packData, showPurchaseNotifications: e.target.checked});
+                                    setIsDirty(true);
+                                }}
+                                className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
+                            />
+                            <span className="ml-3 flex-1">
+                                <span className="block font-semibold text-gray-800">🛍️ Show Purchase Notifications</span>
+                                <span className="text-sm text-gray-600">Display notifications when customers buy this pack</span>
+                            </span>
+                            <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${packData.showPurchaseNotifications ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                                {packData.showPurchaseNotifications ? 'Enabled' : 'Disabled'}
+                            </span>
+                        </label>
+
+                        {/* Countdown Timer Toggle */}
+                        <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
+                            <input
+                                type="checkbox"
+                                checked={packData.showCountdownTimer || false}
+                                onChange={(e) => {
+                                    setPackData({...packData, showCountdownTimer: e.target.checked});
+                                    setIsDirty(true);
+                                }}
+                                className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
+                            />
+                            <span className="ml-3 flex-1">
+                                <span className="block font-semibold text-gray-800">⏱️ Show Countdown Timer</span>
+                                <span className="text-sm text-gray-600">Display flash sale countdown timer for urgency</span>
+                            </span>
+                            <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${packData.showCountdownTimer ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                                {packData.showCountdownTimer ? 'Enabled' : 'Disabled'}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                {/* Step 4: Description (Secondary) */}
+                <div className="bg-white rounded-lg shadow-md p-6 opacity-90">
+                    <div className="flex items-center mb-4">
+                        <FiEye className="w-5 h-5 text-gray-500 mr-2" />
+                        <h3 className="text-lg font-semibold text-gray-700">Pack Description</h3>
+                        <span className="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Secondary</span>
+                    </div>
+                    <div>
+                        <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
+                            Description
+                        </label>
+                        <Editor
+                            apiKey='jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'
+                            onInit={(evt, editor) => editorRef.current = editor}
+                            initialValue={packData.description}
+                            init={{
+                                height: 300,
+                                menubar: false,
+                                plugins: [
+                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                ],
+                                toolbar: 'undo redo | blocks | ' +
+                                    'bold italic forecolor | alignleft aligncenter ' +
+                                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                                    'removeformat | help',
+                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                                branding: false,
+                                promotion: false
+                            }}
+                        />
                     </div>
                 </div>
 

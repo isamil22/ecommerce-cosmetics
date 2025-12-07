@@ -13,4 +13,6 @@ public class PackRequestDTO {
     private List<Long> recommendedProductIds;
     private List<Long> recommendedPackIds;
     private boolean hideCommentForm = false;
+    private boolean showPurchaseNotifications = true;
+    private boolean showCountdownTimer = true;
 }

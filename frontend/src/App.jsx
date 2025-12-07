@@ -115,7 +115,8 @@ function App() {
 
     return (
         <BrowserRouter>
-            <AnnouncementBar />
+            {/* AnnouncementBar - Disabled for minimal design */}
+            {/* <AnnouncementBar /> */}
 
             <div
                 className="flex flex-col min-h-screen"
@@ -200,8 +201,8 @@ function App() {
                 </main>
                 <Footer />
                 
-                {/* Floating Action Button */}
-                <FloatingActionButton cartCount={cartCount} />
+                {/* Floating Action Button - Disabled for minimal design */}
+                {/* <FloatingActionButton cartCount={cartCount} /> */}
             </div>
         </BrowserRouter>
     );

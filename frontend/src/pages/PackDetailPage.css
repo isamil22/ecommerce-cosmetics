@@ -187,6 +187,10 @@
     transform: translateY(-2px);
 }
 
+.enhanced-pack-item.group:hover {
+    transform: translateY(-4px);
+}
+
 /* Image zoom container styles */
 .image-zoom-container {
     position: relative;
@@ -284,8 +288,49 @@
     animation: welcome-fade-in 0.5s ease-out;
 }
 
+/* Sticky checkout styling */
+.sticky-checkout {
+    position: sticky;
+    top: 20px;
+}
+
+/* Progress bar styles */
+.progress-bar {
+    background: linear-gradient(90deg, #4ade80, #22c55e);
+    border-radius: 9999px;
+    height: 8px;
+    transition: width 0.3s ease;
+}
+
+/* Section header styles */
+.section-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
 /* Responsive improvements */
 @media (max-width: 768px) {
+    .sticky-checkout {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 2rem 2rem 0 0;
+        z-index: 40;
+        top: auto;
+        margin: 0;
+        padding: 1rem;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Adjust content padding for sticky checkout on mobile */
+    .grid {
+        padding-bottom: 2rem;
+    }
+    
     .pack-header {
         flex-direction: column;
     }
@@ -307,47 +352,13 @@
         margin: 1rem;
         padding: 1.5rem;
     }
-}
-
-/* Focus styles for accessibility */
-.focus\:ring-4:focus {
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5);
-}
-
-.focus\:ring-pink-300:focus {
-    box-shadow: 0 0 0 4px rgba(249, 168, 212, 0.5);
-}
-
-/* New animations for engagement features */
-@keyframes slide-in-left {
-    0% {
-        transform: translateX(-100%);
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(0);
-        opacity: 1;
+    
+    .section-header {
+        padding: 1rem;
+        margin-bottom: 1rem;
     }
 }
 
-.animate-slide-in-left {
-    animation: slide-in-left 0.5s ease-out;
-}
-
-@keyframes progress-bar {
-    0% {
-        width: 100%;
-    }
-    100% {
-        width: 0%;
-    }
-}
-
-.animate-progress-bar {
-    animation: progress-bar 6s linear;
-}
-
-/* Mobile-specific enhancements for engagement features */
 @media (max-width: 640px) {
     /* Countdown timer mobile adjustments */
     .countdown-mobile {

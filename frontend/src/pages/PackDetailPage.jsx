@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 import CommentForm from '../components/CommentForm';
 import PackRecommendations from '../components/PackRecommendations';
 import EnhancedCountdown from '../components/EnhancedCountdown';
-import LiveVisitorCounter from '../components/LiveVisitorCounter';
 import PurchaseNotifications from '../components/PurchaseNotifications';
 import StickyAddToCart from '../components/StickyAddToCart';
 import './PackDetailPage.css';
@@ -546,43 +545,44 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 </div>
             )}
 
-            {/* Enhanced Countdown Timer - Admin Controllable */}
-            {pack && (
+            {/* Enhanced Countdown Timer - Controlled by admin per pack */}
+            {pack?.showCountdownTimer && (
                 <EnhancedCountdown 
                     packName={pack.name}
-                    fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)} // Fallback: 24 hours from now
+                    fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)}
                     onExpire={() => {
                         toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
                     }}
                 />
             )}
             
-            {/* Header with Help Buttons */}
-            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
-                <div className="flex-1">
-                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-gray-800">
-                        📦 {pack ? pack.name : 'Loading Pack...'}
-                    </h1>
-                    <div className="bg-blue-50 p-3 rounded-lg mt-3">
-                        <p className="text-sm sm:text-base text-blue-800 font-semibold">
-                            💡 اختر المنتجات واحصل على خصم! / Choose products and get a discount!
-                        </p>
-                    </div>
-                </div>
-                <div className="flex flex-row lg:flex-col gap-2 justify-center lg:justify-start">
+            {/* Clean Header Section */}
+            <div className="mb-8">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+                    📦 {pack ? pack.name : 'Loading Pack...'}
+                </h1>
+                <p className="text-lg text-gray-600 mb-6">
+                    اختر المنتجات المفضلة لديك واستمتع بسعر مخفف / Choose your favorite products and enjoy a discounted price
+                </p>
+                
+                {/* Help Buttons - Simplified & Cleaner */}
+                <div className="flex flex-wrap gap-3 items-center">
                     <button
                         onClick={() => setShowHelp(!showHelp)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                        className="inline-flex items-center gap-2 px-5 py-3 bg-blue-50 border-2 border-blue-300 text-blue-700 rounded-lg hover:bg-blue-100 transition-all duration-200 font-semibold hover:shadow-md"
                     >
-                        <span>🤔</span>
+                        <span className="text-xl">❓</span>
                         <span>مساعدة / Help</span>
                     </button>
                     <button
-                        onClick={() => setShowWelcome(true)}
-                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2 text-sm"
+                        onClick={() => {
+                            setShowWelcome(true);
+                            setShowHelp(false);
+                        }}
+                        className="inline-flex items-center gap-2 px-5 py-3 bg-green-50 border-2 border-green-300 text-green-700 rounded-lg hover:bg-green-100 transition-all duration-200 font-semibold hover:shadow-md"
                     >
-                        <span>🎬</span>
-                        <span>شرح مرة أخرى / Show again</span>
+                        <span className="text-xl">🎬</span>
+                        <span>شرح / Tutorial</span>
                     </button>
                 </div>
             </div>
@@ -601,31 +601,8 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 </div>
             )}
 
-            {/* Progress Steps */}
-            <div className="mb-8">
-                <div className="flex justify-center items-center space-x-4 rtl:space-x-reverse">
-                    {steps.map((step, index) => (
-                        <div key={step.number} className="flex items-center">
-                            <div className={`flex flex-col items-center ${index > 0 ? 'ml-4' : ''}`}>
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg ${
-                                    getStepStatus(step.number) === 'completed' ? 'bg-green-500' :
-                                    getStepStatus(step.number) === 'active' ? 'bg-pink-500 animate-pulse-custom' :
-                                    'bg-gray-300'
-                                }`}>
-                                    {getStepStatus(step.number) === 'completed' ? '✓' : step.number}
-                                </div>
-                                <div className="text-center mt-2">
-                                    <p className="text-sm font-semibold">{step.titleEn}</p>
-                                    <p className="text-xs text-gray-600">{step.descriptionEn}</p>
-                                </div>
-                            </div>
-                            {index < steps.length - 1 && (
-                                <div className={`w-16 h-1 ${getStepStatus(step.number + 1) !== 'upcoming' ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            </div>
+            {/* Progress Steps - Removed for minimal design */}
+            
 
             {/* Error and Success Messages */}
             {error && (
@@ -649,66 +626,79 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
             {pack && (
                 <>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                        {/* Left Side: Pack Info & Image */}
+                    {/* Enhanced Two-Column Layout */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                        {/* Left Side: Pack Image & Price */}
                         <div className="space-y-6">
-                            <div className={`bg-white p-6 rounded-lg shadow-xl ${highlightedElement === 'pack-image' ? 'ring-4 ring-yellow-400 animate-pulse-custom' : ''}`}>
-                                <div className="image-zoom-container mb-6">
+                            {/* Pack Image Card - Enhanced */}
+                            <div className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ${highlightedElement === 'pack-image' ? 'ring-4 ring-yellow-400 animate-pulse-custom' : ''}`}>
+                                <div className="image-zoom-container bg-gradient-to-br from-pink-50 to-purple-50 p-4">
                                     <img
                                         key={composedImageUrl}
                                         src={composedImageUrl || 'https://placehold.co/1200x600/fde4f2/E91E63?text=Our+Pack'}
                                         alt={pack.name}
-                                        className="w-full h-auto object-cover rounded-lg"
+                                        className="w-full h-64 sm:h-80 object-cover rounded-xl"
                                         onError={(e) => {
                                             e.target.src = '/placeholder-image.svg';
                                         }}
                                     />
                                 </div>
-                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-3">{pack.name}</h1>
-                                <div className="bg-gradient-to-r from-pink-100 to-purple-100 p-4 rounded-lg mb-4">
-                                    <p className="text-2xl sm:text-3xl text-pink-600 font-bold text-center">
-                                        💰 ${(pack.price || 0).toFixed(2)}
-                                    </p>
-                                    <p className="text-center text-sm text-gray-600 mt-1">
-                                        سعر مخفض! / Discounted Price!
-                                    </p>
+                                
+                                {/* Price Card - More Prominent */}
+                                <div className="p-6">
+                                    <div className="bg-gradient-to-br from-pink-500 to-purple-600 text-white p-6 rounded-xl mb-6 shadow-lg">
+                                        <p className="text-sm font-semibold mb-2 opacity-90">السعر الإجمالي / Total Price</p>
+                                        <p className="text-4xl font-black text-white">${(pack.price || 0).toFixed(2)}</p>
+                                        <p className="text-sm mt-2 opacity-90">✨ سعر مخفف خاص! / Special Discounted Price!</p>
+                                    </div>
+                                    
+                                    {/* Enhanced Visitor Counter */}
+                                    <div className="mb-4">
+                                        <EnhancedVisitorCounter />
+                                    </div>
                                 </div>
-                                
-                                {/* Enhanced Visitor Counter */}
-                                <EnhancedVisitorCounter />
-                                
-                                {/* Live Visitor Counter */}
-                                <LiveVisitorCounter packId={id} />
-                                
-                                <div
-                                    className="text-gray-600 leading-relaxed prose prose-gray max-w-none mt-4"
-                                    dangerouslySetInnerHTML={{ __html: pack.description }}
-                                />
                             </div>
                         </div>
 
-                        {/* Right Side: Customization Options */}
-                        <div className={`${highlightedElement === 'customization' ? 'ring-4 ring-yellow-400 rounded-lg p-4' : ''}`}>
-                            <div className="bg-gradient-to-r from-green-100 to-blue-100 p-4 rounded-lg mb-6">
-                                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 flex items-center">
-                                    🔧 تخصيص الحزمة / Customize Your Pack
+                        {/* Right Side: Customization Options - Improved */}
+                        <div className={`transition-all duration-300 ${highlightedElement === 'customization' ? 'ring-4 ring-yellow-400 rounded-2xl p-6' : ''}`}>
+                            {/* Customization Header */}
+                            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-2xl mb-8 shadow-lg">
+                                <h2 className="text-2xl sm:text-3xl font-bold mb-3 flex items-center">
+                                    <span className="mr-3 text-3xl">🎨</span>
+                                    تخصيص حزمتك / Customize Your Pack
                                 </h2>
-                                <p className="text-sm text-gray-600">
-                                    اختر المنتجات التي تريدها من كل قسم / Choose products you want from each section
+                                <p className="text-blue-100 text-base">
+                                    اختر المنتجات التي تريدها من كل قسم / Select your preferred products from each section
                                 </p>
                             </div>
                             
-                            <div className={`space-y-4 ${highlightedElement === 'product-options' ? 'ring-4 ring-yellow-400 rounded-lg p-4' : ''}`}>
+                            {/* Progress Indicator */}
+                            <div className="mb-8 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-200">
+                                <div className="flex items-center justify-between mb-3">
+                                    <span className="text-sm font-bold text-gray-700">التقدم / Progress</span>
+                                    <span className="text-sm font-bold text-green-700">{pack.items?.length || 0}/{pack.items?.length || 0} أقسام / Sections</span>
+                                </div>
+                                <div className="w-full bg-green-100 rounded-full h-2 overflow-hidden">
+                                    <div className="bg-gradient-to-r from-green-400 to-green-600 h-full rounded-full transition-all duration-300" style={{width: '100%'}}></div>
+                                </div>
+                            </div>
+                            
+                            {/* Product Selection Cards - Enhanced */}
+                            <div className={`space-y-6 mb-8 ${highlightedElement === 'product-options' ? 'ring-4 ring-yellow-400 rounded-2xl p-6' : ''}`}>
                                 {pack.items && pack.items.map((item, index) => (
-                                    <div key={item.id} className="enhanced-pack-item">
-                                        <div className="flex items-center mb-3">
-                                            <span className="bg-pink-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm mr-3">
+                                    <div key={item.id} className="enhanced-pack-item group">
+                                        {/* Section Number Badge */}
+                                        <div className="flex items-center mb-4 gap-3">
+                                            <div className="bg-gradient-to-br from-pink-500 to-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-md group-hover:shadow-lg transition-shadow">
                                                 {index + 1}
-                                            </span>
-                                            <h3 className="text-lg font-bold text-gray-800">
+                                            </div>
+                                            <h3 className="text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
                                                 القسم {index + 1} / Section {index + 1}
                                             </h3>
                                         </div>
+                                        
+                                        {/* Product Selector */}
                                         <PackItemSelector
                                             item={item}
                                             selectedProductId={selections[item.id]}
@@ -718,38 +708,46 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                 ))}
                             </div>
                             
-                            <div className={`mt-8 space-y-4 ${highlightedElement === 'add-to-cart' ? 'ring-4 ring-yellow-400 rounded-lg p-4' : ''}`}>
-                                <div className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-lg">
-                                    <h3 className="text-lg font-bold text-center mb-4 text-gray-800">
+                            {/* Enhanced Checkout Section - Sticky on Mobile */}
+                            <div className={`transition-all duration-300 ${highlightedElement === 'add-to-cart' ? 'ring-4 ring-yellow-400 rounded-2xl p-6' : ''}`}>
+                                <div className="bg-white border-2 border-pink-200 rounded-2xl p-6 shadow-xl sticky-checkout">
+                                    {/* Checkout Header */}
+                                    <h3 className="text-2xl font-bold text-center mb-6 text-gray-800">
                                         🛒 إضافة للسلة / Add to Cart
                                     </h3>
+                                    
+                                    {/* Main Add to Cart Button - Only Essential Element */}
                                     <button
                                         onClick={handleAddToCart}
-                                        className="w-full bg-pink-600 text-white font-bold py-4 px-8 rounded-lg hover:bg-pink-700 transition duration-300 text-lg animate-pulse-custom"
+                                        className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl hover:from-pink-600 hover:to-purple-700 transition-all duration-300 text-lg shadow-lg hover:shadow-xl hover:scale-105 transform animate-pulse-custom"
                                         aria-label="Add customized pack to shopping cart"
                                     >
-                                        🛒 إضافة الحزمة للسلة / Add Pack to Cart
+                                        ✨ إضافة الحزمة للسلة / Add Pack to Cart ✨
                                     </button>
-                                    <button
-                                        onClick={handleReset}
-                                        className="w-full mt-4 bg-gray-200 text-gray-800 font-bold py-3 px-6 rounded-lg hover:bg-gray-300 transition duration-300"
-                                        aria-label="Reset pack customization to default options"
-                                    >
-                                        🔄 إعادة تعيين / Reset to Defaults
-                                    </button>
-                                    <p className="text-center text-sm text-gray-500 mt-3">
-                                        💡 يمكنك تغيير اختيارك في أي وقت / You can change your selection anytime
-                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Comments Section */}
+                    {/* Pack Description - Between Add to Cart and Reviews */}
+                    <div className="mt-8 bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg">
+                        <div className="mb-4">
+                            <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
+                                <span className="mr-2 text-2xl">📝</span>
+                                وصف الحزمة / Pack Description
+                            </h3>
+                            <div
+                                className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
+                                dangerouslySetInnerHTML={{ __html: pack.description }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Comments & Reviews Section */}
                     <div className="mt-12">
                         <div className="bg-gradient-to-r from-yellow-100 to-orange-100 p-4 rounded-lg mb-6">
                             <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 flex items-center">
-                                💬 التعليقات / Comments
+                                💬 التعليقات / Reviews
                             </h2>
                             <p className="text-sm text-gray-600">
                                 شارك تجربتك مع الحزمة / Share your experience with the pack
@@ -793,21 +791,21 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                             <div className="text-center py-8 bg-gray-50 rounded-lg mb-8">
                                 <div className="text-4xl mb-3">💭</div>
                                 <p className="text-gray-500 mb-2">لا توجد تعليقات بعد</p>
-                                <p className="text-gray-400">No comments yet</p>
+                                <p className="text-gray-400">No reviews yet</p>
                             </div>
                         )}
                         
                         {!pack.hideCommentForm && (
                             <div className="bg-blue-50 p-6 rounded-lg">
                                 <h3 className="text-lg font-bold mb-3 text-blue-800">
-                                    ✍️ اترك تعليقك / Leave Your Comment
+                                    ✍️ اترك تعليقك / Leave Your Review
                                 </h3>
                                 <CommentForm packId={id} onCommentAdded={handleCommentAdded} />
                             </div>
                         )}
                     </div>
 
-                    {/* Recommendations Section */}
+                    {/* Recommended Products Section */}
                     <div className="mt-12">
                         <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg mb-6">
                             <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 flex items-center">
@@ -822,11 +820,13 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 </>
             )}
             
-            {/* Purchase Notifications */}
-            <PurchaseNotifications 
-                packName={pack?.name} 
-                productImage={pack?.images && pack.images.length > 0 ? pack.images[0] : null}
-            />
+            {/* Purchase Notifications - Controlled by admin per pack */}
+            {pack?.showPurchaseNotifications && (
+                <PurchaseNotifications 
+                    packName={pack?.name} 
+                    productImage={pack?.images && pack.images.length > 0 ? pack.images[0] : null}
+                />
+            )}
             
             {/* Sticky Add to Cart */}
             <StickyAddToCart 
