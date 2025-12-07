@@ -9,7 +9,7 @@ export default defineConfig({
     proxy: {
       // Any request starting with /api will be forwarded
       '/api': {
-        target: 'http://localhost:8082', // MODIFIED: Changed port to match docker-compose
+        target: 'http://localhost:8084', // Updated to match new backend port in docker-compose
         changeOrigin: true,
       },
     },

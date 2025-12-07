@@ -61,7 +61,7 @@ public class PackCommentManagementTestSuite {
     private UserRepository userRepository;
 
     @MockBean
-    private S3Service s3Service;
+    private LocalFileService localFileService;
 
     private Pack testPack;
     private Product testProduct;
@@ -129,7 +129,7 @@ public class PackCommentManagementTestSuite {
 
         MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
 
-        Mockito.when(s3Service.saveImage(Mockito.any(MultipartFile.class))).thenReturn("http://example.com/test.jpg");
+        Mockito.when(localFileService.saveImage(Mockito.any(MultipartFile.class), Mockito.anyString())).thenReturn("http://localhost:8080/api/images/comments/test.jpg");
 
 
         CommentDTO updatedCommentDTO = commentService.updateComment(addedComment.getId(), addedComment, imageFile);

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final S3Service s3Service; // Injected S3Service
+    private final LocalFileService localFileService; // Injected LocalFileService
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO, MultipartFile image) throws IOException {
         Category category = new Category();
@@ -24,7 +24,7 @@ public class CategoryService {
         category.setDescription(categoryDTO.getDescription());
 
         if (image != null && !image.isEmpty()) {
-            String imageUrl = s3Service.saveImage(image); // Use S3Service
+            String imageUrl = localFileService.saveImage(image, "categories"); // Use LocalFileService
             category.setImageUrl(imageUrl);
         }
 
@@ -49,7 +49,7 @@ public class CategoryService {
         existingCategory.setDescription(categoryDTO.getDescription());
 
         if (image != null && !image.isEmpty()) {
-            String imageUrl = s3Service.saveImage(image); // Use S3Service
+            String imageUrl = localFileService.saveImage(image, "categories"); // Use LocalFileService
             existingCategory.setImageUrl(imageUrl);
         }
 

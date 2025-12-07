@@ -71,9 +71,10 @@ public class SecurityConfig {
                                 "/api/custom-packs/**", // Fixed: Allow access to all custom-packs endpoints
                                 "/api/products/packable",
                                 "/api/cart", // Allow guest users to view cart
-                                    "/api/coupons/validate/**", // Allow coupon validation without authentication
-                                    "/api/auth/debug/authorities", // Allow debug endpoint for troubleshooting
-                                    "/api/orders/*/feedback" // Allow access to order feedback
+                                "/api/coupons/validate/**", // Allow coupon validation without authentication
+                                "/api/auth/debug/authorities", // Allow debug endpoint for troubleshooting
+                                "/api/orders/*/feedback", // Allow access to order feedback
+                                "/api/images/**" // Allow public access to images
                         )
                         .permitAll()
                         .requestMatchers("/", "/index.html", "/images/**", "/vite.svg").permitAll()
@@ -87,7 +88,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8081", "http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8081", "http://localhost:3000", "http://localhost:8085"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);

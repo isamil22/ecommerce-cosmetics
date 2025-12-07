@@ -45,7 +45,7 @@ public class ProductService {
     private PackItemRepository packItemRepository;
 
     @Autowired
-    private S3Service s3Service;
+    private LocalFileService localFileService;
 
     @Autowired
     private ProductMapper productMapper;
@@ -244,14 +244,14 @@ public class ProductService {
     }
 
     public String uploadAndGetImageUrl(MultipartFile image) throws IOException {
-        return s3Service.saveImage(image);
+        return localFileService.saveImage(image, "products");
     }
 
     private List<String> uploadAndGetImageUrls(List<MultipartFile> images) {
         return images.stream()
                 .map(image -> {
                     try {
-                        return s3Service.saveImage(image);
+                        return localFileService.saveImage(image, "products");
                     } catch (IOException e) {
                         throw new RuntimeException("Failed to upload image", e);
                     }

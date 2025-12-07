@@ -30,7 +30,7 @@ public class CommentService {
     private final PackRepository packRepository;
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
-    private final S3Service s3Service;
+    private final LocalFileService localFileService;
     private final PasswordEncoder passwordEncoder;
 
     // Add comment to product by authenticated user
@@ -79,7 +79,7 @@ public class CommentService {
         if (images != null && !images.isEmpty()) {
             List<String> imageUrls = new ArrayList<>();
             for (MultipartFile image : images) {
-                imageUrls.add(s3Service.saveImage(image));
+                imageUrls.add(localFileService.saveImage(image, "comments"));
             }
             comment.setImages(imageUrls);
         }
@@ -105,7 +105,7 @@ public class CommentService {
         if (images != null && !images.isEmpty()) {
             List<String> imageUrls = new ArrayList<>();
             for (MultipartFile image : images) {
-                imageUrls.add(s3Service.saveImage(image));
+                imageUrls.add(localFileService.saveImage(image, "comments"));
             }
             comment.setImages(imageUrls);
         }
@@ -136,7 +136,7 @@ public class CommentService {
             List<String> imageUrls = new ArrayList<>();
             for (MultipartFile image : images) {
                 if (image != null && !image.isEmpty()) {
-                    imageUrls.add(s3Service.saveImage(image));
+                    imageUrls.add(localFileService.saveImage(image, "comments"));
                 }
             }
             comment.getImages().clear();
@@ -197,7 +197,7 @@ public class CommentService {
         }
 
         if (image != null && !image.isEmpty()) {
-            String imageUrl = s3Service.saveImage(image);
+            String imageUrl = localFileService.saveImage(image, "comments");
             comment.getImages().clear();
             comment.getImages().add(imageUrl);
         }

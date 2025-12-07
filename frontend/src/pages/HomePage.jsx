@@ -70,7 +70,7 @@ const HomePage = () => {
         return <div className="flex items-center">{stars}</div>;
     };
 
-    // Use the S3 URL directly
+    // Use the image URL from backend (now stored locally, not AWS)
     const heroImageUrl = hero?.imageUrl;
 
     // Loading Skeleton Component

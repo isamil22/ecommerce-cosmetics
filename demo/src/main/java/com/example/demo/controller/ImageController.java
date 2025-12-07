@@ -22,10 +22,22 @@ public class ImageController {
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
 
-    @GetMapping("/{filename}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+    /**
+     * Serve images with type and filename.
+     * Supports new structure: /api/images/{type}/{filename}
+     * Also supports legacy structure: /api/images/{filename} (for backward compatibility)
+     */
+    @GetMapping("/{type}/{filename}")
+    public ResponseEntity<Resource> getImageByType(
+            @PathVariable String type,
+            @PathVariable String filename) {
         try {
-            Path filePath = Paths.get(uploadDir).resolve(filename);
+            // Security: Prevent directory traversal
+            if (filename.contains("..") || type.contains("..")) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Path filePath = Paths.get(uploadDir, "images", type, filename);
             File file = filePath.toFile();
             
             if (!file.exists() || !file.isFile()) {
@@ -40,6 +52,55 @@ public class ImageController {
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000") // Cache for 1 year
+                    .body(resource);
+                    
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Legacy endpoint for backward compatibility.
+     * Supports old structure: /api/images/{filename}
+     */
+    @GetMapping("/{filename}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+        try {
+            // Security: Prevent directory traversal
+            if (filename.contains("..")) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            // Try new structure first (images/general/)
+            Path filePath = Paths.get(uploadDir, "images", "general", filename);
+            File file = filePath.toFile();
+            
+            // If not found, try old structure (directly in uploads/)
+            if (!file.exists()) {
+                filePath = Paths.get(uploadDir, filename);
+                file = filePath.toFile();
+            }
+            
+            // If still not found, try images/ directory
+            if (!file.exists()) {
+                filePath = Paths.get(uploadDir, "images", filename);
+                file = filePath.toFile();
+            }
+            
+            if (!file.exists() || !file.isFile()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Resource resource = new FileSystemResource(file);
+            
+            // Determine content type based on file extension
+            String contentType = getContentType(filename);
+            
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000") // Cache for 1 year
                     .body(resource);
                     
         } catch (Exception e) {

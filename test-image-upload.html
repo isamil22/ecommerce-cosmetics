@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Storage Test - Local vs AWS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+        }
+        .test-item.fail {
+            border-left-color: #f44336;
+        }
+        .test-item.warn {
+            border-left-color: #ff9800;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Image Storage Verification Test</h1>
+    <p>This page tests if your application uses <strong>local storage</strong> (NOT AWS S3)</p>
+
+    <div class="test-section">
+        <h2>Test 1: Check Backend API Response</h2>
+        <div class="test-item">
+            <p><strong>Test:</strong> Fetch products from backend and check image URLs</p>
+            <button onclick="testProductImages()">Test Product Images</button>
+            <div id="productTestResult"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Check Category Images</h2>
+        <div class="test-item">
+            <p><strong>Test:</strong> Fetch categories and check image URLs</p>
+            <button onclick="testCategoryImages()">Test Category Images</button>
+            <div id="categoryTestResult"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Test Image Upload</h2>
+        <div class="test-item">
+            <p><strong>Test:</strong> Upload an image and verify it's stored locally</p>
+            <input type="file" id="imageUpload" accept="image/*">
+            <button onclick="testImageUpload()">Upload Test Image</button>
+            <div id="uploadTestResult"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Verify Image URLs</h2>
+        <div class="test-item">
+            <p><strong>Test:</strong> Check if image URLs point to local storage (NOT AWS)</p>
+            <button onclick="verifyImageUrls()">Verify All Image URLs</button>
+            <div id="urlTestResult"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Check Image Serving</h2>
+        <div class="test-item">
+            <p><strong>Test:</strong> Test if images are served from local ImageController</p>
+            <button onclick="testImageServing()">Test Image Serving</button>
+            <div id="servingTestResult"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Summary</h2>
+        <div id="summary"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        let testResults = {
+            products: null,
+            categories: null,
+            upload: null,
+            urls: null,
+            serving: null
+        };
+
+        async function testProductImages() {
+            const resultDiv = document.getElementById('productTestResult');
+            resultDiv.innerHTML = '<p class="result info">Testing...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/products?page=0&size=5`);
+                const data = await response.json();
+                const products = data.content || data;
+
+                if (products.length === 0) {
+                    resultDiv.innerHTML = '<p class="result warn">No products found. Create a product first.</p>';
+                    return;
+                }
+
+                let html = '<h3>Product Image URLs:</h3><ul>';
+                let hasAWS = false;
+                let hasLocal = false;
+
+                products.forEach(product => {
+                    if (product.images && product.images.length > 0) {
+                        product.images.forEach(imgUrl => {
+                            html += `<li><code>${imgUrl}</code></li>`;
+                            if (imgUrl.includes('s3.amazonaws.com') || imgUrl.includes('amazonaws')) {
+                                hasAWS = true;
+                            }
+                            if (imgUrl.includes('localhost:8080/api/images') || imgUrl.includes('/api/images/')) {
+                                hasLocal = true;
+                            }
+                        });
+                    }
+                });
+
+                html += '</ul>';
+
+                if (hasAWS) {
+                    html += '<p class="result error">❌ FOUND AWS URLs! Images are still using AWS S3!</p>';
+                    testResults.products = false;
+                } else if (hasLocal) {
+                    html += '<p class="result success">✅ All image URLs point to local storage!</p>';
+                    testResults.products = true;
+                } else {
+                    html += '<p class="result warn">⚠️ Could not determine storage type from URLs</p>';
+                    testResults.products = null;
+                }
+
+                resultDiv.innerHTML = html;
+                updateSummary();
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="result error">❌ Error: ${error.message}</p>`;
+                testResults.products = false;
+                updateSummary();
+            }
+        }
+
+        async function testCategoryImages() {
+            const resultDiv = document.getElementById('categoryTestResult');
+            resultDiv.innerHTML = '<p class="result info">Testing...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/categories`);
+                const categories = await response.json();
+
+                if (categories.length === 0) {
+                    resultDiv.innerHTML = '<p class="result warn">No categories found. Create a category first.</p>';
+                    return;
+                }
+
+                let html = '<h3>Category Image URLs:</h3><ul>';
+                let hasAWS = false;
+                let hasLocal = false;
+
+                categories.forEach(category => {
+                    if (category.imageUrl) {
+                        html += `<li><code>${category.imageUrl}</code></li>`;
+                        if (category.imageUrl.includes('s3.amazonaws.com') || category.imageUrl.includes('amazonaws')) {
+                            hasAWS = true;
+                        }
+                        if (category.imageUrl.includes('localhost:8080/api/images') || category.imageUrl.includes('/api/images/')) {
+                            hasLocal = true;
+                        }
+                    }
+                });
+
+                html += '</ul>';
+
+                if (hasAWS) {
+                    html += '<p class="result error">❌ FOUND AWS URLs! Categories are still using AWS S3!</p>';
+                    testResults.categories = false;
+                } else if (hasLocal) {
+                    html += '<p class="result success">✅ All category URLs point to local storage!</p>';
+                    testResults.categories = true;
+                } else {
+                    html += '<p class="result warn">⚠️ Could not determine storage type from URLs</p>';
+                    testResults.categories = null;
+                }
+
+                resultDiv.innerHTML = html;
+                updateSummary();
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="result error">❌ Error: ${error.message}</p>`;
+                testResults.categories = false;
+                updateSummary();
+            }
+        }
+
+        async function testImageUpload() {
+            const fileInput = document.getElementById('imageUpload');
+            const resultDiv = document.getElementById('uploadTestResult');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                resultDiv.innerHTML = '<p class="result error">Please select an image file first.</p>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<p class="result info">Uploading...</p>';
+
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            try {
+                // Note: You'll need to adjust this endpoint based on your API
+                const response = await fetch(`${API_BASE}/products/test-upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const imageUrl = result.imageUrl || result.url;
+
+                    let html = '<h3>Upload Result:</h3>';
+                    html += `<p><strong>Image URL:</strong> <code>${imageUrl}</code></p>`;
+
+                    if (imageUrl.includes('s3.amazonaws.com') || imageUrl.includes('amazonaws')) {
+                        html += '<p class="result error">❌ Image uploaded to AWS S3! Should be local storage!</p>';
+                        testResults.upload = false;
+                    } else if (imageUrl.includes('localhost:8080/api/images') || imageUrl.includes('/api/images/')) {
+                        html += '<p class="result success">✅ Image uploaded to local storage!</p>';
+                        html += `<img src="${imageUrl}" alt="Uploaded image" class="image-preview">`;
+                        testResults.upload = true;
+                    } else {
+                        html += '<p class="result warn">⚠️ Could not determine storage type</p>';
+                        testResults.upload = null;
+                    }
+
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<p class="result error">Upload failed: ${response.statusText}</p>`;
+                    testResults.upload = false;
+                }
+                updateSummary();
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="result error">❌ Error: ${error.message}</p>`;
+                testResults.upload = false;
+                updateSummary();
+            }
+        }
+
+        async function verifyImageUrls() {
+            const resultDiv = document.getElementById('urlTestResult');
+            resultDiv.innerHTML = '<p class="result info">Verifying...</p>';
+
+            try {
+                // Get products
+                const productsResponse = await fetch(`${API_BASE}/products?page=0&size=10`);
+                const productsData = await productsResponse.json();
+                const products = productsData.content || productsData;
+
+                // Get categories
+                const categoriesResponse = await fetch(`${API_BASE}/categories`);
+                const categories = await categoriesResponse.json();
+
+                let allUrls = [];
+                let awsUrls = [];
+                let localUrls = [];
+
+                // Collect product image URLs
+                products.forEach(product => {
+                    if (product.images && product.images.length > 0) {
+                        product.images.forEach(url => {
+                            allUrls.push(url);
+                            if (url.includes('s3.amazonaws.com') || url.includes('amazonaws')) {
+                                awsUrls.push(url);
+                            } else if (url.includes('localhost:8080/api/images') || url.includes('/api/images/')) {
+                                localUrls.push(url);
+                            }
+                        });
+                    }
+                });
+
+                // Collect category image URLs
+                categories.forEach(category => {
+                    if (category.imageUrl) {
+                        allUrls.push(category.imageUrl);
+                        if (category.imageUrl.includes('s3.amazonaws.com') || category.imageUrl.includes('amazonaws')) {
+                            awsUrls.push(category.imageUrl);
+                        } else if (category.imageUrl.includes('localhost:8080/api/images') || category.imageUrl.includes('/api/images/')) {
+                            localUrls.push(category.imageUrl);
+                        }
+                    }
+                });
+
+                let html = '<h3>URL Verification Results:</h3>';
+                html += `<p><strong>Total URLs found:</strong> ${allUrls.length}</p>`;
+                html += `<p><strong>AWS URLs:</strong> ${awsUrls.length}</p>`;
+                html += `<p><strong>Local URLs:</strong> ${localUrls.length}</p>`;
+
+                if (awsUrls.length > 0) {
+                    html += '<p class="result error">❌ FOUND AWS URLs! Your images are still using AWS S3!</p>';
+                    html += '<ul>';
+                    awsUrls.forEach(url => {
+                        html += `<li><code>${url}</code></li>`;
+                    });
+                    html += '</ul>';
+                    testResults.urls = false;
+                } else if (localUrls.length > 0) {
+                    html += '<p class="result success">✅ All image URLs point to local storage!</p>';
+                    testResults.urls = true;
+                } else {
+                    html += '<p class="result warn">⚠️ No image URLs found or could not determine storage type</p>';
+                    testResults.urls = null;
+                }
+
+                resultDiv.innerHTML = html;
+                updateSummary();
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="result error">❌ Error: ${error.message}</p>`;
+                testResults.urls = false;
+                updateSummary();
+            }
+        }
+
+        async function testImageServing() {
+            const resultDiv = document.getElementById('servingTestResult');
+            resultDiv.innerHTML = '<p class="result info">Testing...</p>';
+
+            try {
+                // Get a product with image
+                const response = await fetch(`${API_BASE}/products?page=0&size=1`);
+                const data = await response.json();
+                const products = data.content || data;
+
+                if (products.length === 0 || !products[0].images || products[0].images.length === 0) {
+                    resultDiv.innerHTML = '<p class="result warn">No products with images found. Create a product with image first.</p>';
+                    return;
+                }
+
+                const imageUrl = products[0].images[0];
+                let html = '<h3>Image Serving Test:</h3>';
+                html += `<p><strong>Testing URL:</strong> <code>${imageUrl}</code></p>`;
+
+                // Try to load the image
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+
+                img.onload = function() {
+                    html += '<p class="result success">✅ Image loaded successfully!</p>';
+                    html += `<img src="${imageUrl}" alt="Test image" class="image-preview">`;
+                    
+                    // Check if URL is local
+                    if (imageUrl.includes('localhost:8080/api/images') || imageUrl.includes('/api/images/')) {
+                        html += '<p class="result success">✅ Image is served from local ImageController!</p>';
+                        testResults.serving = true;
+                    } else if (imageUrl.includes('s3.amazonaws.com') || imageUrl.includes('amazonaws')) {
+                        html += '<p class="result error">❌ Image is served from AWS S3!</p>';
+                        testResults.serving = false;
+                    } else {
+                        html += '<p class="result warn">⚠️ Could not determine source</p>';
+                        testResults.serving = null;
+                    }
+                    resultDiv.innerHTML = html;
+                    updateSummary();
+                };
+
+                img.onerror = function() {
+                    html += '<p class="result error">❌ Failed to load image. Check if server is running and image exists.</p>';
+                    resultDiv.innerHTML = html;
+                    testResults.serving = false;
+                    updateSummary();
+                };
+
+                img.src = imageUrl;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="result error">❌ Error: ${error.message}</p>`;
+                testResults.serving = false;
+                updateSummary();
+            }
+        }
+
+        function updateSummary() {
+            const summaryDiv = document.getElementById('summary');
+            const tests = Object.values(testResults);
+            const passed = tests.filter(t => t === true).length;
+            const failed = tests.filter(t => t === false).length;
+            const total = tests.filter(t => t !== null).length;
+
+            let html = '<h3>Test Summary:</h3>';
+            html += `<p><strong>Tests Passed:</strong> ${passed}/${total}</p>`;
+            html += `<p><strong>Tests Failed:</strong> ${failed}/${total}</p>`;
+
+            if (failed === 0 && passed > 0) {
+                html += '<p class="result success"><strong>✅ ALL TESTS PASSED! Your application uses LOCAL STORAGE (NOT AWS)</strong></p>';
+            } else if (failed > 0) {
+                html += '<p class="result error"><strong>❌ SOME TESTS FAILED! Your application may still be using AWS S3</strong></p>';
+            } else {
+                html += '<p class="result info"><strong>⚠️ Run all tests to get complete results</strong></p>';
+            }
+
+            summaryDiv.innerHTML = html;
+        }
+
+        // Auto-run product test on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testProductImages();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
+

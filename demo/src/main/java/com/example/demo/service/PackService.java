@@ -39,7 +39,7 @@ public class PackService {
     private ImageCompositionService imageCompositionService;
 
     @Autowired
-    private S3Service s3Service;
+    private LocalFileService localFileService;
 
     @Autowired
     private PackMapper packMapper;
@@ -64,7 +64,7 @@ public class PackService {
         pack.setHideCommentForm(packRequestDTO.isHideCommentForm());
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            String imageUrl = s3Service.saveImage(imageFile);
+            String imageUrl = localFileService.saveImage(imageFile, "packs");
             pack.setImageUrl(imageUrl);
         }
 
@@ -122,7 +122,7 @@ public class PackService {
         pack.setHideCommentForm(packRequestDTO.isHideCommentForm());
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            String newImageUrl = s3Service.saveImage(imageFile);
+            String newImageUrl = localFileService.saveImage(imageFile, "packs");
             pack.setImageUrl(newImageUrl);
         }
 
@@ -315,8 +315,8 @@ public class PackService {
             byte[] compositeImageBytes = imageCompositionService.createCompositeImage(imageUrls);
 
             if (compositeImageBytes != null && compositeImageBytes.length > 0) {
-                logger.info("Uploading composite image to S3 for pack ID {}.", pack.getId());
-                String newImageUrl = s3Service.saveImage(compositeImageBytes, "pack-" + pack.getId() + "-composite.png");
+                logger.info("Uploading composite image to local storage for pack ID {}.", pack.getId());
+                String newImageUrl = localFileService.saveImage(compositeImageBytes, "pack-" + pack.getId() + "-composite.png", "packs");
                 pack.setImageUrl(newImageUrl);
                 logger.info("Successfully updated image URL for pack ID {} to: {}", pack.getId(), newImageUrl);
             } else {

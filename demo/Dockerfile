@@ -4,6 +4,9 @@ FROM eclipse-temurin:17-jdk-jammy
 # Set the working directory inside the container
 WORKDIR /app
 
+# Create uploads directory with proper permissions
+RUN mkdir -p /app/uploads/images/{products,categories,packs,hero,comments}
+
 # Copy the Maven wrapper executable and the wrapper configuration
 COPY mvnw .
 COPY .mvn ./.mvn

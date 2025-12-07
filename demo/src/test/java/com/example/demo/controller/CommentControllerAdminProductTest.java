@@ -5,7 +5,7 @@ import com.example.demo.model.Category;
 import com.example.demo.model.Product;
 import com.example.demo.repositories.CategoryRepository;
 import com.example.demo.repositories.ProductRepository;
-import com.example.demo.service.S3Service;
+import com.example.demo.service.LocalFileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ public class CommentControllerAdminProductTest {
     private CategoryRepository categoryRepository;
 
     @MockBean
-    private S3Service s3Service;
+    private LocalFileService localFileService;
 
     private Product testProduct;
 
@@ -94,7 +94,7 @@ public class CommentControllerAdminProductTest {
         MockMultipartFile imageFile = new MockMultipartFile("image", "product_test.jpg", "image/jpeg", "product image content".getBytes());
         MockMultipartFile commentDtoString = new MockMultipartFile("commentDTO", "", "application/json", objectMapper.writeValueAsString(addedComment).getBytes());
 
-        Mockito.when(s3Service.saveImage(Mockito.any())).thenReturn("http://example.com/product_test.jpg");
+        Mockito.when(localFileService.saveImage(Mockito.any(org.springframework.web.multipart.MultipartFile.class), Mockito.anyString())).thenReturn("http://localhost:8080/api/images/comments/product_test.jpg");
 
         mockMvc.perform(multipart(HttpMethod.PUT, "/api/v1/comments/{commentId}", addedComment.getId())
                         .file(imageFile)

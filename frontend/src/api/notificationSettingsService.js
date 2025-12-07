@@ -1,5 +1,7 @@
 // frontend/src/api/notificationSettingsService.js
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+// Use relative URL so Nginx can proxy requests to backend in Docker
+// For local development, set VITE_API_URL in .env file if needed
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 /**
  * Service for managing notification settings

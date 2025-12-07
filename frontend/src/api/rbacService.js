@@ -3,7 +3,8 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8082/api';
+// Use relative URL so Nginx can proxy requests to backend in Docker
+const API_URL = '/api';
 
 // Get JWT token from localStorage
 const getAuthHeaders = () => {

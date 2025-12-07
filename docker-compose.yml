@@ -1,6 +1,9 @@
+name: ecommerce-copy
+
 services:
   db:
     image: mysql:8.0
+    container_name: ecommerce-copy-db
     restart: always
     environment:
       MYSQL_DATABASE: 'sms'
@@ -8,9 +11,9 @@ services:
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'root'
     ports:
-      - '3307:3306'
+      - '3308:3306'
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data_copy:/var/lib/mysql
     command: --innodb-buffer-pool-size=256M
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -18,13 +21,15 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - my-network
+      - my-network-copy
 
   backend:
     build: ./demo
+    container_name: ecommerce-copy-backend
     restart: always
     ports:
-      - '8082:8080'
+      - '8080:8080'
+      - '8084:8080'
     depends_on:
       db:
         condition: service_healthy
@@ -36,26 +41,30 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
       AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME}
+    volumes:
+      - ./uploads:/app/uploads
     networks:
-      - my-network
+      - my-network-copy
 
   frontend:
     build: ./frontend
+    container_name: ecommerce-copy-frontend
     restart: always
     ports:
-      - '8081:80'
+      - '8085:80'
     depends_on:
       - backend
     env_file:
       - ./frontend/.env
     networks:
-      - my-network
+      - my-network-copy
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: ecommerce-copy-phpmyadmin
     restart: always
     ports:
-      - "8083:80"
+      - "8086:80"
     environment:
       PMA_HOST: db
       PMA_USER: user
@@ -65,10 +74,10 @@ services:
       db:
         condition: service_healthy
     networks:
-      - my-network
+      - my-network-copy
 
 volumes:
-  db_data:
+  db_data_copy:
 
 networks:
-  my-network:
+  my-network-copy:

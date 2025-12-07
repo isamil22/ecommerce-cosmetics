@@ -16,7 +16,7 @@ import java.io.IOException;
 public class HeroService {
     private final HeroRepository heroRepository;
     private final HeroMapper heroMapper;
-    private final S3Service s3Service; // Injected S3Service
+    private final LocalFileService localFileService; // Injected LocalFileService
 
     public HeroDTO getHero() {
         Hero hero = heroRepository.findById(1L).orElseGet(() -> {
@@ -43,12 +43,12 @@ public class HeroService {
 
         if (image != null && !image.isEmpty()) {
             try {
-                String imageUrl = s3Service.saveImage(image);
+                String imageUrl = localFileService.saveImage(image, "hero");
                 hero.setImageUrl(imageUrl);
             } catch (IOException e) {
-                // If S3 is not configured, skip image update but continue with other updates
-                System.err.println("S3 service not available, skipping image update: " + e.getMessage());
-                // Keep existing image URL if S3 fails
+                // If file service fails, skip image update but continue with other updates
+                System.err.println("File service error, skipping image update: " + e.getMessage());
+                // Keep existing image URL if file service fails
             }
         }
 

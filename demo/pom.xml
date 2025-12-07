@@ -59,11 +59,14 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- AWS S3 Dependency - REMOVED for Hostinger deployment (using local file storage instead) -->
+        <!--
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.12.766</version>
         </dependency>
+        -->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
