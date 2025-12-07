@@ -43,6 +43,12 @@ public class Product {
     private boolean isPackable = false;
     private boolean deleted = false; // Soft delete flag
 
+    @Column(name = "show_purchase_notifications", nullable = false)
+    private boolean showPurchaseNotifications = true;
+
+    @Column(name = "show_countdown_timer", nullable = false)
+    private boolean showCountdownTimer = true;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private ProductType type;

@@ -45,6 +45,10 @@ public class ProductDTO {
     private String categoryName;
     private Product.ProductType type;
 
+    private boolean showPurchaseNotifications = true;
+
+    private boolean showCountdownTimer = true;
+
     private List<VariantTypeDto> variantTypes;
     private List<ProductVariantDto> variants;
 

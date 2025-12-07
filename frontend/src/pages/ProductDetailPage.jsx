@@ -274,13 +274,15 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 <div className="relative z-10 container-xl section-spacing">
                     <Breadcrumbs categoryId={product.categoryId} categoryName={product.categoryName} productName={product.name} />
                     {/* Enhanced Countdown Timer - Admin Controllable */}
-                    <EnhancedCountdown 
-                        fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)} // Fallback: 24 hours from now
-                        packName={product.name}
-                        onExpire={() => {
-                            toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
-                        }}
-                    />
+                    {product?.showCountdownTimer && (
+                        <EnhancedCountdown 
+                            fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)} // Fallback: 24 hours from now
+                            packName={product.name}
+                            onExpire={() => {
+                                toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
+                            }}
+                        />
+                    )}
                     
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 content-spacing-lg">
                 {/* Enhanced Image Gallery */}
@@ -820,13 +822,15 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             </div>
             
             
-            {/* Enhanced Purchase Notifications */}
-            <div className="container-xl section-spacing">
-                <PurchaseNotifications 
-                    packName={product.name} 
-                    productImage={product.images && product.images.length > 0 ? product.images[0] : null}
-                />
-            </div>
+            {/* Enhanced Purchase Notifications - Admin Controllable */}
+            {product?.showPurchaseNotifications && (
+                <div className="container-xl section-spacing">
+                    <PurchaseNotifications 
+                        packName={product.name} 
+                        productImage={product.images && product.images.length > 0 ? product.images[0] : null}
+                    />
+                </div>
+            )}
             
             {/* Enhanced Sticky Add to Cart - replaces StickyAddToCartBar */}
             <StickyAddToCart 

@@ -76,6 +76,10 @@ public class ProductService {
         // This was missing from the original create method, adding for consistency
         product.setPackable(productDTO.getIsPackable() != null && productDTO.getIsPackable());
 
+        // Set Display Settings
+        product.setShowPurchaseNotifications(productDTO.isShowPurchaseNotifications());
+        product.setShowCountdownTimer(productDTO.isShowCountdownTimer());
+
         // Handle images
         if (images != null && !images.isEmpty()) {
             List<String> imageUrls = uploadAndGetImageUrls(images);
@@ -109,6 +113,10 @@ public class ProductService {
 
         // Add this line to explicitly update the isPackable property
         existingProduct.setPackable(productDTO.getIsPackable() != null && productDTO.getIsPackable());
+
+        // Update Display Settings
+        existingProduct.setShowPurchaseNotifications(productDTO.isShowPurchaseNotifications());
+        existingProduct.setShowCountdownTimer(productDTO.isShowCountdownTimer());
 
         // Update category if changed
         if (!existingProduct.getCategory().getId().equals(productDTO.getCategoryId())) {

@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import Select from 'react-select';
 import { 
     FiSave, FiX, FiUpload, FiImage, FiPackage, FiDollarSign, 
-    FiStar, FiTrendingUp, FiArrowLeft
+    FiStar, FiTrendingUp, FiArrowLeft, FiEye
 } from 'react-icons/fi';
 
 const AdminProductForm = () => {
@@ -23,6 +23,8 @@ const AdminProductForm = () => {
         newArrival: false,
         isPackable: false,
         hasVariants: false,
+        showPurchaseNotifications: true,
+        showCountdownTimer: true,
         variantTypes: [],
         variants: []
     });
@@ -749,6 +751,54 @@ const AdminProductForm = () => {
                                 ))}
                             </div>
                         )}
+
+                        {/* Display Settings */}
+                        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+                            <div className="flex items-center mb-6">
+                                <FiEye className="w-6 h-6 text-pink-500 mr-3" />
+                                <h2 className="text-2xl font-bold text-gray-900">Display Settings</h2>
+                            </div>
+                            
+                            <div className="space-y-4">
+                                {/* Purchase Notifications Toggle */}
+                                <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
+                                    <input
+                                        type="checkbox"
+                                        checked={product.showPurchaseNotifications || false}
+                                        onChange={(e) => {
+                                            setProduct({...product, showPurchaseNotifications: e.target.checked});
+                                        }}
+                                        className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
+                                    />
+                                    <span className="ml-3 flex-1">
+                                        <span className="block font-semibold text-gray-800">🛍️ Show Purchase Notifications</span>
+                                        <span className="text-sm text-gray-600">Display notifications when customers buy this product</span>
+                                    </span>
+                                    <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${product.showPurchaseNotifications ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                                        {product.showPurchaseNotifications ? 'Enabled' : 'Disabled'}
+                                    </span>
+                                </label>
+
+                                {/* Countdown Timer Toggle */}
+                                <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
+                                    <input
+                                        type="checkbox"
+                                        checked={product.showCountdownTimer || false}
+                                        onChange={(e) => {
+                                            setProduct({...product, showCountdownTimer: e.target.checked});
+                                        }}
+                                        className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
+                                    />
+                                    <span className="ml-3 flex-1">
+                                        <span className="block font-semibold text-gray-800">⏱️ Show Countdown Timer</span>
+                                        <span className="text-sm text-gray-600">Display flash sale countdown timer for urgency</span>
+                                    </span>
+                                    <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${product.showCountdownTimer ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                                        {product.showCountdownTimer ? 'Enabled' : 'Disabled'}
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
 
                         {/* Frequently Bought Together */}
                         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
