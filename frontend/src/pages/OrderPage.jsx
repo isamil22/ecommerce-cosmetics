@@ -123,11 +123,19 @@ const OrderPage = () => {
             }
             // ------------------------------------
 
-            setSuccess('Order placed successfully! Redirecting to the home page...');
+            setSuccess('Order placed successfully! Redirecting to success page...');
             toast.success('🎉 Order placed successfully! Thank you for your purchase!');
+            
+            // Redirect to order success page with order ID and order data
+            const orderIdValue = orderResponse?.data?.id?.toString() || orderId;
             setTimeout(() => {
-                navigate('/');
-            }, 5000);
+                navigate(`/order-success?orderId=${orderIdValue}`, {
+                    state: { 
+                        orderId: orderIdValue,
+                        order: orderResponse?.data // Pass full order data
+                    }
+                });
+            }, 2000);
         } catch (err) {
             const errorMessage = err.response?.data?.message || 'Failed to place order.';
             setError(errorMessage);

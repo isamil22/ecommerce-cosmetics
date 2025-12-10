@@ -12,6 +12,7 @@ import AuthPage from './pages/AuthPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import CartPage from './pages/CartPage.jsx';
 import OrderPage from './pages/OrderPage.jsx';
+import OrderSuccessPage from './pages/OrderSuccessPage.jsx';
 import UserOrdersPage from './pages/UserOrdersPage.jsx';
 import AdminLayout from './components/AdminLayout.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
@@ -57,6 +58,9 @@ import ReviewFormSettingsPage from './pages/admin/ReviewFormSettingsPage.jsx';
 import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage.jsx';
 import AdminRolesPage from './pages/admin/AdminRolesPage.jsx';
 import AdminPermissionsPage from './pages/admin/AdminPermissionsPage.jsx';
+import AdminLandingPagesPage from './pages/admin/AdminLandingPagesPage.jsx';
+import AdminLandingPageBuilder from './pages/admin/AdminLandingPageBuilder.jsx';
+import PublicLandingPage from './pages/PublicLandingPage.jsx';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -154,12 +158,16 @@ function App() {
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/faq" element={<FaqPage />} />
                         <Route path="/shipping" element={<ShippingPage />} />
+                        
+                        {/* Public Landing Pages */}
+                        <Route path="/landing/:slug" element={<PublicLandingPage />} />
 
                         {/* Authenticated User Routes */}
                         {userRole !== 'ADMIN' && <Route path="/profile" element={<ProfilePage />} />}
                         {userRole !== 'ADMIN' && <Route path="/orders" element={<UserOrdersPage />} />}
                         <Route path="/cart" element={<CartPage fetchCartCount={fetchCartCount} />} />
                         <Route path="/order" element={<OrderPage />} />
+                        <Route path="/order-success" element={<OrderSuccessPage />} />
 
                         {/* Admin-Only Routes */}
                         <Route path="/admin" element={<AdminLayout />}>
@@ -192,6 +200,9 @@ function App() {
                             <Route path="settings" element={<SettingsPage />} />
                             <Route path="roles" element={<AdminRolesPage />} />
                             <Route path="permissions" element={<AdminPermissionsPage />} />
+                            <Route path="landing-pages" element={<AdminLandingPagesPage />} />
+                            <Route path="landing-pages/create" element={<AdminLandingPageBuilder />} />
+                            <Route path="landing-pages/:id/edit" element={<AdminLandingPageBuilder />} />
                         </Route>
 
                         {/* Redirect admin users from profile and orders to dashboard */}

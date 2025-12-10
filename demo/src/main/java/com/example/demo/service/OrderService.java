@@ -387,6 +387,13 @@ public class OrderService {
         return orderMapper.toDTOs(orderRepository.findByDeleted(false));
     }
 
+    @Transactional(readOnly = true)
+    public OrderDTO getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+        return orderMapper.toDTO(order);
+    }
+
     public List<OrderDTO> getUserOrders(Long userId) {
         // Corrected method call from findByUserId to findByUser_Id
         return orderMapper.toDTOs(orderRepository.findByUser_Id(userId));

@@ -53,6 +53,23 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @GetMapping("/{orderId}")
+    @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or isAuthenticated()")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId, @AuthenticationPrincipal UserDetails userDetails) {
+        OrderDTO order = orderService.getOrderById(orderId);
+        
+        // If user is not admin, check if they own this order
+        if (userDetails != null) {
+            User user = (User) userDetails;
+            boolean isAdmin = user.getRole() == User.Role.ADMIN;
+            if (!isAdmin && order.getUserId() != null && !order.getUserId().equals(user.getId())) {
+                return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN).build();
+            }
+        }
+        
+        return ResponseEntity.ok(order);
+    }
+
     @GetMapping("/user")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<OrderDTO>> getUserOrders(@AuthenticationPrincipal UserDetails userDetails) {

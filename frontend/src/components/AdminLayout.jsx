@@ -50,7 +50,7 @@ const AdminLayout = () => {
         <PermissionProvider>
             <div className="flex min-h-screen bg-gray-50">
                 <DynamicAdminSidebar />
-                <main className="flex-1 min-h-screen overflow-x-hidden">
+                <main className="flex-1 min-h-screen overflow-x-hidden" style={{ backgroundColor: '#f8f9fa', padding: '0' }}>
                     <Outlet />
                 </main>
             </div>

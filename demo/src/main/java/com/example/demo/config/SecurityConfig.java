@@ -74,7 +74,8 @@ public class SecurityConfig {
                                 "/api/coupons/validate/**", // Allow coupon validation without authentication
                                 "/api/auth/debug/authorities", // Allow debug endpoint for troubleshooting
                                 "/api/orders/*/feedback", // Allow access to order feedback
-                                "/api/images/**" // Allow public access to images
+                                "/api/images/**", // Allow public access to images
+                                "/api/landing-pages/public/**" // Allow public access to published landing pages
                         )
                         .permitAll()
                         .requestMatchers("/", "/index.html", "/images/**", "/vite.svg").permitAll()

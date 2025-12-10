@@ -36,8 +36,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request){
+        // Ignore NoResourceFoundException - let Spring MVC handle it
+        if (ex instanceof org.springframework.web.servlet.resource.NoResourceFoundException) {
+            return null; // Let Spring MVC handle it
+        }
+        
         // --- ADD THIS LOGGING LINE ---
         logger.error("An unexpected error occurred: ", ex);
         // -------------------------

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare, FiChevronRight, FiActivity, FiShield, FiKey, FiFacebook } from 'react-icons/fi';
+import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare, FiChevronRight, FiActivity, FiShield, FiKey, FiFacebook, FiLayout } from 'react-icons/fi';
 import { usePermissions } from '../contexts/PermissionContext';
 import PermissionGuard from './PermissionGuard';
 
@@ -150,6 +150,13 @@ const DynamicAdminSidebar = () => {
                             icon={FiBell} 
                             label="Announcements" 
                             anyPermissions={['ANNOUNCEMENT:VIEW', 'ANNOUNCEMENT:EDIT']}
+                        />
+                        
+                        <ProtectedNavLink 
+                            to="/admin/landing-pages" 
+                            icon={FiLayout} 
+                            label="Landing Pages" 
+                            anyPermissions={['LANDING_PAGE:VIEW', 'LANDING_PAGE:CREATE', 'LANDING_PAGE:EDIT']}
                         />
                         
                         <ProtectedNavLink 

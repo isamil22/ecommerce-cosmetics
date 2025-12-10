@@ -405,6 +405,10 @@ export const deleteAllOrders = () => {
     return apiService.delete('/orders/all');
 };
 
+export const getOrderById = (orderId) => {
+    return apiService.get(`/orders/${orderId}`);
+};
+
 export const getDeletedOrders = () => {
     return apiService.get('/orders/deleted');
 };
