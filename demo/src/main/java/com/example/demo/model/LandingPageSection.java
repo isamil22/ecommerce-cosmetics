@@ -14,7 +14,8 @@ import java.util.Map;
 
 /**
  * LandingPageSection represents individual sections within a landing page
- * Each section has a type (HERO, BENEFITS, etc.) and stores its configuration as JSON
+ * Each section has a type (HERO, BENEFITS, etc.) and stores its configuration
+ * as JSON
  */
 @Entity
 @Table(name = "landing_page_sections", indexes = {
@@ -47,12 +48,12 @@ public class LandingPageSection {
      * Contains all configuration for this section (text, images, colors, etc.)
      * Example for HERO section:
      * {
-     *   "headline": "Amazing Product!",
-     *   "subheadline": "Transform your life today",
-     *   "backgroundImage": "/images/hero-bg.jpg",
-     *   "ctaText": "Buy Now - $49.99",
-     *   "ctaLink": "#order",
-     *   "backgroundColor": "#ffeef8"
+     * "headline": "Amazing Product!",
+     * "subheadline": "Transform your life today",
+     * "backgroundImage": "/images/hero-bg.jpg",
+     * "ctaText": "Buy Now - $49.99",
+     * "ctaLink": "#order",
+     * "backgroundColor": "#ffeef8"
      * }
      */
     @Column(name = "section_data", columnDefinition = "JSON", nullable = false)
@@ -84,18 +85,19 @@ public class LandingPageSection {
      * Section types matching the wireframe design
      */
     public enum SectionType {
-        HERO,              // Hero section with main CTA
-        TRUST_SIGNALS,     // Trust badges (certifications, guarantees, etc.)
-        PRODUCT_SHOWCASE,  // Large product image with description
-        KEY_BENEFITS,      // 3-6 key benefits with icons
-        BEFORE_AFTER,      // Before/After comparison images
-        HOW_IT_WORKS,      // Step-by-step guide
-        INGREDIENTS,       // Product ingredients with images
-        TESTIMONIALS,      // Customer reviews and testimonials
-        FAQ,               // Frequently Asked Questions (accordion)
-        URGENCY_BANNER,    // Limited time offer with countdown
-        FINAL_CTA,         // Final call-to-action
-        CUSTOM_HTML        // Custom HTML section for advanced users
+        HERO, // Hero section with main CTA
+        HERO_PREMIUM, // 3D Hero section with premium effects
+        FEATURES_ZIGZAG, // Alternating text and image features
+        TRUST_SIGNALS, // Trust badges (certifications, guarantees, etc.)
+        PRODUCT_SHOWCASE, // Large product image with description
+        KEY_BENEFITS, // 3-6 key benefits with icons
+        BEFORE_AFTER, // Before/After comparison images
+        HOW_IT_WORKS, // Step-by-step guide
+        INGREDIENTS, // Product ingredients with images
+        TESTIMONIALS, // Customer reviews and testimonials
+        FAQ, // Frequently Asked Questions (accordion)
+        URGENCY_BANNER, // Limited time offer with countdown
+        FINAL_CTA, // Final call-to-action
+        CUSTOM_HTML // Custom HTML section for advanced users
     }
 }
-

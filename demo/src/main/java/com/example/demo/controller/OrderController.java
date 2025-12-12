@@ -30,13 +30,22 @@ public class OrderController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<OrderDTO> createOrder(@AuthenticationPrincipal UserDetails userDetails,
-                                                @RequestParam String clientFullName,
-                                                @RequestParam String city,
-                                                @RequestParam String address,
-                                                @RequestParam String phoneNumber,
-                                                @RequestParam(required = false) String couponCode) {
+            @RequestParam String clientFullName,
+            @RequestParam String city,
+            @RequestParam String address,
+            @RequestParam String phoneNumber,
+            @RequestParam(required = false) String couponCode) {
         Long userId = ((User) userDetails).getId();
         OrderDTO orderDTO = orderService.createOrder(userId, address, phoneNumber, clientFullName, city, couponCode);
+        return ResponseEntity.ok(orderDTO);
+    }
+
+    @PostMapping("/direct")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<OrderDTO> createDirectOrder(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody GuestOrderRequestDTO request) {
+        Long userId = ((User) userDetails).getId();
+        OrderDTO orderDTO = orderService.createDirectOrder(userId, request);
         return ResponseEntity.ok(orderDTO);
     }
 
@@ -55,9 +64,10 @@ public class OrderController {
 
     @GetMapping("/{orderId}")
     @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or isAuthenticated()")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId,
+            @AuthenticationPrincipal UserDetails userDetails) {
         OrderDTO order = orderService.getOrderById(orderId);
-        
+
         // If user is not admin, check if they own this order
         if (userDetails != null) {
             User user = (User) userDetails;
@@ -66,7 +76,7 @@ public class OrderController {
                 return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN).build();
             }
         }
-        
+
         return ResponseEntity.ok(order);
     }
 
@@ -81,7 +91,7 @@ public class OrderController {
     @PutMapping("/{orderId}/status")
     @PreAuthorize("hasAuthority('ORDER:EDIT') or hasAuthority('ORDER:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable Long orderId,
-                                                      @RequestParam Order.OrderStatus status) {
+            @RequestParam Order.OrderStatus status) {
         OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, status);
         return ResponseEntity.ok(updatedOrder);
     }
@@ -129,9 +139,9 @@ public class OrderController {
     @PostMapping("/{orderId}/feedback")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<OrderFeedback> submitOrderFeedback(@PathVariable Long orderId,
-                                                           @RequestParam String rating,
-                                                           @RequestParam(required = false) String comment,
-                                                           @AuthenticationPrincipal UserDetails userDetails) {
+            @RequestParam String rating,
+            @RequestParam(required = false) String comment,
+            @AuthenticationPrincipal UserDetails userDetails) {
         try {
             Long userId = ((User) userDetails).getId();
             OrderFeedback feedback = orderFeedbackService.saveFeedback(orderId, rating, comment, userId);
@@ -143,8 +153,8 @@ public class OrderController {
 
     @PostMapping("/{orderId}/feedback/guest")
     public ResponseEntity<OrderFeedback> submitGuestOrderFeedback(@PathVariable Long orderId,
-                                                                @RequestParam String rating,
-                                                                @RequestParam(required = false) String comment) {
+            @RequestParam String rating,
+            @RequestParam(required = false) String comment) {
         try {
             OrderFeedback feedback = orderFeedbackService.saveFeedback(orderId, rating, comment, null);
             return ResponseEntity.ok(feedback);
@@ -154,15 +164,17 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}/feedback")
-    // @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_EDITOR')")
+    // @PreAuthorize("hasAuthority('ORDER:VIEW') or hasAuthority('ORDER:EDIT') or
+    // hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER') or
+    // hasAuthority('ROLE_EDITOR')")
     public ResponseEntity<String> getOrderFeedback(@PathVariable Long orderId) {
         try {
             return orderFeedbackService.getFeedbackByOrderId(orderId)
                     .map(feedback -> {
-                        String response = "{\"id\":" + feedback.getId() + 
-                                        ",\"rating\":\"" + feedback.getRating() + 
-                                        "\",\"comment\":\"" + (feedback.getComment() != null ? feedback.getComment() : "") + 
-                                        "\",\"createdAt\":\"" + feedback.getCreatedAt() + "\"}";
+                        String response = "{\"id\":" + feedback.getId() +
+                                ",\"rating\":\"" + feedback.getRating() +
+                                "\",\"comment\":\"" + (feedback.getComment() != null ? feedback.getComment() : "") +
+                                "\",\"createdAt\":\"" + feedback.getCreatedAt() + "\"}";
                         return ResponseEntity.ok(response);
                     })
                     .orElse(ResponseEntity.notFound().build());

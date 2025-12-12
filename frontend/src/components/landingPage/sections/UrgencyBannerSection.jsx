@@ -5,8 +5,10 @@ import { useLandingPageCTA } from '../LandingPageCTAHandler';
  * Premium Urgency Banner Section
  * Eye-catching limited time offer with animated countdown timer
  */
-const UrgencyBannerSection = ({ data, isEditing = false, productId = null }) => {
-    const handleCTA = useLandingPageCTA(productId);
+const UrgencyBannerSection = ({ data, isEditing = false, productId = null, availableVariants = [] }) => {
+    // Merge local data with global variants if not present locally
+    const ctaData = { ...data, variants: data?.variants || availableVariants };
+    const handleCTA = useLandingPageCTA(productId, ctaData);
     const {
         title = '🔥 LIMITED TIME OFFER!',
         discount = '20% OFF',
@@ -133,7 +135,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null }) => 
     );
 
     return (
-        <div 
+        <div
             ref={sectionRef}
             style={{
                 background: `linear-gradient(135deg, ${backgroundColor} 0%, #ff1493 50%, #c71585 100%)`,
@@ -154,7 +156,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null }) => 
                 `,
                 pointerEvents: 'none',
             }} />
-            
+
             {/* Floating Particles */}
             {[...Array(8)].map((_, i) => (
                 <div

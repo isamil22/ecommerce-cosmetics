@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import landingPageService from '../api/landingPageService';
 import { SECTION_COMPONENTS } from '../components/landingPage/sections/SectionRegistry';
 import Loader from '../components/Loader';
+import { getProductById } from '../api/apiService';
 
 /**
  * Public Landing Page Viewer
@@ -11,6 +12,7 @@ import Loader from '../components/Loader';
 const PublicLandingPage = () => {
     const { slug } = useParams();
     const [landingPage, setLandingPage] = useState(null);
+    const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -23,7 +25,17 @@ const PublicLandingPage = () => {
             setLoading(true);
             const data = await landingPageService.getPublishedLandingPage(slug);
             setLandingPage(data);
-            
+
+            // Fetch product details explicitly to get variants
+            if (data.productId) {
+                try {
+                    const productRes = await getProductById(data.productId);
+                    setProduct(productRes.data);
+                } catch (pErr) {
+                    console.error("Failed to fetch product details:", pErr);
+                }
+            }
+
             // Update page metadata
             document.title = data.metaTitle || data.title;
             if (data.metaDescription) {
@@ -32,19 +44,19 @@ const PublicLandingPage = () => {
                     metaDescription.setAttribute('content', data.metaDescription);
                 }
             }
-            
+
             // Apply custom styles if provided
             if (data.settings?.customCss) {
                 const style = document.createElement('style');
                 style.textContent = data.settings.customCss;
                 document.head.appendChild(style);
             }
-            
+
             // Apply theme color
             if (data.settings?.themeColor) {
                 document.documentElement.style.setProperty('--theme-color', data.settings.themeColor);
             }
-            
+
             setError(null);
         } catch (err) {
             console.error('Error loading landing page:', err);
@@ -100,6 +112,11 @@ const PublicLandingPage = () => {
     // Apply custom font if provided
     const fontFamily = landingPage.settings?.fontFamily || 'Arial, sans-serif';
 
+    // Extract variants: Prefer explicitly fetched product variants, fallback to extracting from sections
+    const globalVariants = product?.variants?.length > 0
+        ? product.variants
+        : (landingPage.sections?.find(s => s.sectionData?.variants?.length > 0)?.sectionData?.variants || []);
+
     return (
         <div style={{ fontFamily, minHeight: '50vh' }}>
             {/* Render sections */}
@@ -108,7 +125,7 @@ const PublicLandingPage = () => {
                 ?.sort((a, b) => a.sectionOrder - b.sectionOrder)
                 ?.map((section) => {
                     const SectionComponent = SECTION_COMPONENTS[section.sectionType];
-                    
+
                     if (!SectionComponent) {
                         // Handle custom HTML sections
                         // SECURITY NOTE: dangerouslySetInnerHTML is intentional here
@@ -122,7 +139,7 @@ const PublicLandingPage = () => {
                                 />
                             );
                         }
-                        
+
                         console.warn(`No component found for section type: ${section.sectionType}`);
                         return null;
                     }
@@ -132,10 +149,11 @@ const PublicLandingPage = () => {
                             key={section.id}
                             data={section.sectionData}
                             productId={landingPage.productId}
+                            availableVariants={globalVariants}
                         />
                     );
                 })}
-            
+
             {/* Custom JavaScript execution (if provided) */}
             {/* SECURITY NOTE: Only admins with proper permissions can add custom JS */}
             {landingPage.settings?.customJs && (

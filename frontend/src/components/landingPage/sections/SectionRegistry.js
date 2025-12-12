@@ -10,12 +10,16 @@ import TestimonialsSection from './TestimonialsSection';
 import FAQSection from './FAQSection';
 import UrgencyBannerSection from './UrgencyBannerSection';
 import FinalCTASection from './FinalCTASection';
+import HeroPremiumSection from './HeroPremiumSection';
+import FeaturesZigZagSection from './FeaturesZigZagSection';
 
 /**
  * Maps section types (from backend enum) to React components
  */
 export const SECTION_COMPONENTS = {
     HERO: HeroSection,
+    HERO_PREMIUM: HeroPremiumSection,
+    FEATURES_ZIGZAG: FeaturesZigZagSection,
     TRUST_SIGNALS: TrustSignalsSection,
     PRODUCT_SHOWCASE: ProductShowcaseSection,
     KEY_BENEFITS: KeyBenefitsSection,
@@ -40,6 +44,32 @@ export const DEFAULT_SECTION_DATA = {
         ctaText: 'Buy Now - $49.99',
         ctaLink: '#order',
         textColor: '#333',
+    },
+    HERO_PREMIUM: {
+        titleBack: 'SKIN CARE',
+        headline: 'Love your bits...',
+        subheadline: '(and your bod)',
+        productImage: '',
+        backgroundColor: '#e6e6fa', // Light lavender
+        ctaText: 'Shop Now',
+        ctaLink: '#shop',
+        badge: 'New Arrival',
+    },
+    FEATURES_ZIGZAG: {
+        features: [
+            {
+                title: 'Every Apps you wanted',
+                description: 'You won\'t just send and receive messages, calls, and mail more easily and efficiently. Your express yourself in unique, fun, and more personal ways.',
+                image: '', // Placeholder
+            },
+            {
+                title: 'Health and Fitness',
+                description: 'Fitness isn\'t just about running, biking, or hitting the gym. It\'s also about being active throughout the day.',
+                image: '', // Placeholder
+            }
+        ],
+        backgroundColor: '#ffffff',
+        textColor: '#333333'
     },
     TRUST_SIGNALS: {
         badges: [
@@ -123,7 +153,9 @@ export const DEFAULT_SECTION_DATA = {
  * Section type labels for admin UI
  */
 export const SECTION_TYPE_LABELS = {
-    HERO: 'Hero Section',
+    HERO: 'Hero Section (Standard)',
+    HERO_PREMIUM: 'Hero Section (3D Immersive)',
+    FEATURES_ZIGZAG: 'Features (Zig-Zag)',
     TRUST_SIGNALS: 'Trust Signals',
     PRODUCT_SHOWCASE: 'Product Showcase',
     KEY_BENEFITS: 'Key Benefits',

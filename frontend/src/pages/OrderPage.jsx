@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getCart, createOrder, validateCoupon, createGuestOrder } from '../api/apiService';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { getCart, createOrder, createDirectOrder, validateCoupon, createGuestOrder } from '../api/apiService';
 import { toast } from 'react-toastify';
 import FeedbackForm from '../components/FeedbackForm';
 
@@ -14,7 +14,11 @@ const OrderPage = () => {
     const [applyingCoupon, setApplyingCoupon] = useState(false);
     const [orderId, setOrderId] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
     const isAuthenticated = !!localStorage.getItem('token');
+
+    // Check for direct purchase from landing page
+    const directPurchase = location.state?.directPurchase;
 
     const [couponCode, setCouponCode] = useState('');
     const [discount, setDiscount] = useState(0);
@@ -33,6 +37,14 @@ const OrderPage = () => {
     useEffect(() => {
         const fetchCart = async () => {
             setLoading(true);
+
+            // Priority: Direct Purchase (Landing Page Flow)
+            if (directPurchase) {
+                setCart({ items: [directPurchase] });
+                setLoading(false);
+                return;
+            }
+
             if (isAuthenticated) {
                 try {
                     const response = await getCart();
@@ -48,7 +60,7 @@ const OrderPage = () => {
             setLoading(false);
         };
         fetchCart();
-    }, [isAuthenticated]);
+    }, [isAuthenticated, directPurchase]);
 
     useEffect(() => {
         // Generate order ID on client side to avoid hydration mismatches
@@ -80,7 +92,7 @@ const OrderPage = () => {
 
     const calculateSubtotal = () => {
         if (!cart || !cart.items) return 0;
-        return cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        return cart.items.reduce((total, item) => total + (parseFloat(item.price || 0) * (item.quantity || 1)), 0);
     };
 
     const subtotal = calculateSubtotal();
@@ -100,13 +112,31 @@ const OrderPage = () => {
 
         try {
             let orderResponse;
-            if (isAuthenticated) {
+
+            // Handle Direct Orders (Landing Pages)
+            if (directPurchase) {
+                if (isAuthenticated) {
+                    orderResponse = await createDirectOrder({
+                        ...formData,
+                        cartItems: [directPurchase],
+                        couponCode: appliedCoupon
+                    });
+                } else {
+                    orderResponse = await createGuestOrder({
+                        ...formData,
+                        cartItems: [directPurchase],
+                        couponCode: appliedCoupon
+                    });
+                }
+            }
+            // Handle Standard Orders (Cart)
+            else if (isAuthenticated) {
                 orderResponse = await createOrder({ ...formData, couponCode: appliedCoupon });
             } else {
                 orderResponse = await createGuestOrder({ ...formData, cartItems: cart.items, couponCode: appliedCoupon });
                 localStorage.removeItem('cart');
             }
-            
+
             // Set the actual order ID from the response
             if (orderResponse && orderResponse.data && orderResponse.data.id) {
                 setOrderId(orderResponse.data.id.toString());
@@ -125,12 +155,12 @@ const OrderPage = () => {
 
             setSuccess('Order placed successfully! Redirecting to success page...');
             toast.success('🎉 Order placed successfully! Thank you for your purchase!');
-            
+
             // Redirect to order success page with order ID and order data
             const orderIdValue = orderResponse?.data?.id?.toString() || orderId;
             setTimeout(() => {
                 navigate(`/order-success?orderId=${orderIdValue}`, {
-                    state: { 
+                    state: {
                         orderId: orderIdValue,
                         order: orderResponse?.data // Pass full order data
                     }
@@ -197,7 +227,7 @@ const OrderPage = () => {
                     </p>
                 </div>
 
-            {success ? (
+                {success ? (
                     /* Success State */
                     <div className="max-w-2xl mx-auto">
                         <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
@@ -215,12 +245,12 @@ const OrderPage = () => {
                                     <span className="font-semibold">رقم الطلب / Order ID:</span> #{orderId}
                                 </p>
                             </div>
-                    <FeedbackForm orderId={orderId} isAuthenticated={isAuthenticated} />
+                            <FeedbackForm orderId={orderId} isAuthenticated={isAuthenticated} />
                         </div>
-                </div>
-            ) : (
-                <>
-                    {cart.items.length === 0 ? (
+                    </div>
+                ) : (
+                    <>
+                        {cart.items.length === 0 ? (
                             /* Empty Cart */
                             <div className="bg-white rounded-2xl shadow-sm p-12 text-center">
                                 <div className="max-w-md mx-auto">
@@ -244,7 +274,7 @@ const OrderPage = () => {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {/* Order Summary */}
+                                {/* Order Summary */}
                                 <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
                                     <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
                                         <h2 className="text-2xl font-bold text-white flex items-center">
@@ -255,7 +285,7 @@ const OrderPage = () => {
                                             {cart.items.length} {cart.items.length === 1 ? 'منتج / item' : 'منتجات / items'} في طلبك
                                         </p>
                                     </div>
-                                    
+
                                     <div className="p-6">
                                         {/* Items List */}
                                         <div className="space-y-4 mb-6">
@@ -283,20 +313,25 @@ const OrderPage = () => {
                                                             )}
                                                         </div>
                                                     </div>
-                                                    
+
                                                     {/* Product Info */}
                                                     <div className="flex-grow">
                                                         <h3 className="font-semibold text-gray-900 mb-1">{item.productName}</h3>
+                                                        {item.variantName && (
+                                                            <p className="text-sm text-pink-600 font-medium mb-1">
+                                                                {item.variantName}
+                                                            </p>
+                                                        )}
                                                         <p className="text-sm text-gray-600">الكمية / Qty: {item.quantity}</p>
-                                                        <p className="text-sm text-gray-600">${item.price.toFixed(2)} لكل قطعة / each</p>
+                                                        <p className="text-sm text-gray-600">${parseFloat(item.price || 0).toFixed(2)} لكل قطعة / each</p>
                                                     </div>
-                                                    
+
                                                     {/* Price */}
                                                     <div className="text-right">
-                                                        <p className="font-bold text-lg text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
+                                                        <p className="font-bold text-lg text-gray-900">${(parseFloat(item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
                                                     </div>
-                                    </div>
-                                ))}
+                                                </div>
+                                            ))}
                                         </div>
 
                                         {/* Coupon Section */}
@@ -337,8 +372,8 @@ const OrderPage = () => {
                                                         <span className="text-green-800 font-semibold">
                                                             تم تطبيق الكود "{appliedCoupon}"! وفرت ${discount.toFixed(2)}! / Coupon applied! You saved ${discount.toFixed(2)}!
                                                         </span>
-                                    </div>
-                                </div>
+                                                    </div>
+                                                </div>
                                             )}
                                         </div>
 
@@ -348,8 +383,8 @@ const OrderPage = () => {
                                                 <span>المجموع الفرعي / Subtotal</span>
                                                 <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
                                             </div>
-                                    {discount > 0 && (
-                                        <div className="flex justify-between text-green-600">
+                                            {discount > 0 && (
+                                                <div className="flex justify-between text-green-600">
                                                     <span>خصم / Discount ({appliedCoupon})</span>
                                                     <span className="font-medium">-${discount.toFixed(2)}</span>
                                                 </div>
@@ -372,11 +407,11 @@ const OrderPage = () => {
                                             تفاصيل التسليم / Delivery Details
                                         </h2>
                                         <p className="text-blue-100 mt-1">إلى أين نرسل طلبك؟ / Where should we deliver your order?</p>
-                            </div>
+                                    </div>
 
                                     <div className="p-6">
                                         <form onSubmit={handleSubmit} className="space-y-6">
-                                    {!isAuthenticated && (
+                                            {!isAuthenticated && (
                                                 <div>
                                                     <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                                                         البريد الإلكتروني / Email Address <span className="text-red-500">*</span>
@@ -390,9 +425,9 @@ const OrderPage = () => {
                                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
                                                         placeholder="your@email.com"
                                                     />
-                                        </div>
-                                    )}
-                                            
+                                                </div>
+                                            )}
+
                                             <div>
                                                 <label htmlFor="clientFullName" className="block text-sm font-semibold text-gray-700 mb-2">
                                                     الاسم الكامل / Full Name <span className="text-red-500">*</span>
@@ -406,8 +441,8 @@ const OrderPage = () => {
                                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
                                                     placeholder="الاسم الكامل / Your Full Name"
                                                 />
-                                    </div>
-                                            
+                                            </div>
+
                                             <div>
                                                 <label htmlFor="city" className="block text-sm font-semibold text-gray-700 mb-2">
                                                     المدينة / City <span className="text-red-500">*</span>
@@ -421,11 +456,11 @@ const OrderPage = () => {
                                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
                                                     placeholder="اختر أو اكتب مدينتك / Select or type your city"
                                                 />
-                                        <datalist id="cities">
-                                            {moroccanCities.map(city => <option key={city} value={city} />)}
-                                        </datalist>
-                                    </div>
-                                            
+                                                <datalist id="cities">
+                                                    {moroccanCities.map(city => <option key={city} value={city} />)}
+                                                </datalist>
+                                            </div>
+
                                             <div>
                                                 <label htmlFor="address" className="block text-sm font-semibold text-gray-700 mb-2">
                                                     عنوان الشحن / Shipping Address <span className="text-red-500">*</span>
@@ -440,7 +475,7 @@ const OrderPage = () => {
                                                     placeholder="123 Main St, Anytown"
                                                 />
                                             </div>
-                                            
+
                                             <div>
                                                 <label htmlFor="phoneNumber" className="block text-sm font-semibold text-gray-700 mb-2">
                                                     رقم الهاتف / Phone Number <span className="text-red-500">*</span>
@@ -496,13 +531,13 @@ const OrderPage = () => {
                                                     </div>
                                                 )}
                                             </button>
-                                </form>
+                                        </form>
                                     </div>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </>
-            )}
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

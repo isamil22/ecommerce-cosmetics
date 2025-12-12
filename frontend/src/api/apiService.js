@@ -393,6 +393,10 @@ export const createOrder = (orderData) => {
     return apiService.post(`/orders?${params.toString()}`);
 };
 
+export const createDirectOrder = (orderData) => {
+    return apiService.post('/orders/direct', orderData);
+};
+
 export const createGuestOrder = (orderData) => {
     return apiService.post('/orders/guest', orderData);
 };

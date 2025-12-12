@@ -13,5 +13,6 @@ public class OrderItemDTO {
     private Integer quantity;
     @Positive
     private BigDecimal price;
-    private String imageUrl; // <-- Add this line
+    private String imageUrl;
+    private String variantName;
 }

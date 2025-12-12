@@ -39,10 +39,10 @@ public abstract class OrderMapper {
     @Mapping(target = "couponCode", expression = "java(order.getCoupon() != null ? order.getCoupon().getCode() : null)")
     public abstract OrderDTO toDTO(Order order);
 
-    @Mapping(target = "productId", source = "product.id")
-    @Mapping(target = "productName", source = "product.name")
-    // --- THIS IS THE NEW LINE ---
-    @Mapping(target = "imageUrl", expression = "java(!orderItem.getProduct().getImages().isEmpty() ? orderItem.getProduct().getImages().get(0) : null)")
+    @Mapping(target = "productId", expression = "java(orderItem.getProduct() != null ? orderItem.getProduct().getId() : null)")
+    @Mapping(target = "productName", source = "productName")
+    @Mapping(target = "imageUrl", source = "productImage")
+    @Mapping(target = "variantName", source = "variantName")
     public abstract OrderItemDTO toOrderItemDTO(OrderItem orderItem);
 
     // --- List Mappings ---

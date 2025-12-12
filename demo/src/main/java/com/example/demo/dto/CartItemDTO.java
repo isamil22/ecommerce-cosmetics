@@ -11,6 +11,7 @@ public class CartItemDTO {
     private String productName;
     @Positive
     private Integer quantity;
-    private BigDecimal price; // Add this field
-    private String imageUrl; // Add image URL field
+    private BigDecimal price;
+    private String imageUrl;
+    private String variantName; // Add this field
 }

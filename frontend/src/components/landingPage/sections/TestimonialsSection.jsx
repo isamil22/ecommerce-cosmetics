@@ -64,18 +64,69 @@ const TestimonialsSection = ({ data }) => {
         return gradients[index % gradients.length];
     };
 
+    const getBackground = () => {
+        switch (data.backgroundStyle) {
+            case 'gradient-pink':
+                return 'linear-gradient(135deg, #FFF0F5 0%, #ffffff 50%, #E6E6FA 100%)';
+            case 'gradient-blue':
+                return 'linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #e6e6fa 100%)';
+            case 'gradient-gold':
+                return 'linear-gradient(135deg, #fffdf2 0%, #ffffff 50%, #fff5e6 100%)';
+            case 'luxury':
+                return 'radial-gradient(circle at 50% 50%, #ffffff 0%, #f3f3f3 100%)';
+            default:
+                return backgroundColor === '#ffffff'
+                    ? 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'
+                    : backgroundColor;
+        }
+    };
+
     return (
-        <div 
+        <div
             ref={sectionRef}
             style={{
-                background: backgroundColor === '#ffffff' 
-                    ? 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'
-                    : backgroundColor,
+                background: getBackground(),
                 padding: '100px 20px',
                 position: 'relative',
                 overflow: 'hidden',
             }}
         >
+            <style>
+                {`
+                @keyframes float {
+                    0% { transform: translate(0px, 0px) scale(1); }
+                    33% { transform: translate(30px, -50px) scale(1.1); }
+                    66% { transform: translate(-20px, 20px) scale(0.9); }
+                    100% { transform: translate(0px, 0px) scale(1); }
+                }
+                @keyframes float-delayed {
+                    0% { transform: translate(0px, 0px) scale(1); }
+                    33% { transform: translate(-30px, 30px) scale(0.9); }
+                    66% { transform: translate(20px, -20px) scale(1.1); }
+                    100% { transform: translate(0px, 0px) scale(1); }
+                }
+                `}
+            </style>
+
+            {/* Ambient Orbs for Pro Look */}
+            {data.backgroundStyle && data.backgroundStyle.includes('gradient') && (
+                <>
+                    <div style={{
+                        position: 'absolute', top: '-10%', right: '-5%', width: '600px', height: '600px',
+                        background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%)',
+                        filter: 'blur(80px)',
+                        pointerEvents: 'none',
+                        animation: 'float 20s ease-in-out infinite'
+                    }} />
+                    <div style={{
+                        position: 'absolute', bottom: '-10%', left: '-5%', width: '600px', height: '600px',
+                        background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%)',
+                        filter: 'blur(80px)',
+                        pointerEvents: 'none',
+                        animation: 'float-delayed 25s ease-in-out infinite'
+                    }} />
+                </>
+            )}
             {/* Decorative Elements */}
             <div style={{
                 position: 'absolute',
@@ -181,7 +232,7 @@ const TestimonialsSection = ({ data }) => {
                     {testimonials.map((testimonial, index) => {
                         const avatarUrl = getImageUrl(testimonial.avatar || testimonial.image);
                         const productImages = testimonial.productImages || [];
-                        
+
                         return (
                             <div
                                 key={index}
@@ -192,19 +243,21 @@ const TestimonialsSection = ({ data }) => {
                                     textAlign: 'left',
                                     boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
                                     border: '1px solid rgba(0,0,0,0.03)',
-                                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    transition: 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)', // Bouncy effect
                                     opacity: isVisible ? 1 : 0,
-                                    transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
-                                    transitionDelay: `${0.1 * index}s`,
+                                    transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(60px) scale(0.95)',
+                                    transitionDelay: `${0.2 + (index * 0.15)}s`, // Better staggering
                                     position: 'relative',
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-8px)';
-                                    e.currentTarget.style.boxShadow = '0 20px 50px rgba(255,105,180,0.12)';
+                                    e.currentTarget.style.transform = 'translateY(-10px) scale(1.02)';
+                                    e.currentTarget.style.boxShadow = '0 25px 60px rgba(0,0,0,0.12)';
+                                    e.currentTarget.style.zIndex = '10';
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
                                     e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
+                                    e.currentTarget.style.zIndex = '1';
                                 }}
                             >
                                 {/* Quote Icon */}
@@ -319,7 +372,7 @@ const TestimonialsSection = ({ data }) => {
                                             {productImages.map((img, imgIndex) => {
                                                 const imageUrl = getImageUrl(img);
                                                 if (!imageUrl) return null;
-                                                
+
                                                 return (
                                                     <div
                                                         key={imgIndex}

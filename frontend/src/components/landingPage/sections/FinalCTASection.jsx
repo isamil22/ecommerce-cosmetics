@@ -5,8 +5,10 @@ import { useLandingPageCTA } from '../LandingPageCTAHandler';
  * Premium Final CTA Section
  * Compelling last call-to-action with animations and trust elements
  */
-const FinalCTASection = ({ data, isEditing = false, productId = null }) => {
-    const handleCTA = useLandingPageCTA(productId);
+const FinalCTASection = ({ data, isEditing = false, productId = null, availableVariants = [] }) => {
+    // Merge local data with global variants if not present locally
+    const ctaData = { ...data, variants: data?.variants || availableVariants };
+    const handleCTA = useLandingPageCTA(productId, ctaData);
     const {
         title = 'Ready to Transform Your Life?',
         subtitle = 'Join thousands of satisfied customers who made the decision to change',
@@ -42,10 +44,10 @@ const FinalCTASection = ({ data, isEditing = false, productId = null }) => {
     }, []);
 
     return (
-        <div 
+        <div
             ref={sectionRef}
             style={{
-                background: backgroundColor === '#ffffff' 
+                background: backgroundColor === '#ffffff'
                     ? 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 50%, #fff0f5 100%)'
                     : backgroundColor,
                 textAlign: 'center',

@@ -1,16 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLandingPageCTA } from '../LandingPageCTAHandler';
 
 /**
  * Premium Before/After Section Component
  * Interactive before and after comparison with slider
  */
-const BeforeAfterSection = ({ data }) => {
+const BeforeAfterSection = ({ data, availableVariants, productId }) => {
     const {
         title = 'See The Transformation',
         subtitle = 'Real results from real customers',
         comparisons = [],
         backgroundColor = '#ffffff',
     } = data || {};
+
+    // Merge section variants with global available variants for the CTA
+    const ctaData = {
+        ...data,
+        variants: data?.variants || availableVariants || []
+    };
+
+    const handleCTA = useLandingPageCTA(productId, ctaData);
 
     const [isVisible, setIsVisible] = useState(false);
     const sectionRef = useRef(null);
@@ -37,10 +46,10 @@ const BeforeAfterSection = ({ data }) => {
     }
 
     return (
-        <section 
+        <section
             ref={sectionRef}
             style={{
-                background: backgroundColor === '#ffffff' 
+                background: backgroundColor === '#ffffff'
                     ? 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%)'
                     : backgroundColor,
                 padding: '100px 20px',
@@ -69,8 +78,8 @@ const BeforeAfterSection = ({ data }) => {
             }}>
                 {/* Header */}
                 {(title || subtitle) && (
-                    <div style={{ 
-                        textAlign: 'center', 
+                    <div style={{
+                        textAlign: 'center',
                         marginBottom: '60px',
                         opacity: isVisible ? 1 : 0,
                         transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
@@ -120,9 +129,9 @@ const BeforeAfterSection = ({ data }) => {
                     gap: '40px',
                 }}>
                     {comparisons.map((comparison, index) => (
-                        <ComparisonCard 
-                            key={index} 
-                            comparison={comparison} 
+                        <ComparisonCard
+                            key={index}
+                            comparison={comparison}
                             index={index}
                             isVisible={isVisible}
                         />
@@ -144,6 +153,7 @@ const BeforeAfterSection = ({ data }) => {
                     </p>
                     <a
                         href="#order"
+                        onClick={handleCTA}
                         style={{
                             display: 'inline-flex',
                             alignItems: 'center',
@@ -157,6 +167,7 @@ const BeforeAfterSection = ({ data }) => {
                             fontWeight: '700',
                             boxShadow: '0 8px 25px rgba(255,105,180,0.35)',
                             transition: 'all 0.3s ease',
+                            cursor: 'pointer',
                         }}
                         onMouseEnter={(e) => {
                             e.target.style.transform = 'translateY(-3px)';
@@ -183,7 +194,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
 
     const handleMove = (e) => {
         if (!isDragging || !containerRef.current) return;
-        
+
         const rect = containerRef.current.getBoundingClientRect();
         const x = (e.clientX || e.touches?.[0]?.clientX) - rect.left;
         const percentage = Math.min(Math.max((x / rect.width) * 100, 5), 95);
@@ -217,7 +228,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
     const afterUrl = getImageUrl(comparison.afterImage);
 
     return (
-        <div 
+        <div
             style={{
                 background: 'white',
                 borderRadius: '24px',
@@ -229,7 +240,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
             }}
         >
             {/* Interactive Comparison Container */}
-            <div 
+            <div
                 ref={containerRef}
                 style={{
                     position: 'relative',
@@ -391,8 +402,8 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
                         fontSize: '1.05rem',
                         lineHeight: '1.6',
                     }}>
-                        <span style={{ 
-                            color: '#ff69b4', 
+                        <span style={{
+                            color: '#ff69b4',
                             fontWeight: '600',
                             marginRight: '8px',
                         }}>✨</span>

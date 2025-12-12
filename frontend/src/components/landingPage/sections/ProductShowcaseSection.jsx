@@ -5,8 +5,7 @@ import { useLandingPageCTA } from '../LandingPageCTAHandler';
  * Premium Product Showcase Section
  * Beautiful product display with animations and premium styling
  */
-const ProductShowcaseSection = ({ data, productId = null }) => {
-    const handleCTA = useLandingPageCTA(productId);
+const ProductShowcaseSection = ({ data, productId = null, availableVariants = [] }) => {
     const {
         image = '/placeholder-image.jpg',
         title = 'Our Amazing Product',
@@ -21,6 +20,65 @@ const ProductShowcaseSection = ({ data, productId = null }) => {
         ctaText = '',
         ctaLink = '#order',
     } = data || {};
+
+    // Variant Logic
+    const [selectedVariants, setSelectedVariants] = useState({});
+    const variants = (data?.variants && data.variants.length > 0) ? data.variants : availableVariants;
+
+    // Calculate activeImage with priority: Color Variant Image > Other Variant Image > Default Image
+    let activeImage = image;
+
+    if (data?.optionVisuals) {
+        let colorImage = null;
+        let otherImage = null;
+
+        Object.entries(selectedVariants).forEach(([varName, varOption]) => {
+            const visualKey = `${varName}:${varOption}`;
+            const visual = data.optionVisuals[visualKey];
+
+            if (visual?.image) {
+                const isColor = varName.toLowerCase().includes('color') ||
+                    varName.toLowerCase().includes('colour') ||
+                    varName.toLowerCase().includes('shade');
+
+                if (isColor) {
+                    colorImage = visual.image;
+                } else {
+                    otherImage = visual.image;
+                }
+            }
+        });
+
+        // Color takes precedence (so "Purple" wins over "50ml" if both have images)
+        if (colorImage) {
+            activeImage = colorImage;
+        } else if (otherImage) {
+            activeImage = otherImage;
+        }
+    }
+
+    // Helper to format selected variants string
+    const getVariantString = () => {
+        if (!variants.length) return null;
+        return variants.map(v => `${v.name}: ${selectedVariants[v.name] || 'Not Selected'}`).join(', ');
+    };
+
+    // Check if all variants are selected
+    const allVariantsSelected = variants.every(v => selectedVariants[v.name]);
+
+    const handleCTA = useLandingPageCTA(productId, {
+        ...data,
+        selectedVariant: getVariantString()
+    });
+
+    const handleBuyClick = (e) => {
+        e.preventDefault();
+        if (variants.length > 0 && !allVariantsSelected) {
+            alert('Please select all options before buying.');
+            return;
+        }
+        handleCTA(e);
+    };
 
     const [isVisible, setIsVisible] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -50,10 +108,11 @@ const ProductShowcaseSection = ({ data, productId = null }) => {
     };
 
     return (
-        <div 
+        <div
             ref={sectionRef}
+            id="product-showcase"
             style={{
-                background: backgroundColor === '#fafafa' 
+                background: backgroundColor === '#fafafa'
                     ? 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'
                     : backgroundColor,
                 padding: '100px 20px',
@@ -84,12 +143,12 @@ const ProductShowcaseSection = ({ data, productId = null }) => {
                 flexWrap: 'wrap',
             }}>
                 {/* Image Side */}
-                <div 
-                    style={{ 
+                <div
+                    style={{
                         flex: '1 1 450px',
                         opacity: isVisible ? 1 : 0,
-                        transform: isVisible 
-                            ? 'translateX(0)' 
+                        transform: isVisible
+                            ? 'translateX(0)'
                             : `translateX(${imagePosition === 'left' ? '-50px' : '50px'})`,
                         transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
                         position: 'relative',
@@ -133,9 +192,9 @@ const ProductShowcaseSection = ({ data, productId = null }) => {
                                 animation: 'shimmer 1.5s infinite',
                             }} />
                         )}
-                        
+
                         <img
-                            src={getImageUrl(image)}
+                            src={getImageUrl(activeImage)}
                             alt={title}
                             onLoad={() => setImageLoaded(true)}
                             style={{
@@ -154,12 +213,12 @@ const ProductShowcaseSection = ({ data, productId = null }) => {
                 </div>
 
                 {/* Content Side */}
-                <div 
-                    style={{ 
+                <div
+                    style={{
                         flex: '1 1 450px',
                         opacity: isVisible ? 1 : 0,
-                        transform: isVisible 
-                            ? 'translateX(0)' 
+                        transform: isVisible
+                            ? 'translateX(0)'
                             : `translateX(${imagePosition === 'left' ? '50px' : '-50px'})`,
                         transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s',
                     }}
@@ -220,8 +279,8 @@ const ProductShowcaseSection = ({ data, productId = null }) => {
                             margin: '0 0 2rem 0',
                         }}>
                             {features.map((feature, index) => (
-                                <li 
-                                    key={index} 
+                                <li
+                                    key={index}
                                     style={{
                                         fontSize: '1.1rem',
                                         marginBottom: '15px',
@@ -253,11 +312,77 @@ const ProductShowcaseSection = ({ data, productId = null }) => {
                         </ul>
                     )}
 
+                    {/* Variant Picker */}
+                    {variants.length > 0 && (
+                        <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            {variants.map((v, i) => {
+                                const isColorVariant = v.name.toLowerCase().includes('color') || v.name.toLowerCase().includes('colour') || v.name.toLowerCase().includes('shade');
+                                return (
+                                    <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                                        <span style={{ fontWeight: '600', minWidth: '60px', color: '#333' }}>{v.name}:</span>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            {v.options.filter(opt => opt && opt.trim()).map((option, j) => {
+                                                const isSelected = selectedVariants[v.name] === option;
+                                                const visualKey = `${v.name}:${option}`;
+                                                // Check for visual overrides (color/image)
+                                                const visual = (data.optionVisuals || {})[visualKey];
+
+                                                // Color Swatch Style
+                                                if (isColorVariant) {
+                                                    const swatchColor = visual?.color || (['red', 'blue', 'green', 'yellow', 'black', 'white', 'purple', 'orange', 'pink'].includes(option.toLowerCase()) ? option.toLowerCase() : '#ccc');
+
+                                                    return (
+                                                        <button
+                                                            key={j}
+                                                            onClick={() => setSelectedVariants(prev => ({ ...prev, [v.name]: option }))}
+                                                            title={option}
+                                                            style={{
+                                                                width: '32px',
+                                                                height: '32px',
+                                                                borderRadius: '50%',
+                                                                background: swatchColor,
+                                                                border: isSelected ? '2px solid #222' : '2px solid transparent',
+                                                                boxShadow: isSelected ? '0 0 0 2px white, 0 0 0 4px #ff69b4' : '0 2px 5px rgba(0,0,0,0.1)',
+                                                                cursor: 'pointer',
+                                                                transition: 'all 0.2s ease',
+                                                                transform: isSelected ? 'scale(1.1)' : 'scale(1)',
+                                                            }}
+                                                        />
+                                                    );
+                                                }
+
+                                                // Standard Button Style
+                                                return (
+                                                    <button
+                                                        key={j}
+                                                        onClick={() => setSelectedVariants(prev => ({ ...prev, [v.name]: option }))}
+                                                        style={{
+                                                            padding: '8px 20px',
+                                                            borderRadius: '25px',
+                                                            border: `2px solid ${isSelected ? '#ff69b4' : '#ddd'}`,
+                                                            background: isSelected ? '#ff69b4' : 'transparent',
+                                                            color: isSelected ? 'white' : '#555',
+                                                            cursor: 'pointer',
+                                                            fontWeight: '600',
+                                                            transition: 'all 0.3s ease'
+                                                        }}
+                                                    >
+                                                        {option}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
                     {/* CTA Button */}
                     {ctaText && (
                         <a
                             href={ctaLink || '#'}
-                            onClick={handleCTA}
+                            onClick={handleBuyClick}
                             style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',

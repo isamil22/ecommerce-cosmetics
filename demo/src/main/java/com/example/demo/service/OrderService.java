@@ -42,6 +42,127 @@ public class OrderService {
     private final CartMapper cartMapper;
     private final CouponRepository couponRepository;
 
+    private List<OrderItem> createOrderItemsFromDTO(List<CartItemDTO> itemDTOs, Order order) {
+        return itemDTOs.stream().map(itemDTO -> {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setQuantity(itemDTO.getQuantity());
+
+            if (itemDTO.getProductId() != null) {
+                // Standard Product
+                Product product = productRepository.findById(itemDTO.getProductId())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Product not found with id: " + itemDTO.getProductId()));
+
+                if (product.getQuantity() < itemDTO.getQuantity()) {
+                    throw new InsufficientStockException("Not enough stock for product " + product.getName());
+                }
+
+                // Decrease product stock
+                product.setQuantity(product.getQuantity() - itemDTO.getQuantity());
+                productRepository.save(product);
+
+                orderItem.setProduct(product);
+                orderItem.setProductName(product.getName());
+                orderItem.setPrice(product.getPrice());
+
+                // Get first image if available
+                if (product.getImages() != null && !product.getImages().isEmpty()) {
+                    orderItem.setProductImage(product.getImages().get(0));
+                }
+            } else {
+                // Direct product (no DB record)
+                if (itemDTO.getProductName() == null || itemDTO.getPrice() == null) {
+                    throw new IllegalArgumentException("Direct orders must have product name and price");
+                }
+                orderItem.setProductName(itemDTO.getProductName());
+                orderItem.setPrice(itemDTO.getPrice());
+                orderItem.setProductImage(itemDTO.getImageUrl());
+                orderItem.setProduct(null);
+            }
+
+            // Set Variant Name
+            orderItem.setVariantName(itemDTO.getVariantName());
+
+            return orderItem;
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public OrderDTO createDirectOrder(Long userId, GuestOrderRequestDTO request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (request.getCartItems() == null || request.getCartItems().isEmpty()) {
+            throw new IllegalStateException("Cannot create an order with an empty cart");
+        }
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setClientFullName(request.getClientFullName());
+        order.setCity(request.getCity());
+        order.setAddress(request.getAddress());
+        order.setPhoneNumber(request.getPhoneNumber());
+        order.setStatus(Order.OrderStatus.PREPARING);
+        order.setCreatedAt(LocalDateTime.now());
+        order.setShippingCost(new BigDecimal("10.00"));
+
+        List<OrderItem> orderItems = createOrderItemsFromDTO(request.getCartItems(), order);
+        order.setItems(orderItems);
+
+        // Apply coupon logic (shared or duplicated - here duplicating for
+        // simplicity/safety as previous session)
+        BigDecimal subtotal = calculateSubtotalForGuestOrder(request.getCartItems());
+        if (request.getCouponCode() != null && !request.getCouponCode().trim().isEmpty()) {
+            Coupon coupon = couponRepository.findByCode(request.getCouponCode())
+                    .orElseThrow(() -> new ResourceNotFoundException("Coupon not found: " + request.getCouponCode()));
+
+            // Validation (simplified for direct order - copy from guest)
+            if (coupon.getExpiryDate().isBefore(LocalDateTime.now())) {
+                throw new IllegalStateException("Coupon has expired.");
+            }
+            if (coupon.getUsageLimit() > 0
+                    && (coupon.getTimesUsed() != null ? coupon.getTimesUsed() : 0) >= coupon.getUsageLimit()) {
+                throw new IllegalStateException("Coupon has reached its usage limit.");
+            }
+            if (coupon.getMinPurchaseAmount() != null && subtotal.compareTo(coupon.getMinPurchaseAmount()) < 0) {
+                throw new IllegalStateException("Order total does not meet the minimum purchase amount.");
+            }
+            if (coupon.isFirstTimeOnly() && orderRepository.existsByUser_Id(userId)) {
+                throw new IllegalStateException("This coupon is for first-time customers only.");
+            }
+            if (!isCouponApplicableToGuestCart(coupon, request.getCartItems())) { // Use DTO check
+                throw new IllegalStateException("This coupon is not valid for these items.");
+            }
+
+            // Discount
+            BigDecimal discountAmount = BigDecimal.ZERO;
+            if (coupon.getDiscountType() == Coupon.DiscountType.FIXED_AMOUNT) {
+                discountAmount = coupon.getDiscountValue();
+            } else if (coupon.getDiscountType() == Coupon.DiscountType.PERCENTAGE) {
+                BigDecimal applicableSubtotal = getApplicableSubtotalForGuestCart(coupon, request.getCartItems());
+                discountAmount = applicableSubtotal.multiply(coupon.getDiscountValue().divide(new BigDecimal("100")));
+            }
+            if (coupon.getDiscountType() == Coupon.DiscountType.FREE_SHIPPING) {
+                order.setShippingCost(BigDecimal.ZERO);
+            }
+            order.setCoupon(coupon);
+            order.setDiscountAmount(discountAmount);
+            coupon.setTimesUsed((coupon.getTimesUsed() != null ? coupon.getTimesUsed() : 0) + 1);
+            couponRepository.save(coupon);
+        } else {
+            order.setDiscountAmount(BigDecimal.ZERO);
+        }
+
+        Order savedOrder = orderRepository.save(order);
+        try {
+            emailService.sendOrderConfirmation(savedOrder);
+        } catch (MailException e) {
+            logger.error("Failed to send order confirmation email", e);
+        }
+        return orderMapper.toDTO(savedOrder);
+    }
+
     @Transactional
     public OrderDTO createGuestOrder(GuestOrderRequestDTO request) {
         // Find or create a user for the guest
@@ -72,21 +193,8 @@ public class OrderService {
         // Set a default shipping cost
         order.setShippingCost(new BigDecimal("10.00"));
 
-        // Create OrderItems directly from the DTO, checking stock
-        List<OrderItem> orderItems = request.getCartItems().stream().map(itemDTO -> {
-            Product product = productRepository.findById(itemDTO.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + itemDTO.getProductId()));
-
-            if (product.getQuantity() < itemDTO.getQuantity()) {
-                throw new InsufficientStockException("Not enough stock for product " + product.getName());
-            }
-
-            // Decrease product stock
-            product.setQuantity(product.getQuantity() - itemDTO.getQuantity());
-            productRepository.save(product);
-
-            return new OrderItem(null, order, product, itemDTO.getQuantity(), product.getPrice());
-        }).collect(Collectors.toList());
+        // Create OrderItems using helper
+        List<OrderItem> orderItems = createOrderItemsFromDTO(request.getCartItems(), order);
 
         order.setItems(orderItems);
 
@@ -101,11 +209,13 @@ public class OrderService {
             if (coupon.getExpiryDate().isBefore(LocalDateTime.now())) {
                 throw new IllegalStateException("Coupon has expired.");
             }
-            if (coupon.getUsageLimit() > 0 && (coupon.getTimesUsed() != null ? coupon.getTimesUsed() : 0) >= coupon.getUsageLimit()) {
+            if (coupon.getUsageLimit() > 0
+                    && (coupon.getTimesUsed() != null ? coupon.getTimesUsed() : 0) >= coupon.getUsageLimit()) {
                 throw new IllegalStateException("Coupon has reached its usage limit.");
             }
             if (coupon.getMinPurchaseAmount() != null && subtotal.compareTo(coupon.getMinPurchaseAmount()) < 0) {
-                throw new IllegalStateException("Order total does not meet the minimum purchase amount for this coupon.");
+                throw new IllegalStateException(
+                        "Order total does not meet the minimum purchase amount for this coupon.");
             }
 
             // First-Time Customer Validation for guest orders
@@ -160,7 +270,8 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDTO createOrder(Long userId, String address, String phoneNumber, String clientFullName, String city, String couponCode) {
+    public OrderDTO createOrder(Long userId, String address, String phoneNumber, String clientFullName, String city,
+            String couponCode) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (!user.isEmailConfirmation()) {
@@ -178,7 +289,8 @@ public class OrderService {
         // We need to load the full product details for each cart item.
         for (CartItem item : cart.getItems()) {
             Product fullProduct = productRepository.findById(item.getProduct().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart with ID: " + item.getProduct().getId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product not found in cart with ID: " + item.getProduct().getId()));
             item.setProduct(fullProduct);
         }
         // ======================== FIX END ========================
@@ -194,7 +306,6 @@ public class OrderService {
         // Set a default shipping cost
         order.setShippingCost(new BigDecimal("10.00"));
 
-
         BigDecimal subtotal = calculateSubtotal(cart.getItems());
 
         if (couponCode != null && !couponCode.trim().isEmpty()) {
@@ -206,11 +317,13 @@ public class OrderService {
             if (coupon.getExpiryDate().isBefore(LocalDateTime.now())) {
                 throw new IllegalStateException("Coupon has expired.");
             }
-            if (coupon.getUsageLimit() > 0 && (coupon.getTimesUsed() != null ? coupon.getTimesUsed() : 0) >= coupon.getUsageLimit()) {
+            if (coupon.getUsageLimit() > 0
+                    && (coupon.getTimesUsed() != null ? coupon.getTimesUsed() : 0) >= coupon.getUsageLimit()) {
                 throw new IllegalStateException("Coupon has reached its usage limit.");
             }
             if (coupon.getMinPurchaseAmount() != null && subtotal.compareTo(coupon.getMinPurchaseAmount()) < 0) {
-                throw new IllegalStateException("Order total does not meet the minimum purchase amount for this coupon.");
+                throw new IllegalStateException(
+                        "Order total does not meet the minimum purchase amount for this coupon.");
             }
 
             // New: First-Time Customer Validation
@@ -226,7 +339,6 @@ public class OrderService {
             }
 
             // === End of Validation Logic ===
-
 
             // === Start of Discount Calculation ===
             BigDecimal discountAmount = BigDecimal.ZERO;
@@ -271,25 +383,42 @@ public class OrderService {
 
     private List<OrderItem> createOrderItems(Cart cart, Order order) {
         return cart.getItems().stream().map(cartItem -> {
-            Product product = productRepository.findById(cartItem.getProduct().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + cartItem.getProduct().getId()));
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setQuantity(cartItem.getQuantity());
 
-            if (product.getQuantity() == null) {
-                throw new IllegalStateException("Product quantity is not set for product " + product.getName());
+            Product product = cartItem.getProduct();
+            if (product == null) {
+                throw new IllegalStateException("Cart item must have a product");
             }
+
+            // Standard Product Logic
             if (product.getQuantity() < cartItem.getQuantity()) {
                 throw new InsufficientStockException("Not enough stock for product " + product.getName());
             }
+
+            // Decrease stock
             product.setQuantity(product.getQuantity() - cartItem.getQuantity());
             productRepository.save(product);
 
-            return new OrderItem(null, order, product, cartItem.getQuantity(), product.getPrice());
+            orderItem.setProduct(product);
+            orderItem.setProductName(product.getName());
+            orderItem.setPrice(product.getPrice());
+            if (product.getImages() != null && !product.getImages().isEmpty()) {
+                orderItem.setProductImage(product.getImages().get(0));
+            }
+
+            // CartItem entity does not currently support variantName, so we leave it null.
+            // Direct orders use createOrderItemsFromDTO which supports variants.
+
+            return orderItem;
         }).collect(Collectors.toList());
     }
 
     private boolean isCouponApplicableToCart(Coupon coupon, Cart cart) {
         boolean productSpecific = coupon.getApplicableProducts() != null && !coupon.getApplicableProducts().isEmpty();
-        boolean categorySpecific = coupon.getApplicableCategories() != null && !coupon.getApplicableCategories().isEmpty();
+        boolean categorySpecific = coupon.getApplicableCategories() != null
+                && !coupon.getApplicableCategories().isEmpty();
 
         // If not restricted by product or category, it's applicable to the whole cart
         if (!productSpecific && !categorySpecific) {
@@ -298,14 +427,16 @@ public class OrderService {
 
         return cart.getItems().stream().anyMatch(item -> {
             boolean matchesProduct = productSpecific && coupon.getApplicableProducts().contains(item.getProduct());
-            boolean matchesCategory = categorySpecific && coupon.getApplicableCategories().contains(item.getProduct().getCategory());
+            boolean matchesCategory = categorySpecific
+                    && coupon.getApplicableCategories().contains(item.getProduct().getCategory());
             return matchesProduct || matchesCategory;
         });
     }
 
     private BigDecimal getApplicableSubtotal(Coupon coupon, Cart cart) {
         boolean productSpecific = coupon.getApplicableProducts() != null && !coupon.getApplicableProducts().isEmpty();
-        boolean categorySpecific = coupon.getApplicableCategories() != null && !coupon.getApplicableCategories().isEmpty();
+        boolean categorySpecific = coupon.getApplicableCategories() != null
+                && !coupon.getApplicableCategories().isEmpty();
 
         if (!productSpecific && !categorySpecific) {
             return calculateSubtotal(cart.getItems()); // Apply to whole cart if no restrictions
@@ -313,8 +444,10 @@ public class OrderService {
 
         return cart.getItems().stream()
                 .filter(item -> {
-                    boolean matchesProduct = productSpecific && coupon.getApplicableProducts().contains(item.getProduct());
-                    boolean matchesCategory = categorySpecific && item.getProduct().getCategory() != null && coupon.getApplicableCategories().contains(item.getProduct().getCategory());
+                    boolean matchesProduct = productSpecific
+                            && coupon.getApplicableProducts().contains(item.getProduct());
+                    boolean matchesCategory = categorySpecific && item.getProduct().getCategory() != null
+                            && coupon.getApplicableCategories().contains(item.getProduct().getCategory());
                     return matchesProduct || matchesCategory;
                 })
                 .map(item -> item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity())))
@@ -330,16 +463,26 @@ public class OrderService {
     private BigDecimal calculateSubtotalForGuestOrder(List<CartItemDTO> cartItems) {
         return cartItems.stream()
                 .map(itemDTO -> {
-                    Product product = productRepository.findById(itemDTO.getProductId())
-                            .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + itemDTO.getProductId()));
-                    return product.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
+                    if (itemDTO.getProductId() != null) {
+                        Product product = productRepository.findById(itemDTO.getProductId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                        "Product not found with id: " + itemDTO.getProductId()));
+                        return product.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
+                    } else {
+                        // Direct order item
+                        if (itemDTO.getPrice() == null) {
+                            throw new IllegalArgumentException("Price is missing for direct order item");
+                        }
+                        return itemDTO.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
+                    }
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private boolean isCouponApplicableToGuestCart(Coupon coupon, List<CartItemDTO> cartItems) {
         boolean productSpecific = coupon.getApplicableProducts() != null && !coupon.getApplicableProducts().isEmpty();
-        boolean categorySpecific = coupon.getApplicableCategories() != null && !coupon.getApplicableCategories().isEmpty();
+        boolean categorySpecific = coupon.getApplicableCategories() != null
+                && !coupon.getApplicableCategories().isEmpty();
 
         // If not restricted by product or category, it's applicable to the whole cart
         if (!productSpecific && !categorySpecific) {
@@ -347,18 +490,28 @@ public class OrderService {
         }
 
         return cartItems.stream().anyMatch(itemDTO -> {
-            Product product = productRepository.findById(itemDTO.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + itemDTO.getProductId()));
-            
-            boolean matchesProduct = productSpecific && coupon.getApplicableProducts().contains(product);
-            boolean matchesCategory = categorySpecific && coupon.getApplicableCategories().contains(product.getCategory());
-            return matchesProduct || matchesCategory;
+            if (itemDTO.getProductId() != null) {
+                Product product = productRepository.findById(itemDTO.getProductId())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Product not found with id: " + itemDTO.getProductId()));
+
+                boolean matchesProduct = productSpecific && coupon.getApplicableProducts().contains(product);
+                boolean matchesCategory = categorySpecific
+                        && coupon.getApplicableCategories().contains(product.getCategory());
+                return matchesProduct || matchesCategory;
+            } else {
+                // Direct items cannot match specific products/categories in this implementation
+                // unless we map variant names or titles to categories, which is complex.
+                // For now, assume Not Applicable if restricted.
+                return false;
+            }
         });
     }
 
     private BigDecimal getApplicableSubtotalForGuestCart(Coupon coupon, List<CartItemDTO> cartItems) {
         boolean productSpecific = coupon.getApplicableProducts() != null && !coupon.getApplicableProducts().isEmpty();
-        boolean categorySpecific = coupon.getApplicableCategories() != null && !coupon.getApplicableCategories().isEmpty();
+        boolean categorySpecific = coupon.getApplicableCategories() != null
+                && !coupon.getApplicableCategories().isEmpty();
 
         if (!productSpecific && !categorySpecific) {
             return calculateSubtotalForGuestOrder(cartItems); // Apply to whole cart if no restrictions
@@ -366,21 +519,31 @@ public class OrderService {
 
         return cartItems.stream()
                 .filter(itemDTO -> {
-                    Product product = productRepository.findById(itemDTO.getProductId())
-                            .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + itemDTO.getProductId()));
-                    
-                    boolean matchesProduct = productSpecific && coupon.getApplicableProducts().contains(product);
-                    boolean matchesCategory = categorySpecific && product.getCategory() != null && coupon.getApplicableCategories().contains(product.getCategory());
-                    return matchesProduct || matchesCategory;
+                    if (itemDTO.getProductId() != null) {
+                        Product product = productRepository.findById(itemDTO.getProductId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                        "Product not found with id: " + itemDTO.getProductId()));
+
+                        boolean matchesProduct = productSpecific && coupon.getApplicableProducts().contains(product);
+                        boolean matchesCategory = categorySpecific && product.getCategory() != null
+                                && coupon.getApplicableCategories().contains(product.getCategory());
+                        return matchesProduct || matchesCategory;
+                    } else {
+                        return false;
+                    }
                 })
                 .map(itemDTO -> {
-                    Product product = productRepository.findById(itemDTO.getProductId())
-                            .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + itemDTO.getProductId()));
-                    return product.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
+                    // We already fetched product in filter, but clean code:
+                    if (itemDTO.getProductId() != null) {
+                        Product product = productRepository.findById(itemDTO.getProductId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                        "Product not found with id: " + itemDTO.getProductId()));
+                        return product.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
+                    }
+                    return BigDecimal.ZERO;
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
 
     @Transactional(readOnly = true)
     public List<OrderDTO> getAllOrders() {
@@ -435,45 +598,47 @@ public class OrderService {
         List<Order> orders = orderRepository.findAllForExportWithRelations();
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        
+
         // Enhanced CSV header with comprehensive order information
         pw.println("Order ID,User ID,Customer Name,City,Address,Phone Number,Status,Created At," +
-                  "Coupon Code,Discount Amount,Shipping Cost,Total Items,Total Quantity," +
-                  "Order Items Details,Total Amount");
-        
+                "Coupon Code,Discount Amount,Shipping Cost,Total Items,Total Quantity," +
+                "Order Items Details,Total Amount");
+
         for (Order order : orders) {
             // Calculate order totals
             int totalItems = order.getItems().size();
             int totalQuantity = order.getItems().stream()
                     .mapToInt(OrderItem::getQuantity)
                     .sum();
-            
+
             // Calculate total amount from items
             BigDecimal itemsTotal = order.getItems().stream()
                     .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            
+
             // Calculate final total (items total - discount + shipping)
             BigDecimal discountAmount = order.getDiscountAmount() != null ? order.getDiscountAmount() : BigDecimal.ZERO;
             BigDecimal shippingCost = order.getShippingCost() != null ? order.getShippingCost() : BigDecimal.ZERO;
             BigDecimal finalTotal = itemsTotal.subtract(discountAmount).add(shippingCost);
-            
+
             // Format order items details
             StringBuilder itemsDetails = new StringBuilder();
             for (OrderItem item : order.getItems()) {
                 if (itemsDetails.length() > 0) {
                     itemsDetails.append("; ");
                 }
-                itemsDetails.append(item.getProduct().getName())
-                          .append(" (Qty: ").append(item.getQuantity())
-                          .append(", Price: $").append(item.getPrice())
-                          .append(")");
+                String pName = item.getProductName() != null ? item.getProductName()
+                        : (item.getProduct() != null ? item.getProduct().getName() : "Unknown Product");
+                itemsDetails.append(pName)
+                        .append(" (Qty: ").append(item.getQuantity())
+                        .append(", Price: $").append(item.getPrice())
+                        .append(")");
             }
-            
+
             // Escape CSV values that contain commas or quotes
             String escapedItemsDetails = "\"" + itemsDetails.toString().replace("\"", "\"\"") + "\"";
             String escapedAddress = "\"" + order.getAddress().replace("\"", "\"\"") + "\"";
-            
+
             pw.println(String.join(",",
                     String.valueOf(order.getId()),
                     order.getUser() != null ? String.valueOf(order.getUser().getId()) : "N/A",
@@ -489,8 +654,7 @@ public class OrderService {
                     String.valueOf(totalItems),
                     String.valueOf(totalQuantity),
                     escapedItemsDetails,
-                    finalTotal.toString()
-            ));
+                    finalTotal.toString()));
         }
         return sw.toString();
     }

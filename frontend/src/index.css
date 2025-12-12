@@ -1,4 +1,6 @@
 /* Tailwind CSS imports */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,18 +11,23 @@ html {
 }
 
 body {
-    overflow-x: hidden; /* Prevents horizontal scrollbar from animations */
+    overflow-x: hidden;
+    /* Prevents horizontal scrollbar from animations */
     line-height: 1.6;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* --- ATTENTION-GRABBING ANIMATIONS --- */
 @keyframes attention-pulse {
-    0%, 100% { 
-        transform: scale(1); 
+
+    0%,
+    100% {
+        transform: scale(1);
         box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7);
     }
-    50% { 
-        transform: scale(1.05); 
+
+    50% {
+        transform: scale(1.05);
         box-shadow: 0 0 0 10px rgba(236, 72, 153, 0);
     }
 }
@@ -30,6 +37,7 @@ body {
         transform: translateX(100%);
         opacity: 0;
     }
+
     100% {
         transform: translateX(0);
         opacity: 1;
@@ -41,6 +49,7 @@ body {
         transform: translateY(-20px);
         opacity: 0;
     }
+
     100% {
         transform: translateY(0);
         opacity: 1;
@@ -51,37 +60,53 @@ body {
     0% {
         transform: translateX(-100%);
     }
+
     100% {
         transform: translateX(100%);
     }
 }
 
 @keyframes glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 5px rgba(236, 72, 153, 0.5);
     }
+
     50% {
         box-shadow: 0 0 20px rgba(236, 72, 153, 0.8), 0 0 30px rgba(236, 72, 153, 0.6);
     }
 }
 
 @keyframes urgent-bounce {
-    0%, 20%, 50%, 80%, 100% {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
         transform: translateY(0);
     }
+
     40% {
         transform: translateY(-10px);
     }
+
     60% {
         transform: translateY(-5px);
     }
 }
 
 @keyframes flash {
-    0%, 50%, 100% {
+
+    0%,
+    50%,
+    100% {
         opacity: 1;
     }
-    25%, 75% {
+
+    25%,
+    75% {
         opacity: 0.3;
     }
 }
@@ -385,11 +410,25 @@ body {
 }
 
 /* Optimized Spacing System */
-.spacing-optimized-xs { margin-bottom: 0.25rem; }
-.spacing-optimized-sm { margin-bottom: 0.5rem; }
-.spacing-optimized-md { margin-bottom: 1rem; }
-.spacing-optimized-lg { margin-bottom: 1.5rem; }
-.spacing-optimized-xl { margin-bottom: 2rem; }
+.spacing-optimized-xs {
+    margin-bottom: 0.25rem;
+}
+
+.spacing-optimized-sm {
+    margin-bottom: 0.5rem;
+}
+
+.spacing-optimized-md {
+    margin-bottom: 1rem;
+}
+
+.spacing-optimized-lg {
+    margin-bottom: 1.5rem;
+}
+
+.spacing-optimized-xl {
+    margin-bottom: 2rem;
+}
 
 /* Mobile Responsive Adjustments for Compact Layout */
 @media (max-width: 768px) {
@@ -397,33 +436,33 @@ body {
         max-width: 100%;
         margin: 0 0.5rem;
     }
-    
+
     .compact-card {
         max-width: 100%;
         margin: 0 0.5rem;
     }
-    
+
     .compact-info-panel {
         max-width: 100%;
         margin: 0 0.5rem;
         padding: 0.75rem;
     }
-    
+
     .compact-reviews-section {
         max-width: 100%;
         margin: 0 0.5rem;
     }
-    
+
     .compact-grid-2 {
         grid-template-columns: 1fr;
         max-width: 100%;
     }
-    
+
     .compact-grid-3 {
         grid-template-columns: repeat(2, 1fr);
         max-width: 100%;
     }
-    
+
     .compact-flex-row {
         flex-direction: column;
         gap: 0.5rem;
@@ -523,10 +562,13 @@ body {
 
 /* --- Animation Keyframes --- */
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
         opacity: 1;
     }
+
     50% {
         transform: scale(1.05);
         opacity: 0.9;
@@ -534,27 +576,43 @@ body {
 }
 
 @keyframes shake {
-    10%, 90% {
+
+    10%,
+    90% {
         transform: translate3d(-1px, 0, 0);
     }
-    20%, 80% {
+
+    20%,
+    80% {
         transform: translate3d(2px, 0, 0);
     }
-    30%, 50%, 70% {
+
+    30%,
+    50%,
+    70% {
         transform: translate3d(-4px, 0, 0);
     }
-    40%, 60% {
+
+    40%,
+    60% {
         transform: translate3d(4px, 0, 0);
     }
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
         transform: translateY(0);
     }
+
     40% {
         transform: translateY(-25px);
     }
+
     60% {
         transform: translateY(-15px);
     }
@@ -564,23 +622,38 @@ body {
     from {
         transform: scale3d(1, 1, 1);
     }
-    10%, 20% {
+
+    10%,
+    20% {
         transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
     }
-    30%, 50%, 70%, 90% {
+
+    30%,
+    50%,
+    70%,
+    90% {
         transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
     }
-    40%, 60%, 80% {
+
+    40%,
+    60%,
+    80% {
         transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
     }
+
     to {
         transform: scale3d(1, 1, 1);
     }
 }
 
 @keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
 }
 
 /* --- NEW PRO ANIMATIONS --- */
@@ -588,28 +661,38 @@ body {
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
 }
 
 @keyframes text-glow {
-    0%, 100% {
+
+    0%,
+    100% {
         text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 255, 255, 0.7);
     }
+
     50% {
         text-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 1);
     }
 }
 
 @keyframes flash-urgent {
-    0%, 50%, 100% {
+
+    0%,
+    50%,
+    100% {
         opacity: 1;
     }
-    25%, 75% {
+
+    25%,
+    75% {
         opacity: 0.6;
     }
 }
@@ -619,6 +702,7 @@ body {
         opacity: 0;
         transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -630,6 +714,7 @@ body {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -641,6 +726,7 @@ body {
         opacity: 0;
         transform: translateX(100px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -648,9 +734,12 @@ body {
 }
 
 @keyframes skeleton-pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }
@@ -663,7 +752,7 @@ body {
 }
 
 .animate-shake-custom {
-    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both infinite;
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both infinite;
 }
 
 .animate-bounce-custom {
@@ -714,11 +803,14 @@ body {
     padding-left: 100%;
     animation: marquee 20s linear infinite;
 }
+
 .image-zoom-container {
     position: relative;
     overflow: hidden;
-    border-radius: 0.5rem; /* Corresponds to rounded-lg in Tailwind */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Corresponds to shadow-lg */
+    border-radius: 0.5rem;
+    /* Corresponds to rounded-lg in Tailwind */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Corresponds to shadow-lg */
 }
 
 .image-zoom-container img {
@@ -731,18 +823,24 @@ body {
 
 /* Enhanced Professional Animations */
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-10px);
     }
 }
 
 @keyframes glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
     }
+
     50% {
         box-shadow: 0 0 30px rgba(236, 72, 153, 0.6);
     }
@@ -752,15 +850,19 @@ body {
     0% {
         background-position: -200% 0;
     }
+
     100% {
         background-position: 200% 0;
     }
 }
 
 @keyframes gradient-shift {
-    0%, 100% {
+
+    0%,
+    100% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
@@ -881,24 +983,32 @@ kbd {
 
 /* Enhanced Pack Page Animations */
 @keyframes pack-float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px) rotate(0deg);
     }
+
     25% {
         transform: translateY(-5px) rotate(1deg);
     }
+
     50% {
         transform: translateY(-10px) rotate(0deg);
     }
+
     75% {
         transform: translateY(-5px) rotate(-1deg);
     }
 }
 
 @keyframes pack-glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
     }
+
     50% {
         box-shadow: 0 15px 40px rgba(236, 72, 153, 0.4);
     }
@@ -909,9 +1019,11 @@ kbd {
         background-position: -200% 0;
         opacity: 0.8;
     }
+
     50% {
         opacity: 1;
     }
+
     100% {
         background-position: 200% 0;
         opacity: 0.8;
@@ -919,12 +1031,19 @@ kbd {
 }
 
 @keyframes pack-bounce {
-    0%, 20%, 50%, 80%, 100% {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
         transform: translateY(0);
     }
+
     40% {
         transform: translateY(-10px);
     }
+
     60% {
         transform: translateY(-5px);
     }
@@ -934,9 +1053,11 @@ kbd {
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
+
     100% {
         transform: scale(1);
     }
@@ -946,6 +1067,7 @@ kbd {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -956,6 +1078,7 @@ kbd {
         transform: scale(0.8);
         opacity: 0;
     }
+
     100% {
         transform: scale(1);
         opacity: 1;
@@ -1116,20 +1239,44 @@ kbd {
     transform: translateY(20px);
 }
 
-.product-grid-item:nth-child(1) { animation-delay: 0.1s; }
-.product-grid-item:nth-child(2) { animation-delay: 0.2s; }
-.product-grid-item:nth-child(3) { animation-delay: 0.3s; }
-.product-grid-item:nth-child(4) { animation-delay: 0.4s; }
-.product-grid-item:nth-child(5) { animation-delay: 0.5s; }
-.product-grid-item:nth-child(6) { animation-delay: 0.6s; }
-.product-grid-item:nth-child(7) { animation-delay: 0.7s; }
-.product-grid-item:nth-child(8) { animation-delay: 0.8s; }
+.product-grid-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.product-grid-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.product-grid-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.product-grid-item:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.product-grid-item:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.product-grid-item:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.product-grid-item:nth-child(7) {
+    animation-delay: 0.7s;
+}
+
+.product-grid-item:nth-child(8) {
+    animation-delay: 0.8s;
+}
 
 @keyframes fadeInUp {
     from {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1182,157 +1329,167 @@ kbd {
 
 /* Responsive Enhancements */
 @media (max-width: 768px) {
-    .container-xl, .container-lg, .container-md, .container-sm {
+
+    .container-xl,
+    .container-lg,
+    .container-md,
+    .container-sm {
         padding: 0 1rem;
     }
-    
+
     .section-spacing {
         padding: 1.5rem 0;
     }
-    
+
     .section-spacing-lg {
         padding: 2rem 0;
     }
-    
+
     .section-spacing-xl {
         padding: 3rem 0;
     }
-    
+
     .grid-responsive {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
     }
-    
+
     .grid-responsive-sm {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 0.75rem;
     }
-    
+
     .grid-responsive-lg {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 1rem;
     }
-    
+
     .card-container {
         padding: 1rem;
         margin: 0.5rem;
     }
-    
+
     .btn-container {
         flex-direction: column;
         gap: 0.5rem;
     }
-    
-    .btn-primary, .btn-secondary {
+
+    .btn-primary,
+    .btn-secondary {
         width: 100%;
         justify-content: center;
         padding: 1rem;
         font-size: 1rem;
     }
-    
+
     .search-container {
         padding: 1rem;
     }
-    
+
     .filter-card {
         margin-bottom: 1rem;
     }
-    
+
     .quick-filter-btn {
         font-size: 0.875rem;
         padding: 0.5rem 1rem;
     }
-    
+
     .pagination-container {
         padding: 1rem;
     }
-    
+
     .pagination-btn {
         padding: 0.5rem 1rem;
         font-size: 0.875rem;
     }
-    
+
     /* Enhanced mobile typography */
     h1 {
         font-size: 2rem !important;
         line-height: 1.2;
     }
-    
+
     h2 {
         font-size: 1.75rem !important;
         line-height: 1.3;
     }
-    
+
     h3 {
         font-size: 1.5rem !important;
         line-height: 1.4;
     }
-    
+
     /* Touch-friendly elements */
-    .btn-primary, .btn-secondary {
+    .btn-primary,
+    .btn-secondary {
         min-height: 48px;
         min-width: 48px;
     }
-    
+
     /* Mobile-specific spacing */
     .mobile-spacing {
         padding: 1rem 0;
     }
-    
+
     .mobile-text-center {
         text-align: center;
     }
-    
+
     .mobile-full-width {
         width: 100%;
     }
 }
 
 @media (max-width: 480px) {
-    .container-xl, .container-lg, .container-md, .container-sm {
+
+    .container-xl,
+    .container-lg,
+    .container-md,
+    .container-sm {
         padding: 0 0.75rem;
     }
-    
+
     .section-spacing {
         padding: 1rem 0;
     }
-    
+
     .section-spacing-lg {
         padding: 1.5rem 0;
     }
-    
+
     .section-spacing-xl {
         padding: 2rem 0;
     }
-    
+
     .grid-responsive {
         grid-template-columns: 1fr;
         gap: 0.75rem;
     }
-    
+
     .grid-responsive-sm {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
     }
-    
+
     .grid-responsive-lg {
         grid-template-columns: 1fr;
         gap: 0.75rem;
     }
-    
+
     .card-container {
         padding: 0.75rem;
         margin: 0.25rem;
     }
-    
+
     h1 {
         font-size: 1.75rem !important;
     }
-    
+
     h2 {
         font-size: 1.5rem !important;
     }
-    
+
     h3 {
         font-size: 1.25rem !important;
     }
@@ -1340,12 +1497,16 @@ kbd {
 
 /* --- Enhanced Auth Page Animations --- */
 @keyframes blob {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(0px, 0px) scale(1);
     }
+
     33% {
         transform: translate(30px, -50px) scale(1.1);
     }
+
     66% {
         transform: translate(-20px, 20px) scale(0.9);
     }
@@ -1356,6 +1517,7 @@ kbd {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1363,13 +1525,24 @@ kbd {
 }
 
 @keyframes shake {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateX(0);
     }
-    10%, 30%, 50%, 70%, 90% {
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
         transform: translateX(-5px);
     }
-    20%, 40%, 60%, 80% {
+
+    20%,
+    40%,
+    60%,
+    80% {
         transform: translateX(5px);
     }
 }

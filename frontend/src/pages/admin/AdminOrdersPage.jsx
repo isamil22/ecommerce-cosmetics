@@ -16,13 +16,13 @@ const MiniChart = ({ data, type = 'line', color = 'blue' }) => {
     const max = Math.max(...data);
     const min = Math.min(...data);
     const range = max - min || 1;
-    
+
     const points = data.map((value, index) => {
         const x = (index / (data.length - 1)) * 100;
         const y = 100 - ((value - min) / range) * 80;
         return `${x},${y}`;
     }).join(' ');
-    
+
     return (
         <div className="w-full h-12">
             <svg viewBox="0 0 100 100" className="w-full h-full">
@@ -40,12 +40,11 @@ const MiniChart = ({ data, type = 'line', color = 'blue' }) => {
 const StatusBadge = ({ status, count, percentage }) => (
     <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border">
         <div className="flex items-center">
-            <div className={`w-3 h-3 rounded-full mr-3 ${
-                status === 'PREPARING' ? 'bg-yellow-400' :
-                status === 'DELIVERING' ? 'bg-blue-400' :
-                status === 'DELIVERED' ? 'bg-green-400' :
-                'bg-red-400'
-            }`}></div>
+            <div className={`w-3 h-3 rounded-full mr-3 ${status === 'PREPARING' ? 'bg-yellow-400' :
+                    status === 'DELIVERING' ? 'bg-blue-400' :
+                        status === 'DELIVERED' ? 'bg-green-400' :
+                            'bg-red-400'
+                }`}></div>
             <span className="text-sm font-medium text-gray-700">{status}</span>
         </div>
         <div className="text-right">
@@ -66,9 +65,8 @@ const OrderTimeline = ({ order }) => {
         <div className="space-y-3">
             {timeline.map((item, index) => (
                 <div key={index} className="flex items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        item.completed ? 'bg-green-500' : 'bg-gray-300'
-                    }`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${item.completed ? 'bg-green-500' : 'bg-gray-300'
+                        }`}>
                         {item.completed ? (
                             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -94,7 +92,7 @@ const AdminOrdersPage = () => {
     const [deletedOrders, setDeletedOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     // Enhanced state management
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('ALL');
@@ -133,7 +131,7 @@ const AdminOrdersPage = () => {
 
         // Apply search filter
         if (searchTerm) {
-            filtered = filtered.filter(order => 
+            filtered = filtered.filter(order =>
                 order.clientFullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 order.id?.toString().includes(searchTerm) ||
                 order.phoneNumber?.includes(searchTerm) ||
@@ -150,7 +148,7 @@ const AdminOrdersPage = () => {
         if (dateFilter !== 'ALL') {
             const now = new Date();
             const filterDate = new Date();
-            
+
             switch (dateFilter) {
                 case 'TODAY':
                     filterDate.setHours(0, 0, 0, 0);
@@ -172,7 +170,7 @@ const AdminOrdersPage = () => {
         // Apply sorting
         filtered.sort((a, b) => {
             let aValue, bValue;
-            
+
             switch (sortBy) {
                 case 'id':
                     aValue = a.id;
@@ -218,7 +216,7 @@ const AdminOrdersPage = () => {
         const totalRevenue = orders.reduce((sum, order) => {
             return sum + (order.orderItems?.reduce((itemSum, item) => itemSum + (item.price * item.quantity), 0) || 0);
         }, 0);
-        
+
         const statusCounts = orders.reduce((counts, order) => {
             counts[order.status] = (counts[order.status] || 0) + 1;
             return counts;
@@ -241,7 +239,7 @@ const AdminOrdersPage = () => {
         // Revenue trends
         const revenueToday = orders.filter(order => new Date(order.createdAt).toDateString() === today.toDateString())
             .reduce((sum, order) => sum + (order.orderItems?.reduce((itemSum, item) => itemSum + (item.price * item.quantity), 0) || 0), 0);
-        
+
         const revenueYesterday = orders.filter(order => new Date(order.createdAt).toDateString() === yesterday.toDateString())
             .reduce((sum, order) => sum + (order.orderItems?.reduce((itemSum, item) => itemSum + (item.price * item.quantity), 0) || 0), 0);
 
@@ -302,13 +300,13 @@ const AdminOrdersPage = () => {
     };
 
     const handleRestoreOrder = async (orderId) => {
-            try {
-                await restoreOrder(orderId);
-                toast.success('Order restored successfully!');
-                fetchAllOrders();
-            } catch (err) {
-                toast.error('Failed to restore order.');
-                console.error(err);
+        try {
+            await restoreOrder(orderId);
+            toast.success('Order restored successfully!');
+            fetchAllOrders();
+        } catch (err) {
+            toast.error('Failed to restore order.');
+            console.error(err);
         }
     };
 
@@ -454,7 +452,7 @@ const AdminOrdersPage = () => {
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading orders...</p>
-                            </div>
+                </div>
             </div>
         );
     }
@@ -465,7 +463,7 @@ const AdminOrdersPage = () => {
                 <div className="text-center">
                     <div className="text-red-500 text-6xl mb-4">⚠️</div>
                     <p className="text-red-600 text-lg">{error}</p>
-                    <button 
+                    <button
                         onClick={fetchAllOrders}
                         className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
                     >
@@ -487,15 +485,15 @@ const AdminOrdersPage = () => {
                             <p className="text-gray-600 mt-1">Manage and track customer orders</p>
                         </div>
                         <div className="flex space-x-3">
-                <button
-                    onClick={handleExport}
+                            <button
+                                onClick={handleExport}
                                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center"
-                >
+                            >
                                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                    Export Orders
-                </button>
+                                Export Orders
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -573,25 +571,25 @@ const AdminOrdersPage = () => {
                     <div className="bg-white rounded-xl shadow-lg p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Status</h3>
                         <div className="space-y-3">
-                            <StatusBadge 
-                                status="PREPARING" 
-                                count={stats.statusCounts.PREPARING || 0} 
-                                percentage={stats.totalOrders > 0 ? ((stats.statusCounts.PREPARING || 0) / stats.totalOrders * 100).toFixed(1) : 0} 
+                            <StatusBadge
+                                status="PREPARING"
+                                count={stats.statusCounts.PREPARING || 0}
+                                percentage={stats.totalOrders > 0 ? ((stats.statusCounts.PREPARING || 0) / stats.totalOrders * 100).toFixed(1) : 0}
                             />
-                            <StatusBadge 
-                                status="DELIVERING" 
-                                count={stats.statusCounts.DELIVERING || 0} 
-                                percentage={stats.totalOrders > 0 ? ((stats.statusCounts.DELIVERING || 0) / stats.totalOrders * 100).toFixed(1) : 0} 
+                            <StatusBadge
+                                status="DELIVERING"
+                                count={stats.statusCounts.DELIVERING || 0}
+                                percentage={stats.totalOrders > 0 ? ((stats.statusCounts.DELIVERING || 0) / stats.totalOrders * 100).toFixed(1) : 0}
                             />
-                            <StatusBadge 
-                                status="DELIVERED" 
-                                count={stats.statusCounts.DELIVERED || 0} 
-                                percentage={stats.totalOrders > 0 ? ((stats.statusCounts.DELIVERED || 0) / stats.totalOrders * 100).toFixed(1) : 0} 
+                            <StatusBadge
+                                status="DELIVERED"
+                                count={stats.statusCounts.DELIVERED || 0}
+                                percentage={stats.totalOrders > 0 ? ((stats.statusCounts.DELIVERED || 0) / stats.totalOrders * 100).toFixed(1) : 0}
                             />
-                            <StatusBadge 
-                                status="CANCELED" 
-                                count={stats.statusCounts.CANCELED || 0} 
-                                percentage={stats.totalOrders > 0 ? ((stats.statusCounts.CANCELED || 0) / stats.totalOrders * 100).toFixed(1) : 0} 
+                            <StatusBadge
+                                status="CANCELED"
+                                count={stats.statusCounts.CANCELED || 0}
+                                percentage={stats.totalOrders > 0 ? ((stats.statusCounts.CANCELED || 0) / stats.totalOrders * 100).toFixed(1) : 0}
                             />
                         </div>
                     </div>
@@ -665,11 +663,10 @@ const AdminOrdersPage = () => {
                             {/* Toggle Deleted Orders */}
                             <button
                                 onClick={() => setShowDeleted(!showDeleted)}
-                                className={`px-4 py-2 rounded-lg transition-colors ${
-                                    showDeleted 
-                                        ? 'bg-red-600 text-white' 
+                                className={`px-4 py-2 rounded-lg transition-colors ${showDeleted
+                                        ? 'bg-red-600 text-white'
                                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                }`}
+                                    }`}
                             >
                                 {showDeleted ? 'Show Active' : 'Show Deleted'}
                             </button>
@@ -728,7 +725,7 @@ const AdminOrdersPage = () => {
                                             className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                         />
                                     </th>
-                                    <th 
+                                    <th
                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                                         onClick={() => handleSort('id')}
                                     >
@@ -741,7 +738,7 @@ const AdminOrdersPage = () => {
                                             )}
                                         </div>
                                     </th>
-                                    <th 
+                                    <th
                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                                         onClick={() => handleSort('clientFullName')}
                                     >
@@ -757,7 +754,7 @@ const AdminOrdersPage = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Contact Info
                                     </th>
-                                    <th 
+                                    <th
                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                                         onClick={() => handleSort('createdAt')}
                                     >
@@ -770,7 +767,7 @@ const AdminOrdersPage = () => {
                                             )}
                                         </div>
                                     </th>
-                                    <th 
+                                    <th
                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                                         onClick={() => handleSort('status')}
                                     >
@@ -824,19 +821,19 @@ const AdminOrdersPage = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                 {formatDate(order.createdAt)}
-                                    </td>
+                                            </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {!showDeleted ? (
-                                        <select
-                                            value={order.status}
-                                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                                    <select
+                                                        value={order.status}
+                                                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
                                                         className={`px-3 py-1 rounded-full text-xs font-medium border-0 ${getStatusColor(order.status)}`}
-                                        >
-                                            <option value="PREPARING">Preparing</option>
-                                            <option value="DELIVERING">Delivering</option>
-                                            <option value="DELIVERED">Delivered</option>
-                                            <option value="CANCELED">Canceled</option>
-                                        </select>
+                                                    >
+                                                        <option value="PREPARING">Preparing</option>
+                                                        <option value="DELIVERING">Delivering</option>
+                                                        <option value="DELIVERED">Delivered</option>
+                                                        <option value="CANCELED">Canceled</option>
+                                                    </select>
                                                 ) : (
                                                     <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                                                         {order.status}
@@ -845,7 +842,7 @@ const AdminOrdersPage = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 {formatCurrency(orderTotal)}
-                                    </td>
+                                            </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div className="flex space-x-2">
                                                     <button
@@ -869,24 +866,24 @@ const AdminOrdersPage = () => {
                                                             </svg>
                                                         </button>
                                                     ) : (
-                                        <button
-                                            onClick={() => handleDeleteOrder(order.id)}
+                                                        <button
+                                                            onClick={() => handleDeleteOrder(order.id)}
                                                             className="text-red-600 hover:text-red-900"
                                                             title="Delete Order"
-                                        >
+                                                        >
                                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                             </svg>
-                                        </button>
+                                                        </button>
                                                     )}
                                                 </div>
-                                    </td>
-                                </tr>
+                                            </td>
+                                        </tr>
                                     );
                                 })}
-                        </tbody>
-                    </table>
-            </div>
+                            </tbody>
+                        </table>
+                    </div>
 
                     {/* Pagination */}
                     <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
@@ -933,7 +930,7 @@ const AdminOrdersPage = () => {
                                             <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
                                     </button>
-                                    
+
                                     {/* Page numbers */}
                                     {Array.from({ length: Math.ceil(filteredAndSortedOrders.length / itemsPerPage) }, (_, i) => i + 1)
                                         .filter(page => {
@@ -949,17 +946,16 @@ const AdminOrdersPage = () => {
                                                 )}
                                                 <button
                                                     onClick={() => setCurrentPage(page)}
-                                                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                                        page === currentPage
+                                                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${page === currentPage
                                                             ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
                                                             : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {page}
                                                 </button>
                                             </React.Fragment>
                                         ))}
-                                    
+
                                     <button
                                         onClick={() => setCurrentPage(Math.min(Math.ceil(filteredAndSortedOrders.length / itemsPerPage), currentPage + 1))}
                                         disabled={currentPage >= Math.ceil(filteredAndSortedOrders.length / itemsPerPage)}
@@ -1025,7 +1021,7 @@ const AdminOrdersPage = () => {
                                                 </h4>
                                                 <div className="space-y-2 text-sm">
                                                     <p><span className="font-medium text-gray-600">Order ID:</span> <span className="text-gray-900">#{selectedOrder.id}</span></p>
-                                                    <p><span className="font-medium text-gray-600">Status:</span> 
+                                                    <p><span className="font-medium text-gray-600">Status:</span>
                                                         <span className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedOrder.status)}`}>
                                                             {selectedOrder.status}
                                                         </span>
@@ -1059,6 +1055,11 @@ const AdminOrdersPage = () => {
                                                             />
                                                             <div className="flex-1">
                                                                 <p className="text-sm font-semibold text-gray-900">{item.productName}</p>
+                                                                {item.variantName && (
+                                                                    <p className="text-xs text-gray-500 mt-1">
+                                                                        <span className="font-medium">Variant:</span> {item.variantName}
+                                                                    </p>
+                                                                )}
                                                                 <div className="flex items-center space-x-4 mt-1">
                                                                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                                                                         Qty: {item.quantity}
@@ -1070,7 +1071,7 @@ const AdminOrdersPage = () => {
                                                         </div>
                                                     )) || <p className="text-sm text-gray-500 text-center py-4">No items in this order.</p>}
                                                 </div>
-                                                
+
                                                 {selectedOrder.orderItems && selectedOrder.orderItems.length > 0 && (
                                                     <div className="mt-6 pt-4 border-t-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4">
                                                         <div className="space-y-2">
@@ -1106,7 +1107,7 @@ const AdminOrdersPage = () => {
                                             </h4>
                                             <OrderTimeline order={selectedOrder} />
                                         </div>
-                                        
+
                                         {/* Quick Actions */}
                                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
                                             <h5 className="font-semibold text-gray-900 mb-3 flex items-center">

@@ -5,8 +5,28 @@ import { useLandingPageCTA } from '../LandingPageCTAHandler';
  * Premium Hero Section Component
  * Full-screen hero with animations, gradient overlays, and floating elements
  */
-const HeroSection = ({ data, isEditing = false, productId = null }) => {
-    const handleCTA = useLandingPageCTA(productId);
+const HeroSection = ({ data, isEditing = false, productId = null, availableVariants = [] }) => {
+    const [selectedVariants, setSelectedVariants] = useState({});
+
+    // Parse variants from data (assuming they might come as JSON or array)
+    // For demo/mock, we'll assume data.variants is like:
+    // [{ name: 'Size', options: ['50ml', '100ml'] }, { name: 'Scent', options: ['Lavender', 'Rose'] }]
+    const variants = (data?.variants && data.variants.length > 0) ? data.variants : availableVariants;
+
+    // Helper to format selected variants string "Size: 50ml, Scent: Lavender"
+    const getVariantString = () => {
+        if (!variants.length) return null;
+        return variants.map(v => `${v.name}: ${selectedVariants[v.name] || 'Not Selected'}`).join(', ');
+    };
+
+    // Check if all variants are selected
+    const allVariantsSelected = variants.every(v => selectedVariants[v.name]);
+
+    const handleCTA = useLandingPageCTA(productId, {
+        ...data,
+        selectedVariant: getVariantString()
+    });
+
     const {
         headline = 'Amazing Product!',
         subheadline = 'Transform your life today',
@@ -36,8 +56,18 @@ const HeroSection = ({ data, isEditing = false, productId = null }) => {
         });
     };
 
+    const handleBuyClick = (e) => {
+        e.preventDefault();
+        if (variants.length > 0 && !allVariantsSelected) {
+            alert('Please select all options before buying.');
+            return;
+        }
+        handleCTA(e);
+    };
+
     return (
-        <div 
+        <div
+            id="landing-hero"
             onMouseMove={handleMouseMove}
             style={{
                 background: backgroundImage
@@ -92,10 +122,10 @@ const HeroSection = ({ data, isEditing = false, productId = null }) => {
             }} />
 
             {/* Content */}
-            <div style={{ 
-                maxWidth: '900px', 
-                width: '100%', 
-                position: 'relative', 
+            <div style={{
+                maxWidth: '900px',
+                width: '100%',
+                position: 'relative',
                 zIndex: 1,
                 opacity: isVisible ? 1 : 0,
                 transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
@@ -131,7 +161,7 @@ const HeroSection = ({ data, isEditing = false, productId = null }) => {
                     textShadow: backgroundImage ? '0 2px 20px rgba(0,0,0,0.3)' : 'none',
                 }}>
                     {headline.split(' ').map((word, i) => (
-                        <span 
+                        <span
                             key={i}
                             style={{
                                 display: 'inline-block',
@@ -158,6 +188,37 @@ const HeroSection = ({ data, isEditing = false, productId = null }) => {
                     {subheadline}
                 </p>
 
+                {/* Variant Picker */}
+                {variants.length > 0 && (
+                    <div style={{ marginBottom: '2.5rem', display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+                        {variants.map((v, i) => (
+                            <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                <span style={{ fontWeight: '600', minWidth: '60px', textAlign: 'left' }}>{v.name}:</span>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    {v.options.map((option, j) => (
+                                        <button
+                                            key={j}
+                                            onClick={() => setSelectedVariants(prev => ({ ...prev, [v.name]: option }))}
+                                            style={{
+                                                padding: '8px 20px',
+                                                borderRadius: '25px',
+                                                border: `2px solid ${selectedVariants[v.name] === option ? '#ff1493' : (backgroundImage ? 'rgba(255,255,255,0.5)' : '#ddd')}`,
+                                                background: selectedVariants[v.name] === option ? '#ff1493' : 'transparent',
+                                                color: selectedVariants[v.name] === option ? 'white' : (backgroundImage ? 'white' : textColor),
+                                                cursor: 'pointer',
+                                                fontWeight: '600',
+                                                transition: 'all 0.3s ease'
+                                            }}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 {/* CTA Buttons */}
                 <div style={{
                     display: 'flex',
@@ -169,7 +230,7 @@ const HeroSection = ({ data, isEditing = false, productId = null }) => {
                         <>
                             <a
                                 href={ctaLink || '#'}
-                                onClick={handleCTA}
+                                onClick={handleBuyClick}
                                 style={{
                                     display: 'inline-flex',
                                     alignItems: 'center',
