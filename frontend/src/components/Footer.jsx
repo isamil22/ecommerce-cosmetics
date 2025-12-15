@@ -27,7 +27,7 @@ const Footer = () => {
     };
 
     return (
-        <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 mt-20">
+        <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 mt-8">
             {/* Trust Badges Section */}
             <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 py-8">
                 <div className="container-xl">
@@ -36,25 +36,25 @@ const Footer = () => {
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
-                            <p className="font-bold">منتجات أصلية<br/>100% Authentic</p>
+                            <p className="font-bold">منتجات أصلية<br />100% Authentic</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <p className="font-bold">ضمان الجودة<br/>Quality Guaranteed</p>
+                            <p className="font-bold">ضمان الجودة<br />Quality Guaranteed</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <p className="font-bold">شحن مجاني<br/>Free Shipping</p>
+                            <p className="font-bold">شحن مجاني<br />Free Shipping</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                             </svg>
-                            <p className="font-bold">إرجاع سهل<br/>Easy Returns</p>
+                            <p className="font-bold">إرجاع سهل<br />Easy Returns</p>
                         </div>
                     </div>
                 </div>
@@ -77,10 +77,10 @@ const Footer = () => {
                             </div>
                         </div>
                         <p className="text-sm text-gray-400 leading-relaxed mb-6">
-                            متجرك الأول للحصول على أفضل منتجات التجميل. نؤمن بالجودة والشفافية وإظهار إشراقتك الداخلية.<br/><br/>
+                            متجرك الأول للحصول على أفضل منتجات التجميل. نؤمن بالجودة والشفافية وإظهار إشراقتك الداخلية.<br /><br />
                             Your one-stop shop for the best in beauty. We believe in quality, transparency, and bringing out your inner radiance.
                         </p>
-                        
+
                         {/* Contact Info */}
                         <div className="space-y-3">
                             <div className="flex items-center gap-3 text-sm">
@@ -156,7 +156,7 @@ const Footer = () => {
                             <span>النشرة / Newsletter</span>
                         </h3>
                         <p className="text-sm text-gray-400 mb-4">
-                            اشترك للحصول على آخر العروض<br/>
+                            اشترك للحصول على آخر العروض<br />
                             Subscribe for latest deals
                         </p>
                         <form onSubmit={handleNewsletterSubmit} className="space-y-3">
@@ -171,11 +171,10 @@ const Footer = () => {
                             <button
                                 type="submit"
                                 disabled={isSubscribing}
-                                className={`w-full font-bold py-3 rounded-lg transition-all duration-200 ${
-                                    isSubscribing
+                                className={`w-full font-bold py-3 rounded-lg transition-all duration-200 ${isSubscribing
                                         ? 'bg-gray-700 text-gray-400 cursor-wait'
                                         : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 transform hover:scale-105'
-                                }`}
+                                    }`}
                             >
                                 {isSubscribing ? '...جارٍ الاشتراك' : 'اشترك / Subscribe'}
                             </button>

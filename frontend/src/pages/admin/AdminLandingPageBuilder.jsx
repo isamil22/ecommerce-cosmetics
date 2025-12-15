@@ -4,6 +4,115 @@ import landingPageService from '../../api/landingPageService';
 import { SECTION_TYPE_LABELS, DEFAULT_SECTION_DATA, SECTION_COMPONENTS } from '../../components/landingPage/sections/SectionRegistry';
 import SectionEditor from '../../components/landingPage/sections/SectionEditor';
 import Loader from '../../components/Loader';
+import { getAllProducts } from '../../api/apiService';
+
+// Drag and Drop Imports
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragOverlay,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+    useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+/**
+ * Sortable Section Item Wrapper
+ */
+const SortableSectionItem = ({ id, section, index, editingSection, setEditingSection, moveSection, deleteSection, updateSectionData, dragging }) => {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+        marginBottom: '15px',
+        position: 'relative',
+        zIndex: isDragging ? 999 : 'auto',
+    };
+
+    return (
+        <div ref={setNodeRef} style={style}>
+            <div style={{
+                border: editingSection === index ? '2px solid #3182ce' : '1px solid #e2e8f0',
+                borderRadius: '8px',
+                backgroundColor: 'white',
+                overflow: 'hidden',
+                boxShadow: editingSection === index ? '0 4px 12px rgba(49,130,206,0.15)' : '0 1px 2px rgba(0,0,0,0.05)'
+            }}>
+                {/* Section Header */}
+                <div style={{
+                    padding: '10px 15px',
+                    backgroundColor: editingSection === index ? '#ebf8ff' : '#f7fafc',
+                    borderBottom: editingSection === index ? '1px solid #bee3f8' : '1px solid #edf2f7',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        {/* Drag Handle */}
+                        <div
+                            {...attributes}
+                            {...listeners}
+                            style={{
+                                cursor: 'grab',
+                                color: '#a0aec0',
+                                padding: '4px',
+                                display: 'flex',
+                                alignItems: 'center'
+                            }}
+                            title="Drag to reorder"
+                        >
+                            :::
+                        </div>
+                        <span style={{ fontWeight: '600', fontSize: '0.95rem', color: '#2d3748' }}>
+                            {SECTION_TYPE_LABELS[section.sectionType]}
+                        </span>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                        {/* Fallback arrows for accessibility or preference */}
+                        <button onClick={() => moveSection(index, 'up')} disabled={index === 0} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: 'white', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>↑</button>
+                        <button onClick={() => moveSection(index, 'down')} disabled={false} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: 'white', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>↓</button>
+
+                        <button onClick={() => setEditingSection(editingSection === index ? null : index)} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: editingSection === index ? '#3182ce' : 'white', color: editingSection === index ? 'white' : '#4a5568', borderRadius: '4px', cursor: 'pointer' }}>
+                            {editingSection === index ? 'Done' : 'Edit'}
+                        </button>
+                        <button onClick={() => deleteSection(index)} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: 'white', color: '#e53e3e', borderRadius: '4px', cursor: 'pointer' }}>🗑️</button>
+                    </div>
+                </div>
+
+                {/* Edit Form */}
+                {editingSection === index && !isDragging && (
+                    <div style={{ padding: '15px' }}>
+                        <SectionEditor
+                            sectionType={section.sectionType}
+                            data={section.sectionData}
+                            onChange={(newData) => updateSectionData(index, newData)}
+                        />
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
 
 /**
  * Admin Landing Page Builder
@@ -25,6 +134,7 @@ const AdminLandingPageBuilder = () => {
     const [status, setStatus] = useState('DRAFT');
     const [productId, setProductId] = useState('');
     const [sections, setSections] = useState([]);
+    const [products, setProducts] = useState([]);
     const [settings, setSettings] = useState({
         themeColor: '#ff69b4',
         fontFamily: 'Arial, sans-serif',
@@ -36,6 +146,19 @@ const AdminLandingPageBuilder = () => {
     // UI state
     const [editingSection, setEditingSection] = useState(null);
     const [showSectionPicker, setShowSectionPicker] = useState(false);
+    const [activeDragId, setActiveDragId] = useState(null);
+
+    // Dnd Sensors
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5, // Require slight movement to start drag (prevents accidental drags on clicks)
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
 
     // Refs for scrolling
     const previewSectionRefs = React.useRef({});
@@ -54,7 +177,23 @@ const AdminLandingPageBuilder = () => {
         if (isEditMode) {
             loadLandingPage();
         }
+        fetchProducts();
     }, [id]);
+
+    const fetchProducts = async () => {
+        try {
+            const response = await getAllProducts({ size: 1000 });
+            let productList = [];
+            if (response.data && response.data.content) {
+                productList = response.data.content;
+            } else if (response.data && Array.isArray(response.data)) {
+                productList = response.data;
+            }
+            setProducts(productList);
+        } catch (error) {
+            console.error('Failed to fetch products', error);
+        }
+    };
 
     const loadLandingPage = async () => {
         try {
@@ -66,7 +205,14 @@ const AdminLandingPageBuilder = () => {
             setMetaDescription(data.metaDescription || '');
             setStatus(data.status);
             setProductId(data.productId || '');
-            setSections(data.sections || []);
+
+            // Ensure every section has a unique ID for DnD
+            const loadedSections = (data.sections || []).map(s => ({
+                ...s,
+                _id: s._id || `section-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+            }));
+
+            setSections(loadedSections);
             setSettings(data.settings || settings);
         } catch (error) {
             console.error('Error loading landing page:', error);
@@ -92,6 +238,16 @@ const AdminLandingPageBuilder = () => {
             return;
         }
 
+        // Clean up _id before saving if backend doesn't expect it (optional, but good practice to keep it clean)
+        // But checking if we need to remove standard sectionOrder updates.
+        // We will update sectionOrder indices right before save just in case.
+        const sectionsToSave = sections.map((s, idx) => ({
+            ...s,
+            sectionOrder: idx,
+            // We can keep _id for frontend consistency or remove it. 
+            // If backend ignores unknown fields, keeping it is fine.
+        }));
+
         const landingPageData = {
             title,
             slug,
@@ -99,7 +255,7 @@ const AdminLandingPageBuilder = () => {
             metaDescription,
             status: publish ? 'PUBLISHED' : status,
             productId: productId || null,
-            sections,
+            sections: sectionsToSave,
             settings,
         };
 
@@ -138,6 +294,7 @@ const AdminLandingPageBuilder = () => {
         }
 
         const newSection = {
+            _id: `section-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             sectionType,
             sectionOrder: sections.length,
             sectionData: DEFAULT_SECTION_DATA[sectionType] || {},
@@ -146,13 +303,6 @@ const AdminLandingPageBuilder = () => {
         setSections([...sections, newSection]);
         setShowSectionPicker(false);
         setEditingSection(sections.length);
-    };
-
-    // Helper function to check if a section is a duplicate
-    const isDuplicate = (index) => {
-        const section = sections[index];
-        const sameTypeSections = sections.filter(s => s.sectionType === section.sectionType);
-        return sameTypeSections.length > 1;
     };
 
     const deleteSection = (index) => {
@@ -195,12 +345,6 @@ const AdminLandingPageBuilder = () => {
         setSections(updatedSections);
     };
 
-    const toggleSectionVisibility = (index) => {
-        const updatedSections = [...sections];
-        updatedSections[index].isVisible = !updatedSections[index].isVisible;
-        setSections(updatedSections);
-    };
-
     const generateSlugFromTitle = () => {
         const generatedSlug = title
             .toLowerCase()
@@ -209,7 +353,29 @@ const AdminLandingPageBuilder = () => {
         setSlug(generatedSlug);
     };
 
-    // ... keep existing functions ...
+    // --- Drag and Drop Handlers ---
+
+    const handleDragStart = (event) => {
+        setActiveDragId(event.active.id);
+    };
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+
+        if (active.id !== over.id) {
+            setSections((items) => {
+                const oldIndex = items.findIndex((item) => item._id === active.id);
+                const newIndex = items.findIndex((item) => item._id === over.id);
+
+                const newItems = arrayMove(items, oldIndex, newIndex);
+
+                // Update sectionOrder just to be safe immediately
+                return newItems.map((item, index) => ({ ...item, sectionOrder: index }));
+            });
+        }
+
+        setActiveDragId(null);
+    };
 
     if (loading) {
         return (
@@ -321,7 +487,24 @@ const AdminLandingPageBuilder = () => {
                             />
                         </div>
 
-                        {/* Collapsible Meta Settings could go here */}
+                        <div style={{ marginBottom: '15px' }}>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '0.9rem' }}>Main Product (Default)</label>
+                            <select
+                                value={productId || ''}
+                                onChange={(e) => setProductId(e.target.value)}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #cbd5e0' }}
+                            >
+
+                                {products.map(p => (
+                                    <option key={p.id} value={p.id}>
+                                        {p.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <small style={{ color: '#666', fontSize: '0.8rem' }}>
+                                This product will be used by any section set to "Default".
+                            </small>
+                        </div>
                     </div>
 
                     {/* Section Builder */}
@@ -383,48 +566,35 @@ const AdminLandingPageBuilder = () => {
                             </div>
                         )}
 
-                        {sections.map((section, index) => (
-                            <div key={index} style={{
-                                border: editingSection === index ? '2px solid #3182ce' : '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                backgroundColor: 'white',
-                                overflow: 'hidden',
-                                boxShadow: editingSection === index ? '0 4px 12px rgba(49,130,206,0.15)' : '0 1px 2px rgba(0,0,0,0.05)'
-                            }}>
-                                {/* Section Header */}
-                                <div style={{
-                                    padding: '10px 15px',
-                                    backgroundColor: editingSection === index ? '#ebf8ff' : '#f7fafc',
-                                    borderBottom: editingSection === index ? '1px solid #bee3f8' : '1px solid #edf2f7',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}>
-                                    <span style={{ fontWeight: '600', fontSize: '0.95rem', color: '#2d3748' }}>
-                                        {SECTION_TYPE_LABELS[section.sectionType]}
-                                    </span>
-                                    <div style={{ display: 'flex', gap: '5px' }}>
-                                        <button onClick={() => moveSection(index, 'up')} disabled={index === 0} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: 'white', borderRadius: '4px', cursor: 'pointer' }}>↑</button>
-                                        <button onClick={() => moveSection(index, 'down')} disabled={index === sections.length - 1} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: 'white', borderRadius: '4px', cursor: 'pointer' }}>↓</button>
-                                        <button onClick={() => setEditingSection(editingSection === index ? null : index)} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: editingSection === index ? '#3182ce' : 'white', color: editingSection === index ? 'white' : '#4a5568', borderRadius: '4px', cursor: 'pointer' }}>
-                                            {editingSection === index ? 'Done' : 'Edit'}
-                                        </button>
-                                        <button onClick={() => deleteSection(index)} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: 'white', color: '#e53e3e', borderRadius: '4px', cursor: 'pointer' }}>🗑️</button>
-                                    </div>
-                                </div>
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <SortableContext
+                                items={sections.map(s => s._id)}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {sections.map((section, index) => (
+                                    <SortableSectionItem
+                                        key={section._id}
+                                        id={section._id}
+                                        section={section}
+                                        index={index}
+                                        editingSection={editingSection}
+                                        setEditingSection={setEditingSection}
+                                        moveSection={moveSection}
+                                        deleteSection={deleteSection}
+                                        updateSectionData={updateSectionData}
+                                    />
+                                ))}
+                            </SortableContext>
 
-                                {/* Edit Form */}
-                                {editingSection === index && (
-                                    <div style={{ padding: '15px' }}>
-                                        <SectionEditor
-                                            sectionType={section.sectionType}
-                                            data={section.sectionData}
-                                            onChange={(newData) => updateSectionData(index, newData)}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                            {/* Drag Overlay (Optional but nice for visual feedback) */}
+                            {/* For simplicity, we stick to in-place dragging first. 
+                                Adding Overlay requires portal and rendering specific duplicate item. */}
+                        </DndContext>
                     </div>
                 </div>
             </div>
@@ -455,12 +625,13 @@ const AdminLandingPageBuilder = () => {
 
                             return (
                                 <div
-                                    key={index}
+                                    key={section._id || index}
                                     ref={el => previewSectionRefs.current[index] = el}
                                     style={{ scrollMarginTop: '20px' }} // Adds a bit of breathing room when scrolling
                                 >
                                     <SectionComponent
                                         data={section.sectionData}
+                                        productId={productId}
                                         isEditing={true} // Keep editing visuals if any (e.g. placeholders)
                                     />
                                 </div>

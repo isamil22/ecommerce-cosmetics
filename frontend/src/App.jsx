@@ -158,9 +158,9 @@ function App() {
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/faq" element={<FaqPage />} />
                         <Route path="/shipping" element={<ShippingPage />} />
-                        
+
                         {/* Public Landing Pages */}
-                        <Route path="/landing/:slug" element={<PublicLandingPage />} />
+                        <Route path="/landing/:slug" element={<PublicLandingPage fetchCartCount={fetchCartCount} />} />
 
                         {/* Authenticated User Routes */}
                         {userRole !== 'ADMIN' && <Route path="/profile" element={<ProfilePage />} />}
@@ -211,7 +211,7 @@ function App() {
                     </Routes>
                 </main>
                 <Footer />
-                
+
                 {/* Floating Action Button - Disabled for minimal design */}
                 {/* <FloatingActionButton cartCount={cartCount} /> */}
             </div>

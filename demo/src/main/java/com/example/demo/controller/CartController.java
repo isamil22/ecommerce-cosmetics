@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.AddToCartRequest;
 import com.example.demo.dto.CartDTO;
+import com.example.demo.dto.UpdateQuantityRequest;
 import com.example.demo.model.User;
 import com.example.demo.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class CartController {
 
     @PostMapping("/add")
     public ResponseEntity<CartDTO> addToCart(@AuthenticationPrincipal UserDetails userDetails,
-                                             @RequestBody AddToCartRequest request) {
+            @RequestBody AddToCartRequest request) {
         // --- THIS IS THE FIX ---
         // If the user is a guest, userDetails will be null.
         // We return an empty OK response because the frontend handles the guest cart.
@@ -28,7 +29,19 @@ public class CartController {
         }
 
         Long userId = ((User) userDetails).getId();
-        return ResponseEntity.ok(cartService.addToCart(userId, request.getProductId(), request.getQuantity()));
+
+        // Check if it's a virtual product request (no ID but has details)
+        com.example.demo.dto.CartItemDTO virtualItem = null;
+        if (request.getProductId() == null && request.getProductName() != null) {
+            virtualItem = new com.example.demo.dto.CartItemDTO();
+            virtualItem.setProductName(request.getProductName());
+            virtualItem.setPrice(request.getPrice());
+            virtualItem.setImageUrl(request.getImageUrl());
+            virtualItem.setVariantName(request.getVariantName());
+        }
+
+        return ResponseEntity
+                .ok(cartService.addToCart(userId, request.getProductId(), request.getQuantity(), virtualItem));
     }
 
     @GetMapping
@@ -45,12 +58,21 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/{itemId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> removeCartItem(@AuthenticationPrincipal UserDetails userDetails,
-                                               @PathVariable Long productId) {
+            @PathVariable Long itemId) {
         Long userId = ((User) userDetails).getId();
-        cartService.removeCartItem(userId, productId);
+        cartService.removeItemFromCart(userId, itemId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{itemId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CartDTO> updateCartItemQuantity(@AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long itemId,
+            @RequestBody UpdateQuantityRequest request) {
+        Long userId = ((User) userDetails).getId();
+        return ResponseEntity.ok(cartService.updateItemQuantity(userId, itemId, request.getQuantity()));
     }
 }

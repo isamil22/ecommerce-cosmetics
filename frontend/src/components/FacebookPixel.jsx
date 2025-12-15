@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { getSettings } from '../api/settingsService';
 
@@ -8,6 +9,7 @@ import { getSettings } from '../api/settingsService';
  */
 const FacebookPixel = () => {
     const [pixelId, setPixelId] = useState(null);
+    const location = useLocation();
 
     useEffect(() => {
         const fetchPixelId = async () => {
@@ -23,6 +25,13 @@ const FacebookPixel = () => {
 
         fetchPixelId();
     }, []);
+
+    // Track PageView on route change
+    useEffect(() => {
+        if (pixelId && window.fbq) {
+            window.fbq('track', 'PageView');
+        }
+    }, [location, pixelId]);
 
     // Only render the script if a pixelId has been successfully fetched.
     if (!pixelId) {
@@ -42,7 +51,7 @@ const FacebookPixel = () => {
                     s.parentNode.insertBefore(t,s)}(window, document,'script',
                     'https://connect.facebook.net/en_US/fbevents.js');
                     fbq('init', '${pixelId}');
-                    fbq('track', 'PageView');
+                    // Initial PageView is handled by the useEffect above when pixelId is set
                 `}
             </script>
             <noscript>

@@ -12,6 +12,7 @@ import UrgencyBannerSection from './UrgencyBannerSection';
 import FinalCTASection from './FinalCTASection';
 import HeroPremiumSection from './HeroPremiumSection';
 import FeaturesZigZagSection from './FeaturesZigZagSection';
+import RelatedProductsSection from './RelatedProductsSection';
 
 /**
  * Maps section types (from backend enum) to React components
@@ -30,6 +31,7 @@ export const SECTION_COMPONENTS = {
     FAQ: FAQSection,
     URGENCY_BANNER: UrgencyBannerSection,
     FINAL_CTA: FinalCTASection,
+    RELATED_PRODUCTS: RelatedProductsSection,
     CUSTOM_HTML: null, // Will handle separately
 };
 
@@ -147,6 +149,12 @@ export const DEFAULT_SECTION_DATA = {
         trustBadges: ['Free Shipping', '30-Day Money Back', 'Secure Checkout'],
         backgroundColor: '#ffffff',
     },
+    RELATED_PRODUCTS: {
+        title: 'You Might Also Like',
+        subtitle: 'Perfect additions to your routine',
+        productIds: [], // To be populated by admin
+        backgroundColor: '#f9f9f9',
+    },
 };
 
 /**
@@ -166,6 +174,7 @@ export const SECTION_TYPE_LABELS = {
     FAQ: 'FAQ',
     URGENCY_BANNER: 'Urgency Banner',
     FINAL_CTA: 'Final CTA',
+    RELATED_PRODUCTS: 'Related Products (Upsells)',
     CUSTOM_HTML: 'Custom HTML',
 };
 

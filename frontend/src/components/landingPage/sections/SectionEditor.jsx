@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageUploader from './ImageUploader';
+import { getAllProducts } from '../../../api/apiService';
 
 /**
  * Visual Section Editor - User-friendly form editors for each section type
@@ -99,6 +100,99 @@ const styles = {
 };
 
 // ============================================
+// REUSABLE PRODUCT SELECTOR
+// ============================================
+const ProductSelector = ({ data, onChange, onProductSelected }) => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await getAllProducts({ size: 1000 });
+                // Handle both paginated (response.data.content) and list (response.data) responses
+                let productList = [];
+                if (response.data && response.data.content && Array.isArray(response.data.content)) {
+                    productList = response.data.content;
+                } else if (response.data && Array.isArray(response.data)) {
+                    productList = response.data;
+                }
+                setProducts(productList);
+            } catch (error) {
+                console.error('Failed to fetch products', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
+
+    return (
+        <div style={styles.formGroup}>
+            <label style={styles.label}>🔗 Link to Product (Required for "Add to Cart")</label>
+            {loading ? (
+                <div style={{ padding: '10px', color: '#666' }}>Loading products...</div>
+            ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <select
+                        value={data.productId === 'NONE' ? 'NONE' : (products.find(p => p.id == data.productId) ? data.productId : '')}
+                        onChange={(e) => {
+                            const pid = e.target.value;
+                            const product = products.find(p => p.id == pid);
+
+                            // Create the proposed new data state
+                            let newData = { ...data, productId: pid };
+
+                            // If we have a product and a callback, get extra updates from parent logic
+                            // The parent callback should modify 'newData' or return specific updates
+                            // For simplicity, we'll assume the parent callback updates the section data directly if needed
+                            // But to avoid race conditions, we should ideally let the parent handle the full update
+                            // OR we do a two-step approach safely.
+
+                            // BETTER APPROACH:
+                            // We trigger the onChange with the ID first.
+                            // If the parent callback wants to update OTHER fields, it should receive the 'newData' context.
+
+                            // However, the cleanest fix for the race condition (where parent uses stale 'data' prop) 
+                            // is to compute everything here and call onChange once.
+
+                            if (product && onProductSelected) {
+                                // We pass a special 'updateHelper' or just the product.
+                                // If onProductSelected returns an object, we merge it.
+                                const extraUpdates = onProductSelected(product, newData) || {};
+                                newData = { ...newData, ...extraUpdates };
+                            }
+
+                            onChange(newData);
+                        }}
+                        style={styles.select}
+                    >
+                        <option value="">-- Default (Use Landing Page Product) --</option>
+
+                        {products.map(p => (
+                            <option key={p.id} value={p.id}>
+                                {p.name} (${p.price})
+                            </option>
+                        ))}
+                    </select>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{ fontSize: '0.9rem', color: '#666' }}>Or enter ID manually:</span>
+                        <input
+                            type="text"
+                            value={data.productId || ''}
+                            onChange={(e) => onChange({ ...data, productId: e.target.value })}
+                            placeholder="Product ID"
+                            style={{ ...styles.input, width: '150px' }}
+                        />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+// ============================================
 // HERO PREMIUM EDITOR (3D Layered)
 // ============================================
 const HeroPremiumEditor = ({ data, onChange }) => {
@@ -106,6 +200,8 @@ const HeroPremiumEditor = ({ data, onChange }) => {
 
     return (
         <div>
+
+
             {/* Images */}
             <div style={styles.sectionTitle}>🖼️ Visuals</div>
             <ImageUploader
@@ -227,6 +323,8 @@ const HeroEditor = ({ data, onChange }) => {
 
     return (
         <div>
+
+
             {/* Hero Background Image */}
             <ImageUploader
                 value={data.backgroundImage || ''}
@@ -586,6 +684,7 @@ const TrustSignalsEditor = ({ data, onChange }) => {
 // ============================================
 const ProductShowcaseEditor = ({ data, onChange }) => {
     const features = data.features || [];
+    // Product fetching logic moved to ProductSelector
 
     const updateFeature = (index, value) => {
         const newFeatures = [...features];
@@ -603,6 +702,8 @@ const ProductShowcaseEditor = ({ data, onChange }) => {
 
     return (
         <div>
+
+
             {/* Product Image Upload */}
             <ImageUploader
                 value={data.image || ''}
@@ -1829,6 +1930,135 @@ const FinalCTAEditor = ({ data, onChange }) => {
 };
 
 // ============================================
+// RELATED PRODUCTS EDITOR
+// ============================================
+const RelatedProductsEditor = ({ data, onChange }) => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const selectedIds = data.productIds || [];
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await getAllProducts();
+                // Handle both paginated (response.data.content) and list (response.data) responses
+                let productList = [];
+                if (response.data && response.data.content && Array.isArray(response.data.content)) {
+                    productList = response.data.content;
+                } else if (response.data && Array.isArray(response.data)) {
+                    productList = response.data;
+                }
+                setProducts(productList);
+            } catch (error) {
+                console.error('Failed to fetch products', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
+
+    const toggleProduct = (productId) => {
+        let newIds;
+        if (selectedIds.includes(productId)) {
+            newIds = selectedIds.filter(id => id !== productId);
+        } else {
+            newIds = [...selectedIds, productId];
+        }
+        onChange({ ...data, productIds: newIds });
+    };
+
+    return (
+        <div>
+            <div style={styles.formGroup}>
+                <label style={styles.label}>🏷️ Section Title</label>
+                <input
+                    type="text"
+                    value={data.title || ''}
+                    onChange={(e) => onChange({ ...data, title: e.target.value })}
+                    placeholder="You Might Also Like"
+                    style={styles.input}
+                />
+            </div>
+            <div style={styles.formGroup}>
+                <label style={styles.label}>📝 Subtitle</label>
+                <input
+                    type="text"
+                    value={data.subtitle || ''}
+                    onChange={(e) => onChange({ ...data, subtitle: e.target.value })}
+                    placeholder="Perfect additions to your routine"
+                    style={styles.input}
+                />
+            </div>
+
+            <div style={styles.sectionTitle}>🛍️ Select Products</div>
+            {loading ? (
+                <div>Loading products...</div>
+            ) : (
+                <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #eee', borderRadius: '8px', padding: '10px' }}>
+                    {products.map(product => {
+                        const isSelected = selectedIds.includes(product.id);
+                        return (
+                            <div
+                                key={product.id}
+                                onClick={() => toggleProduct(product.id)}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    padding: '10px',
+                                    borderBottom: '1px solid #f0f0f0',
+                                    cursor: 'pointer',
+                                    backgroundColor: isSelected ? '#fff0f7' : 'white',
+                                }}
+                            >
+                                <div style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    borderRadius: '4px',
+                                    border: isSelected ? '2px solid #ff69b4' : '2px solid #ddd',
+                                    backgroundColor: isSelected ? '#ff69b4' : 'transparent',
+                                    marginRight: '15px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    fontSize: '12px'
+                                }}>
+                                    {isSelected && '✓'}
+                                </div>
+                                <img
+                                    src={product.images && product.images[0] ? (product.images[0].startsWith('http') ? product.images[0] : `${window.location.origin}${product.images[0]}`) : '/placeholder.png'}
+                                    alt={product.name}
+                                    style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }}
+                                />
+                                <div>
+                                    <div style={{ fontWeight: '600', color: '#333' }}>{product.name}</div>
+                                    <div style={{ fontSize: '0.85rem', color: '#666' }}>${product.price}</div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+            <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '5px' }}>
+                {selectedIds.length} products selected
+            </p>
+
+            <div style={{ ...styles.formGroup, marginTop: '20px' }}>
+                <label style={styles.label}>🎨 Background Color</label>
+                <input
+                    type="color"
+                    value={data.backgroundColor || '#f9f9f9'}
+                    onChange={(e) => onChange({ ...data, backgroundColor: e.target.value })}
+                    style={styles.colorInput}
+                />
+            </div>
+        </div>
+    );
+};
+
+// ============================================
 // CUSTOM HTML EDITOR
 // ============================================
 const CustomHTMLEditor = ({ data, onChange }) => {
@@ -1868,6 +2098,7 @@ const SectionEditor = ({ sectionType, data, onChange }) => {
         FAQ: FAQEditor,
         URGENCY_BANNER: UrgencyBannerEditor,
         FINAL_CTA: FinalCTAEditor,
+        RELATED_PRODUCTS: RelatedProductsEditor,
         CUSTOM_HTML: CustomHTMLEditor,
     };
 

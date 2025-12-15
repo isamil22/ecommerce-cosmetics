@@ -288,10 +288,14 @@ public class OrderService {
         // The cart object from the mapper has products with only an ID.
         // We need to load the full product details for each cart item.
         for (CartItem item : cart.getItems()) {
-            Product fullProduct = productRepository.findById(item.getProduct().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Product not found in cart with ID: " + item.getProduct().getId()));
-            item.setProduct(fullProduct);
+            if (item.getProduct() != null && item.getProduct().getId() != null) {
+                Product fullProduct = productRepository.findById(item.getProduct().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Product not found in cart with ID: " + item.getProduct().getId()));
+                item.setProduct(fullProduct);
+            } else {
+                item.setProduct(null);
+            }
         }
         // ======================== FIX END ========================
 
@@ -388,28 +392,35 @@ public class OrderService {
             orderItem.setQuantity(cartItem.getQuantity());
 
             Product product = cartItem.getProduct();
-            if (product == null) {
-                throw new IllegalStateException("Cart item must have a product");
+            if (product != null) {
+                // Standard Product Logic
+                if (product.getQuantity() < cartItem.getQuantity()) {
+                    throw new InsufficientStockException("Not enough stock for product " + product.getName());
+                }
+
+                // Decrease stock
+                product.setQuantity(product.getQuantity() - cartItem.getQuantity());
+                productRepository.save(product);
+
+                orderItem.setProduct(product);
+                orderItem.setProductName(product.getName());
+                orderItem.setPrice(product.getPrice());
+                if (product.getImages() != null && !product.getImages().isEmpty()) {
+                    orderItem.setProductImage(product.getImages().get(0));
+                }
+            } else {
+                // Virtual Product Logic
+                if (cartItem.getProductName() == null || cartItem.getPrice() == null) {
+                    throw new IllegalStateException("Cart item missing product details");
+                }
+                orderItem.setProduct(null);
+                orderItem.setProductName(cartItem.getProductName());
+                orderItem.setPrice(cartItem.getPrice());
+                orderItem.setProductImage(cartItem.getImageUrl());
             }
 
-            // Standard Product Logic
-            if (product.getQuantity() < cartItem.getQuantity()) {
-                throw new InsufficientStockException("Not enough stock for product " + product.getName());
-            }
-
-            // Decrease stock
-            product.setQuantity(product.getQuantity() - cartItem.getQuantity());
-            productRepository.save(product);
-
-            orderItem.setProduct(product);
-            orderItem.setProductName(product.getName());
-            orderItem.setPrice(product.getPrice());
-            if (product.getImages() != null && !product.getImages().isEmpty()) {
-                orderItem.setProductImage(product.getImages().get(0));
-            }
-
-            // CartItem entity does not currently support variantName, so we leave it null.
-            // Direct orders use createOrderItemsFromDTO which supports variants.
+            // Copy Variant Name
+            orderItem.setVariantName(cartItem.getVariantName());
 
             return orderItem;
         }).collect(Collectors.toList());
@@ -426,8 +437,10 @@ public class OrderService {
         }
 
         return cart.getItems().stream().anyMatch(item -> {
-            boolean matchesProduct = productSpecific && coupon.getApplicableProducts().contains(item.getProduct());
-            boolean matchesCategory = categorySpecific
+            boolean matchesProduct = productSpecific && item.getProduct() != null
+                    && coupon.getApplicableProducts().contains(item.getProduct());
+            boolean matchesCategory = categorySpecific && item.getProduct() != null
+                    && item.getProduct().getCategory() != null
                     && coupon.getApplicableCategories().contains(item.getProduct().getCategory());
             return matchesProduct || matchesCategory;
         });
@@ -445,18 +458,26 @@ public class OrderService {
         return cart.getItems().stream()
                 .filter(item -> {
                     boolean matchesProduct = productSpecific
+                            && item.getProduct() != null
                             && coupon.getApplicableProducts().contains(item.getProduct());
-                    boolean matchesCategory = categorySpecific && item.getProduct().getCategory() != null
+                    boolean matchesCategory = categorySpecific && item.getProduct() != null
+                            && item.getProduct().getCategory() != null
                             && coupon.getApplicableCategories().contains(item.getProduct().getCategory());
                     return matchesProduct || matchesCategory;
                 })
-                .map(item -> item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity())))
+                .map(item -> {
+                    BigDecimal price = item.getProduct() != null ? item.getProduct().getPrice() : item.getPrice();
+                    return price.multiply(new BigDecimal(item.getQuantity()));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private BigDecimal calculateSubtotal(List<CartItem> items) {
         return items.stream()
-                .map(item -> item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity())))
+                .map(item -> {
+                    BigDecimal price = item.getProduct() != null ? item.getProduct().getPrice() : item.getPrice();
+                    return price.multiply(new BigDecimal(item.getQuantity()));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

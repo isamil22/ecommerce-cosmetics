@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCart, removeCartItem } from '../api/apiService';
+import { getCart, removeCartItem, updateCartItemQuantity } from '../api/apiService';
 import { Link, useNavigate } from 'react-router-dom';
 import ReactGA from "react-ga4";
 
@@ -13,13 +13,16 @@ const CartPage = () => {
     const isAuthenticated = !!localStorage.getItem('token');
 
     const fetchCart = async () => {
-        setLoading(true);
+        // Only set loading on initial fetch or full refresh
+        if (!cart) setLoading(true);
         if (isAuthenticated) {
             try {
                 const response = await getCart();
                 setCart(response.data);
             } catch (err) {
-                setError('Failed to fetch cart. Please try again later.');
+                console.error("Fetch cart error:", err);
+                // Don't error out completely on minor fetch issues if we have data
+                if (!cart) setError('Failed to fetch cart. Please try again later.');
             }
         } else {
             const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
@@ -39,47 +42,52 @@ const CartPage = () => {
         }, 3000);
     };
 
-    const handleRemove = async (productId) => {
+    const handleRemove = async (itemId) => {
         if (window.confirm('Are you sure you want to remove this item from your cart?')) {
-            setUpdatingItem(productId);
-            if (isAuthenticated) {
-                try {
-                    await removeCartItem(productId);
-                    fetchCart();
-                    showNotification('Item removed from cart', 'success');
-                } catch (err) {
-                    setError('Failed to remove item from cart.');
-                    showNotification('Failed to remove item', 'error');
-                }
-            } else {
-                const updatedCart = {
-                    ...cart,
-                    items: cart.items.filter(item => item.productId !== productId)
-                };
-                setCart(updatedCart);
-                localStorage.setItem('cart', JSON.stringify(updatedCart));
+            setUpdatingItem(itemId);
+            try {
+                await removeCartItem(itemId);
+                await fetchCart();
                 showNotification('Item removed from cart', 'success');
+            } catch (err) {
+                console.error("Remove item error:", err);
+                setError('Failed to remove item from cart.');
+                showNotification('Failed to remove item', 'error');
             }
             setUpdatingItem(null);
         }
     };
 
-    const handleQuantityChange = (productId, newQuantity) => {
+    const handleQuantityChange = async (itemId, newQuantity) => {
         if (newQuantity < 1) return;
-        
-        setUpdatingItem(productId);
+
+        setUpdatingItem(itemId);
+
+        // Optimistic update
+        const previousCart = { ...cart };
         const updatedCart = {
             ...cart,
             items: cart.items.map(item =>
-                item.productId === productId ? { ...item, quantity: newQuantity } : item
+                (item.id === itemId || item.productId === itemId) ? { ...item, quantity: newQuantity } : item
             )
         };
         setCart(updatedCart);
-        
-        if (!isAuthenticated) {
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+        try {
+            await updateCartItemQuantity(itemId, newQuantity);
+            // We can optionally refetch here to ensure data consistency
+            // but optimistic update makes it feel faster.
+            if (isAuthenticated) {
+                // Background refresh to sync prices/totals if needed
+                getCart().then(res => setCart(res.data)).catch(e => console.error(e));
+            }
+        } catch (err) {
+            console.error("Failed to update quantity:", err);
+            // Revert on error
+            setCart(previousCart);
+            showNotification('Failed to update quantity', 'error');
         }
-        
+
         setTimeout(() => setUpdatingItem(null), 300);
     };
 
@@ -169,9 +177,8 @@ const CartPage = () => {
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 px-4">
             {/* Notification Toast */}
             {notification.show && (
-                <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ${
-                    notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
-                } text-white animate-fade-in`}>
+                <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+                    } text-white animate-fade-in`}>
                     <div className="flex items-center">
                         {notification.type === 'success' ? (
                             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,10 +230,9 @@ const CartPage = () => {
                             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
                                 {cart.items.map((item, index) => (
                                     <div
-                                        key={item.id || item.productId}
-                                        className={`p-6 ${index !== cart.items.length - 1 ? 'border-b border-gray-100' : ''} ${
-                                            updatingItem === item.productId ? 'opacity-50 pointer-events-none' : ''
-                                        } transition-opacity duration-300 hover:bg-gray-50`}
+                                        key={item.id || item.productId || index}
+                                        className={`p-6 ${index !== cart.items.length - 1 ? 'border-b border-gray-100' : ''} ${updatingItem === (item.id || item.productId) ? 'opacity-50 pointer-events-none' : ''
+                                            } transition-opacity duration-300 hover:bg-gray-50`}
                                     >
                                         <div className="flex gap-6">
                                             {/* Product Image */}
@@ -262,7 +268,7 @@ const CartPage = () => {
                                                         </p>
                                                     </div>
                                                     <button
-                                                        onClick={() => handleRemove(item.productId)}
+                                                        onClick={() => handleRemove(item.id || item.productId)}
                                                         className="text-gray-400 hover:text-red-500 transition-colors p-1"
                                                         title="Remove item"
                                                     >
@@ -276,7 +282,7 @@ const CartPage = () => {
                                                 <div className="flex items-center justify-between mt-4">
                                                     <div className="flex items-center border border-gray-300 rounded-lg">
                                                         <button
-                                                            onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
+                                                            onClick={() => handleQuantityChange(item.id || item.productId, item.quantity - 1)}
                                                             className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg transition"
                                                             disabled={item.quantity <= 1}
                                                         >
@@ -288,7 +294,7 @@ const CartPage = () => {
                                                             {item.quantity}
                                                         </span>
                                                         <button
-                                                            onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
+                                                            onClick={() => handleQuantityChange(item.id || item.productId, item.quantity + 1)}
                                                             className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-lg transition"
                                                         >
                                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -326,7 +332,7 @@ const CartPage = () => {
                         <div className="lg:col-span-1 mt-8 lg:mt-0">
                             <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-4">
                                 <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
-                                
+
                                 <div className="space-y-4 mb-6">
                                     <div className="flex justify-between text-gray-600">
                                         <span>Subtotal</span>
@@ -342,7 +348,7 @@ const CartPage = () => {
                                             )}
                                         </span>
                                     </div>
-                                    
+
                                     {calculateSubtotal() < 100 && calculateSubtotal() > 0 && (
                                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                                             <p className="text-sm text-blue-800">

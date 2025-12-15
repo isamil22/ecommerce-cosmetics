@@ -19,8 +19,21 @@ public class CartItem {
     private Cart cart;
 
     @ManyToOne
-    @JoinColumn(name="product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = true) // Changed to nullable
     private Product product;
 
     private Integer quantity;
+
+    // Virtual product fields (for items not in product catalog)
+    @Column(name = "product_name")
+    private String productName;
+
+    @Column(name = "price")
+    private java.math.BigDecimal price;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "variant_name")
+    private String variantName;
 }

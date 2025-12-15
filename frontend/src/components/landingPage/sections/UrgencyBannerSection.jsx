@@ -312,6 +312,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             animation: 'buttonPulse 2s ease-in-out infinite',
                         }}
+                        className="urgency-cta-btn"
                         onMouseEnter={(e) => {
                             e.target.style.transform = 'translateY(-5px) scale(1.05)';
                             e.target.style.boxShadow = '0 15px 50px rgba(0,0,0,0.4)';
@@ -340,6 +341,17 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                         {ctaText} →
                     </button>
                 )}
+
+                <style>{`
+                    @media (max-width: 480px) {
+                        .urgency-cta-btn {
+                            padding: 15px 30px !important;
+                            font-size: 1rem !important;
+                            width: 100%;
+                            justify-content: center;
+                        }
+                    }
+                `}</style>
 
                 {/* Guarantee Badge */}
                 <div style={{

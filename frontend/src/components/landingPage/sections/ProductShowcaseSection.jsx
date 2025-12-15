@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useLandingPageCTA } from '../LandingPageCTAHandler';
+import { useLandingPageCTA, useLandingPageAddToCart } from '../LandingPageCTAHandler';
 
 /**
  * Premium Product Showcase Section
  * Beautiful product display with animations and premium styling
  */
-const ProductShowcaseSection = ({ data, productId = null, availableVariants = [] }) => {
+const ProductShowcaseSection = ({ data, productId = null, availableVariants = [], fetchCartCount = null }) => {
     const {
         image = '/placeholder-image.jpg',
         title = 'Our Amazing Product',
@@ -19,7 +19,20 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
         originalPrice = '',
         ctaText = '',
         ctaLink = '#order',
+        productId: sectionProductId // Extract productId from data if available
     } = data || {};
+
+    console.log('ProductShowcase Debug:', {
+        globalProductId: productId,
+        sectionProductId,
+        activeProductId: sectionProductId === 'NONE' ? null : (sectionProductId || productId)
+    });
+
+
+
+    // Use section-specific productId if available (override), otherwise fallback to global productId
+    // If 'NONE' is selected, strictly set to null (no product)
+    const activeProductId = sectionProductId === 'NONE' ? null : (sectionProductId || productId);
 
     // Variant Logic
     const [selectedVariants, setSelectedVariants] = useState({});
@@ -66,18 +79,56 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
     // Check if all variants are selected
     const allVariantsSelected = variants.every(v => selectedVariants[v.name]);
 
-    const handleCTA = useLandingPageCTA(productId, {
+    // Toast Notification State
+    const [notification, setNotification] = useState({ show: false, message: '', type: 'info' });
+
+    const showNotification = (message, type = 'error') => {
+        setNotification({ show: true, message, type });
+        setTimeout(() => {
+            setNotification({ show: false, message: '', type: '' });
+        }, 3500);
+    };
+
+    const handleCTA = useLandingPageCTA(activeProductId, {
         ...data,
         selectedVariant: getVariantString()
     });
 
     const handleBuyClick = (e) => {
         e.preventDefault();
-        if (variants.length > 0 && !allVariantsSelected) {
-            alert('Please select all options before buying.');
+        // If no product, just follow link if it's not #order
+        if (!activeProductId && ctaLink !== '#order') {
+            window.location.href = ctaLink;
+            return;
+        }
+
+        const missingVariants = variants
+            .filter(v => !selectedVariants[v.name])
+            .map(v => v.name);
+
+        if (variants.length > 0 && missingVariants.length > 0) {
+            showNotification(`Please select: ${missingVariants.join(', ')}`, 'error');
             return;
         }
         handleCTA(e);
+    };
+
+    const handleAddToCart = useLandingPageAddToCart(activeProductId, {
+        ...data,
+        selectedVariant: getVariantString()
+    }, fetchCartCount);
+
+    const handleAddToCartClick = (e) => {
+        const missingVariants = variants
+            .filter(v => !selectedVariants[v.name])
+            .map(v => v.name);
+
+        if (variants.length > 0 && missingVariants.length > 0) {
+            showNotification(`Please select: ${missingVariants.join(', ')}`, 'error');
+            return;
+        }
+        // Removed explicit productId check to allow virtual products (handled by useLandingPageAddToCart)
+        handleAddToCart(e);
     };
 
     const [isVisible, setIsVisible] = useState(false);
@@ -409,6 +460,39 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
                             {ctaText} <span>→</span>
                         </a>
                     )}
+
+                    {/* Add to Cart Button (Always show, validator handles missing product) */}
+                    <button
+                        onClick={handleAddToCartClick}
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            background: 'white',
+                            color: '#ff69b4',
+                            border: '2px solid #ff69b4',
+                            padding: '16px 35px',
+                            borderRadius: '50px',
+                            textDecoration: 'none',
+                            fontSize: '1.1rem',
+                            fontWeight: '700',
+                            marginLeft: '15px',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 15px rgba(255,105,180,0.2)',
+                            transition: 'all 0.3s ease',
+                            opacity: activeProductId ? 1 : 0.7
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.background = '#fff0f5';
+                            e.target.style.transform = 'translateY(-3px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.background = 'white';
+                            e.target.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        Add to Cart <span>+</span>
+                    </button>
                 </div>
             </div>
 
@@ -422,7 +506,58 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
                     0%, 100% { transform: scale(1); }
                     50% { transform: scale(1.05); }
                 }
+                @keyframes slideInDown {
+                    from { transform: translate(-50%, -100%); opacity: 0; }
+                    to { transform: translate(-50%, 0); opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
             `}</style>
+
+            {/* Premium Toast Notification */}
+            {notification.show && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    padding: '16px 24px',
+                    borderRadius: '50px',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    zIndex: 9999,
+                    animation: 'slideInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                    border: '1px solid rgba(255,105,180,0.2)',
+                    minWidth: '320px',
+                    justifyContent: 'center',
+                }}>
+                    <div style={{
+                        width: '24px',
+                        height: '24px',
+                        background: notification.type === 'error' ? '#ff4d4d' : '#4caf50',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '14px',
+                        flexShrink: 0
+                    }}>
+                        {notification.type === 'error' ? '!' : '✓'}
+                    </div>
+                    <span style={{
+                        color: '#333',
+                        fontWeight: '600',
+                        fontSize: '0.95rem'
+                    }}>{notification.message}</span>
+                </div>
+            )}
         </div>
     );
 };

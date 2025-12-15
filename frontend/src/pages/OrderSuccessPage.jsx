@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getOrderById } from '../api/apiService';
 import Loader from '../components/Loader';
+import { trackEvent } from '../utils/facebookPixel';
+import ReactGA from 'react-ga4';
 
 /**
  * Order Success Page
@@ -20,11 +22,11 @@ const OrderSuccessPage = () => {
         const idFromUrl = params.get('orderId');
         const idFromState = location.state?.orderId;
         const orderFromState = location.state?.order;
-        
+
         const orderIdValue = idFromUrl || idFromState;
         if (orderIdValue) {
             setOrderId(orderIdValue);
-            
+
             // Use order data from state if available, otherwise fetch it
             if (orderFromState) {
                 setOrder(orderFromState);
@@ -41,7 +43,27 @@ const OrderSuccessPage = () => {
     const loadOrderDetails = async (id) => {
         try {
             const response = await getOrderById(id);
-            setOrder(response.data);
+            const loadedOrder = response.data;
+            setOrder(loadedOrder);
+
+            // Track Purchase Event
+            // Ensure we don't track duplicates if the user refreshes (checking if already tracked in this session could be an enhancement, but FB has dedup logic too)
+            trackEvent('Purchase', {
+                content_ids: loadedOrder.items ? loadedOrder.items.map(item => item.productId) : [],
+                content_type: 'product',
+                value: loadedOrder.total,
+                currency: 'USD',
+                order_id: loadedOrder.id
+            });
+
+            // Track purchase (Google Analytics)
+            ReactGA.event({
+                category: 'Ecommerce',
+                action: 'purchase',
+                label: 'Order #' + loadedOrder.id,
+                value: loadedOrder.total
+            });
+
         } catch (error) {
             console.error('Failed to load order details:', error);
             // Continue without order details
@@ -156,9 +178,9 @@ const OrderSuccessPage = () => {
                                 <span style={{ color: '#666' }}>الحالة / Status:</span>
                                 <span style={{
                                     fontWeight: '600',
-                                    color: order.status === 'PREPARING' ? '#ffc107' : 
-                                           order.status === 'DELIVERING' ? '#007bff' : 
-                                           order.status === 'DELIVERED' ? '#28a745' : '#dc3545'
+                                    color: order.status === 'PREPARING' ? '#ffc107' :
+                                        order.status === 'DELIVERING' ? '#007bff' :
+                                            order.status === 'DELIVERED' ? '#28a745' : '#dc3545'
                                 }}>
                                     {order.status}
                                 </span>

@@ -59,35 +59,81 @@ export const updateProductQuick = (id, productData) => {
 
 // --- UPDATED Cart Functions for Guest User Support ---
 
-export const addToCart = async (productId, quantity, productVariantId) => {
+export const addToCart = async (productOrId, quantity, productVariantId) => {
+    // Check if we are adding a virtual product (object) or standard product (ID)
+    const isVirtual = typeof productOrId === 'object' && productOrId !== null;
+
     if (isAuthenticated()) {
         // User is authenticated, send request to the backend
-        return apiService.post(`/cart/add`, { productId, quantity, productVariantId });
+        if (isVirtual) {
+            const payload = {
+                productId: null,
+                quantity: quantity,
+                productName: productOrId.productName || productOrId.title,
+                price: productOrId.price,
+                imageUrl: productOrId.imageUrl || productOrId.image,
+                variantName: productOrId.variantName || productOrId.selectedVariant
+            };
+            return apiService.post(`/cart/add`, payload);
+        } else {
+            return apiService.post(`/cart/add`, { productId: productOrId, quantity, productVariantId });
+        }
     } else {
         // User is a guest, handle cart in local storage
         try {
             const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
-            const productResponse = await getProductById(productId); // Fetch product details
-            const product = productResponse.data;
 
-            // Find existing item with same product and variant
-            const existingItemIndex = guestCart.items.findIndex(item =>
-                item.productId === productId && item.productVariantId === productVariantId
-            );
+            if (isVirtual) {
+                // Handle Virtual Product for Guest
+                // Virtual items don't have IDs, so we use name/price as unique key?
+                // Or generate a temp ID? For now, push as new item or group by name.
 
-            if (existingItemIndex > -1) {
-                // Update quantity of existing item
-                guestCart.items[existingItemIndex].quantity += quantity;
+                const existingItemIndex = guestCart.items.findIndex(item =>
+                    item.productId === null &&
+                    item.productName === (productOrId.productName || productOrId.title) &&
+                    item.price === productOrId.price
+                );
+
+                if (existingItemIndex > -1) {
+                    guestCart.items[existingItemIndex].quantity += quantity;
+                } else {
+                    guestCart.items.push({
+                        id: 'guest_' + Date.now() + Math.random().toString(36).substr(2, 9),
+                        productId: null,
+                        productVariantId: null,
+                        productName: productOrId.productName || productOrId.title,
+                        price: productOrId.price,
+                        quantity,
+                        imageUrl: productOrId.imageUrl || productOrId.image || null,
+                        variantName: productOrId.variantName || productOrId.selectedVariant
+                    });
+                }
             } else {
-                // Add new item to cart
-                guestCart.items.push({
-                    productId,
-                    productVariantId,
-                    productName: product.name,
-                    price: product.price,
-                    quantity,
-                    imageUrl: product.images && product.images.length > 0 ? product.images[0] : null
-                });
+                // Standard Product Logic (Existing)
+                const productId = productOrId;
+                const productResponse = await getProductById(productId); // Fetch product details
+                const product = productResponse.data;
+
+                // Find existing item with same product and variant
+                const existingItemIndex = guestCart.items.findIndex(item =>
+                    item.productId === productId && item.productVariantId === productVariantId
+                );
+
+                if (existingItemIndex > -1) {
+                    // Update quantity of existing item
+                    guestCart.items[existingItemIndex].quantity += quantity;
+                } else {
+                    // Add new item to cart
+                    guestCart.items.push({
+                        id: 'guest_' + Date.now() + Math.random().toString(36).substr(2, 9),
+                        productId,
+                        productVariantId,
+                        productName: product.name,
+                        price: product.price,
+                        quantity,
+                        imageUrl: product.images && product.images.length > 0 ? product.images[0] : null
+                    });
+                }
             }
 
             localStorage.setItem('cart', JSON.stringify(guestCart));
@@ -111,18 +157,51 @@ export const getCart = () => {
 
 export const removeCartItem = async (productId, productVariantId) => {
     if (isAuthenticated()) {
+        // If it's a numeric ID, it's likely a Cart Item ID (for authenticated users)
+        // If it's a GUID or string, it might be something else.
+        // However, the backend expects CartItem ID for authenticated users.
         return apiService.delete(`/cart/${productId}`);
     } else {
         // Remove from guest cart in localStorage
         const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
 
         // Filter out the item to remove
-        guestCart.items = guestCart.items.filter(item =>
-            !(item.productId === productId && item.productVariantId === productVariantId)
-        );
+        // Try to match by ID first (best for guest items with generated IDs)
+        // Fallback to productId/variantId match for legacy support
+        guestCart.items = guestCart.items.filter(item => {
+            if (item.id && item.id === productId) return false;
+            return !(item.productId === productId && item.productVariantId === productVariantId);
+        });
 
         localStorage.setItem('cart', JSON.stringify(guestCart));
         return Promise.resolve({ data: guestCart });
+    }
+};
+
+export const updateCartItemQuantity = async (cartItemId, quantity) => {
+    if (isAuthenticated()) {
+        return apiService.put(`/cart/${cartItemId}`, { quantity });
+    } else {
+        // Guest Cart Logic
+        try {
+            const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+            const itemIndex = guestCart.items.findIndex(item =>
+                item.id === cartItemId || item.productId === cartItemId
+            );
+
+            if (itemIndex > -1) {
+                if (quantity < 1) {
+                    guestCart.items.splice(itemIndex, 1);
+                } else {
+                    guestCart.items[itemIndex].quantity = quantity;
+                }
+                localStorage.setItem('cart', JSON.stringify(guestCart));
+                return Promise.resolve({ data: guestCart });
+            }
+            return Promise.reject(new Error("Item not found in guest cart"));
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 };
 

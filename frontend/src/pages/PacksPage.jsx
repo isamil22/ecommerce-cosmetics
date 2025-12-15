@@ -9,21 +9,21 @@ import PackQuickView from '../components/PackQuickView';
 const PackCard = ({ pack, index, onQuickView }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
-    
+
     const imageUrl = pack.imageUrl || 'https://placehold.co/600x400/fde4f2/E91E63?text=Premium+Pack';
-    
+
     // Calculate savings if items are listed
     const totalItemPrice = pack.items?.reduce((total, item) => {
         return total + (item.defaultProduct?.price || 0);
     }, 0) || 0;
-    
+
     const savings = totalItemPrice > pack.price ? totalItemPrice - pack.price : 0;
     const savingsPercent = savings > 0 ? Math.round((savings / totalItemPrice) * 100) : 0;
-    
+
     // Check if pack is new (created within last 30 days)
-    const isNew = pack.createdAt && 
+    const isNew = pack.createdAt &&
         (new Date() - new Date(pack.createdAt)) / (1000 * 60 * 60 * 24) <= 30;
-    
+
     // Calculate average rating from comments
     const averageRating = pack.comments && pack.comments.length > 0
         ? pack.comments.reduce((acc, comment) => acc + comment.score, 0) / pack.comments.length
@@ -49,7 +49,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
     };
 
     return (
-        <div 
+        <div
             className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 flex flex-col transform hover:-translate-y-3 border-2 border-transparent hover:border-pink-200 animate-float"
             style={{ animationDelay: `${index * 0.1}s` }}
             onMouseEnter={() => setIsHovered(true)}
@@ -95,9 +95,9 @@ const PackCard = ({ pack, index, onQuickView }) => {
             <Link to={`/packs/${pack.id}`} className="block flex-1 flex flex-col">
                 {/* Enhanced Image Container */}
                 <div className="relative overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100 aspect-[4/3]">
-                <img
-                    src={imageUrl}
-                    alt={pack.name}
+                    <img
+                        src={imageUrl}
+                        alt={pack.name}
                         className={`w-full h-full object-cover transition-all duration-500 ${isHovered ? 'scale-110' : 'scale-100'} ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
                         onLoad={() => setImageLoaded(true)}
                         onError={(e) => {
@@ -106,7 +106,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                             setImageLoaded(true);
                         }}
                     />
-                    
+
                     {/* Loading Skeleton */}
                     {!imageLoaded && (
                         <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse"></div>
@@ -114,7 +114,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
 
                     {/* Gradient Overlay on Hover */}
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
-                    
+
                     {/* Pack Value Indicator */}
                     {savingsPercent > 0 && (
                         <div className="absolute bottom-4 left-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
@@ -130,7 +130,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                         <h3 className="text-xl font-bold text-gray-800 line-clamp-2 leading-tight group-hover:text-pink-600 transition-colors mb-2">
                             {pack.name}
                         </h3>
-                        
+
                         {/* Rating & Reviews */}
                         {reviewCount > 0 && (
                             <div className="flex items-center gap-2 mb-2">
@@ -142,7 +142,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                                 </span>
                             </div>
                         )}
-                        
+
                         {/* Description */}
                         <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
                             {pack.description?.replace(/<[^>]*>/g, '') || 'Discover this amazing curated pack of premium beauty products.'}
@@ -167,7 +167,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                                     </span>
                                 )}
                             </div>
-            </div>
+                        </div>
                     )}
 
                     {/* Price Section */}
@@ -179,10 +179,10 @@ const PackCard = ({ pack, index, onQuickView }) => {
                             {totalItemPrice > pack.price && (
                                 <span className="text-lg text-gray-400 line-through">
                                     ${totalItemPrice.toFixed(2)}
-                    </span>
+                                </span>
                             )}
                         </div>
-                        
+
                         {savings > 0 && (
                             <p className="text-green-600 text-sm font-semibold">
                                 💰 You save ${savings.toFixed(2)} ({savingsPercent}% off)
@@ -254,11 +254,11 @@ const PacksPage = () => {
     const filteredAndSortedPacks = packs
         .filter(pack => {
             const matchesSearch = pack.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                pack.description?.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesFilter = filterBy === 'all' || 
-                                (filterBy === 'new' && pack.createdAt && 
-                                    (new Date() - new Date(pack.createdAt)) / (1000 * 60 * 60 * 24) <= 30) ||
-                                (filterBy === 'savings' && pack.items?.length > 0);
+                pack.description?.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesFilter = filterBy === 'all' ||
+                (filterBy === 'new' && pack.createdAt &&
+                    (new Date() - new Date(pack.createdAt)) / (1000 * 60 * 60 * 24) <= 30) ||
+                (filterBy === 'savings' && pack.items?.length > 0);
             return matchesSearch && matchesFilter;
         })
         .sort((a, b) => {
@@ -308,53 +308,57 @@ const PacksPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50">
             <CountdownBar />
-            
+
             {/* Hero Section with Enhanced Background */}
             <div className="relative overflow-hidden">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-100 via-purple-50 to-blue-100 opacity-60"></div>
                 <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full -translate-y-48 translate-x-48 opacity-30 animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-200 to-pink-200 rounded-full translate-y-40 -translate-x-40 opacity-30 animate-pulse" style={{animationDelay: '1s'}}></div>
-                
-                <div className="relative z-10 container mx-auto px-4 py-16">
-                    {/* Enhanced Page Header */}
-                    <div className="text-center mb-16">
-                        <div className="inline-block mb-6">
-                            <span className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
-                                ✨ Premium Beauty Packs
-                            </span>
-                        </div>
-                        
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-6 leading-tight">
-                            Explore Our Curated Packs
-                        </h1>
-                        
-                        <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8 px-4">
-                            Discover expertly curated beauty bundles that offer exceptional value. 
-                            Get the best products at amazing prices with our specially selected packs.
-                        </p>
-                        
-                        {/* Stats */}
-                        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-center px-4">
-                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg">
-                                <div className="text-2xl sm:text-3xl font-bold text-pink-600">{packs.length}</div>
-                                <div className="text-xs sm:text-sm text-gray-600">Premium Packs</div>
-                            </div>
-                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg">
-                                <div className="text-2xl sm:text-3xl font-bold text-purple-600">Up to 50%</div>
-                                <div className="text-xs sm:text-sm text-gray-600">Savings</div>
-                            </div>
-                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg">
-                                <div className="text-2xl sm:text-3xl font-bold text-blue-600">Free</div>
-                                <div className="text-xs sm:text-sm text-gray-600">Shipping</div>
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-200 to-pink-200 rounded-full translate-y-40 -translate-x-40 opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
+
+                <div className="relative z-10 w-full px-0 py-0">
+                    {/* Enhanced Page Header - Full Width Stripe - Refined Sizing */}
+                    <div className="w-full py-8 md:py-12 bg-transparent">
+                        <div className="container mx-auto px-4 text-center">
+                            <div className="mb-8 md:mb-12">
+                                <div className="inline-block mb-4">
+                                    <span className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                                        ✨ Premium Beauty Packs
+                                    </span>
+                                </div>
+
+                                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-4 leading-tight">
+                                    Explore Our Curated Packs
+                                </h1>
+
+                                <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
+                                    Discover expertly curated beauty bundles that offer exceptional value.
+                                    Get the best products at amazing prices with our specially selected packs.
+                                </p>
+
+                                {/* Stats - Logically Sized */}
+                                <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center max-w-2xl mx-auto">
+                                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
+                                        <div className="text-lg sm:text-2xl font-bold text-pink-600">{packs.length}</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Premium Packs</div>
+                                    </div>
+                                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
+                                        <div className="text-lg sm:text-2xl font-bold text-purple-600">Up to 50%</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Savings</div>
+                                    </div>
+                                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
+                                        <div className="text-lg sm:text-2xl font-bold text-blue-600">Free</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Shipping</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Enhanced Search and Filter Section */}
-                    <div className="max-w-6xl mx-auto mb-12 px-4">
-                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-white/20">
-                            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+                    {/* Enhanced Search and Filter Section - Logically Sized */}
+                    <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 w-full py-4 sm:py-8 mt-0 shadow-sm z-20 relative">
+                        <div className="container mx-auto px-4">
+                            <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
                                 {/* Search */}
                                 <div className="relative flex-1 max-w-md w-full">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -367,12 +371,12 @@ const PacksPage = () => {
                                         placeholder="Search packs..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm"
+                                        className="block w-full pl-10 pr-3 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm shadow-inner text-sm sm:text-base"
                                     />
                                 </div>
 
-                                {/* Filters */}
-                                <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                                {/* Filters - Side by Side on Mobile */}
+                                <div className="grid grid-cols-2 gap-2 w-full lg:w-auto">
                                     <select
                                         value={filterBy}
                                         onChange={(e) => setFilterBy(e.target.value)}
@@ -401,7 +405,7 @@ const PacksPage = () => {
             </div>
 
             {/* Packs Grid */}
-            <div className="relative z-10 container mx-auto px-4 pb-20">
+            <div className="w-full px-4 py-8 container mx-auto">
                 {filteredAndSortedPacks.length > 0 ? (
                     <>
                         <div className="text-center mb-8">
@@ -409,17 +413,17 @@ const PacksPage = () => {
                                 Showing {filteredAndSortedPacks.length} of {packs.length} packs
                             </p>
                         </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                             {filteredAndSortedPacks.map((pack, index) => (
-                                <PackCard 
-                                    key={pack.id} 
-                                    pack={pack} 
-                                    index={index} 
+                                <PackCard
+                                    key={pack.id}
+                                    pack={pack}
+                                    index={index}
                                     onQuickView={handleQuickView}
                                 />
-                    ))}
-                </div>
+                            ))}
+                        </div>
                     </>
                 ) : (
                     <div className="text-center py-20">
@@ -427,7 +431,7 @@ const PacksPage = () => {
                             <div className="text-6xl mb-4">📦</div>
                             <h3 className="text-2xl font-bold text-gray-800 mb-4">No Packs Found</h3>
                             <p className="text-gray-600 mb-6">
-                                {searchTerm || filterBy !== 'all' 
+                                {searchTerm || filterBy !== 'all'
                                     ? 'Try adjusting your search or filters to find more packs.'
                                     : 'No packs are available at the moment. Please check back soon!'
                                 }

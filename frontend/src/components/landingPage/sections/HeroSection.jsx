@@ -22,7 +22,10 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
     // Check if all variants are selected
     const allVariantsSelected = variants.every(v => selectedVariants[v.name]);
 
-    const handleCTA = useLandingPageCTA(productId, {
+    // Determine active product: Section override > Global Page Product > Null (if 'NONE')
+    const activeProductId = data?.productId === 'NONE' ? null : (data?.productId || productId);
+
+    const handleCTA = useLandingPageCTA(activeProductId, {
         ...data,
         selectedVariant: getVariantString()
     });

@@ -3,6 +3,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CartDTO;
+import com.example.demo.dto.CartItemDTO;
 import com.example.demo.exception.InsufficientStockException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.CartMapper;
@@ -27,34 +28,78 @@ public class CartService {
     private final UserRepository userRepository;
     private final CartMapper cartMapper;
 
-    public CartDTO addToCart(Long userId, Long productId, Integer quantity){
+    public CartDTO addToCart(Long userId, Long productId, Integer quantity, CartItemDTO itemDTO) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()->new ResourceNotFoundException("User not found"));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(()->new ResourceNotFoundException("Product not found"));
-
-        if(product.getQuantity()<quantity){
-            throw new InsufficientStockException("Not enough available");
-        }
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Cart cart = cartRepository.findByUserId(userId)
                 .orElse(new Cart(null, user, new ArrayList<>()));
-        Optional<CartItem> existingCartItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst();
 
-        if(existingCartItem.isPresent()){
-            CartItem cartItem = existingCartItem.get();
-            cartItem.setQuantity(cartItem.getQuantity()+quantity);
-        }else{
-            CartItem cartItem = new CartItem(null, cart, product, quantity);
-            cart.getItems().add(cartItem);
+        if (productId != null) {
+            // Standard Product Logic
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+            if (product.getQuantity() < quantity) {
+                throw new InsufficientStockException("Not enough available");
+            }
+
+            Optional<CartItem> existingCartItem = cart.getItems().stream()
+                    .filter(item -> item.getProduct() != null && item.getProduct().getId().equals(productId))
+                    .findFirst();
+
+            if (existingCartItem.isPresent()) {
+                CartItem cartItem = existingCartItem.get();
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            } else {
+                CartItem cartItem = new CartItem();
+                cartItem.setCart(cart);
+                cartItem.setProduct(product);
+                cartItem.setQuantity(quantity);
+                cartItem.setPrice(product.getPrice());
+                cartItem.setProductName(product.getName());
+                if (product.getImages() != null && !product.getImages().isEmpty()) {
+                    cartItem.setImageUrl(product.getImages().get(0));
+                }
+                cart.getItems().add(cartItem);
+            }
+        } else if (itemDTO != null) {
+            // Virtual Product Logic
+            // Check if similar virtual item exists (by name and price)
+            Optional<CartItem> existingCartItem = cart.getItems().stream()
+                    .filter(item -> item.getProduct() == null &&
+                            item.getProductName().equals(itemDTO.getProductName()) &&
+                            item.getPrice().compareTo(itemDTO.getPrice()) == 0)
+                    .findFirst();
+
+            if (existingCartItem.isPresent()) {
+                CartItem cartItem = existingCartItem.get();
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            } else {
+                CartItem cartItem = new CartItem();
+                cartItem.setCart(cart);
+                cartItem.setProduct(null);
+                cartItem.setQuantity(quantity);
+                cartItem.setProductName(itemDTO.getProductName());
+                cartItem.setPrice(itemDTO.getPrice());
+                cartItem.setImageUrl(itemDTO.getImageUrl());
+                cartItem.setVariantName(itemDTO.getVariantName());
+                cart.getItems().add(cartItem);
+            }
+        } else {
+            throw new IllegalArgumentException("Must provide Product ID or Item Details");
         }
+
         Cart savedCart = cartRepository.save(cart);
         return cartMapper.toDTO(savedCart);
     }
 
-    public CartDTO getCart(Long userId){
+    // Maintain backward compatibility or simple usage
+    public CartDTO addToCart(Long userId, Long productId, Integer quantity) {
+        return addToCart(userId, productId, quantity, null);
+    }
+
+    public CartDTO getCart(Long userId) {
         // If the userId is null, it's a guest. Return a new empty cart DTO.
         if (userId == null) {
             CartDTO guestCart = new CartDTO();
@@ -64,28 +109,61 @@ public class CartService {
 
         // For authenticated users, find their cart. If not present, create one.
         Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
-            User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
             Cart newCart = new Cart(null, user, new ArrayList<>());
             return cartRepository.save(newCart);
         });
 
+        // Ensure DTOs have snapshot data if missing (migration support)
+        // This is handled by mapper or we can enrich here if needed.
+        // For virtual items, the mapper needs to map the new fields.
         return cartMapper.toDTO(cart);
     }
 
-    public void clearCart(Long userId){
+    public void clearCart(Long userId) {
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(()->new ResourceNotFoundException("Cart not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         cart.getItems().clear();
         cartRepository.save(cart);
     }
 
-    public void removeCartItem(Long userId, Long productId) {
+    // New method for removing virtual items or specific items by Line Item ID
+    // (better practice)
+    public CartDTO removeItemFromCart(Long userId, Long cartItemId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user"));
 
-        cart.getItems().removeIf(item -> item.getProduct().getId().equals(productId));
+        cart.getItems().removeIf(item -> item.getId().equals(cartItemId));
 
-        cartRepository.save(cart);
+        Cart savedCart = cartRepository.save(cart);
+        return cartMapper.toDTO(savedCart);
+    }
+
+    public CartDTO updateItemQuantity(Long userId, Long cartItemId, Integer quantity) {
+        if (quantity < 1) {
+            return removeItemFromCart(userId, cartItemId);
+        }
+
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user"));
+
+        CartItem cartItem = cart.getItems().stream()
+                .filter(item -> item.getId().equals(cartItemId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
+
+        // Check stock for real products
+        if (cartItem.getProduct() != null) {
+            Product product = cartItem.getProduct();
+            if (product.getQuantity() < quantity) {
+                throw new InsufficientStockException("Not enough stock available. Max: " + product.getQuantity());
+            }
+        }
+
+        cartItem.setQuantity(quantity);
+        Cart savedCart = cartRepository.save(cart);
+        return cartMapper.toDTO(savedCart);
     }
 }

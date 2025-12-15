@@ -4,12 +4,14 @@ import landingPageService from '../api/landingPageService';
 import { SECTION_COMPONENTS } from '../components/landingPage/sections/SectionRegistry';
 import Loader from '../components/Loader';
 import { getProductById } from '../api/apiService';
+import { trackEvent } from '../utils/facebookPixel';
+import ReactGA from 'react-ga4';
 
 /**
  * Public Landing Page Viewer
  * Renders published landing pages for customers
  */
-const PublicLandingPage = () => {
+const PublicLandingPage = (props) => {
     const { slug } = useParams();
     const [landingPage, setLandingPage] = useState(null);
     const [product, setProduct] = useState(null);
@@ -27,9 +29,10 @@ const PublicLandingPage = () => {
             setLandingPage(data);
 
             // Fetch product details explicitly to get variants
+            let productRes = null;
             if (data.productId) {
                 try {
-                    const productRes = await getProductById(data.productId);
+                    productRes = await getProductById(data.productId);
                     setProduct(productRes.data);
                 } catch (pErr) {
                     console.error("Failed to fetch product details:", pErr);
@@ -56,6 +59,31 @@ const PublicLandingPage = () => {
             if (data.settings?.themeColor) {
                 document.documentElement.style.setProperty('--theme-color', data.settings.themeColor);
             }
+
+            // Track ViewContent
+            // We need to determine the price and product details
+            let price = 0;
+            // Try to find price in sections if not directly on product (fallback)
+            // Ideally backend provides this or we get it from product fetch
+            if (data.productId && productRes && productRes.data) {
+                price = productRes.data.price;
+            }
+
+            trackEvent('ViewContent', {
+                content_name: data.title,
+                content_ids: data.productId ? [data.productId] : [],
+                content_type: 'product',
+                value: price,
+                currency: 'USD' // Assuming USD or get from settings
+            });
+
+            // Track view_item (Google Analytics)
+            ReactGA.event({
+                category: 'Landing Page',
+                action: 'view_item',
+                label: data.title,
+                value: price
+            });
 
             setError(null);
         } catch (err) {
@@ -150,6 +178,7 @@ const PublicLandingPage = () => {
                             data={section.sectionData}
                             productId={landingPage.productId}
                             availableVariants={globalVariants}
+                            fetchCartCount={props.fetchCartCount}
                         />
                     );
                 })}

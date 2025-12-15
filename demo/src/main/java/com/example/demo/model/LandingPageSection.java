@@ -98,6 +98,7 @@ public class LandingPageSection {
         FAQ, // Frequently Asked Questions (accordion)
         URGENCY_BANNER, // Limited time offer with countdown
         FINAL_CTA, // Final call-to-action
+        RELATED_PRODUCTS, // Upsell/Cross-sell products
         CUSTOM_HTML // Custom HTML section for advanced users
     }
 }

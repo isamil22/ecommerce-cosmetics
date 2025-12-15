@@ -42,6 +42,9 @@ public class LandingPageService {
     private ProductRepository productRepository;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -71,11 +74,16 @@ public class LandingPageService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
         landingPage.setCreatedBy(creator);
 
-        // Set product if provided
+        // Set product if provided, otherwise auto-generate
         if (requestDTO.getProductId() != null) {
             Product product = productRepository.findById(requestDTO.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + requestDTO.getProductId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product not found with ID: " + requestDTO.getProductId()));
             landingPage.setProduct(product);
+        } else {
+            // Auto-generate a dummy product
+            Product placeholderProduct = createPlaceholderProduct(landingPage.getTitle());
+            landingPage.setProduct(placeholderProduct);
         }
 
         // Set default status if not provided
@@ -118,6 +126,27 @@ public class LandingPageService {
         return landingPageMapper.toResponseDTO(landingPage);
     }
 
+    private Product createPlaceholderProduct(String landingPageTitle) {
+        Product product = new Product();
+        product.setName(landingPageTitle + " - Offer");
+        product.setDescription("Auto-generated product for landing page: " + landingPageTitle);
+        product.setPrice(new java.math.BigDecimal("0.01")); // Minimal positive price
+        product.setQuantity(100);
+
+        // Find a default category
+        Category category = categoryRepository.findAll().stream().findFirst()
+                .orElseThrow(() -> new IllegalStateException("No categories found to create placeholder product"));
+        product.setCategory(category);
+
+        product.setType(Product.ProductType.BOTH);
+        product.setHasVariants(false);
+        product.setPackable(false);
+        product.setShowPurchaseNotifications(true);
+        product.setShowCountdownTimer(true);
+
+        return productRepository.save(product);
+    }
+
     /**
      * Update existing landing page
      */
@@ -138,17 +167,30 @@ public class LandingPageService {
         // Update product if provided
         if (requestDTO.getProductId() != null) {
             Product product = productRepository.findById(requestDTO.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + requestDTO.getProductId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product not found with ID: " + requestDTO.getProductId()));
             landingPage.setProduct(product);
-        } else {
-            landingPage.setProduct(null);
+        }
+        // If ProductId is null in request, we DO NOT remove the existing product,
+        // unlike the previous logic which set it to null.
+        // This preserves the auto-generated product if the user edits the page but
+        // doesn't touch the product field.
+        // If they EXPLICITLY want to disconnect, they might need a specific flag, but
+        // for now this is safer.
+        else if (landingPage.getProduct() == null) {
+            // If existing product is null AND none provided in update, generate one now?
+            // Yes, consistent with "ensure it has an ID".
+            Product placeholderProduct = createPlaceholderProduct(landingPage.getTitle());
+            landingPage.setProduct(placeholderProduct);
         }
 
-        // Update sections - must clear and add to existing collection to preserve Hibernate's orphanRemoval tracking
+        // Update sections - must clear and add to existing collection to preserve
+        // Hibernate's orphanRemoval tracking
         if (requestDTO.getSections() != null) {
-            // Clear existing sections (Hibernate will delete them due to orphanRemoval=true)
+            // Clear existing sections (Hibernate will delete them due to
+            // orphanRemoval=true)
             landingPage.getSections().clear();
-            
+
             // Add new sections to the existing collection
             for (LandingPageSectionDTO sectionDTO : requestDTO.getSections()) {
                 LandingPageSection section = sectionMapper.toEntity(sectionDTO);
@@ -188,11 +230,12 @@ public class LandingPageService {
     @Transactional
     public LandingPageResponseDTO getPublishedLandingPageBySlug(String slug) {
         LandingPage landingPage = landingPageRepository.findPublishedBySlug(slug)
-                .orElseThrow(() -> new ResourceNotFoundException("Published landing page not found with slug: " + slug));
-        
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Published landing page not found with slug: " + slug));
+
         // Track view
         trackView(landingPage.getId());
-        
+
         return landingPageMapper.toResponseDTO(landingPage);
     }
 
@@ -202,7 +245,7 @@ public class LandingPageService {
     @Transactional(readOnly = true)
     public Page<LandingPageDTO> getAllLandingPages(Pageable pageable) {
         Page<LandingPage> landingPages = landingPageRepository.findAll(pageable);
-        
+
         // Convert to DTO and add view counts
         List<LandingPageDTO> dtos = landingPages.getContent().stream()
                 .map(lp -> {
@@ -211,7 +254,7 @@ public class LandingPageService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-        
+
         return new PageImpl<>(dtos, pageable, landingPages.getTotalElements());
     }
 
@@ -221,7 +264,7 @@ public class LandingPageService {
     @Transactional(readOnly = true)
     public Page<LandingPageDTO> getLandingPagesByStatus(LandingPage.LandingPageStatus status, Pageable pageable) {
         Page<LandingPage> landingPages = landingPageRepository.findByStatus(status, pageable);
-        
+
         List<LandingPageDTO> dtos = landingPages.getContent().stream()
                 .map(lp -> {
                     LandingPageDTO dto = landingPageMapper.toDTO(lp);
@@ -229,7 +272,7 @@ public class LandingPageService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-        
+
         return new PageImpl<>(dtos, pageable, landingPages.getTotalElements());
     }
 
@@ -239,7 +282,7 @@ public class LandingPageService {
     @Transactional(readOnly = true)
     public Page<LandingPageDTO> searchLandingPages(String searchTerm, Pageable pageable) {
         Page<LandingPage> landingPages = landingPageRepository.searchByTitle(searchTerm, pageable);
-        
+
         List<LandingPageDTO> dtos = landingPages.getContent().stream()
                 .map(lp -> {
                     LandingPageDTO dto = landingPageMapper.toDTO(lp);
@@ -247,7 +290,7 @@ public class LandingPageService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-        
+
         return new PageImpl<>(dtos, pageable, landingPages.getTotalElements());
     }
 
@@ -258,10 +301,10 @@ public class LandingPageService {
     public LandingPageDTO publishLandingPage(Long id) {
         LandingPage landingPage = landingPageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Landing page not found with ID: " + id));
-        
+
         landingPage.setStatus(LandingPage.LandingPageStatus.PUBLISHED);
         landingPage.setPublishedAt(LocalDateTime.now());
-        
+
         landingPage = landingPageRepository.save(landingPage);
         return landingPageMapper.toDTO(landingPage);
     }
@@ -273,9 +316,9 @@ public class LandingPageService {
     public LandingPageDTO unpublishLandingPage(Long id) {
         LandingPage landingPage = landingPageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Landing page not found with ID: " + id));
-        
+
         landingPage.setStatus(LandingPage.LandingPageStatus.DRAFT);
-        
+
         landingPage = landingPageRepository.save(landingPage);
         return landingPageMapper.toDTO(landingPage);
     }
@@ -287,9 +330,9 @@ public class LandingPageService {
     public LandingPageDTO archiveLandingPage(Long id) {
         LandingPage landingPage = landingPageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Landing page not found with ID: " + id));
-        
+
         landingPage.setStatus(LandingPage.LandingPageStatus.ARCHIVED);
-        
+
         landingPage = landingPageRepository.save(landingPage);
         return landingPageMapper.toDTO(landingPage);
     }
@@ -302,7 +345,7 @@ public class LandingPageService {
         if (!landingPageRepository.existsById(id)) {
             throw new ResourceNotFoundException("Landing page not found with ID: " + id);
         }
-        
+
         // Cascade delete will handle sections, settings, and views
         landingPageRepository.deleteById(id);
     }
@@ -313,10 +356,10 @@ public class LandingPageService {
     @Transactional
     public void trackView(Long landingPageId) {
         LocalDate today = LocalDate.now();
-        
+
         LandingPage landingPage = landingPageRepository.findById(landingPageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Landing page not found with ID: " + landingPageId));
-        
+
         LandingPageView view = viewRepository.findByLandingPageIdAndViewDate(landingPageId, today)
                 .orElse(LandingPageView.builder()
                         .landingPage(landingPage)
@@ -324,11 +367,11 @@ public class LandingPageService {
                         .viewCount(0)
                         .uniqueVisitors(0)
                         .build());
-        
+
         view.setViewCount(view.getViewCount() + 1);
         // Note: In production, you'd want to track unique visitors via session/cookie
         view.setUniqueVisitors(view.getUniqueVisitors() + 1);
-        
+
         viewRepository.save(view);
     }
 
@@ -408,4 +451,3 @@ public class LandingPageService {
         return getLandingPageById(savedDuplicate.getId());
     }
 }
-

@@ -11,7 +11,11 @@ import { useLandingPageCTA } from '../LandingPageCTAHandler';
 const HeroPremiumSection = ({ data, isEditing = false, productId = null, availableVariants = [] }) => {
     // Merge local data with global variants if not present locally
     const ctaData = { ...data, variants: data?.variants || availableVariants };
-    const handleCTA = useLandingPageCTA(productId, ctaData);
+
+    // Determine active product: Section override > Global Page Product > Null (if 'NONE')
+    const activeProductId = data?.productId === 'NONE' ? null : (data?.productId || productId);
+
+    const handleCTA = useLandingPageCTA(activeProductId, ctaData);
 
     const {
         titleBack = 'SKIN CARE',
@@ -38,6 +42,7 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
 
     return (
         <div
+            className="hero-premium-section"
             onMouseMove={handleMouseMove}
             style={{
                 position: 'relative',
@@ -50,164 +55,219 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                // fontFamily: "'Playfair Display', serif" // Removed to allow global font
             }}
         >
+            <style>{`
+                .hero-premium-section .giant-text {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: clamp(80px, 20vw, 400px);
+                    font-weight: 900;
+                    color: white;
+                    white-space: nowrap;
+                    line-height: 1;
+                    opacity: 0.6;
+                    z-index: 1;
+                    mix-blend-mode: overlay;
+                    pointer-events: none;
+                    user-select: none;
+                }
+
+                .hero-premium-section .content-grid {
+                    position: relative;
+                    z-index: 10;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    max-width: 1200px;
+                    width: 100%;
+                    padding: 20px;
+                    gap: 50px;
+                    align-items: center;
+                }
+
+                .hero-premium-section .image-column {
+                    order: 2;
+                    display: flex;
+                    justify-content: center;
+                    transition: transform 0.1s ease-out;
+                }
+
+                .hero-premium-section .text-column {
+                    order: 1;
+                    text-align: left;
+                }
+
+                .hero-premium-section .product-image {
+                    max-height: 600px;
+                    width: auto;
+                    max-width: 100%;
+                    filter: drop-shadow(0 20px 50px rgba(0,0,0,0.3));
+                    animation: float 6s ease-in-out infinite;
+                }
+
+                .hero-premium-section .placeholder-image {
+                    width: 400px;
+                    height: 500px;
+                    background: rgba(255,255,255,0.2);
+                    border-radius: 20px;
+                    border: 2px dashed #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #fff;
+                    max-width: 100%;
+                }
+
+                .hero-premium-section .badge {
+                    display: inline-block;
+                    padding: 8px 20px;
+                    border: 1px solid ${textColor};
+                    border-radius: 50px;
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-bottom: 20px;
+                    color: ${textColor};
+                }
+
+                .hero-premium-section .main-headline {
+                    font-size: clamp(3rem, 5vw, 5rem);
+                    line-height: 1.2;
+                    margin: 0 0 10px 0;
+                    color: ${textColor};
+                    font-weight: 700;
+                }
+
+                .hero-premium-section .sub-headline {
+                    font-size: clamp(1.5rem, 3vw, 2.5rem);
+                    font-weight: 400;
+                    font-style: normal;
+                    margin-bottom: 40px;
+                    color: ${textColor};
+                    opacity: 0.9;
+                }
+
+                .hero-premium-section .cta-button {
+                    display: inline-block;
+                    background: ${textColor};
+                    color: ${backgroundColor};
+                    padding: 18px 40px;
+                    border-radius: 50px;
+                    text-decoration: none;
+                    font-size: 1.1rem;
+                    font-weight: bold;
+                    letter-spacing: 1px;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                }
+
+                .hero-premium-section .cta-button:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+                }
+
+                @keyframes float {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-20px); }
+                    100% { transform: translateY(0px); }
+                }
+
+                /* Mobile Responsiveness */
+                @media (max-width: 991px) {
+                    .hero-premium-section {
+                        min-height: auto;
+                        padding: 80px 0;
+                    }
+
+                    .hero-premium-section .content-grid {
+                        grid-template-columns: 1fr;
+                        text-align: center;
+                        gap: 40px;
+                    }
+
+                    .hero-premium-section .image-column {
+                        order: 1; /* Image first on mobile usually looks better for products */
+                    }
+
+                    .hero-premium-section .text-column {
+                        order: 2;
+                        text-align: center;
+                    }
+                    
+                    .hero-premium-section .product-image {
+                        max-height: 400px;
+                    }
+
+                    .hero-premium-section .giant-text {
+                        font-size: 18vw; /* Scale down giant text */
+                    }
+
+                    .hero-premium-section .cta-button {
+                        width: 100%;
+                        max-width: 300px;
+                    }
+                }
+            `}</style>
+
             {/* 1. LAYER ONE: Giant Background Text */}
-            <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                fontSize: 'clamp(100px, 20vw, 400px)',
-                fontWeight: '900',
-                color: 'white',
-                whiteSpace: 'nowrap',
-                lineHeight: '1',
-                opacity: '0.6',
-                zIndex: 1,
-                mixBlendMode: 'overlay', // Blend with background
-                pointerEvents: 'none',
-                userSelect: 'none'
-            }}>
+            <div className="giant-text">
                 {titleBack.toUpperCase()}
             </div>
 
             {/* 2. LAYER TWO: Main Content Container (Grid) */}
-            <div style={{
-                position: 'relative',
-                zIndex: 10,
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                maxWidth: '1200px',
-                width: '100%',
-                padding: '20px',
-                gap: '50px',
-                alignItems: 'center'
-            }}>
+            <div className="content-grid">
 
                 {/* Left Side: Product Image (Floating) */}
-                <div style={{
-                    order: 2, // Desktop: Right side? Or adjust based on design. Let's do Standard Image Left/Right switch later. For now, Product Center is cool but standard split is safer effectively.
-                    // Actually, the example had product overlapping text.
-                    display: 'flex',
-                    justifyContent: 'center',
-                    transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
-                    transition: 'transform 0.1s ease-out'
-                }}>
+                <div
+                    className="image-column"
+                    style={{
+                        transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
+                    }}
+                >
                     {productImage ? (
                         <img
                             src={productImage}
                             alt="Premium Product"
-                            style={{
-                                maxHeight: '600px',
-                                width: 'auto',
-                                filter: 'drop-shadow(0 20px 50px rgba(0,0,0,0.3))',
-                                animation: 'float 6s ease-in-out infinite'
-                            }}
+                            className="product-image"
                         />
                     ) : (
-                        <div style={{
-                            width: '400px',
-                            height: '500px',
-                            background: 'rgba(255,255,255,0.2)',
-                            borderRadius: '20px',
-                            border: '2px dashed #fff',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: '#fff'
-                        }}>
+                        <div className="placeholder-image">
                             Upload Transparent Product Image
                         </div>
                     )}
                 </div>
 
                 {/* Right Side: Text & Details */}
-                <div style={{ order: 1, textAlign: 'left' }}>
+                <div className="text-column">
                     {badge && (
-                        <span style={{
-                            display: 'inline-block',
-                            padding: '8px 20px',
-                            border: `1px solid ${textColor}`,
-                            borderRadius: '50px',
-                            fontSize: '0.9rem',
-                            fontWeight: '600',
-                            textTransform: 'uppercase',
-                            letterSpacing: '1px',
-                            marginBottom: '20px',
-                            color: textColor
-                        }}>
+                        <span className="badge">
                             {badge}
                         </span>
                     )}
 
-                    <h1 style={{
-                        fontSize: 'clamp(3rem, 5vw, 5rem)',
-                        lineHeight: '1.2',
-                        margin: '0 0 10px 0',
-                        color: textColor,
-                        fontWeight: '700', // Making it bolder for better readability
-                    }}>
+                    <h1 className="main-headline">
                         {headline}
                     </h1>
 
-                    <h2 style={{
-                        fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
-                        fontWeight: '400',
-                        fontStyle: 'normal',
-                        marginBottom: '40px',
-                        color: textColor,
-                        opacity: 0.9 // Improved contrast
-                    }}>
+                    <h2 className="sub-headline">
                         {subheadline}
                     </h2>
 
                     <a
                         href={isEditing ? '#' : ctaLink}
                         onClick={handleCTA}
-                        style={{
-                            display: 'inline-block',
-                            background: textColor,
-                            color: backgroundColor, // Invert colors for contrast
-                            padding: '18px 40px',
-                            borderRadius: '0px', // Sharp corners for luxury feel? or rounded. Let's go rounded pill for modish.
-                            borderRadius: '50px',
-                            textDecoration: 'none',
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            letterSpacing: '1px',
-                            transition: 'all 0.3s ease',
-                            cursor: isEditing ? 'default' : 'pointer'
-                        }}
+                        className="cta-button"
+                        style={{ cursor: isEditing ? 'default' : 'pointer' }}
                     >
                         {ctaText}
                     </a>
                 </div>
 
             </div>
-
-            {/* CSS Animations */}
-            <style>{`
-                @keyframes float {
-                    0% { transform: translateY(0px); }
-                    50% { transform: translateY(-20px); }
-                    100% { transform: translateY(0px); }
-                }
-                @media (max-width: 768px) {
-                    div[style*="grid-template-columns"] {
-                        grid-template-columns: 1fr !important;
-                        text-align: center !important;
-                    }
-                    div[style*="order: 1"] {
-                        order: 2 !important; 
-                        text-align: center !important;
-                    }
-                    div[style*="order: 2"] {
-                        order: 1 !important;
-                    }
-                }
-             `}</style>
         </div>
     );
 };

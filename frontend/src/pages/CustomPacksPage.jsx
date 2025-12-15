@@ -9,22 +9,22 @@ import CountdownBar from '../components/CountdownBar';
 const CustomPackCard = ({ pack, index, onQuickView }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
-    
+
     // Determine pricing display
     const isFixedPricing = pack.pricingType === 'FIXED';
-    const priceDisplay = isFixedPricing 
-        ? `$${pack.fixedPrice?.toFixed(2)}` 
+    const priceDisplay = isFixedPricing
+        ? `$${pack.fixedPrice?.toFixed(2)}`
         : `${(pack.discountRate * 100)?.toFixed(0)}% OFF`;
-    
+
     // Calculate item range
     const itemRange = `${pack.minItems || 1}-${pack.maxItems || 10} items`;
-    
+
     // Check if pack is new (created within last 30 days)
-    const isNew = pack.createdAt && 
+    const isNew = pack.createdAt &&
         (new Date() - new Date(pack.createdAt)) / (1000 * 60 * 60 * 24) <= 30;
 
     return (
-        <div 
+        <div
             className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 flex flex-col transform hover:-translate-y-3 border-2 border-transparent hover:border-purple-200 animate-float"
             style={{ animationDelay: `${index * 0.1}s` }}
             onMouseEnter={() => setIsHovered(true)}
@@ -75,7 +75,7 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                     {/* Custom Pack Visual */}
                     <div className="w-full h-full flex items-center justify-center relative">
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-200/50 to-indigo-200/50"></div>
-                        
+
                         {/* Pack Icon */}
                         <div className="relative z-10 text-center">
                             <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-transform duration-300">
@@ -87,13 +87,13 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                         </div>
 
                         {/* Floating Elements */}
-                        <div className="absolute top-4 left-4 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{animationDelay: '0.5s'}}>
+                        <div className="absolute top-4 left-4 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '0.5s' }}>
                             <span className="text-xs">📦</span>
                         </div>
-                        <div className="absolute top-8 right-8 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{animationDelay: '1s'}}>
+                        <div className="absolute top-8 right-8 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '1s' }}>
                             <span className="text-xs">✨</span>
                         </div>
-                        <div className="absolute bottom-6 left-8 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{animationDelay: '1.5s'}}>
+                        <div className="absolute bottom-6 left-8 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '1.5s' }}>
                             <span className="text-xs">🎨</span>
                         </div>
                     </div>
@@ -109,7 +109,7 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                         <h3 className="text-xl font-bold text-gray-800 line-clamp-2 leading-tight group-hover:text-purple-600 transition-colors mb-2">
                             {pack.name}
                         </h3>
-                        
+
                         {/* Description */}
                         <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-4">
                             {pack.description || 'Create your perfect custom beauty pack with our curated selection of premium products.'}
@@ -124,14 +124,13 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                                 {itemRange}
                             </span>
                         </div>
-                        
+
                         <div className="flex items-center justify-between">
                             <span className="text-sm font-semibold text-gray-700">Pricing:</span>
-                            <span className={`text-sm px-3 py-1 rounded-full font-semibold ${
-                                isFixedPricing 
-                                    ? 'bg-blue-100 text-blue-700' 
-                                    : 'bg-orange-100 text-orange-700'
-                            }`}>
+                            <span className={`text-sm px-3 py-1 rounded-full font-semibold ${isFixedPricing
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-orange-100 text-orange-700'
+                                }`}>
                                 {isFixedPricing ? 'Fixed Price' : 'Discount Rate'}
                             </span>
                         </div>
@@ -144,7 +143,7 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                                 {priceDisplay}
                             </span>
                         </div>
-                        
+
                         <p className="text-purple-600 text-sm font-semibold">
                             🎨 Build your perfect pack
                         </p>
@@ -213,12 +212,12 @@ const CustomPacksPage = () => {
     const filteredAndSortedPacks = customPacks
         .filter(pack => {
             const matchesSearch = pack.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                pack.description?.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesFilter = filterBy === 'all' || 
-                                (filterBy === 'new' && pack.createdAt && 
-                                    (new Date() - new Date(pack.createdAt)) / (1000 * 60 * 60 * 24) <= 30) ||
-                                (filterBy === 'fixed' && pack.pricingType === 'FIXED') ||
-                                (filterBy === 'discount' && pack.pricingType !== 'FIXED');
+                pack.description?.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesFilter = filterBy === 'all' ||
+                (filterBy === 'new' && pack.createdAt &&
+                    (new Date() - new Date(pack.createdAt)) / (1000 * 60 * 60 * 24) <= 30) ||
+                (filterBy === 'fixed' && pack.pricingType === 'FIXED') ||
+                (filterBy === 'discount' && pack.pricingType !== 'FIXED');
             return matchesSearch && matchesFilter;
         })
         .sort((a, b) => {
@@ -268,92 +267,48 @@ const CustomPacksPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
             <CountdownBar />
-            
-            {/* Hero Section with Enhanced Background */}
-            <div className="relative overflow-hidden">
-                {/* Animated Background Elements */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-100 via-indigo-50 to-blue-100 opacity-60"></div>
-                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-indigo-200 rounded-full -translate-y-48 translate-x-48 opacity-30 animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-200 to-purple-200 rounded-full translate-y-40 -translate-x-40 opacity-30 animate-pulse" style={{animationDelay: '1s'}}></div>
-                
-                <div className="relative z-10 container mx-auto px-4 py-16">
-                    {/* Enhanced Page Header */}
-                    <div className="text-center mb-16">
-                        <div className="inline-block mb-6">
-                            <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
-                                🎨 Custom Pack Builder
-                            </span>
-                        </div>
-                        
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-6 leading-tight">
-                            Create Your Own Pack
-                        </h1>
-                        
-                        <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8 px-4">
-                            Design your perfect beauty collection with our custom pack builder. 
-                            Choose your favorite products and enjoy exclusive pricing!
-                        </p>
-                        
-                        {/* Stats */}
-                        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-center px-4">
-                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg">
-                                <div className="text-2xl sm:text-3xl font-bold text-purple-600">{customPacks.length}</div>
-                                <div className="text-xs sm:text-sm text-gray-600">Pack Builders</div>
-                            </div>
-                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg">
-                                <div className="text-2xl sm:text-3xl font-bold text-indigo-600">Up to 30%</div>
-                                <div className="text-xs sm:text-sm text-gray-600">Savings</div>
-                            </div>
-                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg">
-                                <div className="text-2xl sm:text-3xl font-bold text-blue-600">Free</div>
-                                <div className="text-xs sm:text-sm text-gray-600">Customization</div>
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Enhanced Search and Filter Section */}
-                    <div className="max-w-6xl mx-auto mb-12 px-4">
-                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-white/20">
-                            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-                                {/* Search */}
-                                <div className="relative flex-1 max-w-md w-full">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Search pack builders..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm"
-                                    />
+            {/* Hero Section with Enhanced Background - Full Width */}
+            <div className="w-full px-0 py-0">
+                <div className="relative overflow-hidden w-full">
+                    {/* Animated Background Elements */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-100 via-indigo-50 to-blue-100 opacity-60"></div>
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-indigo-200 rounded-full -translate-y-48 translate-x-48 opacity-30 animate-pulse"></div>
+                    <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-200 to-purple-200 rounded-full translate-y-40 -translate-x-40 opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
+
+                    <div className="relative z-10 w-full py-8 md:py-12">
+                        <div className="container mx-auto px-4 text-center">
+                            {/* Enhanced Page Header */}
+                            <div className="mb-8 md:mb-12">
+                                <div className="inline-block mb-4">
+                                    <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-5 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                                        🎨 Custom Pack Builder
+                                    </span>
                                 </div>
 
-                                {/* Filters */}
-                                <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-                                    <select
-                                        value={filterBy}
-                                        onChange={(e) => setFilterBy(e.target.value)}
-                                        className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full sm:w-auto"
-                                    >
-                                        <option value="all">All Builders</option>
-                                        <option value="new">New Arrivals</option>
-                                        <option value="fixed">Fixed Pricing</option>
-                                        <option value="discount">Discount Pricing</option>
-                                    </select>
+                                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4 leading-tight">
+                                    Create Your Own Pack
+                                </h1>
 
-                                    <select
-                                        value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
-                                        className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full sm:w-auto"
-                                    >
-                                        <option value="name">Sort by Name</option>
-                                        <option value="newest">Newest First</option>
-                                        <option value="items-low">Items: Low to High</option>
-                                        <option value="items-high">Items: High to Low</option>
-                                    </select>
+                                <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
+                                    Design your perfect beauty collection with our custom pack builder.
+                                    Choose your favorite products and enjoy exclusive pricing!
+                                </p>
+
+                                {/* Stats - Logically Sized */}
+                                <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center max-w-2xl mx-auto">
+                                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow">
+                                        <div className="text-lg sm:text-2xl font-bold text-purple-600">{customPacks.length}</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Builders</div>
+                                    </div>
+                                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow">
+                                        <div className="text-lg sm:text-2xl font-bold text-indigo-600">30%</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Savings</div>
+                                    </div>
+                                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow">
+                                        <div className="text-lg sm:text-2xl font-bold text-blue-600">Free</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Custom</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -361,22 +316,70 @@ const CustomPacksPage = () => {
                 </div>
             </div>
 
+            {/* Enhanced Search and Filter Section - Sticky Toolbar Style */}
+            <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 w-full py-4 sm:py-8 mt-0 shadow-sm z-20 relative">
+                <div className="container mx-auto px-4">
+                    <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
+                        {/* Search */}
+                        <div className="relative flex-1 max-w-md w-full">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search pack builders..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="block w-full pl-10 pr-3 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm shadow-inner text-sm sm:text-base"
+                            />
+                        </div>
+
+                        {/* Filters - Side by Side on Mobile */}
+                        <div className="grid grid-cols-2 gap-2 w-full lg:w-auto">
+                            <select
+                                value={filterBy}
+                                onChange={(e) => setFilterBy(e.target.value)}
+                                className="px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full text-sm sm:text-base"
+                            >
+                                <option value="all">All Builders</option>
+                                <option value="new">New Arrivals</option>
+                                <option value="fixed">Fixed</option>
+                                <option value="discount">Discount</option>
+                            </select>
+
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full text-sm sm:text-base"
+                            >
+                                <option value="name">Sort by Name</option>
+                                <option value="newest">Newest First</option>
+                                <option value="items-low">Items: Low</option>
+                                <option value="items-high">Items: High</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Custom Packs Grid */}
-            <div className="relative z-10 container mx-auto px-4 pb-20">
+            <div className="w-full px-4 py-12 container mx-auto">
                 {filteredAndSortedPacks.length > 0 ? (
                     <>
-                        <div className="text-center mb-8">
+                        <div className="text-center mb-10">
                             <p className="text-gray-600">
                                 Showing {filteredAndSortedPacks.length} of {customPacks.length} pack builders
                             </p>
                         </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                             {filteredAndSortedPacks.map((pack, index) => (
-                                <CustomPackCard 
-                                    key={pack.id} 
-                                    pack={pack} 
-                                    index={index} 
+                                <CustomPackCard
+                                    key={pack.id}
+                                    pack={pack}
+                                    index={index}
                                     onQuickView={handleQuickView}
                                 />
                             ))}
@@ -388,7 +391,7 @@ const CustomPacksPage = () => {
                             <div className="text-6xl mb-4">🎨</div>
                             <h3 className="text-2xl font-bold text-gray-800 mb-4">No Pack Builders Found</h3>
                             <p className="text-gray-600 mb-6">
-                                {searchTerm || filterBy !== 'all' 
+                                {searchTerm || filterBy !== 'all'
                                     ? 'Try adjusting your search or filters to find more pack builders.'
                                     : 'No custom pack builders are available at the moment. Please check back soon!'
                                 }
@@ -444,7 +447,7 @@ const CustomPacksPage = () => {
                                 <div className="p-4 sm:p-6 md:p-8 flex flex-col justify-between">
                                     <div>
                                         <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{quickViewPack.name}</h2>
-                                        
+
                                         <p className="text-gray-600 mb-6 leading-relaxed">
                                             {quickViewPack.description || 'Create your perfect custom beauty pack with our curated selection of premium products.'}
                                         </p>
@@ -457,14 +460,13 @@ const CustomPacksPage = () => {
                                                     {quickViewPack.minItems || 1}-{quickViewPack.maxItems || 10} items
                                                 </span>
                                             </div>
-                                            
+
                                             <div className="flex items-center justify-between p-3 bg-indigo-50 rounded-lg">
                                                 <span className="font-semibold text-gray-700">Pricing Type:</span>
-                                                <span className={`px-3 py-1 rounded-full font-semibold ${
-                                                    quickViewPack.pricingType === 'FIXED' 
-                                                        ? 'bg-blue-100 text-blue-700' 
-                                                        : 'bg-orange-100 text-orange-700'
-                                                }`}>
+                                                <span className={`px-3 py-1 rounded-full font-semibold ${quickViewPack.pricingType === 'FIXED'
+                                                    ? 'bg-blue-100 text-blue-700'
+                                                    : 'bg-orange-100 text-orange-700'
+                                                    }`}>
                                                     {quickViewPack.pricingType === 'FIXED' ? 'Fixed Price' : 'Discount Rate'}
                                                 </span>
                                             </div>
@@ -472,7 +474,7 @@ const CustomPacksPage = () => {
                                             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg">
                                                 <span className="font-semibold text-gray-700">Price:</span>
                                                 <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                                                    {quickViewPack.pricingType === 'FIXED' 
+                                                    {quickViewPack.pricingType === 'FIXED'
                                                         ? `$${quickViewPack.fixedPrice?.toFixed(2)}`
                                                         : `${(quickViewPack.discountRate * 100)?.toFixed(0)}% OFF`
                                                     }

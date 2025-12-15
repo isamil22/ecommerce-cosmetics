@@ -18,15 +18,15 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
         try {
             const response = await getCountdown();
             console.log('Countdown API Response:', response.data); // Debug log
-            
+
             if (response.data) {
                 // Admin has set settings - use them with all new fields
                 const adminConfig = {
                     ...response.data,
                     endDate: response.data.endDate ? new Date(response.data.endDate).getTime() : (fallbackEndTime || (new Date().getTime() + (24 * 60 * 60 * 1000))),
                     enabled: response.data.enabled !== undefined ? response.data.enabled : true,
-                    
-                // Color Settings with defaults
+
+                    // Color Settings with defaults
                     backgroundColor: response.data.backgroundColor || '#faf5ff', // Light purple
                     textColor: response.data.textColor || '#c2185b', // Pink
                     borderColor: response.data.borderColor || '#ec407a', // Bright pink
@@ -34,13 +34,13 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     timerTextColor: response.data.timerTextColor || '#c2185b', // Pink
                     urgentBgColor: response.data.urgentBgColor || '#fce4ec', // Light pink
                     urgentTextColor: response.data.urgentTextColor || '#c2185b', // Dark pink,
-                    
+
                     // Text Settings with defaults
                     subtitle: response.data.subtitle || '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends',
                     urgentMessage: response.data.urgentMessage || '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out',
                     expiredMessage: response.data.expiredMessage || 'انتهت الفترة المحدودة! / Limited Time Expired!',
                     packName: response.data.packName || packName || 'عروض اليوم الخاصة / Today\'s Special Offers',
-                    
+
                     // Display Settings with defaults
                     showDays: response.data.showDays || false,
                     showHours: response.data.showHours !== undefined ? response.data.showHours : true,
@@ -48,12 +48,12 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     showSeconds: response.data.showSeconds !== undefined ? response.data.showSeconds : true,
                     showPackName: response.data.showPackName !== undefined ? response.data.showPackName : true,
                     showSubtitle: response.data.showSubtitle !== undefined ? response.data.showSubtitle : true,
-                    
+
                     // Animation Settings with defaults
                     enablePulse: response.data.enablePulse !== undefined ? response.data.enablePulse : true,
                     enableBounce: response.data.enableBounce !== undefined ? response.data.enableBounce : true,
                     urgentThreshold: response.data.urgentThreshold || 3600,
-                    
+
                     // Layout Settings with defaults
                     borderRadius: response.data.borderRadius || 12,
                     padding: response.data.padding || 16,
@@ -150,7 +150,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
 
         // config.endDate is already a timestamp from our processing above
         const endTime = config.endDate;
-        
+
         const timer = setInterval(() => {
             const now = new Date().getTime();
             const distance = endTime - now;
@@ -167,7 +167,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             setTimeLeft({ hours, minutes, seconds, total: distance });
-            
+
             // Set urgent based on admin threshold (convert seconds to milliseconds)
             const urgentThresholdMs = (config.urgentThreshold || 3600) * 1000;
             setIsUrgent(distance < urgentThresholdMs);
@@ -199,7 +199,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
 
     if (timeLeft.total <= 0) {
         return (
-            <div 
+            <div
                 className="rounded-xl p-4 mb-6 text-center"
                 style={{
                     backgroundColor: config.urgentBgColor || '#fef2f2',
@@ -209,16 +209,16 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                 }}
             >
                 <div className="text-4xl mb-2">⏰</div>
-                <p 
+                <p
                     className="font-bold text-lg"
-                    style={{ 
+                    style={{
                         color: config.urgentTextColor || '#dc2626',
                         fontSize: `${config.fontSize || 18}px`
                     }}
                 >
                     {config.expiredMessage || 'انتهت الفترة المحدودة! / Limited Time Expired!'}
                 </p>
-                <p 
+                <p
                     className="text-sm"
                     style={{ color: config.urgentTextColor || '#dc2626' }}
                 >
@@ -236,10 +236,9 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
     const timerTextColor = isUrgent ? (config.urgentTextColor || '#dc2626') : (config.timerTextColor || '#ea580c');
 
     return (
-        <div 
-            className={`rounded-xl mb-6 text-center transition-all duration-500 ${
-                isUrgent && config.enablePulse ? 'animate-pulse-custom' : ''
-            }`}
+        <div
+            className={`text-center transition-all duration-500 ${isUrgent && config.enablePulse ? 'animate-pulse-custom' : ''
+                }`}
             style={{
                 backgroundColor: bgColor,
                 border: `2px solid ${borderColor}`,
@@ -249,32 +248,32 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
         >
             <div className="flex items-center justify-center mb-3">
                 <span className="text-3xl mr-2">🔥</span>
-                <h3 
+                <h3
                     className="font-bold"
-                    style={{ 
+                    style={{
                         color: textColor,
                         fontSize: `${config.fontSize || 18}px`
                     }}
                 >
-                    {config.title || (isUrgent ? 'عرض ينتهي قريباً!' : 'عرض محدود!')} / 
+                    {config.title || (isUrgent ? 'عرض ينتهي قريباً!' : 'عرض محدود!')} /
                     {isUrgent ? 'Ending Soon!' : 'Limited Offer!'}
                 </h3>
             </div>
-            
+
             <div className="flex justify-center items-center space-x-2 sm:space-x-4 rtl:space-x-reverse mb-3">
                 {/* Days */}
                 {config.showDays && (
                     <>
-                        <div 
+                        <div
                             className="rounded-lg p-2 sm:p-3 min-w-[50px] sm:min-w-[60px] shadow-lg"
-                            style={{ 
+                            style={{
                                 backgroundColor: timerBoxColor,
                                 border: `2px solid ${borderColor}`
                             }}
                         >
-                            <div 
+                            <div
                                 className="font-bold"
-                                style={{ 
+                                style={{
                                     color: timerTextColor,
                                     fontSize: `${config.timerFontSize || 24}px`
                                 }}
@@ -283,29 +282,29 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                             </div>
                             <div className="text-xs text-gray-600">يوم / Days</div>
                         </div>
-                        <div 
+                        <div
                             className="font-bold"
-                            style={{ 
+                            style={{
                                 color: timerTextColor,
                                 fontSize: `${config.timerFontSize || 24}px`
                             }}
                         >:</div>
                     </>
                 )}
-                
+
                 {/* Hours */}
                 {config.showHours && (
                     <>
-                        <div 
+                        <div
                             className="rounded-lg p-2 sm:p-3 min-w-[50px] sm:min-w-[60px] shadow-lg"
-                            style={{ 
+                            style={{
                                 backgroundColor: timerBoxColor,
                                 border: `2px solid ${borderColor}`
                             }}
                         >
-                            <div 
+                            <div
                                 className="font-bold"
-                                style={{ 
+                                style={{
                                     color: timerTextColor,
                                     fontSize: `${config.timerFontSize || 24}px`
                                 }}
@@ -315,9 +314,9 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                             <div className="text-xs text-gray-600">ساعة / Hours</div>
                         </div>
                         {(config.showMinutes || config.showSeconds) && (
-                            <div 
+                            <div
                                 className="font-bold"
-                                style={{ 
+                                style={{
                                     color: timerTextColor,
                                     fontSize: `${config.timerFontSize || 24}px`
                                 }}
@@ -325,20 +324,20 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                         )}
                     </>
                 )}
-                
+
                 {/* Minutes */}
                 {config.showMinutes && (
                     <>
-                        <div 
+                        <div
                             className="rounded-lg p-2 sm:p-3 min-w-[50px] sm:min-w-[60px] shadow-lg"
-                            style={{ 
+                            style={{
                                 backgroundColor: timerBoxColor,
                                 border: `2px solid ${borderColor}`
                             }}
                         >
-                            <div 
+                            <div
                                 className="font-bold"
-                                style={{ 
+                                style={{
                                     color: timerTextColor,
                                     fontSize: `${config.timerFontSize || 24}px`
                                 }}
@@ -348,9 +347,9 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                             <div className="text-xs text-gray-600">دقيقة / Minutes</div>
                         </div>
                         {config.showSeconds && (
-                            <div 
+                            <div
                                 className="font-bold"
-                                style={{ 
+                                style={{
                                     color: timerTextColor,
                                     fontSize: `${config.timerFontSize || 24}px`
                                 }}
@@ -358,21 +357,20 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                         )}
                     </>
                 )}
-                
+
                 {/* Seconds */}
                 {config.showSeconds && (
-                    <div 
-                        className={`rounded-lg p-2 sm:p-3 min-w-[50px] sm:min-w-[60px] shadow-lg ${
-                            isUrgent && config.enableBounce ? 'animate-bounce-custom' : ''
-                        }`}
-                        style={{ 
+                    <div
+                        className={`rounded-lg p-2 sm:p-3 min-w-[50px] sm:min-w-[60px] shadow-lg ${isUrgent && config.enableBounce ? 'animate-bounce-custom' : ''
+                            }`}
+                        style={{
                             backgroundColor: timerBoxColor,
                             border: `2px solid ${borderColor}`
                         }}
                     >
-                        <div 
+                        <div
                             className="font-bold"
-                            style={{ 
+                            style={{
                                 color: timerTextColor,
                                 fontSize: `${config.timerFontSize || 24}px`
                             }}
@@ -383,12 +381,12 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     </div>
                 )}
             </div>
-            
+
             {/* Subtitle */}
             {config.showSubtitle && (
-                <p 
+                <p
                     className="text-sm font-semibold"
-                    style={{ 
+                    style={{
                         color: textColor,
                         fontSize: `${config.fontSize || 18}px`
                     }}
@@ -396,7 +394,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     {isUrgent ? (config.urgentMessage || '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out') : (config.subtitle || '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends')}
                 </p>
             )}
-            
+
             {/* Pack Name */}
             {config.showPackName && config.packName && (
                 <p className="text-xs text-gray-500 mt-2">

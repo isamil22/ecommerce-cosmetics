@@ -226,9 +226,20 @@ const TestimonialsSection = ({ data }) => {
                 {/* Testimonials Grid */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
                     gap: '30px',
                 }}>
+                    <style>{`
+                        @media (max-width: 768px) {
+                           div[style*="padding: 100px 20px"] {
+                               padding: 60px 20px !important;
+                           }
+                           div[style*="grid-template-columns"] {
+                               grid-template-columns: 1fr !important;
+                           }
+                        }
+                    `}</style>
+
                     {testimonials.map((testimonial, index) => {
                         const avatarUrl = getImageUrl(testimonial.avatar || testimonial.image);
                         const productImages = testimonial.productImages || [];
