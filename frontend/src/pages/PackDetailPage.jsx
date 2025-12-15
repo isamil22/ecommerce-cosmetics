@@ -19,16 +19,17 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
 
     const isSelected = selectedProductId === product.id;
 
+    // Compact container classes for mobile
     const containerClasses = `
-        relative flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 transform hover:scale-102
-        ${isSelected 
-            ? 'bg-pink-50 border-pink-500 ring-4 ring-pink-200 shadow-lg' 
-            : 'border-gray-300 hover:bg-gray-50 hover:border-pink-300 hover:shadow-md'
+        relative flex items-center p-3 sm:p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 transform
+        ${isSelected
+            ? 'bg-pink-50 border-pink-500 ring-2 sm:ring-4 ring-pink-200 shadow-md'
+            : 'border-gray-200 hover:bg-gray-50 hover:border-pink-300'
         }
     `;
 
     return (
-        <label 
+        <label
             className={containerClasses}
             role="button"
             tabIndex={0}
@@ -40,52 +41,56 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                 }
             }}
         >
-            {/* Selection Indicator */}
+            {/* Selection Indicator - Smaller on mobile */}
             {isSelected && (
-                <div className="absolute -top-2 -left-2 bg-pink-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold animate-bounce-custom">
+                <div className="absolute -top-2 -left-2 bg-pink-500 text-white rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-xs sm:text-base animate-bounce-custom z-10">
                     ✓
                 </div>
             )}
-            
-            <div className="image-zoom-container mr-4">
-                <img 
-                    src={imageUrl} 
-                    alt={product.name} 
-                    className="w-20 h-20 object-cover rounded-lg" 
+
+            {/* Smaller Image on Mobile */}
+            <div className="image-zoom-container mr-3 sm:mr-4 flex-shrink-0">
+                <img
+                    src={imageUrl}
+                    alt={product.name}
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-100"
                     onError={(e) => {
                         e.target.src = '/placeholder-image.svg';
                     }}
                 />
             </div>
-            
-            <div className="flex-grow">
-                <div className="flex items-center mb-2">
-                    <span className="text-gray-800 font-bold text-lg">{product.name || 'Unnamed Product'}</span>
+
+            <div className="flex-grow min-w-0">
+                <div className="flex items-center mb-1 sm:mb-2 flex-wrap gap-1">
+                    <span className="text-gray-800 font-bold text-sm sm:text-lg truncate block max-w-full">
+                        {product.name || 'Unnamed Product'}
+                    </span>
                     {isDefault && (
-                        <span className="ml-2 bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
-                            ✅ افتراضي / Default
+                        <span className="bg-blue-100 text-blue-700 text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">
+                            ✅ افتراضي
                         </span>
                     )}
                 </div>
                 <div className="flex items-center justify-between">
-                    <span className="text-pink-600 font-bold text-xl">${(product.price || 0).toFixed(2)}</span>
-                    <div className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                        isSelected 
-                            ? 'bg-pink-100 text-pink-700' 
+                    <span className="text-pink-600 font-bold text-base sm:text-xl">
+                        ${(product.price || 0).toFixed(2)}
+                    </span>
+                    <div className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-sm font-semibold whitespace-nowrap ${isSelected
+                            ? 'bg-pink-100 text-pink-700'
                             : 'bg-gray-100 text-gray-600'
-                    }`}>
-                        {isSelected ? '✓ مختار / Selected' : 'اضغط للاختيار / Click to Select'}
+                        }`}>
+                        {isSelected ? '✓ مختار' : 'اختيار'}
                     </div>
                 </div>
             </div>
-            
+
             <input
                 type="radio"
                 name={`pack-item-${packItemId}`}
                 value={product.id}
                 checked={isSelected}
                 onChange={() => onSelectionChange(packItemId, product.id)}
-                className="h-6 w-6 text-pink-600 focus:ring-pink-500 border-gray-300 ml-4"
+                className="h-5 w-5 sm:h-6 sm:w-6 text-pink-600 focus:ring-pink-500 border-gray-300 ml-3 shrink-0"
                 aria-hidden="true"
             />
         </label>
@@ -93,27 +98,27 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
 };
 
 const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
-    <div className="border-2 border-gray-200 p-6 rounded-xl mb-6 bg-white shadow-xl overflow-hidden relative">
-        {/* Section Header */}
-        <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-4 rounded-lg mb-6 -mx-6 -mt-6 mb-6">
-            <h4 className="font-bold text-xl text-gray-800 flex items-center">
-                <span className="bg-pink-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm mr-3">
+    <div className="border border-gray-200 p-4 sm:p-6 rounded-xl mb-4 sm:mb-6 bg-white shadow-sm hover:shadow-md transition-shadow relative">
+        {/* Section Header - More Compact */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-3 sm:p-4 rounded-lg mb-4 -mx-4 -mt-4 sm:-mx-6 sm:-mt-6 border-b border-gray-100">
+            <h4 className="font-bold text-base sm:text-xl text-gray-800 flex items-center">
+                <span className="bg-pink-500 text-white rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-xs sm:text-sm mr-2 sm:mr-3 shrink-0">
                     📦
                 </span>
-                <span className="text-pink-600 font-extrabold">
+                <span className="text-pink-600 font-extrabold truncate">
                     {item.defaultProduct ? item.defaultProduct.name : 'منتج / Product'}
                 </span>
             </h4>
-            <p className="text-sm text-gray-600 mt-2">
-                اختر المنتج الذي تريده لهذا القسم / Choose the product you want for this section
+            <p className="text-xs sm:text-sm text-gray-500 mt-1 ml-9">
+                اختر المنتج الذي تريده لهذا القسم
             </p>
         </div>
 
         {item.defaultProduct && (
-            <div className="mb-6">
-                <div className="flex items-center mb-4">
-                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold mr-3">
-                        ✅ مُضمن افتراضياً / Included by default
+            <div className="mb-4">
+                <div className="flex items-center mb-2">
+                    <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold mr-2 border border-green-100">
+                        ✅ مُضمن / Included
                     </span>
                 </div>
                 <ProductOption
@@ -127,19 +132,19 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
         )}
 
         {item.variationProducts && item.variationProducts.length > 0 && (
-            <div className="mt-6 pt-6 border-t-2 border-dashed border-gray-300">
-                <div className="flex items-center mb-4">
-                    <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold mr-3">
-                        🔄 بدائل متاحة / Available Alternatives
+            <div className="mt-4 pt-4 border-t border-dashed border-gray-200">
+                <div className="flex items-center mb-3">
+                    <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded-full text-xs font-semibold mr-2 border border-yellow-100">
+                        🔄 بدائل / Options
                     </span>
                 </div>
-                <h5 className="font-bold text-lg text-gray-700 mb-4 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <h5 className="font-bold text-sm sm:text-lg text-gray-700 mb-3 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
-                    أو استبدل بخيار آخر / Or swap with another option:
+                    أو استبدل بـ:
                 </h5>
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {item.variationProducts.map(product => (
                         <ProductOption
                             key={product.id}
@@ -154,12 +159,11 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
             </div>
         )}
 
-        {/* No alternatives message */}
         {(!item.variationProducts || item.variationProducts.length === 0) && (
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-blue-700 text-sm flex items-center">
+            <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                <p className="text-blue-700 text-xs flex items-center">
                     <span className="mr-2">ℹ️</span>
-                    هذا المنتج ليس له بدائل متاحة / This product has no available alternatives
+                    لا بدائل متاحة / No alternatives
                 </p>
             </div>
         )}
@@ -221,17 +225,17 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
         }
     };
 
-    // Interactive tutorial for pack understanding - FIXED memory leak
+    // Interactive tutorial for pack understanding
     const startInteractiveTutorial = () => {
         const steps = [
-            { element: 'pack-image', message: 'هذه صورة الحزمة / This is the pack image', duration: 4000 },
-            { element: 'customization', message: 'هنا يمكنك تخصيص الحزمة / Here you can customize the pack', duration: 4000 },
-            { element: 'product-options', message: 'اختر المنتجات التي تريدها / Choose the products you want', duration: 4000 },
-            { element: 'add-to-cart', message: 'اضغط هنا لإضافة للسلة / Click here to add to cart', duration: 4000 }
+            { element: 'pack-image', message: 'هذه صورة الحزمة', duration: 4000 },
+            { element: 'customization', message: 'هنا يمكنك تخصيص الحزمة', duration: 4000 },
+            { element: 'product-options', message: 'اختر المنتجات التي تريدها', duration: 4000 },
+            { element: 'add-to-cart', message: 'اضغط هنا لإضافة للسلة', duration: 4000 }
         ];
-        
+
         let currentStepIndex = 0;
-        
+
         const showNextStep = () => {
             if (currentStepIndex < steps.length) {
                 setHighlightedElement(steps[currentStepIndex].element);
@@ -244,21 +248,17 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                         setHighlightedElement(null);
                     }
                 }, steps[currentStepIndex].duration);
-                
-                // Store timeout ID for cleanup
                 window.currentTutorialTimeout = timeoutId;
             }
         };
-        
-        // Clear any existing timeout
+
         if (window.currentTutorialTimeout) {
             clearTimeout(window.currentTutorialTimeout);
         }
-        
+
         showNextStep();
     };
 
-    // Cleanup effect for tutorial
     useEffect(() => {
         return () => {
             if (window.currentTutorialTimeout) {
@@ -356,31 +356,25 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 const promises = Object.values(selections).map(productId => apiAddToCart(productId, 1));
                 await Promise.all(promises);
             } else {
-                // --- REVISED GUEST LOGIC ---
                 let cart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
-
-                // Safely get all possible products in the pack
                 const allProductsInPack = pack?.items?.flatMap(item => [item.defaultProduct, ...(item.variationProducts || [])]) || [];
 
                 for (const packItemId in selections) {
                     const selectedProductId = selections[packItemId];
-                    // Find the full product object for the selected ID
                     const productToAdd = allProductsInPack.find(p => p && p.id === selectedProductId);
 
                     if (productToAdd) {
                         const existingItemIndex = cart.items.findIndex(item => item.productId === productToAdd.id);
 
                         if (existingItemIndex > -1) {
-                            // Increment quantity if item already exists
                             cart.items[existingItemIndex].quantity += 1;
                         } else {
-                            // Add new item to cart
                             cart.items.push({
                                 productId: productToAdd.id,
                                 productName: productToAdd.name,
                                 price: productToAdd.price,
                                 quantity: 1,
-                                images: productToAdd.images || [], // Ensure images is an array
+                                images: productToAdd.images || [],
                             });
                         }
                     }
@@ -388,7 +382,6 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 localStorage.setItem('cart', JSON.stringify(cart));
             }
 
-            // --- FACEBOOK PIXEL: ADD TO CART EVENT ---
             if (window.fbq) {
                 window.fbq('track', 'AddToCart', {
                     content_ids: Object.values(selections),
@@ -398,17 +391,16 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                     currency: 'USD'
                 });
             }
-            // -----------------------------------------
 
-            toast.success('🎉 تم إضافة الحزمة للسلة! / All selected pack items have been added to your cart!');
+            toast.success('🎉 تم إضافة الحزمة للسلة! / Added to cart!');
             if (fetchCartCount) {
                 fetchCartCount();
             }
 
         } catch (err) {
             console.error("Error during add to cart:", err);
-            setError('فشل في إضافة المنتجات للسلة / Failed to add items to cart. Please try again.');
-            toast.error('فشل في إضافة المنتجات للسلة / Failed to add items to cart.');
+            setError('فشل في إضافة المنتجات للسلة');
+            toast.error('فشل في إضافة المنتجات للسلة');
         }
     };
 
@@ -418,119 +410,58 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
     if (loading) return <Loader />;
 
-    const steps = [
-        { number: 1, title: "فهم الحزمة", titleEn: "Understand Pack", description: "تعرف على محتويات الحزمة", descriptionEn: "Learn about pack contents" },
-        { number: 2, title: "تخصيص الحزمة", titleEn: "Customize Pack", description: "اختر المنتجات التي تريدها", descriptionEn: "Choose your preferred products" },
-        { number: 3, title: "إضافة للسلة", titleEn: "Add to Cart", description: "أضف الحزمة لسلة التسوق", descriptionEn: "Add pack to shopping cart" }
-    ];
-
-    const getStepStatus = (stepNumber) => {
-        if (stepNumber < currentStep) return 'completed';
-        if (stepNumber === currentStep) return 'active';
-        return 'upcoming';
-    };
-
     return (
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-            {/* Welcome Overlay for First-Time Users */}
+        <div className="container mx-auto px-2 py-4 sm:px-4 sm:py-8 max-w-7xl">
+            {/* Welcome Overlay - Responsive */}
             {showWelcome && (
-                <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full mx-4 text-center shadow-2xl max-h-screen overflow-y-auto animate-pulse-custom">
-                        <div className="text-8xl mb-6 animate-bounce-custom">📦</div>
-                        <h2 className="text-2xl sm:text-4xl font-bold mb-6 text-gray-800">
-                            مرحباً! هذه حزمة منتجات 🎁<br/>
-                            <span className="text-pink-600">Welcome! This is a Product Pack!</span>
+                <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-3xl p-5 sm:p-8 max-w-2xl w-full text-center shadow-2xl max-h-[90vh] overflow-y-auto animate-zoom-in">
+                        <div className="text-6xl sm:text-8xl mb-4 sm:mb-6 animate-bounce-slow">📦</div>
+                        <h2 className="text-xl sm:text-3xl font-bold mb-4 text-gray-800">
+                            مرحباً بك في حزمة التوفير!
+                            <br />
+                            <span className="text-pink-600 block mt-2 text-lg sm:text-2xl">Value Pack Offers!</span>
                         </h2>
-                        
-                        <div className="bg-yellow-100 border-2 border-yellow-400 p-4 rounded-lg mb-6">
-                            <p className="text-yellow-800 font-bold text-lg">
-                                💡 ما هي الحزمة؟ / What is a Pack?<br/>
-                                <span className="text-base font-normal">
-                                    مجموعة منتجات بسعر مخفض! / A group of products at a discounted price!
-                                </span>
+
+                        <div className="bg-yellow-50 border border-yellow-300 p-3 sm:p-4 rounded-xl mb-6">
+                            <p className="text-yellow-800 font-bold text-sm sm:text-lg">
+                                💡 خذ منتجات أكثر .. وادفع أقل!
                             </p>
                         </div>
 
-                        <div className="space-y-4 text-base sm:text-lg">
-                            <p className="text-gray-700 font-bold text-xl">
-                                🎯 ما ستفعله هنا بسهولة:<br/>
-                                🎯 What you'll do here easily:
-                            </p>
-                            
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div className="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
-                                    <div className="text-3xl mb-2">👀</div>
-                                    <p className="text-blue-800 font-semibold">
-                                        1. انظر<br/>
-                                        Look
-                                    </p>
-                                    <p className="text-sm text-blue-600 mt-1">
-                                        شاهد المنتجات<br/>
-                                        See the products
-                                    </p>
-                                </div>
-                                
-                                <div className="bg-green-50 p-4 rounded-xl border-2 border-green-200">
-                                    <div className="text-3xl mb-2">👆</div>
-                                    <p className="text-green-800 font-semibold">
-                                        2. اختر<br/>
-                                        Choose
-                                    </p>
-                                    <p className="text-sm text-green-600 mt-1">
-                                        اضغط على ما تريد<br/>
-                                        Click what you want
-                                    </p>
-                                </div>
-                                
-                                <div className="bg-purple-50 p-4 rounded-xl border-2 border-purple-200">
-                                    <div className="text-3xl mb-2">🛒</div>
-                                    <p className="text-purple-800 font-semibold">
-                                        3. اشتري<br/>
-                                        Buy
-                                    </p>
-                                    <p className="text-sm text-purple-600 mt-1">
-                                        بسعر مخفض!<br/>
-                                        At discount price!
-                                    </p>
-                                </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                <div className="text-2xl mb-1">👀</div>
+                                <p className="text-blue-800 font-bold text-sm">1. تصفح</p>
                             </div>
-                            
-                            <div className="bg-pink-100 border-2 border-pink-300 p-4 rounded-lg">
-                                <p className="text-pink-800 font-bold">
-                                    ✨ سهل جداً! لا تحتاج خبرة في التسوق الإلكتروني<br/>
-                                    ✨ Very easy! No online shopping experience needed
-                                </p>
+                            <div className="bg-green-50 p-3 rounded-lg border border-green-100">
+                                <div className="text-2xl mb-1">👆</div>
+                                <p className="text-green-800 font-bold text-sm">2. اختر</p>
+                            </div>
+                            <div className="bg-purple-50 p-3 rounded-lg border border-purple-100">
+                                <div className="text-2xl mb-1">🛒</div>
+                                <p className="text-purple-800 font-bold text-sm">3. وفر</p>
                             </div>
                         </div>
-                        <div className="mt-8 space-y-4">
+
+                        <div className="space-y-3">
                             <button
                                 onClick={() => {
                                     setShowWelcome(false);
                                     setDemoMode(true);
                                     startInteractiveTutorial();
                                 }}
-                                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4 px-8 rounded-xl text-xl font-bold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 animate-pulse-custom shadow-lg"
-                                aria-label="Start interactive tutorial to learn how to use the pack page"
+                                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-xl font-bold hover:shadow-lg transition-all text-sm sm:text-lg"
                             >
-                                🎬 أرني كيف أستخدم الصفحة!<br/>
-                                <span className="text-lg">Show me how to use the page!</span>
+                                🎬 كيف أطلب الحزمة؟
                             </button>
-                            
+
                             <button
                                 onClick={() => setShowWelcome(false)}
-                                className="w-full bg-gradient-to-r from-gray-200 to-gray-300 text-gray-800 py-3 px-6 rounded-xl hover:from-gray-300 hover:to-gray-400 transition-all duration-300 font-semibold"
-                                aria-label="Skip tutorial and start using the pack page"
+                                className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-xl hover:bg-gray-200 transition-all font-semibold text-sm sm:text-base border border-gray-200"
                             >
-                                فهمت! دعني أبدأ بنفسي<br/>
-                                <span className="text-sm">I got it! Let me start myself</span>
+                                فهمت! سأبدأ الآن
                             </button>
-                            
-                            <div className="text-center mt-4">
-                                <p className="text-sm text-gray-500">
-                                    💡 نصيحة: اختر "أرني كيف" إذا كانت هذه أول مرة<br/>
-                                    💡 Tip: Choose "Show me how" if this is your first time
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -539,166 +470,128 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             {/* Demo Mode Overlay */}
             {demoMode && highlightedElement && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 z-40 pointer-events-none">
-                    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-6 py-3 rounded-full font-bold text-lg animate-bounce-custom">
-                        👀 انظر هنا! / Look here!
+                    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-6 py-3 rounded-full font-bold text-lg animate-bounce">
+                        👀 انظر هنا!
                     </div>
                 </div>
             )}
 
-            {/* Enhanced Countdown Timer - Controlled by admin per pack */}
+            {/* Countdown Timer */}
             {pack?.showCountdownTimer && (
-                <EnhancedCountdown 
+                <EnhancedCountdown
                     packName={pack.name}
                     fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)}
-                    onExpire={() => {
-                        toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
-                    }}
+                    onExpire={() => toast.info('انتهى العرض')}
                 />
             )}
-            
-            {/* Clean Header Section */}
-            <div className="mb-8">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+
+            {/* Header Section */}
+            <div className="mb-4 sm:mb-8 text-center sm:text-left">
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-2 sm:mb-4 tracking-tight">
                     📦 {pack ? pack.name : 'Loading Pack...'}
                 </h1>
-                <p className="text-lg text-gray-600 mb-6">
-                    اختر المنتجات المفضلة لديك واستمتع بسعر مخفف / Choose your favorite products and enjoy a discounted price
+                <p className="text-sm sm:text-lg text-gray-600 mb-4 sm:mb-6 max-w-3xl">
+                    اصنع حزمتك الخاصة بالسعر الذي يناسبك
                 </p>
-                
-                {/* Help Buttons - Simplified & Cleaner */}
-                <div className="flex flex-wrap gap-3 items-center">
+
+                <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                     <button
                         onClick={() => setShowHelp(!showHelp)}
-                        className="inline-flex items-center gap-2 px-5 py-3 bg-blue-50 border-2 border-blue-300 text-blue-700 rounded-lg hover:bg-blue-100 transition-all duration-200 font-semibold hover:shadow-md"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 text-sm font-semibold shadow-sm"
                     >
-                        <span className="text-xl">❓</span>
-                        <span>مساعدة / Help</span>
+                        <span>❓ مساعدة</span>
                     </button>
                     <button
                         onClick={() => {
                             setShowWelcome(true);
                             setShowHelp(false);
                         }}
-                        className="inline-flex items-center gap-2 px-5 py-3 bg-green-50 border-2 border-green-300 text-green-700 rounded-lg hover:bg-green-100 transition-all duration-200 font-semibold hover:shadow-md"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-green-200 text-green-600 rounded-lg hover:bg-green-50 text-sm font-semibold shadow-sm"
                     >
-                        <span className="text-xl">🎬</span>
-                        <span>شرح / Tutorial</span>
+                        <span>🎬 شرح</span>
                     </button>
                 </div>
             </div>
 
             {/* Help Panel */}
             {showHelp && (
-                <div className="bg-blue-50 border-l-4 border-blue-400 p-6 mb-8 rounded-lg">
-                    <h3 className="text-lg font-bold mb-3 text-blue-800">كيفية استخدام الحزمة / How to Use the Pack</h3>
-                    <div className="space-y-2 text-sm">
-                        <p><strong>1.</strong> انظر إلى صورة الحزمة ومحتوياتها / Look at the pack image and contents</p>
-                        <p><strong>2.</strong> اختر المنتجات التي تريدها من كل قسم / Choose products you want from each section</p>
-                        <p><strong>3.</strong> ستتغير الصورة تلقائياً حسب اختيارك / The image will change automatically based on your choice</p>
-                        <p><strong>4.</strong> اضغط "إضافة للسلة" عندما تنتهي / Click "Add to Cart" when finished</p>
-                        <p><strong>5.</strong> يمكنك إعادة التعيين في أي وقت / You can reset anytime</p>
-                    </div>
+                <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg text-sm sm:text-base animate-fadeIn">
+                    <h3 className="font-bold mb-2 text-blue-800">💡 طريقة الطلب:</h3>
+                    <ol className="list-decimal list-inside space-y-1 text-blue-900">
+                        <li>اختر المنتجات من القائمة في الأسفل</li>
+                        <li>شاهد السعر يتحدث تلقائياً</li>
+                        <li>أضف الحزمة كاملة للسلة بضغطة واحدة</li>
+                    </ol>
                 </div>
             )}
 
-            {/* Progress Steps - Removed for minimal design */}
-            
-
-            {/* Error and Success Messages */}
-            {error && (
-                <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded-lg">
-                    <p className="text-red-700 font-semibold">❌ {error}</p>
-                </div>
-            )}
-            {message && (
-                <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-6 rounded-lg">
-                    <p className="text-green-700 font-semibold">✅ {message}</p>
+            {/* Feedback Messages */}
+            {(error || message) && (
+                <div className={`p-4 mb-6 rounded-lg border-l-4 ${error ? 'bg-red-50 border-red-500 text-red-700' : 'bg-green-50 border-green-500 text-green-700'}`}>
+                    <p className="font-semibold">{error || message}</p>
                 </div>
             )}
 
             {!pack && !loading && (
                 <div className="text-center py-12">
-                    <div className="text-6xl mb-4">😔</div>
-                    <p className="text-xl text-gray-500 mb-2">لم يتم العثور على الحزمة</p>
-                    <p className="text-lg text-gray-400">Pack not found</p>
+                    <p className="text-xl text-gray-400">Pack not found</p>
                 </div>
             )}
 
             {pack && (
                 <>
-                    {/* Enhanced Two-Column Layout */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                        {/* Left Side: Pack Image & Price */}
-                        <div className="space-y-6">
-                            {/* Pack Image Card - Enhanced */}
-                            <div className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ${highlightedElement === 'pack-image' ? 'ring-4 ring-yellow-400 animate-pulse-custom' : ''}`}>
-                                <div className="image-zoom-container bg-gradient-to-br from-pink-50 to-purple-50 p-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">
+                        {/* Left Side: Pack Image & Summary */}
+                        <div className="space-y-4 sm:space-y-6 lg:sticky lg:top-24">
+                            {/* Pack Image Card */}
+                            <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${highlightedElement === 'pack-image' ? 'ring-4 ring-yellow-400' : ''}`}>
+                                <div className="bg-gray-50 p-2 sm:p-4 flex items-center justify-center min-h-[250px] sm:min-h-[350px]">
                                     <img
                                         key={composedImageUrl}
-                                        src={composedImageUrl || 'https://placehold.co/1200x600/fde4f2/E91E63?text=Our+Pack'}
+                                        src={composedImageUrl || 'https://placehold.co/1200x600/fde4f2/E91E63?text=Pack'}
                                         alt={pack.name}
-                                        className="w-full h-64 sm:h-80 object-cover rounded-xl"
-                                        onError={(e) => {
-                                            e.target.src = '/placeholder-image.svg';
-                                        }}
+                                        className="w-full h-auto object-contain max-h-[400px] rounded-lg shadow-sm"
+                                        onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
                                     />
                                 </div>
-                                
-                                {/* Price Card - More Prominent */}
-                                <div className="p-6">
-                                    <div className="bg-gradient-to-br from-pink-500 to-purple-600 text-white p-6 rounded-xl mb-6 shadow-lg">
-                                        <p className="text-sm font-semibold mb-2 opacity-90">السعر الإجمالي / Total Price</p>
-                                        <p className="text-4xl font-black text-white">${(pack.price || 0).toFixed(2)}</p>
-                                        <p className="text-sm mt-2 opacity-90">✨ سعر مخفف خاص! / Special Discounted Price!</p>
+
+                                <div className="p-4 sm:p-6 bg-white">
+                                    <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-4 sm:p-6 rounded-xl shadow-lg relative overflow-hidden">
+                                        <div className="relative z-10">
+                                            <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">السعر الإجمالي للصفقة</p>
+                                            <div className="flex items-baseline gap-2">
+                                                <p className="text-3xl sm:text-5xl font-black tracking-tight">${(pack.price || 0).toFixed(2)}</p>
+                                                {pack.originalPrice > pack.price && (
+                                                    <span className="text-lg text-pink-200 line-through">${pack.originalPrice}</span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs sm:text-sm mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded">✨ توفير مميز</p>
+                                        </div>
+                                        <div className="absolute right-[-20px] top-[-20px] w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                                     </div>
-                                    
-                                    {/* Enhanced Visitor Counter */}
-                                    <div className="mb-4">
+
+                                    <div className="mt-4">
                                         <EnhancedVisitorCounter />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Right Side: Customization Options - Improved */}
-                        <div className={`transition-all duration-300 ${highlightedElement === 'customization' ? 'ring-4 ring-yellow-400 rounded-2xl p-6' : ''}`}>
-                            {/* Customization Header */}
-                            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-2xl mb-8 shadow-lg">
-                                <h2 className="text-2xl sm:text-3xl font-bold mb-3 flex items-center">
-                                    <span className="mr-3 text-3xl">🎨</span>
-                                    تخصيص حزمتك / Customize Your Pack
+                        {/* Right Side: Options */}
+                        <div className={`transition-all duration-300 ${highlightedElement === 'customization' ? 'ring-2 ring-yellow-400 rounded-2xl p-2' : ''}`}>
+                            <div className="bg-indigo-600 text-white p-4 sm:p-6 rounded-2xl mb-6 shadow-md">
+                                <h2 className="text-xl sm:text-2xl font-bold flex items-center">
+                                    <span className="mr-2 text-2xl">🎨</span>
+                                    ابدأ التخصيص
                                 </h2>
-                                <p className="text-blue-100 text-base">
-                                    اختر المنتجات التي تريدها من كل قسم / Select your preferred products from each section
+                                <p className="text-indigo-100 text-sm mt-1">
+                                    لديك {pack.items?.length || 0} خيارات لتحديدها
                                 </p>
                             </div>
-                            
-                            {/* Progress Indicator */}
-                            <div className="mb-8 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-200">
-                                <div className="flex items-center justify-between mb-3">
-                                    <span className="text-sm font-bold text-gray-700">التقدم / Progress</span>
-                                    <span className="text-sm font-bold text-green-700">{pack.items?.length || 0}/{pack.items?.length || 0} أقسام / Sections</span>
-                                </div>
-                                <div className="w-full bg-green-100 rounded-full h-2 overflow-hidden">
-                                    <div className="bg-gradient-to-r from-green-400 to-green-600 h-full rounded-full transition-all duration-300" style={{width: '100%'}}></div>
-                                </div>
-                            </div>
-                            
-                            {/* Product Selection Cards - Enhanced */}
-                            <div className={`space-y-6 mb-8 ${highlightedElement === 'product-options' ? 'ring-4 ring-yellow-400 rounded-2xl p-6' : ''}`}>
+
+                            <div className={`space-y-4 sm:space-y-6 mb-8 ${highlightedElement === 'product-options' ? 'ring-2 ring-yellow-400 rounded-xl p-2' : ''}`}>
                                 {pack.items && pack.items.map((item, index) => (
-                                    <div key={item.id} className="enhanced-pack-item group">
-                                        {/* Section Number Badge */}
-                                        <div className="flex items-center mb-4 gap-3">
-                                            <div className="bg-gradient-to-br from-pink-500 to-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-md group-hover:shadow-lg transition-shadow">
-                                                {index + 1}
-                                            </div>
-                                            <h3 className="text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
-                                                القسم {index + 1} / Section {index + 1}
-                                            </h3>
-                                        </div>
-                                        
-                                        {/* Product Selector */}
+                                    <div key={item.id} className="enhanced-pack-item">
                                         <PackItemSelector
                                             item={item}
                                             selectedProductId={selections[item.id]}
@@ -707,138 +600,64 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                     </div>
                                 ))}
                             </div>
-                            
-                            {/* Enhanced Checkout Section - Sticky on Mobile */}
-                            <div className={`transition-all duration-300 ${highlightedElement === 'add-to-cart' ? 'ring-4 ring-yellow-400 rounded-2xl p-6' : ''}`}>
-                                <div className="bg-white border-2 border-pink-200 rounded-2xl p-6 shadow-xl sticky-checkout">
-                                    {/* Checkout Header */}
-                                    <h3 className="text-2xl font-bold text-center mb-6 text-gray-800">
-                                        🛒 إضافة للسلة / Add to Cart
-                                    </h3>
-                                    
-                                    {/* Main Add to Cart Button - Only Essential Element */}
+
+                            {/* Sticky Mobile Checkout */}
+                            <div className={`sticky bottom-2 z-30 transition-all duration-300 ${highlightedElement === 'add-to-cart' ? 'ring-4 ring-yellow-400 rounded-xl' : ''}`}>
+                                <div className="bg-white/95 backdrop-blur-md border border-gray-200 rounded-xl p-3 sm:p-6 shadow-2xl">
                                     <button
                                         onClick={handleAddToCart}
-                                        className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl hover:from-pink-600 hover:to-purple-700 transition-all duration-300 text-lg shadow-lg hover:shadow-xl hover:scale-105 transform animate-pulse-custom"
-                                        aria-label="Add customized pack to shopping cart"
+                                        className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-3 sm:py-4 px-6 rounded-xl hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-base sm:text-xl shadow-lg transform active:scale-95 flex items-center justify-center gap-2"
                                     >
-                                        ✨ إضافة الحزمة للسلة / Add Pack to Cart ✨
+                                        <span className="animate-pulse">✨</span>
+                                        إضافة الحزمة للسلة
+                                        <span className="bg-white/20 px-2 py-0.5 rounded text-sm">${(pack.price || 0).toFixed(0)}</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Pack Description - Between Add to Cart and Reviews */}
-                    <div className="mt-8 bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg">
-                        <div className="mb-4">
-                            <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
-                                <span className="mr-2 text-2xl">📝</span>
-                                وصف الحزمة / Pack Description
-                            </h3>
-                            <div
-                                className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
-                                dangerouslySetInnerHTML={{ __html: pack.description }}
-                            />
-                        </div>
+                    <div className="mt-8 bg-white rounded-xl p-4 sm:p-6 border border-gray-200 shadow-sm">
+                        <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center border-b pb-2">
+                            <span className="mr-2">📝</span>
+                            تفاصيل الحزمة
+                        </h3>
+                        <div
+                            className="text-gray-600 leading-relaxed text-sm sm:text-base prose prose-sm max-w-none"
+                            dangerouslySetInnerHTML={{ __html: pack.description }}
+                        />
                     </div>
 
-                    {/* Comments & Reviews Section */}
-                    <div className="mt-12">
-                        <div className="bg-gradient-to-r from-yellow-100 to-orange-100 p-4 rounded-lg mb-6">
-                            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 flex items-center">
-                                💬 التعليقات / Reviews
-                            </h2>
-                            <p className="text-sm text-gray-600">
-                                شارك تجربتك مع الحزمة / Share your experience with the pack
-                            </p>
-                        </div>
-                        
+                    {/* Simple Reviews Section */}
+                    <div className="mt-10">
+                        <h2 className="text-xl font-bold text-gray-800 mb-4 px-2">💬 آراء العملاء</h2>
                         {pack.comments && pack.comments.length > 0 ? (
-                            <div className="space-y-4 mb-8">
+                            <div className="grid gap-4">
                                 {pack.comments.map(comment => (
-                                    <div key={comment.id} className="bg-white p-6 border-2 border-gray-200 rounded-xl shadow-lg">
-                                        <div className="flex items-center mb-3">
-                                            <div className="bg-pink-100 rounded-full w-10 h-10 flex items-center justify-center mr-3">
-                                                <span className="text-pink-600 font-bold">👤</span>
-                                            </div>
-                                            <div>
-                                                <p className="font-bold text-gray-800">{comment.userFullName}</p>
-                                                <div className="flex items-center">
-                                                    <span className="text-yellow-400 text-lg">{'★'.repeat(comment.score)}{'☆'.repeat(5 - comment.score)}</span>
-                                                    <span className="text-sm text-gray-500 ml-2">({comment.score}/5)</span>
-                                                </div>
-                                            </div>
+                                    <div key={comment.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                        <div className="flex items-center mb-2">
+                                            <div className="font-bold text-gray-800 ml-auto">{comment.userFullName}</div>
+                                            <div className="text-yellow-400 text-sm">{'★'.repeat(comment.score)}</div>
                                         </div>
-                                        <p className="text-gray-700 leading-relaxed mb-3">{comment.content}</p>
-                                        {comment.images && comment.images.length > 0 && (
-                                            <div className="flex flex-wrap gap-2 mt-3">
-                                                {comment.images.map((img, index) => (
-                                                    <div key={index} className="image-zoom-container">
-                                                        <img 
-                                                            src={img} 
-                                                            alt={`Comment image ${index + 1}`} 
-                                                            className="w-24 h-24 object-cover rounded-md border-2 border-gray-200" 
-                                                        />
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
+                                        <p className="text-gray-600 text-sm">{comment.content}</p>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-8 bg-gray-50 rounded-lg mb-8">
-                                <div className="text-4xl mb-3">💭</div>
-                                <p className="text-gray-500 mb-2">لا توجد تعليقات بعد</p>
-                                <p className="text-gray-400">No reviews yet</p>
+                            <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-xl">
+                                لا توجد تعليقات حتى الآن
                             </div>
                         )}
-                        
                         {!pack.hideCommentForm && (
-                            <div className="bg-blue-50 p-6 rounded-lg">
-                                <h3 className="text-lg font-bold mb-3 text-blue-800">
-                                    ✍️ اترك تعليقك / Leave Your Review
-                                </h3>
-                                <CommentForm packId={id} onCommentAdded={handleCommentAdded} />
+                            <div className="mt-6">
+                                <CommentForm />
                             </div>
                         )}
-                    </div>
-
-                    {/* Recommended Products Section */}
-                    <div className="mt-12">
-                        <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg mb-6">
-                            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 flex items-center">
-                                ⭐ منتجات مقترحة / Recommended Products
-                            </h2>
-                            <p className="text-sm text-gray-600">
-                                منتجات أخرى قد تعجبك / Other products you might like
-                            </p>
-                        </div>
-                        <PackRecommendations pack={pack} />
                     </div>
                 </>
             )}
-            
-            {/* Purchase Notifications - Controlled by admin per pack */}
-            {pack?.showPurchaseNotifications && (
-                <PurchaseNotifications 
-                    packName={pack?.name} 
-                    productImage={pack?.images && pack.images.length > 0 ? pack.images[0] : null}
-                />
-            )}
-            
-            {/* Sticky Add to Cart */}
-            <StickyAddToCart 
-                pack={pack}
-                onAddToCart={handleAddToCart}
-                isVisible={!!pack}
-                selectedCount={pack?.items ? Object.keys(selections).length : 0}
-                totalItems={pack?.items?.length || 0}
-            />
         </div>
     );
-
 };
 
 export default PackDetailPage;
