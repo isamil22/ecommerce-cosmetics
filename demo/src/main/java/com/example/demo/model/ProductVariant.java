@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import java.util.Map;
 
 @Entity
@@ -21,11 +23,12 @@ public class ProductVariant {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Product product;
 
     @ElementCollection
-    @CollectionTable(name = "product_variant_attributes",
-            joinColumns = @JoinColumn(name = "product_variant_id"))
+    @CollectionTable(name = "product_variant_attributes", joinColumns = @JoinColumn(name = "product_variant_id"))
     @MapKeyColumn(name = "attribute_name")
     @Column(name = "attribute_value")
     private Map<String, String> variantMap;

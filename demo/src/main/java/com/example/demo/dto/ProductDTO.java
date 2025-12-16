@@ -51,6 +51,7 @@ public class ProductDTO {
 
     private List<VariantTypeDto> variantTypes;
     private List<ProductVariantDto> variants;
+    private List<FrequentlyBoughtTogetherDTO> frequentlyBoughtTogether;
 
     public Boolean getHasVariants() {
         return hasVariants;

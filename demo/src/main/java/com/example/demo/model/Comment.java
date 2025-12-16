@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import java.util.List;
 
 @Entity
@@ -25,16 +27,20 @@ public class Comment {
     private List<String> images = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name="product_id", nullable = true) // This allows the comment to not be associated with a product
+    @JoinColumn(name = "product_id", nullable = true) // This allows the comment to not be associated with a product
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Product product;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "pack_id", nullable = true) // This allows the comment to not be associated with a pack
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Pack pack;
 }

@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 import java.util.Set;
 
 @Entity
@@ -55,6 +57,8 @@ public class Product {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -63,18 +67,20 @@ public class Product {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<VariantType> variantTypes = new ArrayList<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ProductVariant> variants = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "product_frequently_bought_together",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "frequently_bought_id")
-    )
+    @JoinTable(name = "product_frequently_bought_together", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "frequently_bought_id"))
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Product> frequentlyBoughtTogether = new HashSet<>();
 
     public enum ProductType {

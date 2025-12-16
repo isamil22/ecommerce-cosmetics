@@ -1,28 +1,21 @@
-// Sticky Add to Cart - Follows user as they scroll
+// Sticky Add to Cart - Clean Luxury Version
 import React, { useState, useEffect } from 'react';
 
 const StickyAddToCart = ({
     pack,
     activeImage,
     onAddToCart,
-    isVisible = true,
-    selectedCount = 0,
-    totalItems = 0
+    isVisible = true
 }) => {
     const [isSticky, setIsSticky] = useState(false);
-    const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY;
-            const shouldBeSticky = scrollPosition > 800; // Show after scrolling 800px
+            const shouldBeSticky = scrollPosition > 600;
 
             if (shouldBeSticky !== isSticky) {
                 setIsSticky(shouldBeSticky);
-                if (shouldBeSticky) {
-                    setIsAnimating(true);
-                    setTimeout(() => setIsAnimating(false), 500);
-                }
             }
         };
 
@@ -30,53 +23,45 @@ const StickyAddToCart = ({
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isSticky]);
 
-    const handleClick = () => {
-        setIsAnimating(true);
-        setTimeout(() => setIsAnimating(false), 300);
-        onAddToCart();
-    };
-
     if (!isVisible || !isSticky || !pack) return null;
 
-    // Use passed activeImage, or fall back to first pack image, or placeholder
     const displayImage = activeImage || (pack.images && pack.images.length > 0 ? pack.images[0] : (pack.image || '/placeholder-product.jpg'));
 
     return (
-        <div className={`fixed bottom-0 left-0 right-0 z-40 transform transition-all duration-500 ${isSticky ? 'translate-y-0' : 'translate-y-full'
-            }`}>
-            {/* Sticky bar - Minimal Design */}
-            <div className="bg-white border-t-2 border-pink-300 shadow-2xl">
+        <div className="fixed bottom-0 left-0 right-0 z-50 transform transition-transform duration-300 translate-y-0">
+            <div className="bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
                 <div className="container mx-auto px-4 py-3">
                     <div className="flex items-center justify-between gap-4">
-                        {/* Product Image */}
-                        <div className="flex-shrink-0">
+
+                        {/* Information Group */}
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
                             <img
                                 src={displayImage}
                                 alt={pack.name}
-                                className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg border border-gray-200 shadow-sm"
+                                className="w-12 h-12 rounded-lg object-cover border border-gray-100 bg-gray-50"
                             />
+                            <div className="min-w-0 hidden sm:block">
+                                <h3 className="font-bold text-gray-900 text-sm truncate">
+                                    {pack.name}
+                                </h3>
+                                <p className="text-gray-500 text-xs">
+                                    In Stock
+                                </p>
+                            </div>
                         </div>
 
-                        {/* Minimal Pack Info */}
-                        <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-gray-800 text-sm truncate">
-                                {pack.name}
-                            </h3>
-                            <p className="text-pink-600 font-bold text-lg">
+                        {/* Action Group */}
+                        <div className="flex items-center gap-4">
+                            <span className="font-bold text-lg text-gray-900 hidden sm:block">
                                 ${(pack.price || 0).toFixed(2)}
-                            </p>
+                            </span>
+                            <button
+                                onClick={onAddToCart}
+                                className="bg-black text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-gray-800 transition-colors shadow-sm"
+                            >
+                                Add to Cart
+                            </button>
                         </div>
-
-                        {/* Add to Cart Button - Clean & Professional */}
-                        <button
-                            onClick={handleClick}
-                            className={`bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2 flex-shrink-0 ${isAnimating ? 'animate-bounce-custom' : ''
-                                }`}
-                            aria-label="Add pack to shopping cart"
-                        >
-                            <span className="text-xl">🛒</span>
-                            <span className="text-sm sm:text-base">Add to Cart</span>
-                        </button>
                     </div>
                 </div>
             </div>

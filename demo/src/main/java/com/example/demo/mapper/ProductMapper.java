@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import com.example.demo.dto.FrequentlyBoughtTogetherDTO;
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ProductVariantDto;
 import com.example.demo.dto.VariantTypeDto;
@@ -85,6 +86,27 @@ public interface ProductMapper {
         dto.setStock(productVariant.getStock());
         dto.setImageUrl(productVariant.getImageUrl());
         dto.setId(productVariant.getId());
+        return dto;
+    }
+
+    default List<FrequentlyBoughtTogetherDTO> mapFrequentlyBoughtTogether(java.util.Set<Product> products) {
+        if (products == null) {
+            return null;
+        }
+        return products.stream()
+                .map(this::toFrequentlyBoughtTogetherDTO)
+                .collect(Collectors.toList());
+    }
+
+    default FrequentlyBoughtTogetherDTO toFrequentlyBoughtTogetherDTO(Product product) {
+        if (product == null) {
+            return null;
+        }
+        FrequentlyBoughtTogetherDTO dto = new FrequentlyBoughtTogetherDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setImages(product.getImages());
         return dto;
     }
 }
