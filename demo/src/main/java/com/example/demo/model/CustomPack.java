@@ -27,11 +27,8 @@ public class CustomPack {
     private BigDecimal discountRate; // For DYNAMIC pricing type (e.g., 0.2 for 20%)
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "custom_pack_allowed_products",
-            joinColumns = @JoinColumn(name = "custom_pack_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
+    @JoinTable(name = "custom_pack_allowed_products", joinColumns = @JoinColumn(name = "custom_pack_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @org.hibernate.annotations.SQLRestriction("deleted = 0")
     private List<Product> allowedProducts = new ArrayList<>();
 
     public enum PricingType {

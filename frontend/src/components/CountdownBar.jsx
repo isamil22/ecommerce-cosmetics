@@ -46,10 +46,10 @@ const CountdownBar = () => {
     }
 
     const timeSegments = [
-        { label: 'Days', value: timeLeft.days },
-        { label: 'Hours', value: timeLeft.hours },
+        { label: 'Jours', value: timeLeft.days },
+        { label: 'Heures', value: timeLeft.hours },
         { label: 'Minutes', value: timeLeft.minutes },
-        { label: 'Seconds', value: timeLeft.seconds },
+        { label: 'Secondes', value: timeLeft.seconds },
     ];
 
     return (

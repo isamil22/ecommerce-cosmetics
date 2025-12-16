@@ -5,12 +5,12 @@ const PackQuickView = ({ pack, isOpen, onClose }) => {
     if (!isOpen || !pack) return null;
 
     const imageUrl = pack.imageUrl || 'https://placehold.co/600x400/fde4f2/E91E63?text=Premium+Pack';
-    
+
     // Calculate savings
     const totalItemPrice = pack.items?.reduce((total, item) => {
         return total + (item.defaultProduct?.price || 0);
     }, 0) || 0;
-    
+
     const savings = totalItemPrice > pack.price ? totalItemPrice - pack.price : 0;
     const savingsPercent = savings > 0 ? Math.round((savings / totalItemPrice) * 100) : 0;
 
@@ -36,11 +36,11 @@ const PackQuickView = ({ pack, isOpen, onClose }) => {
                                 alt={pack.name}
                                 className="w-full h-full object-cover rounded-t-xl md:rounded-l-2xl md:rounded-t-none"
                             />
-                            
+
                             {/* Value Badge */}
                             {savingsPercent > 0 && (
                                 <div className="absolute top-4 left-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                                    {savingsPercent}% OFF
+                                    -{savingsPercent}%
                                 </div>
                             )}
                         </div>
@@ -49,16 +49,16 @@ const PackQuickView = ({ pack, isOpen, onClose }) => {
                         <div className="p-4 sm:p-6 md:p-8 flex flex-col justify-between">
                             <div>
                                 <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{pack.name}</h2>
-                                
+
                                 <p className="text-gray-600 mb-6 leading-relaxed">
-                                    {pack.description?.replace(/<[^>]*>/g, '') || 'Discover this amazing curated pack of premium beauty products.'}
+                                    {pack.description?.replace(/<[^>]*>/g, '') || 'Découvrez ce pack de produits de beauté premium.'}
                                 </p>
 
                                 {/* Pack Items */}
                                 {pack.items && pack.items.length > 0 && (
                                     <div className="mb-6">
                                         <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                                            Items in this pack ({pack.items.length}):
+                                            Articles dans ce pack ({pack.items.length}):
                                         </h3>
                                         <div className="space-y-2 max-h-40 overflow-y-auto">
                                             {pack.items.map(item => (
@@ -84,20 +84,20 @@ const PackQuickView = ({ pack, isOpen, onClose }) => {
 
                                 {/* Price Section */}
                                 <div className="mb-6">
-                                <div className="flex items-center gap-2 sm:gap-4 mb-2 flex-wrap">
-                                    <span className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                                        ${pack.price?.toFixed(2)}
-                                    </span>
-                                    {totalItemPrice > pack.price && (
-                                        <span className="text-lg sm:text-xl text-gray-400 line-through">
-                                            ${totalItemPrice.toFixed(2)}
+                                    <div className="flex items-center gap-2 sm:gap-4 mb-2 flex-wrap">
+                                        <span className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                                            ${pack.price?.toFixed(2)}
                                         </span>
-                                    )}
-                                </div>
-                                    
+                                        {totalItemPrice > pack.price && (
+                                            <span className="text-lg sm:text-xl text-gray-400 line-through">
+                                                ${totalItemPrice.toFixed(2)}
+                                            </span>
+                                        )}
+                                    </div>
+
                                     {savings > 0 && (
                                         <p className="text-green-600 font-semibold">
-                                            💰 You save ${savings.toFixed(2)} ({savingsPercent}% off)
+                                            💰 Économisez ${savings.toFixed(2)} (-{savingsPercent}%)
                                         </p>
                                     )}
                                 </div>
@@ -110,13 +110,13 @@ const PackQuickView = ({ pack, isOpen, onClose }) => {
                                     className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-3 sm:py-4 px-6 rounded-xl transition-all duration-300 transform hover:from-pink-600 hover:to-purple-700 hover:scale-105 text-center"
                                     onClick={onClose}
                                 >
-                                    View Full Details
+                                    Voir Dossier Complet
                                 </Link>
                                 <button
                                     onClick={onClose}
                                     className="px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-600 font-semibold rounded-xl hover:border-gray-400 hover:text-gray-800 transition-all duration-200"
                                 >
-                                    Close
+                                    Fermer
                                 </button>
                             </div>
                         </div>

@@ -113,13 +113,23 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
     const activeVariant = useMemo(() => {
         if (!product || !product.hasVariants || !product.variants) return null;
+        // Debug logging for variant selection
+        console.log('Checking variants for options:', selectedOptions);
         try {
-            return product.variants.find(v =>
+            const foundNode = product.variants.find(v =>
                 v && v.variantMap &&
-                Object.entries(selectedOptions).every(([key, value]) =>
-                    v.variantMap && v.variantMap[key] === value
-                )
+                Object.entries(selectedOptions).every(([key, value]) => {
+                    // 1. Try exact match
+                    if (v.variantMap[key] === value) return true;
+                    // 2. Try trimmed match (string only)
+                    if (typeof v.variantMap[key] === 'string' && typeof value === 'string') {
+                        return v.variantMap[key].trim() === value.trim();
+                    }
+                    return false;
+                })
             );
+            console.log('Found variant:', foundNode);
+            return foundNode;
         } catch (error) {
             console.error('Error finding active variant:', error);
             return null;
@@ -900,6 +910,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             {/* Enhanced Sticky Add to Cart - replaces StickyAddToCartBar */}
             <StickyAddToCart
                 pack={product}
+                activeImage={selectedImage}
                 onAddToCart={handleAddToCart}
                 isVisible={isStickyBarVisible}
                 selectedCount={1}

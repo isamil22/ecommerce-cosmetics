@@ -14,10 +14,10 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
     const isFixedPricing = pack.pricingType === 'FIXED';
     const priceDisplay = isFixedPricing
         ? `$${pack.fixedPrice?.toFixed(2)}`
-        : `${(pack.discountRate * 100)?.toFixed(0)}% OFF`;
+        : `${(pack.discountRate * 100)?.toFixed(0)}% DE REMISE`;
 
     // Calculate item range
-    const itemRange = `${pack.minItems || 1}-${pack.maxItems || 10} items`;
+    const itemRange = `${pack.minItems || 1}-${pack.maxItems || 10} articles`;
 
     // Check if pack is new (created within last 30 days)
     const isNew = pack.createdAt &&
@@ -34,19 +34,19 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
             <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
                 {isNew && (
                     <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
-                        ✨ جديد / NEW
+                        ✨ جديد / NOUVEAU
                     </span>
                 )}
                 <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    🎨 مخصص / CUSTOM
+                    🎨 مخصص / PERSONNALISÉ
                 </span>
                 {isFixedPricing ? (
                     <span className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        💰 سعر ثابت / FIXED
+                        💰 سعر ثابت / FIXE
                     </span>
                 ) : (
                     <span className="bg-gradient-to-r from-orange-500 to-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        🔥 خصم / DISCOUNT
+                        🔥 خصم / REMISE
                     </span>
                 )}
             </div>
@@ -60,7 +60,7 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                         onQuickView(pack);
                     }}
                     className="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:bg-purple-500 hover:text-white transition-all duration-200 transform hover:scale-110"
-                    title="عرض سريع / Quick View"
+                    title="عرض سريع / Aperçu Rapide"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -112,26 +112,26 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
 
                         {/* Description */}
                         <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-4">
-                            {pack.description || 'Create your perfect custom beauty pack with our curated selection of premium products.'}
+                            {pack.description || 'Créez votre pack beauté personnalisé parfait avec notre sélection de produits premium.'}
                         </p>
                     </div>
 
                     {/* Pack Details */}
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-gray-700">Items Range:</span>
+                            <span className="text-sm font-semibold text-gray-700">Plage d'articles :</span>
                             <span className="text-sm bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-semibold">
                                 {itemRange}
                             </span>
                         </div>
 
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-gray-700">Pricing:</span>
+                            <span className="text-sm font-semibold text-gray-700">Tarification :</span>
                             <span className={`text-sm px-3 py-1 rounded-full font-semibold ${isFixedPricing
                                 ? 'bg-blue-100 text-blue-700'
                                 : 'bg-orange-100 text-orange-700'
                                 }`}>
-                                {isFixedPricing ? 'Fixed Price' : 'Discount Rate'}
+                                {isFixedPricing ? 'Prix Fixe' : 'Taux de Remise'}
                             </span>
                         </div>
                     </div>
@@ -145,7 +145,7 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                         </div>
 
                         <p className="text-purple-600 text-sm font-semibold">
-                            🎨 Build your perfect pack
+                            🎨 Créez votre pack parfait
                         </p>
                     </div>
                 </div>
@@ -161,7 +161,7 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
                         </svg>
-                        إنشاء الباقة / Create Pack
+                        إنشاء الباقة / Créer le Pack
                     </span>
                 </Link>
             </div>
@@ -240,7 +240,7 @@ const CustomPacksPage = () => {
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 flex items-center justify-center">
                 <div className="text-center">
                     <Loader />
-                    <p className="text-gray-600 mt-4">Loading custom pack builders...</p>
+                    <p className="text-gray-600 mt-4">...جارٍ تحميل منشئي الباقات / Chargement des créateurs de packs...</p>
                 </div>
             </div>
         );
@@ -255,7 +255,7 @@ const CustomPacksPage = () => {
                             <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                             </svg>
-                            <span className="font-semibold">Error Loading Custom Packs</span>
+                            <span className="font-semibold">خطأ في تحميل الباقات المخصصة / Erreur de chargement des packs personnalisés</span>
                         </div>
                         <p>{error}</p>
                     </div>
@@ -282,32 +282,31 @@ const CustomPacksPage = () => {
                             <div className="mb-8 md:mb-12">
                                 <div className="inline-block mb-4">
                                     <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-5 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                                        🎨 Custom Pack Builder
+                                        🎨 منشئ الباقات المخصص / Créateur de Pack Personnalisé
                                     </span>
                                 </div>
 
                                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4 leading-tight">
-                                    Create Your Own Pack
+                                    اصنع باقتك الخاصة / Créez Votre Propre Pack
                                 </h1>
 
                                 <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
-                                    Design your perfect beauty collection with our custom pack builder.
-                                    Choose your favorite products and enjoy exclusive pricing!
+                                    صمم مجموعتك الجمالية المثالية مع منشئ الباقات المخصص لدينا. اختر منتجاتك المفضلة واستمتع بأسعار حصرية! / Concevez votre collection de beauté parfaite avec notre créateur de packs personnalisés. Choisissez vos produits préférés et profitez de prix exclusifs !
                                 </p>
 
                                 {/* Stats - Logically Sized */}
                                 <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center max-w-2xl mx-auto">
                                     <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow">
                                         <div className="text-lg sm:text-2xl font-bold text-purple-600">{customPacks.length}</div>
-                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Builders</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">منشئ / Créateurs</div>
                                     </div>
                                     <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow">
                                         <div className="text-lg sm:text-2xl font-bold text-indigo-600">30%</div>
-                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Savings</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">توفير / Économies</div>
                                     </div>
                                     <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow">
                                         <div className="text-lg sm:text-2xl font-bold text-blue-600">Free</div>
-                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Custom</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">مخصص / Personnalisé</div>
                                     </div>
                                 </div>
                             </div>
@@ -329,7 +328,7 @@ const CustomPacksPage = () => {
                             </div>
                             <input
                                 type="text"
-                                placeholder="Search pack builders..."
+                                placeholder="ابحث عن منشئي الباقات... / Rechercher des créateurs..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="block w-full pl-10 pr-3 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm shadow-inner text-sm sm:text-base"
@@ -343,10 +342,10 @@ const CustomPacksPage = () => {
                                 onChange={(e) => setFilterBy(e.target.value)}
                                 className="px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full text-sm sm:text-base"
                             >
-                                <option value="all">All Builders</option>
-                                <option value="new">New Arrivals</option>
-                                <option value="fixed">Fixed</option>
-                                <option value="discount">Discount</option>
+                                <option value="all">جميع المنشئين / Tous les Créateurs</option>
+                                <option value="new">وصل حديثاً / Nouveautés</option>
+                                <option value="fixed">ثابت / Fixe</option>
+                                <option value="discount">تخفيض / Remise</option>
                             </select>
 
                             <select
@@ -354,10 +353,10 @@ const CustomPacksPage = () => {
                                 onChange={(e) => setSortBy(e.target.value)}
                                 className="px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full text-sm sm:text-base"
                             >
-                                <option value="name">Sort by Name</option>
-                                <option value="newest">Newest First</option>
-                                <option value="items-low">Items: Low</option>
-                                <option value="items-high">Items: High</option>
+                                <option value="name">الاسم / Nom</option>
+                                <option value="newest">الأحدث أولاً / Plus Récents</option>
+                                <option value="items-low">عناصر: أقل / Articles : Moins</option>
+                                <option value="items-high">عناصر: أكثر / Articles : Plus</option>
                             </select>
                         </div>
                     </div>
@@ -370,7 +369,7 @@ const CustomPacksPage = () => {
                     <>
                         <div className="text-center mb-10">
                             <p className="text-gray-600">
-                                Showing {filteredAndSortedPacks.length} of {customPacks.length} pack builders
+                                عرض {filteredAndSortedPacks.length} من {customPacks.length} منشئي باقات / Affichage de {filteredAndSortedPacks.length} sur {customPacks.length} créateurs
                             </p>
                         </div>
 
@@ -389,11 +388,11 @@ const CustomPacksPage = () => {
                     <div className="text-center py-20">
                         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 shadow-xl border border-white/20 max-w-md mx-auto">
                             <div className="text-6xl mb-4">🎨</div>
-                            <h3 className="text-2xl font-bold text-gray-800 mb-4">No Pack Builders Found</h3>
+                            <h3 className="text-2xl font-bold text-gray-800 mb-4">لم يتم العثور على منشئي باقات / Aucun créateur trouvé</h3>
                             <p className="text-gray-600 mb-6">
                                 {searchTerm || filterBy !== 'all'
-                                    ? 'Try adjusting your search or filters to find more pack builders.'
-                                    : 'No custom pack builders are available at the moment. Please check back soon!'
+                                    ? 'حاول تعديل البحث أو الفلاتر. / Essayez d\'ajuster votre recherche ou vos filtres.'
+                                    : 'لا يوجد منشئي باقات مخصصة حالياً. / Aucun créateur de pack personnalisé disponible pour le moment.'
                                 }
                             </p>
                             {(searchTerm || filterBy !== 'all') && (
@@ -405,7 +404,7 @@ const CustomPacksPage = () => {
                                     }}
                                     className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
                                 >
-                                    Clear Filters
+                                    مسح الفلاتر / Effacer les Filtres
                                 </button>
                             )}
                         </div>
@@ -438,7 +437,7 @@ const CustomPacksPage = () => {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
                                                 </svg>
                                             </div>
-                                            <h3 className="text-2xl font-bold text-gray-800">Custom Pack Builder</h3>
+                                            <h3 className="text-2xl font-bold text-gray-800">منشئ الباقات المخصص / Créateur de Pack Personnalisé</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -449,34 +448,34 @@ const CustomPacksPage = () => {
                                         <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{quickViewPack.name}</h2>
 
                                         <p className="text-gray-600 mb-6 leading-relaxed">
-                                            {quickViewPack.description || 'Create your perfect custom beauty pack with our curated selection of premium products.'}
+                                            {quickViewPack.description || 'Créez votre pack beauté personnalisé parfait avec notre sélection de produits premium.'}
                                         </p>
 
                                         {/* Pack Details */}
                                         <div className="space-y-4 mb-6">
                                             <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
-                                                <span className="font-semibold text-gray-700">Items Range:</span>
+                                                <span className="font-semibold text-gray-700">Plage d'articles :</span>
                                                 <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-semibold">
-                                                    {quickViewPack.minItems || 1}-{quickViewPack.maxItems || 10} items
+                                                    {quickViewPack.minItems || 1}-{quickViewPack.maxItems || 10} articles
                                                 </span>
                                             </div>
 
                                             <div className="flex items-center justify-between p-3 bg-indigo-50 rounded-lg">
-                                                <span className="font-semibold text-gray-700">Pricing Type:</span>
+                                                <span className="font-semibold text-gray-700">Type de Tarification :</span>
                                                 <span className={`px-3 py-1 rounded-full font-semibold ${quickViewPack.pricingType === 'FIXED'
                                                     ? 'bg-blue-100 text-blue-700'
                                                     : 'bg-orange-100 text-orange-700'
                                                     }`}>
-                                                    {quickViewPack.pricingType === 'FIXED' ? 'Fixed Price' : 'Discount Rate'}
+                                                    {quickViewPack.pricingType === 'FIXED' ? 'Prix Fixe' : 'Taux de Remise'}
                                                 </span>
                                             </div>
 
                                             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg">
-                                                <span className="font-semibold text-gray-700">Price:</span>
+                                                <span className="font-semibold text-gray-700">Prix :</span>
                                                 <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                                                     {quickViewPack.pricingType === 'FIXED'
                                                         ? `$${quickViewPack.fixedPrice?.toFixed(2)}`
-                                                        : `${(quickViewPack.discountRate * 100)?.toFixed(0)}% OFF`
+                                                        : `${(quickViewPack.discountRate * 100)?.toFixed(0)}% DE REMISE`
                                                     }
                                                 </span>
                                             </div>
@@ -490,13 +489,13 @@ const CustomPacksPage = () => {
                                             className="flex-1 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-3 sm:py-4 px-6 rounded-xl transition-all duration-300 transform hover:from-purple-600 hover:to-indigo-700 hover:scale-105 text-center"
                                             onClick={handleCloseQuickView}
                                         >
-                                            Start Building
+                                            ابدأ البناء / Commencer
                                         </Link>
                                         <button
                                             onClick={handleCloseQuickView}
                                             className="px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-600 font-semibold rounded-xl hover:border-gray-400 hover:text-gray-800 transition-all duration-200"
                                         >
-                                            Close
+                                            إغلاق / Fermer
                                         </button>
                                     </div>
                                 </div>

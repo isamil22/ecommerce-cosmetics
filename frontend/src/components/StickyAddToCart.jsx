@@ -1,12 +1,13 @@
 // Sticky Add to Cart - Follows user as they scroll
 import React, { useState, useEffect } from 'react';
 
-const StickyAddToCart = ({ 
-    pack, 
-    onAddToCart, 
-    isVisible = true, 
+const StickyAddToCart = ({
+    pack,
+    activeImage,
+    onAddToCart,
+    isVisible = true,
     selectedCount = 0,
-    totalItems = 0 
+    totalItems = 0
 }) => {
     const [isSticky, setIsSticky] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -15,7 +16,7 @@ const StickyAddToCart = ({
         const handleScroll = () => {
             const scrollPosition = window.scrollY;
             const shouldBeSticky = scrollPosition > 800; // Show after scrolling 800px
-            
+
             if (shouldBeSticky !== isSticky) {
                 setIsSticky(shouldBeSticky);
                 if (shouldBeSticky) {
@@ -37,14 +38,25 @@ const StickyAddToCart = ({
 
     if (!isVisible || !isSticky || !pack) return null;
 
+    // Use passed activeImage, or fall back to first pack image, or placeholder
+    const displayImage = activeImage || (pack.images && pack.images.length > 0 ? pack.images[0] : (pack.image || '/placeholder-product.jpg'));
+
     return (
-        <div className={`fixed bottom-0 left-0 right-0 z-40 transform transition-all duration-500 ${
-            isSticky ? 'translate-y-0' : 'translate-y-full'
-        }`}>
+        <div className={`fixed bottom-0 left-0 right-0 z-40 transform transition-all duration-500 ${isSticky ? 'translate-y-0' : 'translate-y-full'
+            }`}>
             {/* Sticky bar - Minimal Design */}
             <div className="bg-white border-t-2 border-pink-300 shadow-2xl">
                 <div className="container mx-auto px-4 py-3">
                     <div className="flex items-center justify-between gap-4">
+                        {/* Product Image */}
+                        <div className="flex-shrink-0">
+                            <img
+                                src={displayImage}
+                                alt={pack.name}
+                                className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg border border-gray-200 shadow-sm"
+                            />
+                        </div>
+
                         {/* Minimal Pack Info */}
                         <div className="flex-1 min-w-0">
                             <h3 className="font-bold text-gray-800 text-sm truncate">
@@ -58,9 +70,8 @@ const StickyAddToCart = ({
                         {/* Add to Cart Button - Clean & Professional */}
                         <button
                             onClick={handleClick}
-                            className={`bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2 flex-shrink-0 ${
-                                isAnimating ? 'animate-bounce-custom' : ''
-                            }`}
+                            className={`bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2 flex-shrink-0 ${isAnimating ? 'animate-bounce-custom' : ''
+                                }`}
                             aria-label="Add pack to shopping cart"
                         >
                             <span className="text-xl">🛒</span>

@@ -12,7 +12,7 @@ const Footer = () => {
         event.preventDefault();
 
         if (!email || !email.includes('@')) {
-            toast.error('الرجاء إدخال بريد إلكتروني صحيح / Please enter a valid email');
+            toast.error('الرجاء إدخال بريد إلكتروني صحيح / Veuillez entrer un email valide');
             return;
         }
 
@@ -20,7 +20,7 @@ const Footer = () => {
 
         // Simulate API call
         setTimeout(() => {
-            toast.success(`🎉 شكراً للاشتراك! / Thank you for subscribing!`);
+            toast.success(`🎉 شكراً للاشتراك! / Merci de vous être abonné !`);
             setEmail('');
             setIsSubscribing(false);
         }, 1000);
@@ -36,25 +36,25 @@ const Footer = () => {
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
-                            <p className="font-bold">منتجات أصلية<br />100% Authentic</p>
+                            <p className="font-bold">منتجات أصلية<br />100% Authentique</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <p className="font-bold">ضمان الجودة<br />Quality Guaranteed</p>
+                            <p className="font-bold">ضمان الجودة<br />Qualité Garantie</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <p className="font-bold">شحن مجاني<br />Free Shipping</p>
+                            <p className="font-bold">شحن مجاني<br />Livraison Gratuite</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                             </svg>
-                            <p className="font-bold">إرجاع سهل<br />Easy Returns</p>
+                            <p className="font-bold">إرجاع سهل<br />Retours Faciles</p>
                         </div>
                     </div>
                 </div>
@@ -73,12 +73,12 @@ const Footer = () => {
                                 <h3 className="text-2xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
                                     BeautyCosmetics
                                 </h3>
-                                <p className="text-xs text-gray-400">متجر التجميل / Beauty Store</p>
+                                <p className="text-xs text-gray-400">متجر التجميل / Magasin de Beauté</p>
                             </div>
                         </div>
                         <p className="text-sm text-gray-400 leading-relaxed mb-6">
                             متجرك الأول للحصول على أفضل منتجات التجميل. نؤمن بالجودة والشفافية وإظهار إشراقتك الداخلية.<br /><br />
-                            Your one-stop shop for the best in beauty. We believe in quality, transparency, and bringing out your inner radiance.
+                            Votre guichet unique pour le meilleur de la beauté. Nous croyons en la qualité, la transparence et la mise en valeur de votre éclat intérieur.
                         </p>
 
                         {/* Contact Info */}
@@ -106,23 +106,23 @@ const Footer = () => {
                     <div>
                         <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
                             <span className="text-pink-500">🛍️</span>
-                            <span>تسوق / Shop</span>
+                            <span>تسوق / Acheter</span>
                         </h3>
                         <ul className="space-y-3 text-sm">
                             <li><Link to="/products" className="hover:text-pink-400 transition-colors flex items-center gap-2">
-                                <span>→</span><span>جميع المنتجات / All Products</span>
+                                <span>→</span><span>جميع المنتجات / Tous les Produits</span>
                             </Link></li>
                             <li><Link to="/products?specialFilter=newArrival" className="hover:text-pink-400 transition-colors flex items-center gap-2">
-                                <span>→</span><span>وصل حديثاً / New Arrivals</span>
+                                <span>→</span><span>وصل حديثاً / Nouveautés</span>
                             </Link></li>
                             <li><Link to="/products?specialFilter=bestseller" className="hover:text-pink-400 transition-colors flex items-center gap-2">
-                                <span>→</span><span>الأكثر مبيعاً / Bestsellers</span>
+                                <span>→</span><span>الأكثر مبيعاً / Meilleures Ventes</span>
                             </Link></li>
                             <li><Link to="/packs" className="hover:text-pink-400 transition-colors flex items-center gap-2">
                                 <span>→</span><span>الباقات / Packs</span>
                             </Link></li>
                             <li><Link to="/custom-packs" className="hover:text-pink-400 transition-colors flex items-center gap-2">
-                                <span>→</span><span>باقات مخصصة / Custom Packs</span>
+                                <span>→</span><span>باقات مخصصة / Packs Sur Mesure</span>
                             </Link></li>
                         </ul>
                     </div>
@@ -135,16 +135,16 @@ const Footer = () => {
                         </h3>
                         <ul className="space-y-3 text-sm">
                             <li><Link to="/contact" className="hover:text-pink-400 transition-colors flex items-center gap-2">
-                                <span>→</span><span>اتصل بنا / Contact Us</span>
+                                <span>→</span><span>اتصل بنا / Contactez-nous</span>
                             </Link></li>
                             <li><Link to="/faq" className="hover:text-pink-400 transition-colors flex items-center gap-2">
-                                <span>→</span><span>الأسئلة الشائعة / FAQs</span>
+                                <span>→</span><span>الأسئلة الشائعة / FAQ</span>
                             </Link></li>
                             <li><Link to="/shipping" className="hover:text-pink-400 transition-colors flex items-center gap-2">
-                                <span>→</span><span>الشحن والإرجاع / Shipping</span>
+                                <span>→</span><span>الشحن والإرجاع / Livraison</span>
                             </Link></li>
                             <li><Link to="/profile" className="hover:text-pink-400 transition-colors flex items-center gap-2">
-                                <span>→</span><span>حسابي / My Account</span>
+                                <span>→</span><span>حسابي / Mon Compte</span>
                             </Link></li>
                         </ul>
                     </div>
@@ -157,14 +157,14 @@ const Footer = () => {
                         </h3>
                         <p className="text-sm text-gray-400 mb-4">
                             اشترك للحصول على آخر العروض<br />
-                            Subscribe for latest deals
+                            Abonnez-vous pour les dernières offres
                         </p>
                         <form onSubmit={handleNewsletterSubmit} className="space-y-3">
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="بريدك الإلكتروني / Your email"
+                                placeholder="بريدك الإلكتروني / Votre email"
                                 className="w-full px-4 py-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-pink-500 transition-colors"
                                 required
                             />
@@ -172,11 +172,11 @@ const Footer = () => {
                                 type="submit"
                                 disabled={isSubscribing}
                                 className={`w-full font-bold py-3 rounded-lg transition-all duration-200 ${isSubscribing
-                                        ? 'bg-gray-700 text-gray-400 cursor-wait'
-                                        : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 transform hover:scale-105'
+                                    ? 'bg-gray-700 text-gray-400 cursor-wait'
+                                    : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 transform hover:scale-105'
                                     }`}
                             >
-                                {isSubscribing ? '...جارٍ الاشتراك' : 'اشترك / Subscribe'}
+                                {isSubscribing ? '...جارٍ الاشتراك' : 'اشترك / S\'abonner'}
                             </button>
                         </form>
                     </div>
@@ -184,7 +184,7 @@ const Footer = () => {
 
                 {/* Payment Methods */}
                 <div className="mt-12 pt-8 border-t border-gray-700">
-                    <h4 className="text-center text-sm text-gray-400 mb-4">طرق الدفع المقبولة / Accepted Payment Methods</h4>
+                    <h4 className="text-center text-sm text-gray-400 mb-4">طرق الدفع المقبولة / Méthodes de paiement acceptées</h4>
                     <div className="flex justify-center items-center flex-wrap gap-4">
                         <div className="bg-white px-4 py-2 rounded shadow">
                             <span className="text-blue-600 font-bold">VISA</span>
@@ -199,7 +199,7 @@ const Footer = () => {
                             <span className="text-gray-700 font-bold">Apple Pay</span>
                         </div>
                         <div className="bg-white px-4 py-2 rounded shadow">
-                            <span className="text-gray-700 font-bold">Cash</span>
+                            <span className="text-gray-700 font-bold">Espèces</span>
                         </div>
                     </div>
                 </div>
@@ -208,12 +208,12 @@ const Footer = () => {
                 <div className="mt-12 pt-8 border-t border-gray-700">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <p className="text-sm text-gray-400 text-center md:text-left">
-                            &copy; {new Date().getFullYear()} BeautyCosmetics. جميع الحقوق محفوظة / All rights reserved.
+                            &copy; {new Date().getFullYear()} BeautyCosmetics. جميع الحقوق محفوظة / Tous droits réservés.
                         </p>
 
                         {/* Social Media */}
                         <div className="flex items-center gap-4">
-                            <span className="text-sm text-gray-400">تابعنا / Follow Us:</span>
+                            <span className="text-sm text-gray-400">تابعنا / Suivez-nous :</span>
                             <div className="flex gap-3">
                                 <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all duration-200 transform hover:scale-110">
                                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -239,9 +239,9 @@ const Footer = () => {
                         </div>
 
                         <div className="flex items-center gap-3 text-sm text-gray-400">
-                            <Link to="/privacy" className="hover:text-pink-400 transition-colors">سياسة الخصوصية / Privacy</Link>
+                            <Link to="/privacy" className="hover:text-pink-400 transition-colors">سياسة الخصوصية / Confidentialité</Link>
                             <span>|</span>
-                            <Link to="/terms" className="hover:text-pink-400 transition-colors">الشروط / Terms</Link>
+                            <Link to="/terms" className="hover:text-pink-400 transition-colors">الشروط / Conditions</Link>
                         </div>
                     </div>
                 </div>
@@ -256,7 +256,7 @@ const Footer = () => {
                     <svg className="w-5 h-5 transform group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
                     </svg>
-                    <span className="font-semibold">العودة للأعلى / Back to Top</span>
+                    <span className="font-semibold">العودة للأعلى / Retour en haut</span>
                 </button>
             </div>
         </footer>

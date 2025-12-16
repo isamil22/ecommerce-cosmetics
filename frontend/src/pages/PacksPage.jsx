@@ -59,17 +59,17 @@ const PackCard = ({ pack, index, onQuickView }) => {
             <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
                 {isNew && (
                     <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
-                        ✨ جديد / NEW
+                        ✨ جديد / NOUVEAU
                     </span>
                 )}
                 {savings > 0 && (
                     <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        💰 وفر ${savings.toFixed(2)} / Save ${savings.toFixed(2)}
+                        💰 وفر ${savings.toFixed(2)} / Éco ${savings.toFixed(2)}
                     </span>
                 )}
                 {pack.items && pack.items.length > 0 && (
                     <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        📦 {pack.items.length} منتج / Items
+                        📦 {pack.items.length} منتج / Articles
                     </span>
                 )}
             </div>
@@ -83,7 +83,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                         onQuickView(pack);
                     }}
                     className="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:bg-pink-500 hover:text-white transition-all duration-200 transform hover:scale-110"
-                    title="عرض سريع / Quick View"
+                    title="عرض سريع / Aperçu Rapide"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -118,7 +118,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                     {/* Pack Value Indicator */}
                     {savingsPercent > 0 && (
                         <div className="absolute bottom-4 left-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-                            {savingsPercent}% OFF
+                            -{savingsPercent}%
                         </div>
                     )}
                 </div>
@@ -138,21 +138,21 @@ const PackCard = ({ pack, index, onQuickView }) => {
                                     {renderStars()}
                                 </div>
                                 <span className="text-xs text-gray-500">
-                                    ({reviewCount} {reviewCount === 1 ? 'مراجعة / review' : 'مراجعات / reviews'})
+                                    ({reviewCount} {reviewCount === 1 ? 'مراجعة / avis' : 'مراجعات / avis'})
                                 </span>
                             </div>
                         )}
 
                         {/* Description */}
                         <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
-                            {pack.description?.replace(/<[^>]*>/g, '') || 'Discover this amazing curated pack of premium beauty products.'}
+                            {pack.description?.replace(/<[^>]*>/g, '') || 'Découvrez ce pack incroyable de produits de beauté premium.'}
                         </p>
                     </div>
 
                     {/* Pack Items Preview */}
                     {pack.items && pack.items.length > 0 && (
                         <div className="space-y-2">
-                            <h4 className="text-sm font-semibold text-gray-700">Items in this pack:</h4>
+                            <h4 className="text-sm font-semibold text-gray-700">المنتجات في هذه الباقة / Articles dans ce pack :</h4>
                             <div className="flex flex-wrap gap-1">
                                 {pack.items.slice(0, 3).map(item => (
                                     item && item.defaultProduct ? (
@@ -163,7 +163,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                                 ))}
                                 {pack.items.length > 3 && (
                                     <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
-                                        +{pack.items.length - 3} more
+                                        +{pack.items.length - 3} المزيد / de plus
                                     </span>
                                 )}
                             </div>
@@ -185,7 +185,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
 
                         {savings > 0 && (
                             <p className="text-green-600 text-sm font-semibold">
-                                💰 You save ${savings.toFixed(2)} ({savingsPercent}% off)
+                                💰 وفر ${savings.toFixed(2)} (-{savingsPercent}%) / Éco ${savings.toFixed(2)}
                             </p>
                         )}
                     </div>
@@ -202,7 +202,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        عرض التفاصيل / View Details
+                        عرض التفاصيل / Voir Détails
                     </span>
                 </Link>
             </div>
@@ -281,7 +281,7 @@ const PacksPage = () => {
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 flex items-center justify-center">
                 <div className="text-center">
                     <Loader />
-                    <p className="text-gray-600 mt-4">Loading amazing packs...</p>
+                    <p className="text-gray-600 mt-4">...جارٍ تحميل الباقات / Chargement des packs...</p>
                 </div>
             </div>
         );
@@ -296,7 +296,7 @@ const PacksPage = () => {
                             <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                             </svg>
-                            <span className="font-semibold">Error Loading Packs</span>
+                            <span className="font-semibold">خطأ في تحميل الباقات / Erreur de chargement</span>
                         </div>
                         <p>{error}</p>
                     </div>
@@ -323,32 +323,31 @@ const PacksPage = () => {
                             <div className="mb-8 md:mb-12">
                                 <div className="inline-block mb-4">
                                     <span className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                                        ✨ Premium Beauty Packs
+                                        ✨ باقات تجميل مميزة / Packs Beauté Premium
                                     </span>
                                 </div>
 
                                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-4 leading-tight">
-                                    Explore Our Curated Packs
+                                    اكتشف باقاتنا المختارة / Découvrez Nos Packs Exclusifs
                                 </h1>
 
                                 <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
-                                    Discover expertly curated beauty bundles that offer exceptional value.
-                                    Get the best products at amazing prices with our specially selected packs.
+                                    اكتشف باقات التجميل المختارة بعناية والتي تقدم قيمة استثنائية. / Découvrez des ensembles de beauté soigneusement sélectionnés offrant une valeur exceptionnelle.
                                 </p>
 
                                 {/* Stats - Logically Sized */}
                                 <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center max-w-2xl mx-auto">
                                     <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
                                         <div className="text-lg sm:text-2xl font-bold text-pink-600">{packs.length}</div>
-                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Premium Packs</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">باقات مميزة / Packs Premium</div>
                                     </div>
                                     <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
                                         <div className="text-lg sm:text-2xl font-bold text-purple-600">Up to 50%</div>
-                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Savings</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">توفير / Économies</div>
                                     </div>
                                     <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
                                         <div className="text-lg sm:text-2xl font-bold text-blue-600">Free</div>
-                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">Shipping</div>
+                                        <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">شحن / Livraison</div>
                                     </div>
                                 </div>
                             </div>
@@ -368,7 +367,7 @@ const PacksPage = () => {
                                     </div>
                                     <input
                                         type="text"
-                                        placeholder="Search packs..."
+                                        placeholder="ابحث عن الباقات... / Rechercher des packs..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         className="block w-full pl-10 pr-3 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm shadow-inner text-sm sm:text-base"
@@ -382,9 +381,9 @@ const PacksPage = () => {
                                         onChange={(e) => setFilterBy(e.target.value)}
                                         className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full sm:w-auto"
                                     >
-                                        <option value="all">All Packs</option>
-                                        <option value="new">New Arrivals</option>
-                                        <option value="savings">Best Savings</option>
+                                        <option value="all">جميع الباقات / Tous les Packs</option>
+                                        <option value="new">وصل حديثاً / Nouveautés</option>
+                                        <option value="savings">أفضل توفير / Meilleures Économies</option>
                                     </select>
 
                                     <select
@@ -392,10 +391,10 @@ const PacksPage = () => {
                                         onChange={(e) => setSortBy(e.target.value)}
                                         className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full sm:w-auto"
                                     >
-                                        <option value="name">Sort by Name</option>
-                                        <option value="price-low">Price: Low to High</option>
-                                        <option value="price-high">Price: High to Low</option>
-                                        <option value="newest">Newest First</option>
+                                        <option value="name">الاسم / Nom</option>
+                                        <option value="price-low">السعر: الأقل إلى الأكثر / Prix : Croissant</option>
+                                        <option value="price-high">السعر: الأكثر إلى الأقل / Prix : Décroissant</option>
+                                        <option value="newest">الأحدث أولاً / Plus Récents</option>
                                     </select>
                                 </div>
                             </div>
@@ -410,7 +409,7 @@ const PacksPage = () => {
                     <>
                         <div className="text-center mb-8">
                             <p className="text-gray-600">
-                                Showing {filteredAndSortedPacks.length} of {packs.length} packs
+                                showing {filteredAndSortedPacks.length} of {packs.length} packs / Affichage de {filteredAndSortedPacks.length} sur {packs.length} packs
                             </p>
                         </div>
 
@@ -429,11 +428,11 @@ const PacksPage = () => {
                     <div className="text-center py-20">
                         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 shadow-xl border border-white/20 max-w-md mx-auto">
                             <div className="text-6xl mb-4">📦</div>
-                            <h3 className="text-2xl font-bold text-gray-800 mb-4">No Packs Found</h3>
+                            <h3 className="text-2xl font-bold text-gray-800 mb-4">لا توجد باقات / Aucun Pack Trouvé</h3>
                             <p className="text-gray-600 mb-6">
                                 {searchTerm || filterBy !== 'all'
-                                    ? 'Try adjusting your search or filters to find more packs.'
-                                    : 'No packs are available at the moment. Please check back soon!'
+                                    ? 'حاول تعديل البحث أو الفلاتر للعثور على المزيد من الباقات. / Essayez d\'ajuster votre recherche ou vos filtres.'
+                                    : 'لا توجد باقات متاحة حالياً. الرجاء التحقق لاحقاً! / Aucun pack disponible pour le moment.'
                                 }
                             </p>
                             {(searchTerm || filterBy !== 'all') && (
@@ -445,7 +444,7 @@ const PacksPage = () => {
                                     }}
                                     className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
                                 >
-                                    Clear Filters
+                                    مسح الفلاتر / Effacer les Filtres
                                 </button>
                             )}
                         </div>

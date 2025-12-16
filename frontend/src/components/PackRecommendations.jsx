@@ -48,7 +48,7 @@ const PackCard = ({ pack }) => {
     };
 
     return (
-        <div 
+        <div
             className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col transform hover:-translate-y-2 border-2 border-transparent hover:border-blue-200 max-w-sm mx-auto"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -65,48 +65,7 @@ const PackCard = ({ pack }) => {
                 )}
             </div>
 
-            {/* Live Activity Indicators (same as ProductCard) */}
-            <div className="absolute bottom-3 left-3 right-3 z-20">
-                <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-blue-200">
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                        {/* Viewing Now */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-600 font-medium">مشاهد الآن / Viewing</span>
-                                <span className="text-purple-600 font-bold text-sm">{viewingCount}</span>
-                            </div>
-                        </div>
-                        
-                        {/* Recent Purchases */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-600 font-medium">أضاف اليوم / Added today</span>
-                                <span className="text-green-600 font-bold text-sm">{recentPurchases}</span>
-                            </div>
-                        </div>
-                        
-                        {/* Total Views */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-600 font-medium">مشاهدة / Viewed</span>
-                                <span className="text-blue-600 font-bold text-sm">{Math.floor(Math.random() * 500) + 100}</span>
-                            </div>
-                        </div>
-                        
-                        {/* Activity Level */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-600 font-medium">نشاط مديت / Activity</span>
-                                <span className="text-green-600 font-bold text-sm">High</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             {/* Quick Actions - Appear on Hover */}
             <div className={`absolute top-3 right-3 z-20 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
@@ -136,7 +95,7 @@ const PackCard = ({ pack }) => {
                             setImageLoaded(true);
                         }}
                     />
-                    
+
                     {/* Loading Skeleton */}
                     {!imageLoaded && (
                         <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse"></div>
@@ -144,6 +103,8 @@ const PackCard = ({ pack }) => {
 
                     {/* Gradient Overlay on Hover */}
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
+
+
                 </div>
 
                 {/* Pack Info */}
@@ -182,7 +143,7 @@ const PackCard = ({ pack }) => {
                             <span className="font-bold text-red-600 animate-pulse">{quantity} متبقي فقط! / Only left!</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2 relative overflow-hidden">
-                            <div 
+                            <div
                                 className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-300 relative"
                                 style={{ width: `${Math.min((quantity / 10) * 100, 100)}%` }}
                             >
@@ -213,7 +174,7 @@ const PackCard = ({ pack }) => {
                 >
                     {/* Shimmer Effect */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    
+
                     <svg className="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -238,7 +199,7 @@ const PackRecommendations = ({ pack }) => {
 
     // Combine all recommendations into a single array with type indicators
     const allRecommendations = [];
-    
+
     // Add recommended products
     if (pack.recommendedProducts && pack.recommendedProducts.length > 0) {
         pack.recommendedProducts.forEach(product => {
@@ -249,7 +210,7 @@ const PackRecommendations = ({ pack }) => {
             });
         });
     }
-    
+
     // Add recommended packs
     if (pack.recommendedPacks && pack.recommendedPacks.length > 0) {
         pack.recommendedPacks.forEach(recommendedPack => {
@@ -263,7 +224,7 @@ const PackRecommendations = ({ pack }) => {
             });
         });
     }
-    
+
     // Add recommended custom packs
     if (pack.recommendedCustomPacks && pack.recommendedCustomPacks.length > 0) {
         pack.recommendedCustomPacks.forEach(customPack => {
@@ -293,9 +254,9 @@ const PackRecommendations = ({ pack }) => {
                         if (item.type === 'product') {
                             // Use ProductCard for products
                             return (
-                                <ProductCard 
-                                    key={`product-${item.id}`} 
-                                    product={item} 
+                                <ProductCard
+                                    key={`product-${item.id}`}
+                                    product={item}
                                 />
                             );
                         } else if (item.type === 'pack') {
@@ -322,11 +283,11 @@ const PackRecommendations = ({ pack }) => {
                                                     </p>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="mb-4">
                                                 <p className="text-purple-600 font-bold text-xl">
-                                                    {item.pricingType === 'FIXED' 
-                                                        ? `$${item.fixedPrice?.toFixed(2)}` 
+                                                    {item.pricingType === 'FIXED'
+                                                        ? `$${item.fixedPrice?.toFixed(2)}`
                                                         : `${(item.discountRate * 100).toFixed(0)}% off`
                                                     }
                                                 </p>

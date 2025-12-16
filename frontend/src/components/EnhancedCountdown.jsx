@@ -36,10 +36,10 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     urgentTextColor: response.data.urgentTextColor || '#c2185b', // Dark pink,
 
                     // Text Settings with defaults
-                    subtitle: response.data.subtitle || '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends',
-                    urgentMessage: response.data.urgentMessage || '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out',
-                    expiredMessage: response.data.expiredMessage || 'انتهت الفترة المحدودة! / Limited Time Expired!',
-                    packName: response.data.packName || packName || 'عروض اليوم الخاصة / Today\'s Special Offers',
+                    subtitle: response.data.subtitle || '💰 وفر الآن قبل انتهاء العرض / Économisez maintenant avant la fin de l\'offre',
+                    urgentMessage: response.data.urgentMessage || '⚡ أسرع! الوقت ينفد / ⚡ Vite ! Le temps presse',
+                    expiredMessage: response.data.expiredMessage || 'انتهت الفترة المحدودة! / Offre limitée expirée !',
+                    packName: response.data.packName || packName || 'عروض اليوم الخاصة / Offres Spéciales d\'Aujourd\'hui',
 
                     // Display Settings with defaults
                     showDays: response.data.showDays || false,
@@ -66,7 +66,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                 // No admin settings yet - use fallback but still show countdown
                 console.log('No admin settings found, using fallback'); // Debug log
                 setConfig({
-                    title: 'عرض محدود! / Limited Offer!',
+                    title: 'عرض محدود! / Offre Limitée !',
                     endDate: fallbackEndTime || (new Date().getTime() + (24 * 60 * 60 * 1000)),
                     backgroundColor: '#faf5ff', // Light purple
                     textColor: '#c2185b', // Pink
@@ -75,10 +75,10 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     timerTextColor: '#c2185b', // Pink
                     urgentBgColor: '#fce4ec', // Light pink
                     urgentTextColor: '#c2185b', // Dark pink
-                    subtitle: '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends',
-                    urgentMessage: '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out',
-                    expiredMessage: 'انتهت الفترة المحدودة! / Limited Time Expired!',
-                    packName: packName || 'عروض اليوم الخاصة / Today\'s Special Offers',
+                    subtitle: '💰 وفر الآن قبل انتهاء العرض / Économisez maintenant avant la fin de l\'offre',
+                    urgentMessage: '⚡ أسرع! الوقت ينفد / ⚡ Vite ! Le temps presse',
+                    expiredMessage: 'انتهت الفترة المحدودة! / Offre limitée expirée !',
+                    packName: packName || 'عروض اليوم الخاصة / Offres Spéciales d\'Aujourd\'hui',
                     showDays: false,
                     showHours: true,
                     showMinutes: true,
@@ -99,7 +99,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
             console.error('Error fetching countdown settings:', error);
             // Use fallback on error
             setConfig({
-                title: 'عرض محدود! / Limited Offer!',
+                title: 'عرض محدود! / Offre Limitée !',
                 endDate: fallbackEndTime || (new Date().getTime() + (24 * 60 * 60 * 1000)),
                 backgroundColor: '#fef3c7',
                 textColor: '#ea580c',
@@ -108,10 +108,10 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                 timerTextColor: '#ea580c',
                 urgentBgColor: '#fef2f2',
                 urgentTextColor: '#dc2626',
-                subtitle: '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends',
-                urgentMessage: '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out',
-                expiredMessage: 'انتهت الفترة المحدودة! / Limited Time Expired!',
-                packName: packName || 'عروض اليوم الخاصة / Today\'s Special Offers',
+                subtitle: '💰 وفر الآن قبل انتهاء العرض / Économisez maintenant avant la fin de l\'offre',
+                urgentMessage: '⚡ أسرع! الوقت ينفد / ⚡ Vite ! Le temps presse',
+                expiredMessage: 'انتهت الفترة المحدودة! / Offre limitée expirée !',
+                packName: packName || 'عروض اليوم الخاصة / Offres Spéciales d\'Aujourd\'hui',
                 showDays: false,
                 showHours: true,
                 showMinutes: true,
@@ -216,13 +216,13 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                         fontSize: `${config.fontSize || 18}px`
                     }}
                 >
-                    {config.expiredMessage || 'انتهت الفترة المحدودة! / Limited Time Expired!'}
+                    {config.expiredMessage || 'انتهت الفترة المحدودة! / Offre limitée expirée !'}
                 </p>
                 <p
                     className="text-sm"
                     style={{ color: config.urgentTextColor || '#dc2626' }}
                 >
-                    قد تكون الأسعار تغيرت / Prices may have changed
+                    قد تكون الأسعار تغيرت / Les prix ont peut-être changé
                 </p>
             </div>
         );
@@ -256,7 +256,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     }}
                 >
                     {config.title || (isUrgent ? 'عرض ينتهي قريباً!' : 'عرض محدود!')} /
-                    {isUrgent ? 'Ending Soon!' : 'Limited Offer!'}
+                    {isUrgent ? 'Bientôt terminé !' : 'Offre Limitée !'}
                 </h3>
             </div>
 
@@ -280,7 +280,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                             >
                                 {String(Math.floor(timeLeft.total / (1000 * 60 * 60 * 24))).padStart(2, '0')}
                             </div>
-                            <div className="text-xs text-gray-600">يوم / Days</div>
+                            <div className="text-xs text-gray-600">يوم / Jours</div>
                         </div>
                         <div
                             className="font-bold"
@@ -311,7 +311,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                             >
                                 {String(timeLeft.hours).padStart(2, '0')}
                             </div>
-                            <div className="text-xs text-gray-600">ساعة / Hours</div>
+                            <div className="text-xs text-gray-600">ساعة / Heures</div>
                         </div>
                         {(config.showMinutes || config.showSeconds) && (
                             <div
@@ -377,7 +377,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                         >
                             {String(timeLeft.seconds).padStart(2, '0')}
                         </div>
-                        <div className="text-xs text-gray-600">ثانية / Seconds</div>
+                        <div className="text-xs text-gray-600">ثانية / Secondes</div>
                     </div>
                 )}
             </div>
@@ -391,14 +391,14 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                         fontSize: `${config.fontSize || 18}px`
                     }}
                 >
-                    {isUrgent ? (config.urgentMessage || '⚡ أسرع! الوقت ينفد / ⚡ Hurry! Time running out') : (config.subtitle || '💰 وفر الآن قبل انتهاء العرض / Save now before offer ends')}
+                    {isUrgent ? (config.urgentMessage || '⚡ أسرع! الوقت ينفد / ⚡ Vite ! Le temps presse') : (config.subtitle || '💰 وفر الآن قبل انتهاء العرض / Économisez maintenant avant la fin de l\'offre')}
                 </p>
             )}
 
             {/* Pack Name */}
             {config.showPackName && config.packName && (
                 <p className="text-xs text-gray-500 mt-2">
-                    العرض الخاص بـ {config.packName} / Special offer for {config.packName}
+                    العرض الخاص بـ {config.packName} / Offre spéciale pour {config.packName}
                 </p>
             )}
         </div>

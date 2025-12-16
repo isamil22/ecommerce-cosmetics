@@ -151,13 +151,31 @@
 }
 
 @keyframes pulse-custom {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
         transform: scale(1);
     }
+
     50% {
         opacity: 0.8;
         transform: scale(1.02);
+    }
+}
+
+/* Custom slide down animation */
+.animate-slide-down {
+    animation: slide-down 0.3s ease-out forwards;
+}
+
+@keyframes slide-down {
+    from {
+        transform: translateY(-100%);
+    }
+
+    to {
+        transform: translateY(0);
     }
 }
 
@@ -167,12 +185,19 @@
 }
 
 @keyframes bounce-custom {
-    0%, 20%, 50%, 80%, 100% {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
         transform: translateY(0);
     }
+
     40% {
         transform: translateY(-10px);
     }
+
     60% {
         transform: translateY(-5px);
     }
@@ -258,10 +283,12 @@
         transform: scale(0) rotate(-180deg);
         opacity: 0;
     }
+
     50% {
         transform: scale(1.2) rotate(0deg);
         opacity: 1;
     }
+
     100% {
         transform: scale(1) rotate(0deg);
         opacity: 1;
@@ -278,6 +305,7 @@
         opacity: 0;
         transform: scale(0.9);
     }
+
     100% {
         opacity: 1;
         transform: scale(1);
@@ -325,34 +353,34 @@
         padding: 1rem;
         box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
     }
-    
+
     /* Adjust content padding for sticky checkout on mobile */
     .grid {
         padding-bottom: 2rem;
     }
-    
+
     .pack-header {
         flex-direction: column;
     }
-    
+
     .pack-image-container {
         min-width: 100%;
     }
-    
+
     .pack-info {
         min-width: 100%;
     }
-    
+
     /* Mobile-specific enhancements */
     .product-option-enhanced {
         padding: 1rem;
     }
-    
+
     .welcome-overlay {
         margin: 1rem;
         padding: 1.5rem;
     }
-    
+
     .section-header {
         padding: 1rem;
         margin-bottom: 1rem;
@@ -360,23 +388,24 @@
 }
 
 @media (max-width: 640px) {
+
     /* Countdown timer mobile adjustments */
     .countdown-mobile {
         padding: 0.75rem;
     }
-    
+
     /* Purchase notifications mobile positioning */
     .purchase-notification-mobile {
         left: 0.5rem;
         right: 0.5rem;
         max-width: calc(100vw - 1rem);
     }
-    
+
     /* Sticky cart mobile adjustments */
     .sticky-cart-mobile {
         padding: 0.5rem;
     }
-    
+
     /* Live counter mobile spacing */
     .live-counter-mobile {
         padding: 0.75rem;
@@ -386,12 +415,13 @@
 
 /* Touch-friendly improvements */
 @media (hover: none) and (pointer: coarse) {
+
     /* Increase touch targets on mobile */
     .touch-target {
         min-height: 44px;
         min-width: 44px;
     }
-    
+
     /* Remove hover effects on touch devices */
     .no-touch-hover:hover {
         transform: none;

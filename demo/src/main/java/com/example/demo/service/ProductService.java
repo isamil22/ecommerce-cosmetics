@@ -34,13 +34,13 @@ public class ProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-    
+
     @Autowired
     private OrderItemRepository orderItemRepository;
-    
+
     @Autowired
     private CartItemRepository cartItemRepository;
-    
+
     @Autowired
     private PackItemRepository packItemRepository;
 
@@ -66,7 +66,8 @@ public class ProductService {
 
         // Set category
         Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + productDTO.getCategoryId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Category not found with ID: " + productDTO.getCategoryId()));
         product.setCategory(category);
 
         // Set basic fields
@@ -96,7 +97,8 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO updateProductWithImages(Long id, ProductDTO productDTO, List<MultipartFile> images) throws IOException {
+    public ProductDTO updateProductWithImages(Long id, ProductDTO productDTO, List<MultipartFile> images)
+            throws IOException {
         // Validate product data
         validateProductData(productDTO);
 
@@ -121,7 +123,8 @@ public class ProductService {
         // Update category if changed
         if (!existingProduct.getCategory().getId().equals(productDTO.getCategoryId())) {
             Category category = categoryRepository.findById(productDTO.getCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + productDTO.getCategoryId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Category not found with ID: " + productDTO.getCategoryId()));
             existingProduct.setCategory(category);
         }
 
@@ -223,7 +226,8 @@ public class ProductService {
                 throw new IllegalArgumentException("Variant type name is required");
             }
             if (variantType.getOptions() == null || variantType.getOptions().isEmpty()) {
-                throw new IllegalArgumentException("Variant type '" + variantType.getName() + "' must have at least one option");
+                throw new IllegalArgumentException(
+                        "Variant type '" + variantType.getName() + "' must have at least one option");
             }
         }
 
@@ -268,18 +272,19 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductDTO> getAllProducts(String search, Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, String brand, Boolean bestseller, Boolean newArrival, String type, Pageable pageable) {
-        Specification<Product> spec = productSpecification.getProducts(search, minPrice, maxPrice, brand, bestseller, newArrival, categoryId, type);
+    public Page<ProductDTO> getAllProducts(String search, Long categoryId, BigDecimal minPrice, BigDecimal maxPrice,
+            String brand, Boolean bestseller, Boolean newArrival, String type, Pageable pageable) {
+        Specification<Product> spec = productSpecification.getProducts(search, minPrice, maxPrice, brand, bestseller,
+                newArrival, categoryId, type);
         // Add condition to exclude deleted products
-        spec = spec.and((root, query, criteriaBuilder) -> 
-            criteriaBuilder.equal(root.get("deleted"), false));
+        spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("deleted"), false));
         return productRepository.findAll(spec, pageable)
                 .map(productMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
     public List<String> getProductSuggestions(String query) {
-        List<Product> products = productRepository.findByNameContainingIgnoreCase(query);
+        List<Product> products = productRepository.findByNameContainingIgnoreCaseAndDeletedFalse(query);
         return products.stream()
                 .map(Product::getName)
                 .collect(Collectors.toList());
@@ -303,7 +308,7 @@ public class ProductService {
     public ProductDTO getProductById(Long id) {
         Product product = productRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        
+
         // Ensure product has all required fields
         if (product.getImages() == null) {
             product.setImages(new ArrayList<>());
@@ -314,19 +319,19 @@ public class ProductService {
         if (product.getVariantTypes() == null) {
             product.setVariantTypes(new ArrayList<>());
         }
-        
+
         // If hasVariants is true but no variants exist, set hasVariants to false
-        if (product.isHasVariants() && 
-            (product.getVariants() == null || product.getVariants().isEmpty())) {
+        if (product.isHasVariants() &&
+                (product.getVariants() == null || product.getVariants().isEmpty())) {
             product.setHasVariants(false);
         }
-        
+
         return productMapper.toDTO(product);
     }
 
     @Transactional(readOnly = true)
     public List<ProductDTO> getPackableProducts() {
-        return productRepository.findByIsPackableTrue().stream()
+        return productRepository.findByIsPackableTrueAndDeletedFalse().stream()
                 .map(productMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -336,6 +341,7 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
         return product.getFrequentlyBoughtTogether().stream()
+                .filter(p -> !p.isDeleted())
                 .map(this::toFrequentlyBoughtTogetherDTO)
                 .collect(Collectors.toList());
     }
@@ -367,71 +373,71 @@ public class ProductService {
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        
+
         // Check if product is already deleted
         if (product.isDeleted()) {
             throw new IllegalStateException("Product with ID " + id + " is already deleted.");
         }
-        
+
         // Check if product is in any cart items
         List<CartItem> cartItems = cartItemRepository.findByProductId(id);
         if (!cartItems.isEmpty()) {
             // Remove from all carts first
             cartItemRepository.deleteAll(cartItems);
         }
-        
+
         // Check if product is in any packs
         List<PackItem> packItems = packItemRepository.findByDefaultProductId(id);
         if (!packItems.isEmpty()) {
             // Remove from all packs first
             packItemRepository.deleteAll(packItems);
         }
-        
+
         // Soft delete the product (mark as deleted instead of removing from database)
         product.setDeleted(true);
         productRepository.save(product);
     }
-    
+
     @Transactional
     public void restoreProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        
+
         if (!product.isDeleted()) {
             throw new IllegalStateException("Product with ID " + id + " is not deleted.");
         }
-        
+
         product.setDeleted(false);
         productRepository.save(product);
     }
-    
+
     @Transactional
     public void permanentDeleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        
+
         // Check if product has any order items
         List<OrderItem> orderItems = orderItemRepository.findByProductId(id);
         if (!orderItems.isEmpty()) {
-            throw new IllegalStateException("Cannot permanently delete product with ID " + id + 
-                " because it has " + orderItems.size() + " associated order items. " +
-                "Please remove the product from all orders first.");
+            throw new IllegalStateException("Cannot permanently delete product with ID " + id +
+                    " because it has " + orderItems.size() + " associated order items. " +
+                    "Please remove the product from all orders first.");
         }
-        
+
         // Check if product is in any cart items
         List<CartItem> cartItems = cartItemRepository.findByProductId(id);
         if (!cartItems.isEmpty()) {
             // Remove from all carts first
             cartItemRepository.deleteAll(cartItems);
         }
-        
+
         // Check if product is in any packs
         List<PackItem> packItems = packItemRepository.findByDefaultProductId(id);
         if (!packItems.isEmpty()) {
             // Remove from all packs first
             packItemRepository.deleteAll(packItems);
         }
-        
+
         // Now safe to permanently delete the product
         productRepository.delete(product);
     }

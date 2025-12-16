@@ -5,7 +5,6 @@ import { getBestsellers, getNewArrivals, getApprovedReviews, getAllCategories, g
 import ProductCard from '../components/ProductCard';
 import TrustBadges from '../components/TrustBadges';
 import EnhancedCountdown from '../components/EnhancedCountdown';
-// import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter'; // HIDDEN - Live Statistics
 import PurchaseNotifications from '../components/PurchaseNotifications';
 import { toast } from 'react-toastify';
 
@@ -18,6 +17,10 @@ const HomePage = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('bestsellers');
+
+    // --- STAR ANIMATION STATE ---
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [stars, setStars] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,12 +52,23 @@ const HomePage = () => {
             } catch (err) {
                 console.error("Error fetching data:", err);
                 setError("Could not fetch data from the server.");
-                toast.error("فشل في تحميل البيانات / Failed to load data");
+                toast.error("فشل في تحميل البيانات / Échec du chargement des données");
             } finally {
                 setLoading(false);
             }
         };
         fetchData();
+
+        // Generate stars
+        const newStars = Array.from({ length: 50 }).map((_, i) => ({
+            id: i,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            size: Math.random() * 3 + 1 + 'px',
+            delay: Math.random() * 5 + 's',
+            duration: Math.random() * 3 + 2 + 's',
+        }));
+        setStars(newStars);
     }, []);
 
     // Helper function to render stars
@@ -114,86 +128,114 @@ const HomePage = () => {
                 <div className="w-full">
                     <EnhancedCountdown
                         fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)}
-                        packName="عروض اليوم الخاصة / Today's Special Offers"
+                        packName="عروض اليوم الخاصة / Offres Spéciales d'Aujourd'hui"
                         onExpire={() => {
-                            toast.info('🕐 انتهت فترة العرض الخاص / Special offer period ended');
+                            toast.info('🕐 انتهت فترة العرض الخاص / La période de l\'offre spéciale est terminée');
                         }}
                     />
                 </div>
             </div>
 
-            {/* Enhanced Visitor Counter - HIDDEN */}
-            {/* <div className="container mx-auto px-6 py-8">
-                <div className="max-w-5xl mx-auto">
-                    <EnhancedVisitorCounter />
-                </div>
-            </div> */}
-
-            {/* --- ULTRA ENHANCED HERO SECTION --- */}
+            {/* --- STAR HERO SECTION (WOW EDITION) --- */}
             {hero && (
-                <div className="w-full px-0 py-0">
-                    <div
-                        className="relative p-6 sm:p-12 md:p-16 lg:p-20 text-center text-white overflow-hidden bg-cover bg-center w-full"
-                        style={{ backgroundImage: `url(${heroImageUrl})` }}
-                    >
-                        {/* Ultra Enhanced Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-pink-600/90 via-purple-600/80 to-blue-600/70"></div>
+                <div
+                    id="home-hero"
+                    onMouseMove={(e) => {
+                        const moveX = (e.clientX - window.innerWidth / 2) * 0.02;
+                        const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
+                        setMousePosition({ x: moveX, y: moveY });
+                    }}
+                    className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-cover bg-center text-white"
+                    style={{
+                        backgroundImage: heroImageUrl ? `url(${heroImageUrl})` : `radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)`
+                    }}
+                >
+                    {/* 1. Dark Overlay & Star Background */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/80 z-0"></div>
 
-                        {/* Ultra Enhanced Animated Background Pattern */}
-                        <div className="absolute inset-0 opacity-20">
-                            <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full filter blur-3xl animate-pulse"></div>
-                            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white rounded-full filter blur-2xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-                            <div className="absolute top-1/4 right-1/4 w-48 h-48 bg-white rounded-full filter blur-2xl animate-pulse" style={{ animationDelay: '3s' }}></div>
+                    {/* Star Layer */}
+                    <div className="absolute inset-0 z-0 pointer-events-none">
+                        {stars.map(star => (
+                            <div
+                                key={star.id}
+                                className="absolute bg-white rounded-full animate-twinkle"
+                                style={{
+                                    top: star.top,
+                                    left: star.left,
+                                    width: star.size,
+                                    height: star.size,
+                                    boxShadow: `0 0 ${parseInt(star.size) * 2}px white`,
+                                    animationDelay: star.delay,
+                                    animationDuration: star.duration,
+                                }}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Floating Parallax Blobs */}
+                    <div
+                        className="absolute top-1/4 left-10 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none z-0"
+                        style={{ transform: `translate(${mousePosition.x * -2}px, ${mousePosition.y * -2}px)` }}
+                    />
+                    <div
+                        className="absolute bottom-10 right-10 w-80 h-80 bg-purple-600/20 rounded-full blur-[80px] pointer-events-none z-0"
+                        style={{ transform: `translate(${mousePosition.x * 3}px, ${mousePosition.y * 3}px)` }}
+                    />
+
+                    {/* Content Container */}
+                    <div
+                        className="relative z-10 container mx-auto px-4 text-center transition-transform duration-100 ease-out"
+                        style={{ transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)` }}
+                    >
+                        {/* Glass Badge */}
+                        <div className="flex justify-center mb-8">
+                            <div className="glass-pill animate-fade-in-down px-8 py-3 rounded-full flex items-center gap-3 text-white font-bold tracking-wider shadow-lg backdrop-blur-md border border-white/20">
+                                <span className="text-yellow-400 text-xl">✨</span>
+                                <span>عروض حصرية / Offres Exclusives</span>
+                            </div>
                         </div>
 
-                        <div className="relative z-10">
-                            <div className="inline-block mb-8 bg-white/30 backdrop-blur-lg px-10 py-4 rounded-full border-2 border-white/60 shadow-2xl">
-                                <p className="text-lg font-black">✨ عروض حصرية / Exclusive Offers ✨</p>
-                            </div>
+                        {/* Massive Glowing Title */}
+                        <h1
+                            className="text-6xl md:text-8xl font-black mb-6 animate-fade-in tracking-tighter"
+                            style={{
+                                background: 'linear-gradient(180deg, #ffffff 0%, #e0e7ff 100%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                filter: 'drop-shadow(0 0 40px rgba(255,255,255,0.4))'
+                            }}
+                        >
+                            {hero.title}
+                        </h1>
 
-                            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight animate-fade-in tracking-tight">
-                                {hero.title}
-                            </h1>
+                        {/* Subtitle */}
+                        <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto font-light leading-relaxed animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                            {hero.subtitle}
+                        </p>
 
-                            <p className="text-xl md:text-3xl mb-12 max-w-4xl mx-auto leading-relaxed opacity-95 font-semibold">
-                                {hero.subtitle}
-                            </p>
+                        {/* CTA Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                            <Link
+                                to={hero.linkUrl}
+                                className="group relative overflow-hidden bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-5 px-12 rounded-full shadow-[0_0_30px_rgba(236,72,153,0.5)] hover:shadow-[0_0_50px_rgba(236,72,153,0.8)] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 border border-white/20"
+                            >
+                                <span className="relative z-10 flex items-center gap-3 text-lg">
+                                    {hero.linkText} <span className="text-xl">✨</span>
+                                </span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            </Link>
 
-                            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                                <Link
-                                    to={hero.linkUrl}
-                                    className="group bg-white text-pink-600 font-black py-5 px-12 rounded-full hover:bg-pink-50 transition-all duration-500 transform hover:scale-110 shadow-2xl hover:shadow-3xl flex items-center gap-3 text-lg"
-                                >
-                                    <span>{hero.linkText}</span>
-                                    <span className="group-hover:translate-x-2 transition-transform duration-500">→</span>
-                                </Link>
-
-                                <Link
-                                    to="/packs"
-                                    className="bg-transparent border-3 border-white text-white font-black py-5 px-12 rounded-full hover:bg-white hover:text-pink-600 transition-all duration-500 transform hover:scale-110 text-lg shadow-xl"
-                                >
-                                    🎁 تصفح الباقات / Browse Packs
-                                </Link>
-                            </div>
-
-                            {/* Ultra Enhanced Trust Indicators */}
-                            <div className="mt-12 flex flex-wrap justify-center gap-12 text-base">
-                                <div className="flex items-center gap-4 bg-white/25 backdrop-blur-lg px-8 py-4 rounded-full shadow-xl">
-                                    <span className="text-4xl">✓</span>
-                                    <span className="font-black">شحن مجاني / Free Shipping</span>
-                                </div>
-                                <div className="flex items-center gap-4 bg-white/25 backdrop-blur-lg px-8 py-4 rounded-full shadow-xl">
-                                    <span className="text-4xl">✓</span>
-                                    <span className="font-black">منتجات أصلية / Authentic Products</span>
-                                </div>
-                                <div className="flex items-center gap-4 bg-white/25 backdrop-blur-lg px-8 py-4 rounded-full shadow-xl">
-                                    <span className="text-4xl">✓</span>
-                                    <span className="font-black">ضمان 30 يوم / 30-Day Guarantee</span>
-                                </div>
-                            </div>
+                            <Link
+                                to="/packs"
+                                className="glass-panel-pro text-white font-bold py-5 px-10 rounded-full hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 border border-white/30 text-lg flex items-center gap-2"
+                            >
+                                🎁 تصفح الباقات / Parcourir les Packs
+                            </Link>
                         </div>
                     </div>
+
+                    {/* Bottom Fade */}
+                    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-gray-50 via-gray-50/50 to-transparent z-10 pointer-events-none" />
                 </div>
             )}
 
@@ -210,18 +252,18 @@ const HomePage = () => {
                         Shop by Category
                     </h3>
                     <p className="text-gray-600 text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed font-semibold">
-                        اكتشف منتجاتنا المميزة في فئات متنوعة / Discover our featured products in various categories
+                        اكتشف منتجاتنا المميزة في فئات متنوعة / Découvrez nos produits vedettes dans diverses catégories
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full mx-auto">
+                <div className="flex flex-wrap justify-center gap-4 w-full mx-auto">
                     {categories.length > 0 ? categories.map((category, index) => (
                         <Link
                             key={category.id}
                             to={`/products?categoryId=${category.id}`}
-                            className="group relative block bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-700 overflow-hidden aspect-square transform hover:scale-110 hover:-translate-y-4"
+                            className="group relative block bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-700 overflow-hidden aspect-square transform hover:scale-110 hover:-translate-y-4 w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] lg:w-[calc(16.666%-0.833rem)]"
                             style={{ animationDelay: `${index * 0.1}s` }}
-                            aria-label={`تسوق ${category.name} / Shop ${category.name}`}
+                            aria-label={`تسوق ${category.name} / Acheter ${category.name}`}
                         >
                             {/* Image */}
                             <img
@@ -242,7 +284,7 @@ const HomePage = () => {
                                     {category.name}
                                 </p>
                                 <p className="text-base md:text-lg text-center text-gray-200 max-w-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 px-4 leading-snug">
-                                    {category.description || 'استكشف المنتجات / Explore Products'}
+                                    {category.description || 'استكشف المنتجات / Explorer les produits'}
                                 </p>
 
                                 {/* Ultra Enhanced Arrow Icon */}
@@ -253,15 +295,15 @@ const HomePage = () => {
 
                             {/* Ultra Enhanced Corner Badge */}
                             <div className="absolute top-6 right-6 bg-pink-500 text-white text-base font-black px-6 py-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 shadow-xl">
-                                تسوق / Shop
+                                تسوق / Acheter
                             </div>
                         </Link>
                     )) : (
                         <div className="col-span-full text-center py-20">
                             <div className="text-8xl mb-6">🛍️</div>
                             <p className="text-3xl text-gray-600 mb-4 font-black">لا توجد فئات متاحة حالياً</p>
-                            <p className="text-2xl text-gray-400 font-semibold">No categories available at the moment</p>
-                            <p className="text-gray-500 mt-6 text-lg">سنضيف فئات جديدة قريباً! / New categories coming soon!</p>
+                            <p className="text-2xl text-gray-400 font-semibold">Aucune catégorie disponible pour le moment</p>
+                            <p className="text-gray-500 mt-6 text-lg">سنضيف فئات جديدة قريباً! / De nouvelles catégories arrivent bientôt !</p>
                         </div>
                     )}
                 </div>
@@ -295,13 +337,13 @@ const HomePage = () => {
                                     منتجات أصلية مضمونة
                                 </h4>
                                 <h5 className="text-2xl font-bold text-pink-600 mb-6 text-center">
-                                    100% Authentic Products
+                                    100% Produits Authentiques
                                 </h5>
                                 <p className="text-gray-600 text-center leading-relaxed text-xl font-semibold">
                                     جميع منتجاتنا أصلية ومضمونة من العلامات التجارية الموثوقة
                                 </p>
                                 <p className="text-gray-500 text-lg text-center mt-4 font-medium">
-                                    All our products are authentic and guaranteed from trusted brands
+                                    Tous nos produits sont authentiques et garantis par des marques de confiance
                                 </p>
                             </div>
 
@@ -311,13 +353,13 @@ const HomePage = () => {
                                     توصيل سريع ومجاني
                                 </h4>
                                 <h5 className="text-2xl font-bold text-blue-600 mb-6 text-center">
-                                    Fast & Free Delivery
+                                    Livraison Rapide et Gratuite
                                 </h5>
                                 <p className="text-gray-600 text-center leading-relaxed text-xl font-semibold">
                                     شحن مجاني لجميع الطلبات والتوصيل خلال 3-5 أيام
                                 </p>
                                 <p className="text-gray-500 text-lg text-center mt-4 font-medium">
-                                    Free shipping on all orders with delivery in 3-5 days
+                                    Livraison gratuite sur toutes les commandes avec livraison en 3-5 jours
                                 </p>
                             </div>
 
@@ -327,13 +369,13 @@ const HomePage = () => {
                                     خدمة عملاء متميزة
                                 </h4>
                                 <h5 className="text-2xl font-bold text-purple-600 mb-6 text-center">
-                                    Premium Customer Service
+                                    Service Client Premium
                                 </h5>
                                 <p className="text-gray-600 text-center leading-relaxed text-xl font-semibold">
                                     فريق دعم متاح 24/7 لمساعدتك في أي استفسار
                                 </p>
                                 <p className="text-gray-500 text-lg text-center mt-4 font-medium">
-                                    24/7 support team available to help with any inquiries
+                                    Équipe d'assistance disponible 24/7 pour répondre à toutes vos questions
                                 </p>
                             </div>
                         </div>
@@ -356,7 +398,7 @@ const HomePage = () => {
                         منتجاتنا المميزة
                     </h2>
                     <h3 className="text-3xl md:text-4xl font-bold text-pink-600 mb-8">
-                        Our Featured Products
+                        Nos Produits Vedettes
                     </h3>
                 </div>
 
@@ -373,7 +415,7 @@ const HomePage = () => {
                             aria-selected={activeTab === 'bestsellers'}
                             aria-controls="bestsellers-panel"
                         >
-                            🔥 الأكثر مبيعاً / Bestsellers
+                            🔥 الأكثر مبيعاً / Meilleures Ventes
                         </button>
                         <button
                             onClick={() => setActiveTab('newArrivals')}
@@ -385,7 +427,7 @@ const HomePage = () => {
                             aria-selected={activeTab === 'newArrivals'}
                             aria-controls="newArrivals-panel"
                         >
-                            ✨ وصل حديثاً / New Arrivals
+                            ✨ وصل حديثاً / Nouveautés
                         </button>
                     </div>
                 </div>
@@ -413,7 +455,7 @@ const HomePage = () => {
                                 <div className="col-span-full text-center py-16">
                                     <div className="text-8xl mb-6">📦</div>
                                     <p className="text-2xl text-gray-500 mb-4 font-black">لا توجد منتجات متاحة حالياً</p>
-                                    <p className="text-xl text-gray-400 font-semibold">No products available at the moment</p>
+                                    <p className="text-xl text-gray-400 font-semibold">Aucun produit disponible pour le moment</p>
                                 </div>
                             )}
                         </div>
@@ -440,7 +482,7 @@ const HomePage = () => {
                                 <div className="col-span-full text-center py-16">
                                     <div className="text-8xl mb-6">📦</div>
                                     <p className="text-2xl text-gray-500 mb-4 font-black">لا توجد منتجات جديدة حالياً</p>
-                                    <p className="text-xl text-gray-400 font-semibold">No new products at the moment</p>
+                                    <p className="text-xl text-gray-400 font-semibold">Pas de nouveaux produits pour le moment</p>
                                 </div>
                             )}
                         </div>
@@ -452,9 +494,9 @@ const HomePage = () => {
                     <Link
                         to="/products"
                         className="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black py-5 px-12 rounded-full hover:from-pink-600 hover:to-purple-700 transition-all duration-500 transform hover:scale-110 shadow-xl hover:shadow-2xl text-lg"
-                        aria-label="عرض جميع المنتجات / View all products page"
+                        aria-label="عرض جميع المنتجات / Voir tous les produits"
                     >
-                        <span>عرض جميع المنتجات / View All Products</span>
+                        <span>عرض جميع المنتجات / Voir Tous les Produits</span>
                         <span className="text-2xl">→</span>
                     </Link>
                 </div>
@@ -472,10 +514,10 @@ const HomePage = () => {
                                 آراء عملائنا السعداء
                             </h2>
                             <h3 className="text-3xl md:text-4xl font-bold text-orange-600 mb-6">
-                                What Our Happy Customers Say
+                                Ce que disent nos clients heureux
                             </h3>
                             <p className="text-gray-600 text-xl max-w-3xl mx-auto leading-relaxed font-semibold">
-                                شاهد تجارب عملائنا الحقيقية / See real experiences from our customers
+                                شاهد تجارب عملائنا الحقيقية / Voir les expériences réelles de nos clients
                             </p>
                         </div>
 
@@ -491,7 +533,7 @@ const HomePage = () => {
                                         <div className="flex justify-between items-start mb-6">
                                             {renderStars(review.rating)}
                                             <span className="bg-green-100 text-green-700 text-sm font-black px-4 py-2 rounded-full">
-                                                ✓ مؤكد / Verified
+                                                ✓ مؤكد / Vérifié
                                             </span>
                                         </div>
 
@@ -511,12 +553,12 @@ const HomePage = () => {
                                             <div>
                                                 <p className="font-black text-gray-900 text-lg">
                                                     {review.createdByAdmin ?
-                                                        (review.customName || 'عميل مميز / Valued Customer') :
+                                                        (review.customName || 'عميل مميز / Client Privilégié') :
                                                         (review.userEmail?.split('@')[0] || 'Customer')
                                                     }
                                                 </p>
                                                 <p className="text-sm text-gray-500 font-semibold">
-                                                    عميل موثوق / Verified Buyer
+                                                    عميل موثوق / Acheteur Vérifié
                                                 </p>
                                             </div>
                                         </div>
@@ -527,7 +569,7 @@ const HomePage = () => {
                             <div className="text-center py-16 bg-white rounded-3xl shadow-xl">
                                 <div className="text-8xl mb-6">💬</div>
                                 <p className="text-2xl text-gray-500 mb-4 font-black">لا توجد مراجعات بعد</p>
-                                <p className="text-xl text-gray-400 font-semibold">No reviews yet - Be the first to share your experience!</p>
+                                <p className="text-xl text-gray-400 font-semibold">Pas encore d'avis - Soyez le premier à partager votre expérience !</p>
                             </div>
                         )}
 
@@ -553,7 +595,7 @@ const HomePage = () => {
                                         </div>
                                         <p className="text-gray-600 font-black text-lg">
                                             مراجعة موثوقة<br />
-                                            Verified Reviews
+                                            Avis Vérifiés
                                         </p>
                                     </div>
 
@@ -563,7 +605,7 @@ const HomePage = () => {
                                         </div>
                                         <p className="text-gray-600 font-black text-lg">
                                             رضا العملاء<br />
-                                            Customer Satisfaction
+                                            Satisfaction Client
                                         </p>
                                     </div>
                                 </div>
@@ -588,13 +630,13 @@ const HomePage = () => {
                                     ابدأ التسوق الآن واستمتع بالعروض!
                                 </h2>
                                 <h3 className="text-3xl md:text-4xl font-bold mb-8">
-                                    Start Shopping Now and Enjoy Amazing Deals!
+                                    Commencez vos achats maintenant et profitez d'offres exceptionnelles !
                                 </h3>
                                 <p className="text-xl md:text-2xl mb-10 max-w-4xl mx-auto opacity-95 font-semibold leading-relaxed">
                                     اكتشف آلاف المنتجات الأصلية بأفضل الأسعار مع شحن مجاني وضمان الجودة
                                 </p>
                                 <p className="text-lg md:text-xl mb-12 max-w-4xl mx-auto opacity-90 font-medium leading-relaxed">
-                                    Discover thousands of authentic products at the best prices with free shipping and quality guarantee
+                                    Découvrez des milliers de produits authentiques aux meilleurs prix avec livraison gratuite et garantie de qualité
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -602,14 +644,14 @@ const HomePage = () => {
                                         to="/products"
                                         className="bg-white text-pink-600 font-black py-5 px-12 rounded-full hover:bg-pink-50 transition-all duration-500 transform hover:scale-110 shadow-xl inline-flex items-center justify-center gap-3 text-lg"
                                     >
-                                        <span>🛍️ تسوق الآن / Shop Now</span>
+                                        <span>🛍️ تسوق الآن / Acheter Maintenant</span>
                                     </Link>
 
                                     <Link
                                         to="/packs"
                                         className="bg-yellow-400 text-gray-900 font-black py-5 px-12 rounded-full hover:bg-yellow-300 transition-all duration-500 transform hover:scale-110 shadow-xl inline-flex items-center justify-center gap-3 text-lg"
                                     >
-                                        <span>🎁 الباقات الخاصة / Special Packs</span>
+                                        <span>🎁 الباقات الخاصة / Packs Spéciaux</span>
                                     </Link>
                                 </div>
                             </div>
@@ -618,7 +660,7 @@ const HomePage = () => {
 
                     {/* Purchase Notifications */}
                     <PurchaseNotifications
-                        packName="منتجات المتجر / Store Products"
+                        packName="منتجات المتجر / Produits du Magasin"
                         productImage={bestsellers.length > 0 && bestsellers[0].images && bestsellers[0].images.length > 0
                             ? bestsellers[0].images[0]
                             : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"
@@ -632,5 +674,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-

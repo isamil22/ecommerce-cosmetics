@@ -17,11 +17,11 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
 
     const fullImageUrl = (product.images && product.images.length > 0)
         ? product.images[0]
-        : 'https://placehold.co/300x300/E91E63/FFFFFF?text=Product';
+        : 'https://placehold.co/300x300/E91E63/FFFFFF?text=Produit';
 
     // Calculate discount percentage
     const hasDiscount = product.oldPrice && product.oldPrice > product.price;
-    const discountPercent = hasDiscount 
+    const discountPercent = hasDiscount
         ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
         : 0;
 
@@ -30,7 +30,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
     const isOutOfStock = !product.quantity || product.quantity === 0;
 
     // Check if product is new (created within last 30 days)
-    const isNew = product.createdAt && 
+    const isNew = product.createdAt &&
         (new Date() - new Date(product.createdAt)) / (1000 * 60 * 60 * 24) <= 30;
 
     // Calculate average rating from comments
@@ -42,9 +42,9 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
     const handleAddToCart = async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         if (isOutOfStock) {
-            toast.warn('هذا المنتج غير متوفر حالياً / Product is out of stock');
+            toast.warn('هذا المنتج غير متوفر حالياً / Le produit est en rupture de stock');
             return;
         }
 
@@ -71,12 +71,12 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
 
         try {
             await addToCart(product.id, 1);
-            toast.success(`✅ تم إضافة ${product.name} للسلة! / ${product.name} added to cart!`);
+            toast.success(`✅ تم إضافة ${product.name} للسلة! / ${product.name} ajouté au panier !`);
             if (fetchCartCount) {
                 fetchCartCount();
             }
         } catch (error) {
-            toast.error('فشل في الإضافة للسلة / Failed to add to cart');
+            toast.error('فشل في الإضافة للسلة / Échec de l\'ajout au panier');
             console.error('Failed to add to cart:', error);
         } finally {
             setIsAddingToCart(false);
@@ -108,7 +108,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
     };
 
     return (
-        <div 
+        <div
             className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col transform hover:-translate-y-2 border-2 border-transparent hover:border-pink-200 max-w-sm mx-auto"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -117,75 +117,34 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
             <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
                 {isNew && (
                     <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
-                        ✨ جديد / NEW
+                        ✨ جديد / NOUVEAU
                     </span>
                 )}
                 {hasDiscount && (
                     <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        🔥 خصم {discountPercent}% / {discountPercent}% OFF
+                        🔥 خصم {discountPercent}% / -{discountPercent}%
                     </span>
                 )}
                 {isLowStockStatus && !isOutOfStock && (
                     <span className="bg-gradient-to-r from-orange-500 to-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        ⚠️ {product.quantity} متبقي / Left
+                        ⚠️ {product.quantity} متبقي / Restant
                     </span>
                 )}
                 {isOutOfStock && (
                     <span className="bg-gradient-to-r from-gray-600 to-gray-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        ❌ غير متوفر / Out of Stock
+                        ❌ غير متوفر / Rupture de Stock
                     </span>
                 )}
             </div>
 
-            {/* Live Activity Indicators */}
-            <div className="absolute bottom-3 left-3 right-3 z-20">
-                <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-pink-200">
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                        {/* Viewing Now */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-600 font-medium">مشاهد الآن / Viewing</span>
-                                <span className="text-purple-600 font-bold text-sm">{viewingCount}</span>
-                            </div>
-                        </div>
-                        
-                        {/* Recent Purchases */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-600 font-medium">أضاف اليوم / Added today</span>
-                                <span className="text-green-600 font-bold text-sm">{recentPurchases}</span>
-                            </div>
-                        </div>
-                        
-                        {/* Total Views */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-600 font-medium">مشاهدة / Viewed</span>
-                                <span className="text-blue-600 font-bold text-sm">{Math.floor(Math.random() * 500) + 100}</span>
-                            </div>
-                        </div>
-                        
-                        {/* Activity Level */}
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-600 font-medium">نشاط مديت / Activity</span>
-                                <span className="text-green-600 font-bold text-sm">High</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             {/* Quick Actions - Appear on Hover */}
             <div className={`absolute top-3 right-3 z-20 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
                 <button
                     onClick={handleQuickView}
                     className="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:bg-pink-500 hover:text-white transition-all duration-200 transform hover:scale-110"
-                    title="عرض سريع / Quick View"
+                    title="عرض سريع / Aperçu Rapide"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -204,11 +163,11 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                         onLoad={() => setImageLoaded(true)}
                         onError={(e) => {
                             e.currentTarget.onerror = null;
-                            e.currentTarget.src = 'https://placehold.co/300x300/E91E63/FFFFFF?text=No+Image';
+                            e.currentTarget.src = 'https://placehold.co/300x300/E91E63/FFFFFF?text=Pas+d+image';
                             setImageLoaded(true);
                         }}
                     />
-                    
+
                     {/* Loading Skeleton */}
                     {!imageLoaded && (
                         <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse"></div>
@@ -216,6 +175,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
 
                     {/* Gradient Overlay on Hover */}
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
+
                 </div>
 
                 {/* Product Info */}
@@ -239,7 +199,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                                 {renderStars()}
                             </div>
                             <span className="text-xs text-gray-500">
-                                ({reviewCount} {reviewCount === 1 ? 'مراجعة / review' : 'مراجعات / reviews'})
+                                ({reviewCount} {reviewCount === 1 ? 'مراجعة / avis' : 'مراجعات / avis'})
                             </span>
                         </div>
                     )}
@@ -267,11 +227,11 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                     {!isOutOfStock && product.quantity <= 10 && (
                         <div className="space-y-2">
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-gray-600">متوفر / Available</span>
-                                <span className="font-bold text-red-600 animate-pulse">{product.quantity} متبقي فقط! / Only left!</span>
+                                <span className="text-gray-600">متوفر / Disponible</span>
+                                <span className="font-bold text-red-600 animate-pulse">{product.quantity} متبقي فقط! / Seulement restant !</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2 relative overflow-hidden">
-                                <div 
+                                <div
                                     className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-300 relative"
                                     style={{ width: `${Math.min((product.quantity / 10) * 100, 100)}%` }}
                                 >
@@ -284,7 +244,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                                     <div className="flex items-center gap-2">
                                         <span className="text-red-600 text-lg">⚠️</span>
                                         <span className="text-red-700 text-xs font-bold">
-                                            ينفد قريباً! / Selling fast!
+                                            ينفد قريباً! / Se vend rapidement !
                                         </span>
                                     </div>
                                 </div>
@@ -297,7 +257,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                         <div className="bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-lg p-2 text-center animate-pulse">
                             <div className="flex items-center justify-center gap-2">
                                 <span className="text-lg">⚡</span>
-                                <span className="text-xs font-bold">عرض محدود! / Limited Offer!</span>
+                                <span className="text-xs font-bold">عرض محدود! / Offre Limitée !</span>
                             </div>
                         </div>
                     )}
@@ -308,7 +268,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                             <div className="flex items-center gap-2">
                                 <span className="text-green-600 text-sm">🛒</span>
                                 <span className="text-green-700 text-xs font-semibold">
-                                    {recentPurchases} اشترى هذا اليوم / bought today
+                                    {recentPurchases} اشترى هذا اليوم / acheté aujourd'hui
                                 </span>
                             </div>
                         </div>
@@ -321,39 +281,38 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                 <button
                     onClick={handleAddToCart}
                     disabled={isOutOfStock || isAddingToCart}
-                    className={`w-full font-bold py-4 px-4 rounded-xl transition-all duration-300 transform flex items-center justify-center gap-2 relative overflow-hidden ${
-                        isOutOfStock
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : isAddingToCart
+                    className={`w-full font-bold py-4 px-4 rounded-xl transition-all duration-300 transform flex items-center justify-center gap-2 relative overflow-hidden ${isOutOfStock
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : isAddingToCart
                             ? 'bg-pink-400 text-white cursor-wait'
                             : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 hover:scale-105 hover:shadow-xl shadow-lg'
-                    }`}
+                        }`}
                 >
                     {/* Shimmer Effect */}
                     {!isOutOfStock && !isAddingToCart && (
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                     )}
-                    
+
                     {isAddingToCart ? (
                         <>
                             <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span>جارٍ الإضافة... / Adding...</span>
+                            <span>جارٍ الإضافة... / Ajout en cours...</span>
                         </>
                     ) : isOutOfStock ? (
-                        <span>❌ غير متوفر / Out of Stock</span>
+                        <span>❌ غير متوفر / Rupture de Stock</span>
                     ) : (
                         <>
                             <svg className="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <span className="relative z-10">🛒 أضف للسلة / Add to Cart</span>
+                            <span className="relative z-10">🛒 أضف للسلة / Ajouter au Panier</span>
                             {/* Urgency Indicator */}
                             {product.quantity <= 5 && (
                                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
-                                    سريع! / Fast!
+                                    سريع! / Vite!
                                 </span>
                             )}
                         </>

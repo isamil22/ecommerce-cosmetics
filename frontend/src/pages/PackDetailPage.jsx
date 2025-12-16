@@ -12,6 +12,34 @@ import PurchaseNotifications from '../components/PurchaseNotifications';
 import StickyAddToCart from '../components/StickyAddToCart';
 import './PackDetailPage.css';
 
+const StickyPackHeader = ({ pack, composedImageUrl, onScrollTop }) => (
+    <div className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200 transform transition-all duration-300 animate-slide-down py-3 px-4 flex items-center justify-between sm:hidden">
+        <div className="flex items-center gap-4 cursor-pointer" onClick={onScrollTop}>
+            <div className="relative shadow-md rounded-lg overflow-hidden group">
+                <img
+                    src={composedImageUrl || '/placeholder-image.svg'}
+                    alt="Pack Preview"
+                    className="w-20 h-20 object-contain bg-gray-50 transition-transform group-hover:scale-110"
+                    onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
+                />
+            </div>
+            <div>
+                <p className="text-xs text-gray-500 font-medium leading-tight mb-1">سعر الحزمة / Total</p>
+                <p className="text-pink-600 font-black text-xl leading-none tracking-tight">${(pack.price || 0).toFixed(2)}</p>
+            </div>
+        </div>
+        <button
+            onClick={onScrollTop}
+            className="bg-gray-100 p-3 rounded-full text-gray-600 hover:bg-gray-200 transition-colors shadow-sm active:scale-95"
+            aria-label="Scroll to top"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+        </button>
+    </div>
+);
+
 const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChange, isDefault }) => {
     const imageUrl = (product.images && product.images.length > 0)
         ? product.images[0]
@@ -33,7 +61,7 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
             className={containerClasses}
             role="button"
             tabIndex={0}
-            aria-label={`${isSelected ? 'Selected' : 'Select'} ${product.name} for ${(product.price || 0).toFixed(2)} dollars`}
+            aria-label={`${isSelected ? 'Sélectionné' : 'Sélectionner'} ${product.name} pour ${(product.price || 0).toFixed(2)} dollars`}
             onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -63,11 +91,11 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
             <div className="flex-grow min-w-0">
                 <div className="flex items-center mb-1 sm:mb-2 flex-wrap gap-1">
                     <span className="text-gray-800 font-bold text-sm sm:text-lg truncate block max-w-full">
-                        {product.name || 'Unnamed Product'}
+                        {product.name || 'Produit sans nom'}
                     </span>
                     {isDefault && (
                         <span className="bg-blue-100 text-blue-700 text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">
-                            ✅ افتراضي
+                            ✅ افتراضي / Par défaut
                         </span>
                     )}
                 </div>
@@ -76,10 +104,10 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                         ${(product.price || 0).toFixed(2)}
                     </span>
                     <div className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-sm font-semibold whitespace-nowrap ${isSelected
-                            ? 'bg-pink-100 text-pink-700'
-                            : 'bg-gray-100 text-gray-600'
+                        ? 'bg-pink-100 text-pink-700'
+                        : 'bg-gray-100 text-gray-600'
                         }`}>
-                        {isSelected ? '✓ مختار' : 'اختيار'}
+                        {isSelected ? '✓ مختار / Sélectionné' : 'اختيار / Choisir'}
                     </div>
                 </div>
             </div>
@@ -106,11 +134,11 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
                     📦
                 </span>
                 <span className="text-pink-600 font-extrabold truncate">
-                    {item.defaultProduct ? item.defaultProduct.name : 'منتج / Product'}
+                    {item.defaultProduct ? item.defaultProduct.name : 'منتج / Produit'}
                 </span>
             </h4>
             <p className="text-xs sm:text-sm text-gray-500 mt-1 ml-9">
-                اختر المنتج الذي تريده لهذا القسم
+                اختر المنتج الذي تريده لهذا القسم / Choisissez le produit pour cette section
             </p>
         </div>
 
@@ -118,7 +146,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
             <div className="mb-4">
                 <div className="flex items-center mb-2">
                     <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold mr-2 border border-green-100">
-                        ✅ مُضمن / Included
+                        ✅ مُضمن / Inclus
                     </span>
                 </div>
                 <ProductOption
@@ -142,7 +170,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
-                    أو استبدل بـ:
+                    أو استبدل بـ / Ou remplacez par :
                 </h5>
                 <div className="space-y-3">
                     {item.variationProducts.map(product => (
@@ -163,7 +191,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
             <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
                 <p className="text-blue-700 text-xs flex items-center">
                     <span className="mr-2">ℹ️</span>
-                    لا بدائل متاحة / No alternatives
+                    لا بدائل متاحة / Pas d'alternatives
                 </p>
             </div>
         )}
@@ -181,11 +209,12 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     const [composedImageUrl, setComposedImageUrl] = useState(null);
     const [initialPackImageUrl, setInitialPackImageUrl] = useState('');
     // Enhanced UX state variables
-    const [showWelcome, setShowWelcome] = useState(true);
+    const [showWelcome, setShowWelcome] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
     const [demoMode, setDemoMode] = useState(false);
     const [highlightedElement, setHighlightedElement] = useState(null);
-    const [currentStep, setCurrentStep] = useState(1);
+    // Sticky header state
+    const [showStickyHeader, setShowStickyHeader] = useState(false);
 
     const fetchPack = async () => {
         try {
@@ -218,7 +247,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             setSelections(initial);
             setInitialSelections(initial);
         } catch (err) {
-            setError('Failed to fetch pack details. It might not exist.');
+            setError('فشل في تحميل تفاصيل الحزمة. قد تكون غير موجودة. / Échec du chargement des détails du pack.');
             console.error(err);
         } finally {
             setLoading(false);
@@ -228,10 +257,10 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     // Interactive tutorial for pack understanding
     const startInteractiveTutorial = () => {
         const steps = [
-            { element: 'pack-image', message: 'هذه صورة الحزمة', duration: 4000 },
-            { element: 'customization', message: 'هنا يمكنك تخصيص الحزمة', duration: 4000 },
-            { element: 'product-options', message: 'اختر المنتجات التي تريدها', duration: 4000 },
-            { element: 'add-to-cart', message: 'اضغط هنا لإضافة للسلة', duration: 4000 }
+            { element: 'pack-image', message: 'هذه صورة الحزمة / Voici l\'image du pack', duration: 4000 },
+            { element: 'customization', message: 'هنا يمكنك تخصيص الحزمة / Ici vous pouvez personnaliser le pack', duration: 4000 },
+            { element: 'product-options', message: 'اختر المنتجات التي تريدها / Choisissez les produits que vous voulez', duration: 4000 },
+            { element: 'add-to-cart', message: 'اضغط هنا لإضافة للسلة / Cliquez ici pour ajouter au panier', duration: 4000 }
         ];
 
         let currentStepIndex = 0;
@@ -267,6 +296,24 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             }
         };
     }, []);
+
+    // Scroll listener for sticky header
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 350) {
+                setShowStickyHeader(true);
+            } else {
+                setShowStickyHeader(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     useEffect(() => {
         if (!pack || Object.keys(selections).length === 0) return;
@@ -344,7 +391,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     const handleReset = () => {
         setSelections(initialSelections);
         setComposedImageUrl(initialPackImageUrl);
-        setMessage('Selections have been reset to their default options.');
+        setMessage('تم إعادة تعيين الاختيارات إلى الوضع الافتراضي. / Les sélections ont été réinitialisées.');
         setError('');
     };
 
@@ -392,15 +439,15 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 });
             }
 
-            toast.success('🎉 تم إضافة الحزمة للسلة! / Added to cart!');
+            toast.success('🎉 تم إضافة الحزمة للسلة! / Ajouté au panier !');
             if (fetchCartCount) {
                 fetchCartCount();
             }
 
         } catch (err) {
             console.error("Error during add to cart:", err);
-            setError('فشل في إضافة المنتجات للسلة');
-            toast.error('فشل في إضافة المنتجات للسلة');
+            setError('فشل في إضافة المنتجات للسلة / Échec de l\'ajout au panier');
+            toast.error('فشل في إضافة المنتجات للسلة / Échec de l\'ajout au panier');
         }
     };
 
@@ -412,35 +459,44 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
     return (
         <div className="container mx-auto px-2 py-4 sm:px-4 sm:py-8 max-w-7xl">
+            {/* Sticky Mobile Preview Header */}
+            {showStickyHeader && pack && (
+                <StickyPackHeader
+                    pack={pack}
+                    composedImageUrl={composedImageUrl}
+                    onScrollTop={scrollToTop}
+                />
+            )}
+
             {/* Welcome Overlay - Responsive */}
             {showWelcome && (
                 <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
                     <div className="bg-white rounded-3xl p-5 sm:p-8 max-w-2xl w-full text-center shadow-2xl max-h-[90vh] overflow-y-auto animate-zoom-in">
                         <div className="text-6xl sm:text-8xl mb-4 sm:mb-6 animate-bounce-slow">📦</div>
                         <h2 className="text-xl sm:text-3xl font-bold mb-4 text-gray-800">
-                            مرحباً بك في حزمة التوفير!
+                            مرحباً بك في حزمة التوفير! / Bienvenue dans le Pack Éco !
                             <br />
-                            <span className="text-pink-600 block mt-2 text-lg sm:text-2xl">Value Pack Offers!</span>
+                            <span className="text-pink-600 block mt-2 text-lg sm:text-2xl">Offres de Packs Économiques !</span>
                         </h2>
 
                         <div className="bg-yellow-50 border border-yellow-300 p-3 sm:p-4 rounded-xl mb-6">
                             <p className="text-yellow-800 font-bold text-sm sm:text-lg">
-                                💡 خذ منتجات أكثر .. وادفع أقل!
+                                💡 خذ منتجات أكثر .. وادفع أقل! / Prenez plus.. payez moins !
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                             <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
                                 <div className="text-2xl mb-1">👀</div>
-                                <p className="text-blue-800 font-bold text-sm">1. تصفح</p>
+                                <p className="text-blue-800 font-bold text-sm">1. تصفح / Explorez</p>
                             </div>
                             <div className="bg-green-50 p-3 rounded-lg border border-green-100">
                                 <div className="text-2xl mb-1">👆</div>
-                                <p className="text-green-800 font-bold text-sm">2. اختر</p>
+                                <p className="text-green-800 font-bold text-sm">2. اختر / Choisissez</p>
                             </div>
                             <div className="bg-purple-50 p-3 rounded-lg border border-purple-100">
                                 <div className="text-2xl mb-1">🛒</div>
-                                <p className="text-purple-800 font-bold text-sm">3. وفر</p>
+                                <p className="text-purple-800 font-bold text-sm">3. وفر / Économisez</p>
                             </div>
                         </div>
 
@@ -453,14 +509,14 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                 }}
                                 className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-xl font-bold hover:shadow-lg transition-all text-sm sm:text-lg"
                             >
-                                🎬 كيف أطلب الحزمة؟
+                                🎬 كيف أطلب الحزمة؟ / Comment commander ?
                             </button>
 
                             <button
                                 onClick={() => setShowWelcome(false)}
                                 className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-xl hover:bg-gray-200 transition-all font-semibold text-sm sm:text-base border border-gray-200"
                             >
-                                فهمت! سأبدأ الآن
+                                فهمت! سأبدأ الآن / J'ai compris ! Commencer
                             </button>
                         </div>
                     </div>
@@ -471,7 +527,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             {demoMode && highlightedElement && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 z-40 pointer-events-none">
                     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-6 py-3 rounded-full font-bold text-lg animate-bounce">
-                        👀 انظر هنا!
+                        👀 انظر هنا! / Regardez ici !
                     </div>
                 </div>
             )}
@@ -481,17 +537,17 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 <EnhancedCountdown
                     packName={pack.name}
                     fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)}
-                    onExpire={() => toast.info('انتهى العرض')}
+                    onExpire={() => toast.info('انتهى العرض / L\'offre est terminée')}
                 />
             )}
 
             {/* Header Section */}
             <div className="mb-4 sm:mb-8 text-center sm:text-left">
                 <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-2 sm:mb-4 tracking-tight">
-                    📦 {pack ? pack.name : 'Loading Pack...'}
+                    📦 {pack ? pack.name : '...جارٍ تحميل الحزمة / Chargement du pack...'}
                 </h1>
                 <p className="text-sm sm:text-lg text-gray-600 mb-4 sm:mb-6 max-w-3xl">
-                    اصنع حزمتك الخاصة بالسعر الذي يناسبك
+                    اصنع حزمتك الخاصة بالسعر الذي يناسبك / Créez votre propre pack au prix qui vous convient
                 </p>
 
                 <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
@@ -499,7 +555,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                         onClick={() => setShowHelp(!showHelp)}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 text-sm font-semibold shadow-sm"
                     >
-                        <span>❓ مساعدة</span>
+                        <span>❓ مساعدة / Aide</span>
                     </button>
                     <button
                         onClick={() => {
@@ -508,7 +564,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                         }}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-green-200 text-green-600 rounded-lg hover:bg-green-50 text-sm font-semibold shadow-sm"
                     >
-                        <span>🎬 شرح</span>
+                        <span>🎬 شرح / Tutoriel</span>
                     </button>
                 </div>
             </div>
@@ -516,11 +572,11 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             {/* Help Panel */}
             {showHelp && (
                 <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg text-sm sm:text-base animate-fadeIn">
-                    <h3 className="font-bold mb-2 text-blue-800">💡 طريقة الطلب:</h3>
+                    <h3 className="font-bold mb-2 text-blue-800">💡 طريقة الطلب : / Comment commander :</h3>
                     <ol className="list-decimal list-inside space-y-1 text-blue-900">
-                        <li>اختر المنتجات من القائمة في الأسفل</li>
-                        <li>شاهد السعر يتحدث تلقائياً</li>
-                        <li>أضف الحزمة كاملة للسلة بضغطة واحدة</li>
+                        <li>اختر المنتجات من القائمة في الأسفل / Choisissez les produits dans la liste ci-dessous</li>
+                        <li>شاهد السعر يتحدث تلقائياً / Le prix se met à jour automatiquement</li>
+                        <li>أضف الحزمة كاملة للسلة بضغطة واحدة / Ajoutez le pack au panier en un clic</li>
                     </ol>
                 </div>
             )}
@@ -534,7 +590,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
             {!pack && !loading && (
                 <div className="text-center py-12">
-                    <p className="text-xl text-gray-400">Pack not found</p>
+                    <p className="text-xl text-gray-400">الحزمة غير موجودة / Pack non trouvé</p>
                 </div>
             )}
 
@@ -542,7 +598,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 <>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">
                         {/* Left Side: Pack Image & Summary */}
-                        <div className="space-y-4 sm:space-y-6 lg:sticky lg:top-24">
+                        <div className="space-y-4 sm:space-y-6 lg:sticky lg:top-24 self-start">
                             {/* Pack Image Card */}
                             <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${highlightedElement === 'pack-image' ? 'ring-4 ring-yellow-400' : ''}`}>
                                 <div className="bg-gray-50 p-2 sm:p-4 flex items-center justify-center min-h-[250px] sm:min-h-[350px]">
@@ -558,14 +614,14 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                 <div className="p-4 sm:p-6 bg-white">
                                     <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-4 sm:p-6 rounded-xl shadow-lg relative overflow-hidden">
                                         <div className="relative z-10">
-                                            <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">السعر الإجمالي للصفقة</p>
+                                            <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">السعر الإجمالي للصفقة / Prix Total du Pack</p>
                                             <div className="flex items-baseline gap-2">
                                                 <p className="text-3xl sm:text-5xl font-black tracking-tight">${(pack.price || 0).toFixed(2)}</p>
                                                 {pack.originalPrice > pack.price && (
                                                     <span className="text-lg text-pink-200 line-through">${pack.originalPrice}</span>
                                                 )}
                                             </div>
-                                            <p className="text-xs sm:text-sm mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded">✨ توفير مميز</p>
+                                            <p className="text-xs sm:text-sm mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded">✨ توفير مميز / Économie Spéciale</p>
                                         </div>
                                         <div className="absolute right-[-20px] top-[-20px] w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                                     </div>
@@ -579,14 +635,23 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
                         {/* Right Side: Options */}
                         <div className={`transition-all duration-300 ${highlightedElement === 'customization' ? 'ring-2 ring-yellow-400 rounded-2xl p-2' : ''}`}>
-                            <div className="bg-indigo-600 text-white p-4 sm:p-6 rounded-2xl mb-6 shadow-md">
-                                <h2 className="text-xl sm:text-2xl font-bold flex items-center">
-                                    <span className="mr-2 text-2xl">🎨</span>
-                                    ابدأ التخصيص
-                                </h2>
-                                <p className="text-indigo-100 text-sm mt-1">
-                                    لديك {pack.items?.length || 0} خيارات لتحديدها
-                                </p>
+                            <div className="bg-indigo-600 text-white p-4 sm:p-6 rounded-2xl mb-6 shadow-md flex justify-between items-center flex-wrap gap-4">
+                                <div>
+                                    <h2 className="text-xl sm:text-2xl font-bold flex items-center">
+                                        <span className="mr-2 text-2xl">🎨</span>
+                                        ابدأ التخصيص / Commencez la personnalisation
+                                    </h2>
+                                    <p className="text-indigo-100 text-sm mt-1">
+                                        لديك {pack.items?.length || 0} خيارات لتحديدها / Vous avez {pack.items?.length || 0} options à choisir
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={handleReset}
+                                    className="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 border border-white/10"
+                                >
+                                    <span className="text-lg">↺</span>
+                                    <span>إعادة تعيين / Réinitialiser</span>
+                                </button>
                             </div>
 
                             <div className={`space-y-4 sm:space-y-6 mb-8 ${highlightedElement === 'product-options' ? 'ring-2 ring-yellow-400 rounded-xl p-2' : ''}`}>
@@ -609,7 +674,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                         className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-3 sm:py-4 px-6 rounded-xl hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-base sm:text-xl shadow-lg transform active:scale-95 flex items-center justify-center gap-2"
                                     >
                                         <span className="animate-pulse">✨</span>
-                                        إضافة الحزمة للسلة
+                                        إضافة الحزمة للسلة / Ajouter au Panier
                                         <span className="bg-white/20 px-2 py-0.5 rounded text-sm">${(pack.price || 0).toFixed(0)}</span>
                                     </button>
                                 </div>
@@ -620,7 +685,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                     <div className="mt-8 bg-white rounded-xl p-4 sm:p-6 border border-gray-200 shadow-sm">
                         <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center border-b pb-2">
                             <span className="mr-2">📝</span>
-                            تفاصيل الحزمة
+                            تفاصيل الحزمة / Détails du Pack
                         </h3>
                         <div
                             className="text-gray-600 leading-relaxed text-sm sm:text-base prose prose-sm max-w-none"
@@ -630,7 +695,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
                     {/* Simple Reviews Section */}
                     <div className="mt-10">
-                        <h2 className="text-xl font-bold text-gray-800 mb-4 px-2">💬 آراء العملاء</h2>
+                        <h2 className="text-xl font-bold text-gray-800 mb-4 px-2">💬 آراء العملاء / Avis Clients</h2>
                         {pack.comments && pack.comments.length > 0 ? (
                             <div className="grid gap-4">
                                 {pack.comments.map(comment => (
@@ -639,13 +704,26 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                             <div className="font-bold text-gray-800 ml-auto">{comment.userFullName}</div>
                                             <div className="text-yellow-400 text-sm">{'★'.repeat(comment.score)}</div>
                                         </div>
-                                        <p className="text-gray-600 text-sm">{comment.content}</p>
+                                        <p className="text-gray-600 text-sm mb-3">{comment.content}</p>
+                                        {comment.images && comment.images.length > 0 && (
+                                            <div className="flex flex-wrap gap-2 mt-2">
+                                                {comment.images.map((img, idx) => (
+                                                    <img
+                                                        key={idx}
+                                                        src={img}
+                                                        alt={`Review attachment ${idx + 1}`}
+                                                        className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
+                                                        onClick={() => window.open(img, '_blank')}
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-xl">
-                                لا توجد تعليقات حتى الآن
+                                لا توجد تعليقات حتى الآن / Aucun avis pour le moment
                             </div>
                         )}
                         {!pack.hideCommentForm && (
@@ -653,6 +731,9 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                 <CommentForm />
                             </div>
                         )}
+
+                        {/* Recommendations Section */}
+                        <PackRecommendations pack={pack} />
                     </div>
                 </>
             )}

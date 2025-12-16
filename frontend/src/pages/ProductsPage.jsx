@@ -1,6 +1,7 @@
 // frontend/src/pages/ProductsPage.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { getAllProducts, getAllCategories, getAllPacks, getProductSuggestions } from '../api/apiService';
 import Loader from '../components/Loader';
@@ -9,13 +10,14 @@ import ReactGA from 'react-ga4';
 import { trackEvent } from '../utils/facebookPixel';
 
 const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props here
+    const [searchParams] = useSearchParams();
     const [items, setItems] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [filters, setFilters] = useState({
         search: '',
-        categoryId: '',
+        categoryId: searchParams.get('categoryId') || '',
         minPrice: '',
         maxPrice: '',
         brand: '',
@@ -64,6 +66,13 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
             setLoading(false);
         }
     }, [sort, page, filters.categoryId, filters.minPrice, filters.maxPrice, filters.brand, filters.type, filters.productType]);
+
+    useEffect(() => {
+        const categoryIdFromUrl = searchParams.get('categoryId');
+        if (categoryIdFromUrl && categoryIdFromUrl !== filters.categoryId) {
+            setFilters(prev => ({ ...prev, categoryId: categoryIdFromUrl }));
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         if (filters.search) {
@@ -156,10 +165,10 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                     <div className="text-center py-6 sm:py-10 bg-gradient-to-r from-pink-50/50 via-purple-50/50 to-blue-50/50 w-full">
                         <div className="container mx-auto px-4">
                             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-3">
-                                منتجاتنا / Our Products
+                                منتجاتنا / Nos Produits
                             </h1>
                             <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
-                                اكتشف أفضل منتجات التجميل المختارة بعناية / Discover the finest beauty products carefully selected for you
+                                اكتشف أفضل منتجات التجميل المختارة بعناية / Découvrez les meilleurs produits de beauté sélectionnés avec soin pour vous
                             </p>
                         </div>
                     </div>
@@ -180,7 +189,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                             <input
                                                 type="text"
                                                 name="search"
-                                                placeholder="ابحث عن المنتجات... / Search for products..."
+                                                placeholder="ابحث عن المنتجات... / Rechercher des produits..."
                                                 value={filters.search}
                                                 onChange={handleFilterChange}
                                                 autoComplete="off"
@@ -227,7 +236,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         <svg className="h-4 w-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                                         </svg>
-                                        الفئة / Category
+                                        الفئة / Catégorie
                                     </label>
                                     <select
                                         name="categoryId"
@@ -236,7 +245,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md text-sm"
                                         disabled={filters.productType === 'packs'}
                                     >
-                                        <option value="">جميع الفئات / All Categories</option>
+                                        <option value="">جميع الفئات / Toutes les Catégories</option>
                                         {categories.map(category => (
                                             <option key={category.id} value={category.id}>{category.name}</option>
                                         ))}
@@ -249,7 +258,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                                         </svg>
-                                        السعر الأدنى / Min Price
+                                        السعر الأدنى / Prix Minimum
                                     </label>
                                     <input
                                         type="number"
@@ -266,7 +275,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         <svg className="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                                         </svg>
-                                        السعر الأعلى / Max Price
+                                        السعر الأعلى / Prix Maximum
                                     </label>
                                     <input
                                         type="number"
@@ -284,7 +293,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         <svg className="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
-                                        الجنس / Gender
+                                        الجنس / Genre
                                     </label>
                                     <select
                                         name="type"
@@ -293,10 +302,10 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
                                         disabled={filters.productType === 'packs'}
                                     >
-                                        <option value="ALL">جميع الأجناس / All Genders</option>
-                                        <option value="MEN">رجال / Men</option>
-                                        <option value="WOMEN">نساء / Women</option>
-                                        <option value="BOTH">كلا الجنسين / Both</option>
+                                        <option value="ALL">جميع الأجناس / Tous les Genres</option>
+                                        <option value="MEN">رجال / Hommes</option>
+                                        <option value="WOMEN">نساء / Femmes</option>
+                                        <option value="BOTH">كلا الجنسين / Mixte</option>
                                     </select>
                                 </div>
 
@@ -314,7 +323,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         onChange={handleFilterChange}
                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
                                     >
-                                        <option value="products">منتجات / Products</option>
+                                        <option value="products">منتجات / Produits</option>
                                         <option value="packs">باقات / Packs</option>
                                     </select>
                                 </div>
@@ -325,17 +334,17 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         <svg className="h-5 w-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                                         </svg>
-                                        الترتيب / Sort
+                                        الترتيب / Trier
                                     </label>
                                     <select
                                         value={sort}
                                         onChange={handleSortChange}
                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
                                     >
-                                        <option value="name,asc">الاسم: أ-ي / Name: A-Z</option>
-                                        <option value="name,desc">الاسم: ي-أ / Name: Z-A</option>
-                                        <option value="price,asc">السعر: منخفض-عالي / Price: Low to High</option>
-                                        <option value="price,desc">السعر: عالي-منخفض / Price: High to Low</option>
+                                        <option value="name,asc">الاسم: أ-ي / Nom : A-Z</option>
+                                        <option value="name,desc">الاسم: ي-أ / Nom : Z-A</option>
+                                        <option value="price,asc">السعر: منخفض-عالي / Prix : Croissant</option>
+                                        <option value="price,desc">السعر: عالي-منخفض / Prix : Décroissant</option>
                                     </select>
                                 </div>
                             </div>
@@ -346,20 +355,20 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                     <svg className="h-5 w-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                     </svg>
-                                    فلاتر سريعة / Quick Filters
+                                    فلاتر سريعة / Filtres Rapides
                                 </h3>
                                 <div className="flex flex-wrap gap-3">
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, minPrice: '', maxPrice: '', categoryId: '', type: 'ALL' }))}
                                         className="px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full text-sm font-medium hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >
-                                        مسح الكل / Clear All
+                                        مسح الكل / Tout Effacer
                                     </button>
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, minPrice: '0', maxPrice: '50' }))}
                                         className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full text-sm font-medium hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >
-                                        تحت $50 / Under $50
+                                        تحت $50 / Moins de $50
                                     </button>
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, minPrice: '50', maxPrice: '100' }))}
@@ -371,7 +380,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         onClick={() => setFilters(prev => ({ ...prev, minPrice: '100', maxPrice: '' }))}
                                         className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >
-                                        فوق $100 / Over $100
+                                        فوق $100 / Plus de $100
                                     </button>
                                 </div>
                             </div>
@@ -386,7 +395,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                     <div className="flex justify-center items-center py-20">
                         <div className="text-center">
                             <Loader />
-                            <p className="text-gray-600 mt-4 text-lg">جاري التحميل... / Loading...</p>
+                            <p className="text-gray-600 mt-4 text-lg">جاري التحميل... / Chargement...</p>
                         </div>
                     </div>
                 ) : error ? (
@@ -397,7 +406,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-bold text-red-800 mb-2">خطأ في التحميل / Loading Error</h3>
+                            <h3 className="text-xl font-bold text-red-800 mb-2">خطأ في التحميل / Erreur de Chargement</h3>
                             <p className="text-red-600">{error}</p>
                         </div>
                     </div>
@@ -408,10 +417,10 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
                                     <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                                        {items.length > 0 ? `${items.length} منتج متاح / ${items.length} Products Available` : 'لا توجد منتجات / No Products Found'}
+                                        {items.length > 0 ? `${items.length} منتج متاح / ${items.length} Produits Disponibles` : 'لا توجد منتجات / Aucun Produit Trouvé'}
                                     </h2>
                                     <p className="text-gray-600">
-                                        {filters.search ? `نتائج البحث عن "${filters.search}" / Search results for "${filters.search}"` : 'جميع المنتجات / All Products'}
+                                        {filters.search ? `نتائج البحث عن "${filters.search}" / Résultats de recherche pour "${filters.search}"` : 'جميع المنتجات / Tous les Produits'}
                                     </p>
                                 </div>
 
@@ -430,7 +439,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         )}
                                         {filters.type !== 'ALL' && (
                                             <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                                                {filters.type === 'MEN' ? 'رجال / Men' : filters.type === 'WOMEN' ? 'نساء / Women' : 'كلا الجنسين / Both'}
+                                                {filters.type === 'MEN' ? 'رجال / Hommes' : filters.type === 'WOMEN' ? 'نساء / Femmes' : 'كلا الجنسين / Mixte'}
                                             </span>
                                         )}
                                     </div>
@@ -464,18 +473,18 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                         </svg>
                                     </div>
-                                    <h3 className="text-2xl font-bold text-gray-800 mb-4">لا توجد منتجات / No Products Found</h3>
+                                    <h3 className="text-2xl font-bold text-gray-800 mb-4">لا توجد منتجات / Aucun Produit Trouvé</h3>
                                     <p className="text-gray-600 mb-6">
                                         لم نتمكن من العثور على منتجات تطابق معايير البحث الخاصة بك. جرب تعديل الفلاتر أو البحث عن شيء آخر.
                                     </p>
                                     <p className="text-gray-500 text-sm mb-8">
-                                        We couldn't find any products matching your search criteria. Try adjusting the filters or searching for something else.
+                                        Nous n'avons trouvé aucun produit correspondant à vos critères de recherche. Essayez d'ajuster les filtres ou de chercher autre chose.
                                     </p>
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, search: '', categoryId: '', minPrice: '', maxPrice: '', type: 'ALL' }))}
                                         className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-3 rounded-2xl font-semibold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >
-                                        مسح الفلاتر / Clear Filters
+                                        مسح الفلاتر / Effacer les Filtres
                                     </button>
                                 </div>
                             </div>
@@ -498,7 +507,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                                 </svg>
-                                                <span>السابق / Previous</span>
+                                                <span>السابق / Précédent</span>
                                             </div>
                                         </button>
 
@@ -529,7 +538,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                                 }`}
                                         >
                                             <div className="flex items-center gap-2">
-                                                <span>التالي / Next</span>
+                                                <span>التالي / Suivant</span>
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                                 </svg>
@@ -539,7 +548,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
 
                                     <div className="text-center mt-4">
                                         <p className="text-sm text-gray-600">
-                                            صفحة {page + 1} من {totalPages} / Page {page + 1} of {totalPages}
+                                            صفحة {page + 1} من {totalPages} / Page {page + 1} sur {totalPages}
                                         </p>
                                     </div>
                                 </div>
