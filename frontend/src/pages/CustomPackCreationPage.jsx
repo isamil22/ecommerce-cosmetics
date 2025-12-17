@@ -5,6 +5,7 @@ import { getCustomPackById, getAllowedProductsForCustomPack, addToCart } from '.
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import './CustomPackCreationPage.css';
+import { formatPrice } from '../utils/currency';
 
 // Simple Icons Components (Inline for portability or import from lucide-react if available)
 const Icons = {
@@ -269,7 +270,7 @@ const CustomPackCreationPage = () => {
                             <div className="flex items-center justify-between w-full md:w-auto gap-3">
                                 <div className="text-right mr-2 md:mr-0">
                                     <span className="block text-xs text-gray-500">السعر الإجمالي / Prix Total</span>
-                                    <span className="block text-lg font-bold text-purple-700">${totalPrice.toFixed(2)}</span>
+                                    <span className="block text-lg font-bold text-purple-700">{formatPrice(totalPrice)}</span>
                                 </div>
 
                                 <div className="flex gap-2">
@@ -382,7 +383,7 @@ const CustomPackCreationPage = () => {
                                         {product.name}
                                     </h3>
                                     <div className="flex items-center justify-between">
-                                        <span className="font-extrabold text-gray-900">${product.price.toFixed(2)}</span>
+                                        <span className="font-extrabold text-gray-900">{formatPrice(product.price)}</span>
                                         {isSelected && <span className="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md">محدد / Sélectionné</span>}
                                     </div>
 

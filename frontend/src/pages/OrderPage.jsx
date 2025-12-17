@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { getCart, createOrder, createDirectOrder, validateCoupon, createGuestOrder } from '../api/apiService';
 import { toast } from 'react-toastify';
 import FeedbackForm from '../components/FeedbackForm';
+import { formatPrice } from '../utils/currency';
 
 const OrderPage = () => {
     const [cart, setCart] = useState(null);
@@ -81,7 +82,7 @@ const OrderPage = () => {
             const response = await validateCoupon(couponCode.trim());
             setDiscount(response.data.discountValue);
             setAppliedCoupon(response.data.code);
-            toast.success(`🎉 Coupon "${response.data.code}" applied successfully! You saved $${response.data.discountValue.toFixed(2)}!`);
+            toast.success(`🎉 Coupon "${response.data.code}" applied successfully! You saved ${formatPrice(response.data.discountValue)}!`);
         } catch (err) {
             setDiscount(0);
             setAppliedCoupon(null);
@@ -323,12 +324,12 @@ const OrderPage = () => {
                                                             </p>
                                                         )}
                                                         <p className="text-sm text-gray-600">الكمية / Qty: {item.quantity}</p>
-                                                        <p className="text-sm text-gray-600">${parseFloat(item.price || 0).toFixed(2)} لكل قطعة / each</p>
+                                                        <p className="text-sm text-gray-600">{formatPrice(parseFloat(item.price || 0))} لكل قطعة / each</p>
                                                     </div>
 
                                                     {/* Price */}
                                                     <div className="text-right">
-                                                        <p className="font-bold text-lg text-gray-900">${(parseFloat(item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
+                                                        <p className="font-bold text-lg text-gray-900">{formatPrice(parseFloat(item.price || 0) * (item.quantity || 1))}</p>
                                                     </div>
                                                 </div>
                                             ))}
@@ -370,7 +371,7 @@ const OrderPage = () => {
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                                         </svg>
                                                         <span className="text-green-800 font-semibold">
-                                                            تم تطبيق الكود "{appliedCoupon}"! وفرت ${discount.toFixed(2)}! / Coupon applied! You saved ${discount.toFixed(2)}!
+                                                            تم تطبيق الكود "{appliedCoupon}"! وفرت {formatPrice(discount)}! / Coupon applied! You saved {formatPrice(discount)}!
                                                         </span>
                                                     </div>
                                                 </div>
@@ -381,18 +382,18 @@ const OrderPage = () => {
                                         <div className="space-y-3">
                                             <div className="flex justify-between text-gray-600">
                                                 <span>المجموع الفرعي / Subtotal</span>
-                                                <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+                                                <span className="font-medium text-gray-900">{formatPrice(subtotal)}</span>
                                             </div>
                                             {discount > 0 && (
                                                 <div className="flex justify-between text-green-600">
                                                     <span>خصم / Discount ({appliedCoupon})</span>
-                                                    <span className="font-medium">-${discount.toFixed(2)}</span>
+                                                    <span className="font-medium">-{formatPrice(discount)}</span>
                                                 </div>
                                             )}
                                             <div className="border-t border-gray-200 pt-3">
                                                 <div className="flex justify-between items-center">
                                                     <span className="text-xl font-semibold text-gray-900">الإجمالي / Total</span>
-                                                    <span className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">${total.toFixed(2)}</span>
+                                                    <span className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{formatPrice(total)}</span>
                                                 </div>
                                             </div>
                                         </div>

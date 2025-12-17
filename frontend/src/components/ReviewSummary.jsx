@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const ReviewSummary = ({ comments }) => {
+    const [animated, setAnimated] = useState(false);
+
+    useEffect(() => {
+        setAnimated(true);
+    }, []);
+
     if (!comments || comments.length === 0) {
         return null;
     }
@@ -13,22 +19,48 @@ const ReviewSummary = ({ comments }) => {
     });
 
     const totalReviews = comments.length;
+    const averageRating = (comments.reduce((acc, c) => acc + c.score, 0) / totalReviews).toFixed(1);
 
     return (
-        <div className="mb-6">
-            <h3 className="text-lg font-bold mb-2">Customer Reviews</h3>
-            {Object.keys(ratingCounts).reverse().map(star => (
-                <div key={star} className="flex items-center space-x-2 text-sm">
-                    <span>{star} star</span>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div
-                            className="bg-yellow-400 h-2.5 rounded-full"
-                            style={{ width: `${(ratingCounts[star] / totalReviews) * 100}%` }}
-                        ></div>
-                    </div>
-                    <span className="w-10 text-right">{ratingCounts[star]}</span>
+        <div className="bg-white rounded-3xl p-6 lg:p-8 shadow-lg border border-gray-100 flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+            {/* Left Column: Big Stats */}
+            <div className="flex flex-col items-center justify-center text-center lg:w-1/3 space-y-2">
+                <div className="text-6xl lg:text-7xl font-black bg-gradient-to-br from-purple-600 to-pink-500 bg-clip-text text-transparent">
+                    {averageRating}
                 </div>
-            ))}
+                <div className="flex items-center gap-1 text-yellow-400 text-2xl lg:text-3xl">
+                    {'★'.repeat(Math.round(averageRating))}
+                    <span className="text-gray-200">{'★'.repeat(5 - Math.round(averageRating))}</span>
+                </div>
+                <p className="text-gray-500 font-bold text-sm lg:text-base">
+                    Based on {totalReviews} reviews
+                </p>
+            </div>
+
+            {/* Right Column: Histogram */}
+            <div className="flex-1 w-full space-y-3">
+                {Object.keys(ratingCounts).reverse().map(star => {
+                    const count = ratingCounts[star];
+                    const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+
+                    return (
+                        <div key={star} className="flex items-center gap-4 text-sm font-bold text-gray-600">
+                            <div className="w-12 flex items-center gap-1">
+                                {star} <span className="text-yellow-400 text-base">★</span>
+                            </div>
+                            <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+                                <div
+                                    className={`h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-1000 ease-out ${animated ? 'w-[var(--width)]' : 'w-0'}`}
+                                    style={{ '--width': `${percentage}%`, width: animated ? `${percentage}%` : '0%' }}
+                                ></div>
+                            </div>
+                            <div className="w-10 text-right text-gray-400">
+                                {count}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };

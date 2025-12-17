@@ -3,9 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getBestsellers, getNewArrivals, getApprovedReviews, getAllCategories, getHero } from '../api/apiService';
 import ProductCard from '../components/ProductCard';
-import TrustBadges from '../components/TrustBadges';
+// TrustBadges moved to WhyChooseUsSection
 import EnhancedCountdown from '../components/EnhancedCountdown';
 import PurchaseNotifications from '../components/PurchaseNotifications';
+import WhyChooseUsSection from '../components/home/WhyChooseUsSection';
+import CallToActionSection from '../components/home/CallToActionSection';
 import { toast } from 'react-toastify';
 
 const HomePage = () => {
@@ -318,75 +320,7 @@ const HomePage = () => {
             )}
 
             {/* --- ULTRA ENHANCED VALUE PROPOSITION SECTION --- */}
-            <div className="w-full px-0 py-0">
-                <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 w-full py-12 lg:py-16">
-                    <div className="container mx-auto px-4">
-                        <div className="text-center mb-10">
-                            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">
-                                لماذا تختار متجرنا؟
-                            </h2>
-                            <h3 className="text-3xl md:text-4xl font-bold text-pink-600 mb-6">
-                                Why Choose Our Store?
-                            </h3>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto px-4">
-                            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2">
-                                <div className="text-8xl mb-8 text-center">🎯</div>
-                                <h4 className="text-3xl font-black text-gray-900 mb-6 text-center">
-                                    منتجات أصلية مضمونة
-                                </h4>
-                                <h5 className="text-2xl font-bold text-pink-600 mb-6 text-center">
-                                    100% Produits Authentiques
-                                </h5>
-                                <p className="text-gray-600 text-center leading-relaxed text-xl font-semibold">
-                                    جميع منتجاتنا أصلية ومضمونة من العلامات التجارية الموثوقة
-                                </p>
-                                <p className="text-gray-500 text-lg text-center mt-4 font-medium">
-                                    Tous nos produits sont authentiques et garantis par des marques de confiance
-                                </p>
-                            </div>
-
-                            <div className="bg-white rounded-3xl p-10 shadow-2xl hover:shadow-3xl transition-all duration-700 transform hover:-translate-y-4 hover:scale-110">
-                                <div className="text-8xl mb-8 text-center">🚚</div>
-                                <h4 className="text-3xl font-black text-gray-900 mb-6 text-center">
-                                    توصيل سريع ومجاني
-                                </h4>
-                                <h5 className="text-2xl font-bold text-blue-600 mb-6 text-center">
-                                    Livraison Rapide et Gratuite
-                                </h5>
-                                <p className="text-gray-600 text-center leading-relaxed text-xl font-semibold">
-                                    شحن مجاني لجميع الطلبات والتوصيل خلال 3-5 أيام
-                                </p>
-                                <p className="text-gray-500 text-lg text-center mt-4 font-medium">
-                                    Livraison gratuite sur toutes les commandes avec livraison en 3-5 jours
-                                </p>
-                            </div>
-
-                            <div className="bg-white rounded-3xl p-10 shadow-2xl hover:shadow-3xl transition-all duration-700 transform hover:-translate-y-4 hover:scale-110">
-                                <div className="text-8xl mb-8 text-center">💎</div>
-                                <h4 className="text-3xl font-black text-gray-900 mb-6 text-center">
-                                    خدمة عملاء متميزة
-                                </h4>
-                                <h5 className="text-2xl font-bold text-purple-600 mb-6 text-center">
-                                    Service Client Premium
-                                </h5>
-                                <p className="text-gray-600 text-center leading-relaxed text-xl font-semibold">
-                                    فريق دعم متاح 24/7 لمساعدتك في أي استفسار
-                                </p>
-                                <p className="text-gray-500 text-lg text-center mt-4 font-medium">
-                                    Équipe d'assistance disponible 24/7 pour répondre à toutes vos questions
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Trust Badges */}
-                        <div className="mt-16">
-                            <TrustBadges />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <WhyChooseUsSection />
 
             {/* --- ULTRA ENHANCED PRODUCTS SECTION WITH TABS --- */}
             <div className="w-full px-4 py-8">
@@ -613,62 +547,10 @@ const HomePage = () => {
                         )}
                     </div>
                 </div>
-
-                {/* --- ULTRA ENHANCED CALL TO ACTION SECTION --- */}
-                <div className="w-full px-0 py-0">
-                    <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 w-full py-16 lg:py-20 text-center text-white relative overflow-hidden">
-                        <div className="container mx-auto px-4 relative z-10">
-                            {/* Ultra Enhanced Animated Background */}
-                            <div className="absolute inset-0 opacity-25">
-                                <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full filter blur-3xl animate-pulse"></div>
-                                <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white rounded-full filter blur-2xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-                            </div>
-
-                            <div className="relative z-10">
-                                <h2 className="text-4xl md:text-6xl font-black mb-8 tracking-tight">
-                                    ابدأ التسوق الآن واستمتع بالعروض!
-                                </h2>
-                                <h3 className="text-3xl md:text-4xl font-bold mb-8">
-                                    Commencez vos achats maintenant et profitez d'offres exceptionnelles !
-                                </h3>
-                                <p className="text-xl md:text-2xl mb-10 max-w-4xl mx-auto opacity-95 font-semibold leading-relaxed">
-                                    اكتشف آلاف المنتجات الأصلية بأفضل الأسعار مع شحن مجاني وضمان الجودة
-                                </p>
-                                <p className="text-lg md:text-xl mb-12 max-w-4xl mx-auto opacity-90 font-medium leading-relaxed">
-                                    Découvrez des milliers de produits authentiques aux meilleurs prix avec livraison gratuite et garantie de qualité
-                                </p>
-
-                                <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                                    <Link
-                                        to="/products"
-                                        className="bg-white text-pink-600 font-black py-5 px-12 rounded-full hover:bg-pink-50 transition-all duration-500 transform hover:scale-110 shadow-xl inline-flex items-center justify-center gap-3 text-lg"
-                                    >
-                                        <span>🛍️ تسوق الآن / Acheter Maintenant</span>
-                                    </Link>
-
-                                    <Link
-                                        to="/packs"
-                                        className="bg-yellow-400 text-gray-900 font-black py-5 px-12 rounded-full hover:bg-yellow-300 transition-all duration-500 transform hover:scale-110 shadow-xl inline-flex items-center justify-center gap-3 text-lg"
-                                    >
-                                        <span>🎁 الباقات الخاصة / Packs Spéciaux</span>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Purchase Notifications */}
-                    <PurchaseNotifications
-                        packName="منتجات المتجر / Produits du Magasin"
-                        productImage={bestsellers.length > 0 && bestsellers[0].images && bestsellers[0].images.length > 0
-                            ? bestsellers[0].images[0]
-                            : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"
-                        }
-                    />
-
-                </div>
             </div>
+
+            {/* --- ULTRA ENHANCED CALL TO ACTION SECTION --- */}
+            <CallToActionSection bestsellers={bestsellers} />
         </div>
     );
 };

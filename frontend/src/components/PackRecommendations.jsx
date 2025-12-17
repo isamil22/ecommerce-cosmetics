@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
 import ProductCard from './ProductCard';
+import { formatPrice } from '../utils/currency';
 
 // PackCard component that matches ProductCard design exactly
 const PackCard = ({ pack }) => {
@@ -132,7 +134,7 @@ const PackCard = ({ pack }) => {
                     {/* Price Section */}
                     <div className="flex items-center gap-2">
                         <span className="text-2xl font-extrabold text-blue-600">
-                            ${pack.price?.toFixed(2)}
+                            {formatPrice(pack.price || 0)}
                         </span>
                     </div>
 
@@ -287,7 +289,7 @@ const PackRecommendations = ({ pack }) => {
                                             <div className="mb-4">
                                                 <p className="text-purple-600 font-bold text-xl">
                                                     {item.pricingType === 'FIXED'
-                                                        ? `$${item.fixedPrice?.toFixed(2)}`
+                                                        ? formatPrice(item.fixedPrice || 0)
                                                         : `${(item.discountRate * 100).toFixed(0)}% off`
                                                     }
                                                 </p>

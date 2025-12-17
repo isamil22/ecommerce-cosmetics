@@ -5,8 +5,8 @@ import { createProduct, updateProduct, getProductById, uploadDescriptionImage, g
 import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
-import { 
-    FiSave, FiX, FiUpload, FiImage, FiPackage, FiDollarSign, 
+import {
+    FiSave, FiX, FiUpload, FiImage, FiPackage, FiDollarSign,
     FiStar, FiTrendingUp, FiArrowLeft, FiEye
 } from 'react-icons/fi';
 
@@ -82,7 +82,8 @@ const AdminProductForm = () => {
                         })) : [],
                         variants: data.variants || []
                     });
-                    setImagePreviews(data.images || []);
+                    setExistingImages(data.images || []);
+                    // setImagePreviews(data.images || []); // Deprecated in favor of separate existingImages
 
                     // Pre-populate the "Frequently Bought Together" selector
                     const frequentlyBought = data.frequentlyBoughtTogether || [];
@@ -153,12 +154,36 @@ const AdminProductForm = () => {
     };
 
 
+    const [newImages, setNewImages] = useState([]);
+    const [newImagePreviews, setNewImagePreviews] = useState([]);
+    const [existingImages, setExistingImages] = useState([]);
+
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        setImages(files);
-        setImagePreviews(files.map(file => URL.createObjectURL(file)));
+        setNewImages(prev => [...prev, ...files]);
+
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setNewImagePreviews(prev => [...prev, ...newPreviews]);
+
+        // Flatten 'images' state is still needed if handleSubmit uses it?
+        // Let's modify handleSubmit to use 'newImages' instead of 'images'.
+        // Or keep 'images' synced with 'newImages' for backward compat within this file for now if simple.
+        // But better to just use 'newImages' explicitly.
+        // I will update handleSubmit later.
     };
 
+    const removeNewImage = (index) => {
+        setNewImages(prev => prev.filter((_, i) => i !== index));
+        setNewImagePreviews(prev => prev.filter((_, i) => i !== index));
+    };
+
+    // We will handle existing images display separately but NOT removal for now as backend doesn't support easy deletion yet without replacing all.
+    // Wait, backend *was* replacing all. Now it appends.
+    // If we want to delete an existing image, we need an endpoint or logic.
+    // But user mainly asked to "add multiple image but i cant remove image" likely referring to the ones they JUST added (preview).
+    // The "delete and replace" complaint was about the backend replacing everything. 
+
+    // So current priority: robustly handle the NEWLY added images (preview & remove).
 
     const handleVariantImageChange = (variantIndex, e) => {
         const file = e.target.files[0];
@@ -182,6 +207,12 @@ const AdminProductForm = () => {
         const updatedVariants = [...product.variants];
         updatedVariants[variantIndex].imageUrl = '';
         setProduct({ ...product, variants: updatedVariants });
+    };
+
+
+
+    const removeExistingImage = (index) => {
+        setExistingImages(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleVariantTypeChange = (index, field, value) => {
@@ -251,7 +282,7 @@ const AdminProductForm = () => {
 
             // Validate variant data
             if (product.hasVariants) {
-                const invalidVariants = product.variants.filter(variant => 
+                const invalidVariants = product.variants.filter(variant =>
                     !variant.price || isNaN(parseFloat(variant.price)) || parseFloat(variant.price) < 0
                 );
                 if (invalidVariants.length > 0) {
@@ -264,6 +295,7 @@ const AdminProductForm = () => {
             const productDataToSend = {
                 ...product,
                 description,
+                images: existingImages, // send the kept existing images
                 variantTypes: product.hasVariants ? product.variantTypes.map(vt => ({
                     ...vt,
                     options: vt.options.split(',').map(o => o.trim()).filter(Boolean)
@@ -277,7 +309,7 @@ const AdminProductForm = () => {
             };
 
             formData.append('product', JSON.stringify(productDataToSend));
-            images.forEach(imageFile => formData.append('images', imageFile));
+            newImages.forEach(imageFile => formData.append('images', imageFile));
 
             const savedProduct = isEditing ? await updateProduct(id, formData) : await createProduct(formData);
 
@@ -337,7 +369,7 @@ const AdminProductForm = () => {
                             </p>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-4">
                         <button
                             onClick={handleSubmit}
@@ -383,12 +415,12 @@ const AdminProductForm = () => {
                                     <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                                         Product Name *
                                     </label>
-                                    <input 
-                                        type="text" 
-                                        id="name" 
-                                        name="name" 
-                                        value={product.name} 
-                                        onChange={handleInputChange} 
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        value={product.name}
+                                        onChange={handleInputChange}
                                         required
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
                                         placeholder="Enter product name"
@@ -400,12 +432,12 @@ const AdminProductForm = () => {
                                     <label htmlFor="brand" className="block text-sm font-semibold text-gray-700 mb-2">
                                         Brand *
                                     </label>
-                                    <input 
-                                        type="text" 
-                                        id="brand" 
-                                        name="brand" 
-                                        value={product.brand} 
-                                        onChange={handleInputChange} 
+                                    <input
+                                        type="text"
+                                        id="brand"
+                                        name="brand"
+                                        value={product.brand}
+                                        onChange={handleInputChange}
                                         required
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
                                         placeholder="Enter brand name"
@@ -419,13 +451,13 @@ const AdminProductForm = () => {
                                     </label>
                                     <div className="relative">
                                         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                                        <input 
-                                            type="number" 
-                                            step="0.01" 
-                                            id="price" 
-                                            name="price" 
-                                            value={product.price} 
-                                            onChange={handleInputChange} 
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            id="price"
+                                            name="price"
+                                            value={product.price}
+                                            onChange={handleInputChange}
                                             required
                                             className="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
                                             placeholder="0.00"
@@ -438,12 +470,12 @@ const AdminProductForm = () => {
                                     <label htmlFor="quantity" className="block text-sm font-semibold text-gray-700 mb-2">
                                         Stock Quantity *
                                     </label>
-                                    <input 
-                                        type="number" 
-                                        id="quantity" 
-                                        name="quantity" 
-                                        value={product.quantity} 
-                                        onChange={handleInputChange} 
+                                    <input
+                                        type="number"
+                                        id="quantity"
+                                        name="quantity"
+                                        value={product.quantity}
+                                        onChange={handleInputChange}
                                         required
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
                                         placeholder="0"
@@ -455,11 +487,11 @@ const AdminProductForm = () => {
                                     <label htmlFor="categoryId" className="block text-sm font-semibold text-gray-700 mb-2">
                                         Category *
                                     </label>
-                                    <select 
-                                        id="categoryId" 
-                                        name="categoryId" 
-                                        value={product.categoryId} 
-                                        onChange={handleInputChange} 
+                                    <select
+                                        id="categoryId"
+                                        name="categoryId"
+                                        value={product.categoryId}
+                                        onChange={handleInputChange}
                                         required
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
                                     >
@@ -477,11 +509,11 @@ const AdminProductForm = () => {
                                     <label htmlFor="type" className="block text-sm font-semibold text-gray-700 mb-2">
                                         Type
                                     </label>
-                                    <select 
-                                        id="type" 
-                                        name="type" 
-                                        value={product.type} 
-                                        onChange={handleInputChange} 
+                                    <select
+                                        id="type"
+                                        name="type"
+                                        value={product.type}
+                                        onChange={handleInputChange}
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
                                     >
                                         <option value="MEN">Men</option>
@@ -494,52 +526,52 @@ const AdminProductForm = () => {
                             {/* Checkboxes */}
                             <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="bestseller" 
-                                        name="bestseller" 
-                                        checked={product.bestseller} 
-                                        onChange={handleInputChange} 
-                                        className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500" 
+                                    <input
+                                        type="checkbox"
+                                        id="bestseller"
+                                        name="bestseller"
+                                        checked={product.bestseller}
+                                        onChange={handleInputChange}
+                                        className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                                     />
                                     <label htmlFor="bestseller" className="ml-2 block text-sm text-gray-900">
                                         Bestseller
                                     </label>
                                 </div>
                                 <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="newArrival" 
-                                        name="newArrival" 
-                                        checked={product.newArrival} 
-                                        onChange={handleInputChange} 
-                                        className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500" 
+                                    <input
+                                        type="checkbox"
+                                        id="newArrival"
+                                        name="newArrival"
+                                        checked={product.newArrival}
+                                        onChange={handleInputChange}
+                                        className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                                     />
                                     <label htmlFor="newArrival" className="ml-2 block text-sm text-gray-900">
                                         New Arrival
                                     </label>
                                 </div>
                                 <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="hasVariants" 
-                                        name="hasVariants" 
-                                        checked={product.hasVariants} 
-                                        onChange={handleInputChange} 
-                                        className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500" 
+                                    <input
+                                        type="checkbox"
+                                        id="hasVariants"
+                                        name="hasVariants"
+                                        checked={product.hasVariants}
+                                        onChange={handleInputChange}
+                                        className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                                     />
                                     <label htmlFor="hasVariants" className="ml-2 block text-sm text-gray-900">
                                         Has Variants
                                     </label>
                                 </div>
                                 <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="isPackable" 
-                                        name="isPackable" 
-                                        checked={product.isPackable} 
-                                        onChange={handleInputChange} 
-                                        className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500" 
+                                    <input
+                                        type="checkbox"
+                                        id="isPackable"
+                                        name="isPackable"
+                                        checked={product.isPackable}
+                                        onChange={handleInputChange}
+                                        className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                                     />
                                     <label htmlFor="isPackable" className="ml-2 block text-sm text-gray-900">
                                         Available for Custom Packs
@@ -590,22 +622,60 @@ const AdminProductForm = () => {
                                 <label htmlFor="images" className="block text-sm font-semibold text-gray-700 mb-2">
                                     Upload Images
                                 </label>
-                                <input 
-                                    type="file" 
-                                    id="images" 
-                                    name="images" 
-                                    multiple 
-                                    onChange={handleImageChange} 
+                                <input
+                                    type="file"
+                                    id="images"
+                                    name="images"
+                                    multiple
+                                    onChange={handleImageChange}
                                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100"
                                 />
-                                
-                                {imagePreviews.length > 0 && (
-                                    <div className="flex flex-wrap gap-4 mt-4">
-                                        {imagePreviews.map((preview, index) => (
-                                            <img key={index} src={preview} alt={`Preview ${index + 1}`} className="w-24 h-24 object-cover rounded-md border" />
-                                        ))}
-                                    </div>
-                                )}
+
+                                <div className="mt-4 space-y-4">
+                                    {/* Existing Images */}
+                                    {existingImages.length > 0 && (
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-700 mb-2">Existing Images:</p>
+                                            <div className="flex flex-wrap gap-4">
+                                                {existingImages.map((preview, index) => (
+                                                    <div key={`existing-${index}`} className="relative group">
+                                                        <img src={preview} alt={`Existing ${index + 1}`} className="w-24 h-24 object-cover rounded-md border" />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeExistingImage(index)}
+                                                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                                                            title="Remove Image"
+                                                        >
+                                                            <FiX className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* New Images */}
+                                    {newImagePreviews.length > 0 && (
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-700 mb-2">New Images to Append:</p>
+                                            <div className="flex flex-wrap gap-4">
+                                                {newImagePreviews.map((preview, index) => (
+                                                    <div key={`new-${index}`} className="relative group">
+                                                        <img src={preview} alt={`New ${index + 1}`} className="w-24 h-24 object-cover rounded-md border ring-2 ring-green-500" />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeNewImage(index)}
+                                                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
+                                                            title="Remove Image"
+                                                        >
+                                                            <FiX className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -621,38 +691,38 @@ const AdminProductForm = () => {
                                     <div key={index} className="flex items-end gap-4 p-4 bg-gray-50 rounded-lg mb-4">
                                         <div className="flex-grow">
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Type Name *</label>
-                                            <input 
-                                                type="text" 
-                                                placeholder="e.g., Size, Color" 
-                                                value={vt.name} 
-                                                onChange={(e) => handleVariantTypeChange(index, 'name', e.target.value)} 
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500" 
-                                                required 
+                                            <input
+                                                type="text"
+                                                placeholder="e.g., Size, Color"
+                                                value={vt.name}
+                                                onChange={(e) => handleVariantTypeChange(index, 'name', e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
+                                                required
                                             />
                                         </div>
                                         <div className="flex-grow">
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Options (comma-separated) *</label>
-                                            <input 
-                                                type="text" 
-                                                placeholder="e.g., S, M, L" 
-                                                value={vt.options} 
-                                                onChange={(e) => handleVariantTypeChange(index, 'options', e.target.value)} 
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500" 
-                                                required 
+                                            <input
+                                                type="text"
+                                                placeholder="e.g., S, M, L"
+                                                value={vt.options}
+                                                onChange={(e) => handleVariantTypeChange(index, 'options', e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
+                                                required
                                             />
                                         </div>
-                                        <button 
-                                            type="button" 
-                                            onClick={() => removeVariantType(index)} 
+                                        <button
+                                            type="button"
+                                            onClick={() => removeVariantType(index)}
                                             className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 transition-colors"
                                         >
                                             Remove
                                         </button>
                                     </div>
                                 ))}
-                                <button 
-                                    type="button" 
-                                    onClick={addVariantType} 
+                                <button
+                                    type="button"
+                                    onClick={addVariantType}
                                     className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
                                 >
                                     Add Variant Type
@@ -674,10 +744,10 @@ const AdminProductForm = () => {
                                             {product.variantTypes.map(vt => (
                                                 <div key={vt.name}>
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">{vt.name}</label>
-                                                    <select 
-                                                        value={variant.variantMap[vt.name] || ''} 
-                                                        onChange={(e) => handleVariantMapChange(index, vt.name, e.target.value)} 
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500" 
+                                                    <select
+                                                        value={variant.variantMap[vt.name] || ''}
+                                                        onChange={(e) => handleVariantMapChange(index, vt.name, e.target.value)}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
                                                         required
                                                     >
                                                         <option value="">Select {vt.name}</option>
@@ -689,49 +759,49 @@ const AdminProductForm = () => {
                                             ))}
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
-                                                <input 
-                                                    type="number" 
-                                                    step="0.01" 
-                                                    value={variant.price} 
-                                                    onChange={(e) => handleVariantChange(index, 'price', e.target.value)} 
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500" 
-                                                    required 
-                                                    min="0" 
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    value={variant.price}
+                                                    onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
+                                                    required
+                                                    min="0"
                                                 />
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Stock *</label>
-                                                <input 
-                                                    type="number" 
-                                                    value={variant.stock} 
-                                                    onChange={(e) => handleVariantChange(index, 'stock', e.target.value)} 
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500" 
-                                                    required 
-                                                    min="0" 
+                                                <input
+                                                    type="number"
+                                                    value={variant.stock}
+                                                    onChange={(e) => handleVariantChange(index, 'stock', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
+                                                    required
+                                                    min="0"
                                                 />
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Variant Image</label>
-                                                <input 
-                                                    type="file" 
-                                                    accept="image/*" 
-                                                    onChange={(e) => handleVariantImageChange(index, e)} 
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500" 
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleVariantImageChange(index, e)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
                                                 />
                                             </div>
                                         </div>
                                         {variantImagePreviews[index] && (
                                             <div className="flex items-center gap-4">
-                                                <img 
-                                                    src={variantImagePreviews[index]} 
-                                                    alt={`Variant ${index + 1} preview`} 
-                                                    className="w-20 h-20 object-cover rounded-md border" 
+                                                <img
+                                                    src={variantImagePreviews[index]}
+                                                    alt={`Variant ${index + 1} preview`}
+                                                    className="w-20 h-20 object-cover rounded-md border"
                                                 />
-                                                <button 
-                                                    type="button" 
-                                                    onClick={() => removeVariantImage(index)} 
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeVariantImage(index)}
                                                     className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition-colors"
                                                 >
                                                     Remove Image
@@ -739,9 +809,9 @@ const AdminProductForm = () => {
                                             </div>
                                         )}
                                         <div className="flex justify-end">
-                                            <button 
-                                                type="button" 
-                                                onClick={() => removeVariant(index)} 
+                                            <button
+                                                type="button"
+                                                onClick={() => removeVariant(index)}
                                                 className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
                                             >
                                                 Remove Variant
@@ -758,7 +828,7 @@ const AdminProductForm = () => {
                                 <FiEye className="w-6 h-6 text-pink-500 mr-3" />
                                 <h2 className="text-2xl font-bold text-gray-900">Display Settings</h2>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 {/* Purchase Notifications Toggle */}
                                 <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
@@ -766,7 +836,7 @@ const AdminProductForm = () => {
                                         type="checkbox"
                                         checked={product.showPurchaseNotifications || false}
                                         onChange={(e) => {
-                                            setProduct({...product, showPurchaseNotifications: e.target.checked});
+                                            setProduct({ ...product, showPurchaseNotifications: e.target.checked });
                                         }}
                                         className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
                                     />
@@ -785,7 +855,7 @@ const AdminProductForm = () => {
                                         type="checkbox"
                                         checked={product.showCountdownTimer || false}
                                         onChange={(e) => {
-                                            setProduct({...product, showCountdownTimer: e.target.checked});
+                                            setProduct({ ...product, showCountdownTimer: e.target.checked });
                                         }}
                                         className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
                                     />

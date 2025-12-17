@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../utils/currency';
 
 const PackCard = ({ pack, onQuickView }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -56,7 +58,7 @@ const PackCard = ({ pack, onQuickView }) => {
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
                     {pack.totalSavings > 0 && (
                         <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md animate-pulse">
-                            Économisez ${pack.totalSavings}
+                            Économisez {formatPrice(pack.totalSavings)}
                         </span>
                     )}
                     <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-md border border-gray-100 icon-flip">
@@ -100,7 +102,7 @@ const PackCard = ({ pack, onQuickView }) => {
                     <div>
                         <span className="block text-xs text-gray-400">Prix Total</span>
                         <span className="text-2xl font-black bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                            ${pack.price ? pack.price.toFixed(2) : '0.00'}
+                            {formatPrice(pack.price || 0)}
                         </span>
                     </div>
 

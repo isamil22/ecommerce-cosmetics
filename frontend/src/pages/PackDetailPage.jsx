@@ -11,6 +11,7 @@ import EnhancedCountdown from '../components/EnhancedCountdown';
 import PurchaseNotifications from '../components/PurchaseNotifications';
 import StickyAddToCart from '../components/StickyAddToCart';
 import './PackDetailPage.css';
+import { formatPrice } from '../utils/currency';
 
 const StickyPackHeader = ({ pack, composedImageUrl, onScrollTop }) => (
     <div className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200 transform transition-all duration-300 animate-slide-down py-3 px-4 flex items-center justify-between sm:hidden">
@@ -25,7 +26,7 @@ const StickyPackHeader = ({ pack, composedImageUrl, onScrollTop }) => (
             </div>
             <div>
                 <p className="text-xs text-gray-500 font-medium leading-tight mb-1">سعر الحزمة / Total</p>
-                <p className="text-pink-600 font-black text-xl leading-none tracking-tight">${(pack.price || 0).toFixed(2)}</p>
+                <p className="text-pink-600 font-black text-xl leading-none tracking-tight">{formatPrice(pack.price)}</p>
             </div>
         </div>
         <button
@@ -61,7 +62,7 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
             className={containerClasses}
             role="button"
             tabIndex={0}
-            aria-label={`${isSelected ? 'Sélectionné' : 'Sélectionner'} ${product.name} pour ${(product.price || 0).toFixed(2)} dollars`}
+            aria-label={`${isSelected ? 'Sélectionné' : 'Sélectionner'} ${product.name} pour ${formatPrice(product.price)}`}
             onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -101,7 +102,7 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                 </div>
                 <div className="flex items-center justify-between">
                     <span className="text-pink-600 font-bold text-base sm:text-xl">
-                        ${(product.price || 0).toFixed(2)}
+                        {formatPrice(product.price)}
                     </span>
                     <div className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-sm font-semibold whitespace-nowrap ${isSelected
                         ? 'bg-pink-100 text-pink-700'
@@ -231,7 +232,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                     content_name: packData.name,
                     content_type: 'product_group',
                     value: packData.price,
-                    currency: 'USD'
+                    currency: 'MAD'
                 });
             }
             // -----------------------------------------
@@ -435,7 +436,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                     content_name: pack.name,
                     content_type: 'product_group',
                     value: pack.price,
-                    currency: 'USD'
+                    currency: 'MAD'
                 });
             }
 
@@ -616,9 +617,9 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                         <div className="relative z-10">
                                             <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">السعر الإجمالي للصفقة / Prix Total du Pack</p>
                                             <div className="flex items-baseline gap-2">
-                                                <p className="text-3xl sm:text-5xl font-black tracking-tight">${(pack.price || 0).toFixed(2)}</p>
+                                                <p className="text-3xl sm:text-5xl font-black tracking-tight">{formatPrice(pack.price)}</p>
                                                 {pack.originalPrice > pack.price && (
-                                                    <span className="text-lg text-pink-200 line-through">${pack.originalPrice}</span>
+                                                    <span className="text-lg text-pink-200 line-through">{formatPrice(pack.originalPrice)}</span>
                                                 )}
                                             </div>
                                             <p className="text-xs sm:text-sm mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded">✨ توفير مميز / Économie Spéciale</p>
@@ -675,7 +676,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                     >
                                         <span className="animate-pulse">✨</span>
                                         إضافة الحزمة للسلة / Ajouter au Panier
-                                        <span className="bg-white/20 px-2 py-0.5 rounded text-sm">${(pack.price || 0).toFixed(0)}</span>
+                                        <span className="bg-white/20 px-2 py-0.5 rounded text-sm">{formatPrice(pack.price)}</span>
                                     </button>
                                 </div>
                             </div>
@@ -693,47 +694,95 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                         />
                     </div>
 
-                    {/* Simple Reviews Section */}
-                    <div className="mt-10">
-                        <h2 className="text-xl font-bold text-gray-800 mb-4 px-2">💬 آراء العملاء / Avis Clients</h2>
-                        {pack.comments && pack.comments.length > 0 ? (
-                            <div className="grid gap-4">
-                                {pack.comments.map(comment => (
-                                    <div key={comment.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                        <div className="flex items-center mb-2">
-                                            <div className="font-bold text-gray-800 ml-auto">{comment.userFullName}</div>
-                                            <div className="text-yellow-400 text-sm">{'★'.repeat(comment.score)}</div>
-                                        </div>
-                                        <p className="text-gray-600 text-sm mb-3">{comment.content}</p>
-                                        {comment.images && comment.images.length > 0 && (
-                                            <div className="flex flex-wrap gap-2 mt-2">
-                                                {comment.images.map((img, idx) => (
-                                                    <img
-                                                        key={idx}
-                                                        src={img}
-                                                        alt={`Review attachment ${idx + 1}`}
-                                                        className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
-                                                        onClick={() => window.open(img, '_blank')}
-                                                    />
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-xl">
-                                لا توجد تعليقات حتى الآن / Aucun avis pour le moment
-                            </div>
-                        )}
-                        {!pack.hideCommentForm && (
-                            <div className="mt-6">
-                                <CommentForm />
-                            </div>
-                        )}
+                    {/* Clean Luxury Reviews Section */}
+                    <div className="mt-16 sm:mt-24">
+                        <div className="bg-white/80 backdrop-blur-xl rounded-2xl lg:rounded-[2rem] p-6 lg:p-12 border border-white/60 shadow-xl">
+                            <h2 className="text-xl lg:text-3xl font-bold text-gray-900 mb-6 lg:mb-10 flex items-center gap-3">
+                                <span className="w-1.5 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full shadow-lg"></span>
+                                💬 آراء العملاء / Avis Clients ({pack.comments?.length || 0})
+                            </h2>
 
-                        {/* Recommendations Section */}
-                        <PackRecommendations pack={pack} />
+                            {pack.comments && pack.comments.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8 mt-8">
+                                    {pack.comments.map((comment, index) => (
+                                        <div
+                                            key={comment.id || index}
+                                            className="glass-panel-pro p-6 lg:p-8 rounded-3xl relative overflow-hidden group hover:shadow-xl transition-all duration-500 animate-slide-up"
+                                            style={{ animationDelay: `${index * 0.1}s` }}
+                                        >
+                                            {/* Decoration Gradient */}
+                                            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-bl-full -mr-6 -mt-6 transition-all group-hover:scale-150"></div>
+
+                                            <div className="flex items-start justify-between mb-6 relative">
+                                                <div className="flex items-center gap-4">
+                                                    {/* Avatar */}
+                                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-white shadow-inner flex items-center justify-center text-lg font-bold text-gray-600">
+                                                        {comment.userFullName ? comment.userFullName[0].toUpperCase() : 'U'}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-bold text-gray-900 text-lg flex items-center gap-2">
+                                                            {comment.userFullName || "Customer"}
+                                                            <span className="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
+                                                                <span>✓</span> Verified
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex text-yellow-400 text-sm mt-0.5">
+                                                            {'★'.repeat(comment.score)}
+                                                            <span className="text-gray-200">{'★'.repeat(5 - comment.score)}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-xs text-gray-400 font-medium bg-gray-50 px-3 py-1 rounded-full">
+                                                    Recent
+                                                </div>
+                                            </div>
+
+                                            <div className="relative z-10">
+                                                <p className="text-gray-600 leading-relaxed font-medium text-lg italic">
+                                                    "{comment.content}"
+                                                </p>
+                                                {/* Render Comment Images */}
+                                                {comment.images && comment.images.length > 0 && (
+                                                    <div className="flex flex-wrap gap-2 mt-4">
+                                                        {comment.images.map((img, imgIdx) => (
+                                                            <div key={imgIdx} className="relative w-24 h-24 rounded-xl overflow-hidden shadow-sm border border-gray-100 group/img cursor-pointer transition-all hover:scale-105">
+                                                                <img
+                                                                    src={img}
+                                                                    alt={`Review attachment ${imgIdx + 1}`}
+                                                                    className="w-full h-full object-cover"
+                                                                    onClick={() => window.open(img, '_blank')}
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Like/Helpful Actions (Mock) */}
+                                            <div className="mt-6 flex items-center gap-4 pt-6 border-t border-gray-100/50">
+                                                <button className="text-sm font-bold text-gray-400 hover:text-pink-500 transition-colors flex items-center gap-1 group/btn">
+                                                    <span className="group-hover/btn:scale-125 transition-transform">❤️</span> مفيد / Utile
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-12 text-gray-400 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200">
+                                    <div className="text-6xl mb-4 grayscale opacity-50">💬</div>
+                                    <p className="text-xl font-medium">لا توجد تعليقات حتى الآن / Aucun avis pour le moment</p>
+                                    <p className="text-sm mt-2">كن أول من يقيم هذه الحزمة! / Soyez le premier à évaluer ce pack !</p>
+                                </div>
+                            )}
+                            {!pack.hideCommentForm && (
+                                <div className="mt-6">
+                                    <CommentForm />
+                                </div>
+                            )}
+
+                            {/* Recommendations Section */}
+                            <PackRecommendations pack={pack} />
+                        </div>
                     </div>
                 </>
             )}

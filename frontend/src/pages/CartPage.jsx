@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getCart, removeCartItem, updateCartItemQuantity } from '../api/apiService';
 import { Link, useNavigate } from 'react-router-dom';
 import ReactGA from "react-ga4";
+import { formatPrice } from '../utils/currency';
 
 const CartPage = () => {
     const [cart, setCart] = useState(null);
@@ -264,7 +265,7 @@ const CartPage = () => {
                                                     <div>
                                                         <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.productName}</h3>
                                                         <p className="text-gray-600 text-sm">
-                                                            ${item.price.toFixed(2)} each
+                                                            {formatPrice(item.price)} each
                                                         </p>
                                                     </div>
                                                     <button
@@ -304,7 +305,7 @@ const CartPage = () => {
                                                     </div>
                                                     <div className="text-right">
                                                         <p className="text-xl font-bold text-gray-900">
-                                                            ${(item.price * item.quantity).toFixed(2)}
+                                                            {formatPrice(item.price * item.quantity)}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -336,7 +337,7 @@ const CartPage = () => {
                                 <div className="space-y-4 mb-6">
                                     <div className="flex justify-between text-gray-600">
                                         <span>Subtotal</span>
-                                        <span className="font-medium text-gray-900">${calculateSubtotal().toFixed(2)}</span>
+                                        <span className="font-medium text-gray-900">{formatPrice(calculateSubtotal())}</span>
                                     </div>
                                     <div className="flex justify-between text-gray-600">
                                         <span>Shipping</span>
@@ -344,7 +345,7 @@ const CartPage = () => {
                                             {calculateShipping() === 0 ? (
                                                 <span className="text-green-600">FREE</span>
                                             ) : (
-                                                `$${calculateShipping().toFixed(2)}`
+                                                formatPrice(calculateShipping())
                                             )}
                                         </span>
                                     </div>
@@ -353,7 +354,7 @@ const CartPage = () => {
                                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                                             <p className="text-sm text-blue-800">
                                                 <span className="font-semibold">
-                                                    Add ${(100 - calculateSubtotal()).toFixed(2)} more
+                                                    Add {formatPrice(100 - calculateSubtotal())} more
                                                 </span> for free shipping!
                                             </p>
                                             <div className="mt-2 w-full bg-blue-200 rounded-full h-2">
@@ -369,7 +370,7 @@ const CartPage = () => {
                                         <div className="flex justify-between items-center">
                                             <span className="text-lg font-semibold text-gray-900">Total</span>
                                             <span className="text-2xl font-bold text-pink-600">
-                                                ${calculateTotal().toFixed(2)}
+                                                {formatPrice(calculateTotal())}
                                             </span>
                                         </div>
                                     </div>

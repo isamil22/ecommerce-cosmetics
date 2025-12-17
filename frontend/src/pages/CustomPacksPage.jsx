@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { getAllCustomPacks } from '../api/apiService';
 import Loader from '../components/Loader';
 import CountdownBar from '../components/CountdownBar';
+import { formatPrice } from '../utils/currency';
 
 // Enhanced Custom Pack Card Component
 const CustomPackCard = ({ pack, index, onQuickView }) => {
@@ -13,7 +14,7 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
     // Determine pricing display
     const isFixedPricing = pack.pricingType === 'FIXED';
     const priceDisplay = isFixedPricing
-        ? `$${pack.fixedPrice?.toFixed(2)}`
+        ? `${formatPrice(pack.fixedPrice)}`
         : `${(pack.discountRate * 100)?.toFixed(0)}% DE REMISE`;
 
     // Calculate item range
@@ -474,7 +475,7 @@ const CustomPacksPage = () => {
                                                 <span className="font-semibold text-gray-700">Prix :</span>
                                                 <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                                                     {quickViewPack.pricingType === 'FIXED'
-                                                        ? `$${quickViewPack.fixedPrice?.toFixed(2)}`
+                                                        ? `${formatPrice(quickViewPack.fixedPrice)}`
                                                         : `${(quickViewPack.discountRate * 100)?.toFixed(0)}% DE REMISE`
                                                     }
                                                 </span>

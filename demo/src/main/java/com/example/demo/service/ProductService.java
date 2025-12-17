@@ -131,7 +131,7 @@ public class ProductService {
         // Handle images
         if (images != null && !images.isEmpty()) {
             List<String> imageUrls = uploadAndGetImageUrls(images);
-            existingProduct.getImages().clear();
+            // existingProduct.getImages().clear(); // REMOVED to allow appending
             existingProduct.getImages().addAll(imageUrls);
         }
 

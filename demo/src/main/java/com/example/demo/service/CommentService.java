@@ -34,11 +34,11 @@ public class CommentService {
     private final PasswordEncoder passwordEncoder;
 
     // Add comment to product by authenticated user
-    public CommentDTO addComment(Long productId, Long userId, CommentDTO commentDTO){
+    public CommentDTO addComment(Long productId, Long userId, CommentDTO commentDTO) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(()-> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Comment comment = commentMapper.toEntity(commentDTO);
         comment.setProduct(product);
@@ -64,7 +64,8 @@ public class CommentService {
     }
 
     // Add admin comment to product
-    public CommentDTO addAdminComment(Long productId, String content, Integer score, String name, List<MultipartFile> images) throws IOException {
+    public CommentDTO addAdminComment(Long productId, String content, Integer score, String name,
+            List<MultipartFile> images) throws IOException {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
@@ -89,7 +90,8 @@ public class CommentService {
     }
 
     // Add admin comment to pack
-    public CommentDTO addAdminCommentToPack(Long packId, String content, Integer score, String name, List<MultipartFile> images) throws IOException {
+    public CommentDTO addAdminCommentToPack(Long packId, String content, Integer score, String name,
+            List<MultipartFile> images) throws IOException {
         Pack pack = packRepository.findById(packId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pack not found"));
 
@@ -115,7 +117,8 @@ public class CommentService {
     }
 
     // Update pack comment (NEW METHOD)
-    public CommentDTO updatePackComment(Long commentId, String content, Integer score, String name, List<MultipartFile> images) throws IOException {
+    public CommentDTO updatePackComment(Long commentId, CommentDTO commentDTO, List<MultipartFile> images)
+            throws IOException {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
 
@@ -124,23 +127,23 @@ public class CommentService {
             throw new IllegalArgumentException("Comment is not associated with a pack");
         }
 
-        comment.setContent(content);
-        comment.setScore(score);
+        comment.setContent(commentDTO.getContent());
+        comment.setScore(commentDTO.getScore());
 
         // Update user name
-        comment.getUser().setFullName(name);
-        userRepository.save(comment.getUser());
+        if (commentDTO.getUserFullName() != null && !commentDTO.getUserFullName().trim().isEmpty()) {
+            comment.getUser().setFullName(commentDTO.getUserFullName());
+            userRepository.save(comment.getUser());
+        }
 
         // Handle images
         if (images != null && !images.isEmpty()) {
-            List<String> imageUrls = new ArrayList<>();
             for (MultipartFile image : images) {
                 if (image != null && !image.isEmpty()) {
-                    imageUrls.add(localFileService.saveImage(image, "comments"));
+                    String imageUrl = localFileService.saveImage(image, "comments");
+                    comment.getImages().add(imageUrl);
                 }
             }
-            comment.getImages().clear();
-            comment.getImages().addAll(imageUrls);
         }
 
         Comment updatedComment = commentRepository.save(comment);
@@ -161,7 +164,7 @@ public class CommentService {
     }
 
     // Get comments by product
-    public List<CommentDTO> getCommentsByProduct(Long productId){
+    public List<CommentDTO> getCommentsByProduct(Long productId) {
         List<Comment> comments = commentRepository.findByProductId(productId);
         return comments.stream()
                 .map(commentMapper::toDTO)
@@ -184,7 +187,8 @@ public class CommentService {
     }
 
     // Update comment (for product comments)
-    public CommentDTO updateComment(Long commentId, CommentDTO commentDTO, MultipartFile image) throws IOException {
+    public CommentDTO updateComment(Long commentId, CommentDTO commentDTO, List<MultipartFile> images)
+            throws IOException {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
         comment.setContent(commentDTO.getContent());
@@ -196,10 +200,13 @@ public class CommentService {
             userRepository.save(comment.getUser());
         }
 
-        if (image != null && !image.isEmpty()) {
-            String imageUrl = localFileService.saveImage(image, "comments");
-            comment.getImages().clear();
-            comment.getImages().add(imageUrl);
+        if (images != null && !images.isEmpty()) {
+            for (MultipartFile image : images) {
+                if (image != null && !image.isEmpty()) {
+                    String imageUrl = localFileService.saveImage(image, "comments");
+                    comment.getImages().add(imageUrl);
+                }
+            }
         }
 
         Comment updatedComment = commentRepository.save(comment);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatPrice } from '../utils/currency';
 
 const ShippingThresholdIndicator = ({ currentTotal = 0 }) => {
     // Set your free shipping threshold here (e.g., $50)
@@ -12,7 +13,7 @@ const ShippingThresholdIndicator = ({ currentTotal = 0 }) => {
             {amountLeft > 0 ? (
                 <div>
                     <p className="text-green-800 font-semibold text-center">
-                        You're only <span className="font-bold">${amountLeft.toFixed(2)}</span> away from free shipping!
+                        You're only <span className="font-bold">{formatPrice(amountLeft)}</span> away from free shipping!
                     </p>
                 </div>
             ) : (

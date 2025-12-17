@@ -4,6 +4,7 @@ import { getAllPacks } from '../api/apiService';
 import Loader from '../components/Loader';
 import CountdownBar from '../components/CountdownBar';
 import PackQuickView from '../components/PackQuickView';
+import { formatPrice } from '../utils/currency';
 
 // Enhanced Pack Card Component with Professional Design
 const PackCard = ({ pack, index, onQuickView }) => {
@@ -64,7 +65,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                 )}
                 {savings > 0 && (
                     <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        💰 وفر ${savings.toFixed(2)} / Éco ${savings.toFixed(2)}
+                        💰 وفر {formatPrice(savings)} / Éco {formatPrice(savings)}
                     </span>
                 )}
                 {pack.items && pack.items.length > 0 && (
@@ -174,18 +175,18 @@ const PackCard = ({ pack, index, onQuickView }) => {
                     <div className="mt-auto">
                         <div className="flex items-center gap-2 mb-3">
                             <span className="text-3xl font-extrabold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                                ${pack.price?.toFixed(2)}
+                                {formatPrice(pack.price)}
                             </span>
                             {totalItemPrice > pack.price && (
                                 <span className="text-lg text-gray-400 line-through">
-                                    ${totalItemPrice.toFixed(2)}
+                                    {formatPrice(totalItemPrice)}
                                 </span>
                             )}
                         </div>
 
                         {savings > 0 && (
                             <p className="text-green-600 text-sm font-semibold">
-                                💰 وفر ${savings.toFixed(2)} (-{savingsPercent}%) / Éco ${savings.toFixed(2)}
+                                💰 وفر {formatPrice(savings)} (-{savingsPercent}%) / Éco {formatPrice(savings)}
                             </p>
                         )}
                     </div>

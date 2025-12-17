@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../utils/currency';
 
 const PackQuickView = ({ pack, isOpen, onClose }) => {
     if (!isOpen || !pack) return null;
@@ -72,7 +74,7 @@ const PackQuickView = ({ pack, isOpen, onClose }) => {
                                                         </span>
                                                         {item.defaultProduct.price && (
                                                             <span className="text-xs text-gray-500 ml-auto">
-                                                                ${item.defaultProduct.price.toFixed(2)}
+                                                                {formatPrice(item.defaultProduct.price)}
                                                             </span>
                                                         )}
                                                     </div>
@@ -86,18 +88,18 @@ const PackQuickView = ({ pack, isOpen, onClose }) => {
                                 <div className="mb-6">
                                     <div className="flex items-center gap-2 sm:gap-4 mb-2 flex-wrap">
                                         <span className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                                            ${pack.price?.toFixed(2)}
+                                            {formatPrice(pack.price || 0)}
                                         </span>
                                         {totalItemPrice > pack.price && (
                                             <span className="text-lg sm:text-xl text-gray-400 line-through">
-                                                ${totalItemPrice.toFixed(2)}
+                                                {formatPrice(totalItemPrice)}
                                             </span>
                                         )}
                                     </div>
 
                                     {savings > 0 && (
                                         <p className="text-green-600 font-semibold">
-                                            💰 Économisez ${savings.toFixed(2)} (-{savingsPercent}%)
+                                            💰 Économisez {formatPrice(savings)} (-{savingsPercent}%)
                                         </p>
                                     )}
                                 </div>

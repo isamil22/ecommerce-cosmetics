@@ -263,7 +263,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                     <input
                                         type="number"
                                         name="minPrice"
-                                        placeholder="$0"
+                                        placeholder="0 MAD"
                                         value={filters.minPrice}
                                         onChange={handleFilterChange}
                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
@@ -280,7 +280,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                     <input
                                         type="number"
                                         name="maxPrice"
-                                        placeholder="$1000"
+                                        placeholder="1000 MAD"
                                         value={filters.maxPrice}
                                         onChange={handleFilterChange}
                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
@@ -368,19 +368,19 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         onClick={() => setFilters(prev => ({ ...prev, minPrice: '0', maxPrice: '50' }))}
                                         className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full text-sm font-medium hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >
-                                        تحت $50 / Moins de $50
+                                        تحت 50 MAD / Moins de 50 MAD
                                     </button>
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, minPrice: '50', maxPrice: '100' }))}
                                         className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-full text-sm font-medium hover:from-blue-600 hover:to-cyan-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >
-                                        $50 - $100
+                                        50 MAD - 100 MAD
                                     </button>
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, minPrice: '100', maxPrice: '' }))}
                                         className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >
-                                        فوق $100 / Plus de $100
+                                        فوق 100 MAD / Plus de 100 MAD
                                     </button>
                                 </div>
                             </div>
@@ -434,7 +434,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         )}
                                         {(filters.minPrice || filters.maxPrice) && (
                                             <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-                                                ${filters.minPrice || '0'} - ${filters.maxPrice || '∞'}
+                                                {filters.minPrice || '0'} MAD - {filters.maxPrice || '∞'} MAD
                                             </span>
                                         )}
                                         {filters.type !== 'ALL' && (

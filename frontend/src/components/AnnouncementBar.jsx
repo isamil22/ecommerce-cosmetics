@@ -17,7 +17,7 @@ const AnnouncementBar = () => {
                     // Only set default if no data exists at all
                     setAnnouncement({
                         enabled: true,
-                        text: "شحن مجاني للطلبات فوق $50 / Free Shipping on Orders Over $50!",
+                        text: "شحن مجاني للطلبات فوق 500 MAD / Free Shipping on Orders Over 500 MAD!",
                         showOnlineCounter: true,
                         backgroundColor: "gradient",
                         textColor: "#ffffff",
@@ -29,7 +29,7 @@ const AnnouncementBar = () => {
                 // Set default announcement on error
                 setAnnouncement({
                     enabled: true,
-                    text: "شحن مجاني للطلبات فوق $50 / Free Shipping on Orders Over $50!",
+                    text: "شحن مجاني للطلبات فوق 500 MAD / Free Shipping on Orders Over 500 MAD!",
                     showOnlineCounter: true,
                     backgroundColor: "gradient",
                     textColor: "#ffffff",
@@ -49,7 +49,7 @@ const AnnouncementBar = () => {
         const updateOnlineCount = () => {
             setOnlineCount(Math.floor(Math.random() * 50) + 20);
         };
-        
+
         updateOnlineCount();
         const interval = setInterval(updateOnlineCount, 10000); // Update every 10 seconds
         return () => clearInterval(interval);
@@ -93,24 +93,25 @@ const AnnouncementBar = () => {
     }
 
     return (
-        <div 
-            ref={barRef} 
+        <div
+            ref={barRef}
             style={{
                 ...backgroundStyle,
                 color: announcement.textColor || '#ffffff'
             }}
-            className="text-center py-3 text-sm font-semibold relative overflow-hidden"
+            className={`text-center py-3 text-sm font-semibold relative overflow-hidden transition-all duration-300 ${announcement.isSticky ? 'fixed top-0 left-0 right-0 w-full z-[60]' : 'relative w-full z-[60]'
+                }`}
         >
             {/* Animated background overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse"></div>
-            
+
             <div className="relative z-10 flex items-center justify-center gap-3">
                 <span className="text-lg animate-bounce">🎉</span>
                 <span className={animationClasses.join(' ')}>
                     {announcement.text}
                 </span>
                 <span className="text-lg animate-bounce">✨</span>
-                
+
                 {/* Live counter - only show if enabled */}
                 {announcement.showOnlineCounter && (
                     <div className="hidden sm:flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">

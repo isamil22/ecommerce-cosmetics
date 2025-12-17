@@ -19,7 +19,7 @@ const AdminAnnouncementPage = () => {
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
-    const [previewMode, setPreviewMode] = useState(false);
+    const [previewMode, setPreviewMode] = useState(true);
 
     const { hasPermission } = usePermissions();
 
@@ -102,11 +102,10 @@ const AdminAnnouncementPage = () => {
                             <div className="flex items-center space-x-3">
                                 <button
                                     onClick={() => setPreviewMode(!previewMode)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                                        previewMode 
-                                            ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${previewMode
+                                            ? 'bg-green-100 text-green-700 hover:bg-green-200'
                                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
+                                        }`}
                                 >
                                     {previewMode ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                                     {previewMode ? 'Hide Preview' : 'Show Preview'}
@@ -124,13 +123,12 @@ const AdminAnnouncementPage = () => {
 
                     {/* Message */}
                     {message && (
-                        <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
-                            messageType === 'success' 
-                                ? 'bg-green-100 text-green-700 border border-green-200' 
+                        <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${messageType === 'success'
+                                ? 'bg-green-100 text-green-700 border border-green-200'
                                 : 'bg-red-100 text-red-700 border border-red-200'
-                        }`}>
-                            {messageType === 'success' ? 
-                                <FiCheckCircle className="w-5 h-5" /> : 
+                            }`}>
+                            {messageType === 'success' ?
+                                <FiCheckCircle className="w-5 h-5" /> :
                                 <FiAlertCircle className="w-5 h-5" />
                             }
                             <span>{message}</span>
@@ -303,9 +301,9 @@ const AdminAnnouncementPage = () => {
                             {previewMode ? (
                                 <div className="space-y-4">
                                     {/* Preview Announcement Bar */}
-                                    <div 
+                                    <div
                                         style={{
-                                            background: announcement.backgroundColor === 'gradient' 
+                                            background: announcement.backgroundColor === 'gradient'
                                                 ? 'linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6)'
                                                 : announcement.backgroundColor,
                                             color: announcement.textColor
@@ -314,14 +312,14 @@ const AdminAnnouncementPage = () => {
                                     >
                                         {/* Animated background overlay */}
                                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse"></div>
-                                        
+
                                         <div className="relative z-10 flex items-center justify-center gap-3">
                                             <span className="text-lg animate-bounce">🎉</span>
                                             <span className={announcement.animationType === 'pulse' ? 'animate-pulse' : announcement.animationType === 'bounce' ? 'animate-bounce' : ''}>
                                                 {announcement.text || 'Enter your announcement text...'}
                                             </span>
                                             <span className="text-lg animate-bounce">✨</span>
-                                            
+
                                             {/* Live counter - only show if enabled */}
                                             {announcement.showOnlineCounter && (
                                                 <div className="hidden sm:flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">

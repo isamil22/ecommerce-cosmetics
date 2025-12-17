@@ -111,7 +111,8 @@ public class PackCommentManagementTestSuite {
         String adminCommenterName = "Admin User";
         List<MultipartFile> images = new ArrayList<>();
 
-        CommentDTO addedComment = commentService.addAdminCommentToPack(testPack.getId(), initialCommentContent, initialCommentScore, adminCommenterName, images);
+        CommentDTO addedComment = commentService.addAdminCommentToPack(testPack.getId(), initialCommentContent,
+                initialCommentScore, adminCommenterName, images);
         assertNotNull(addedComment.getId());
         assertEquals(initialCommentContent, addedComment.getContent());
         assertEquals(initialCommentScore, addedComment.getScore());
@@ -127,16 +128,17 @@ public class PackCommentManagementTestSuite {
         addedComment.setContent(updatedCommentContent);
         addedComment.setScore(updatedCommentScore);
 
-        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg",
+                "test image content".getBytes());
 
-        Mockito.when(localFileService.saveImage(Mockito.any(MultipartFile.class), Mockito.anyString())).thenReturn("http://localhost:8080/api/images/comments/test.jpg");
+        Mockito.when(localFileService.saveImage(Mockito.any(MultipartFile.class), Mockito.anyString()))
+                .thenReturn("http://localhost:8080/api/images/comments/test.jpg");
 
-
-        CommentDTO updatedCommentDTO = commentService.updateComment(addedComment.getId(), addedComment, imageFile);
+        CommentDTO updatedCommentDTO = commentService.updateComment(addedComment.getId(), addedComment,
+                Collections.singletonList(imageFile));
         assertEquals(updatedCommentContent, updatedCommentDTO.getContent());
         assertEquals(updatedCommentScore, updatedCommentDTO.getScore());
         assertFalse(updatedCommentDTO.getImages().isEmpty());
-
 
         // 3. Admin deletes the comment
         commentService.deleteComment(updatedCommentDTO.getId());

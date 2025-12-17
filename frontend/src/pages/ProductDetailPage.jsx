@@ -16,6 +16,8 @@ import ShippingReturns from '../components/ShippingReturns';
 import { toast } from 'react-toastify';
 import { trackEvent } from '../utils/facebookPixel';
 import ReactGA from 'react-ga4';
+
+import { formatPrice } from '../utils/currency';
 import './PackDetailPage.css';
 
 const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
@@ -34,6 +36,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState({});
     const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
     // Fetch Data
     useEffect(() => {
@@ -190,17 +193,18 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-purple-50 font-sans text-gray-900 pb-20">
             {/* Breadcrumbs - Transparent on Gradient */}
-            <div className="border-b border-gray-200/50 backdrop-blur-sm">
-                <div className="container mx-auto px-4 py-3">
+            {/* Breadcrumbs - Integrated into Page Flow */}
+            <div className="container mx-auto px-4 py-4 lg:py-6">
+                <div className="glass-pill inline-block px-6 py-2 backdrop-blur-xl bg-white/40 border border-white/40 shadow-sm rounded-full">
                     <Breadcrumbs categoryId={product.categoryId} categoryName={product.categoryName} productName={product.name} />
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-8 lg:py-12 max-w-7xl">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+            <div className="container mx-auto px-3 py-4 lg:py-10 max-w-7xl animate-fade-in-up">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-12">
 
                     {/* LEFT COLUMN: Gallery (lg:span-7) */}
-                    <div className="lg:col-span-7 space-y-6">
+                    <div className="lg:col-span-7 space-y-4 lg:space-y-6">
                         {/* Countdown Moved Above Image as requested */}
                         {product.showCountdownTimer && (
                             <div className="relative z-10 transform transition-all hover:scale-[1.01]">
@@ -213,10 +217,10 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                         )}
 
                         {/* Main Image - Glass Effect Container */}
-                        <div className="relative rounded-3xl overflow-hidden bg-white/80 backdrop-blur-xl border border-white/50 shadow-xl aspect-[4/3] lg:aspect-auto lg:h-[600px] group transition-all duration-300 hover:shadow-2xl">
+                        <div className="relative rounded-2xl lg:rounded-3xl overflow-hidden glass-panel-pro shadow-2xl aspect-[4/3] lg:aspect-auto lg:h-[600px] group transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] animate-float">
                             {/* Premium Badge */}
                             <div className="absolute top-6 left-6 z-10">
-                                <span className="bg-black/90 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-full tracking-widest uppercase shadow-lg">
+                                <span className="glass-panel-dark backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-full tracking-widest uppercase shadow-lg border border-white/10">
                                     Premium Quality
                                 </span>
                             </div>
@@ -229,11 +233,61 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                     title="Product Video"
                                 />
                             ) : (
-                                <img
-                                    src={selectedImage || '/placeholder-product.jpg'}
-                                    alt={product.name}
-                                    className="w-full h-full object-contain mix-blend-multiply p-6 transition-transform duration-700 group-hover:scale-110"
-                                />
+                                <div
+                                    className="w-full h-full overflow-hidden cursor-zoom-in relative"
+                                    onClick={() => setIsLightboxOpen(true)}
+                                    onMouseMove={(e) => {
+                                        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                                        const x = ((e.clientX - left) / width) * 100;
+                                        const y = ((e.clientY - top) / height) * 100;
+                                        e.currentTarget.style.setProperty('--x', `${x}%`);
+                                        e.currentTarget.style.setProperty('--y', `${y}%`);
+                                    }}
+                                    style={{
+                                        '--x': '50%',
+                                        '--y': '50%'
+                                    }}
+                                >
+                                    <img
+                                        src={selectedImage || '/placeholder-product.jpg'}
+                                        alt={product.name}
+                                        className="w-full h-full object-contain mix-blend-multiply p-2 lg:p-6 transition-transform duration-200 ease-out hover:scale-[1.6] origin-[var(--x)_var(--y)]"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Lightbox Modal */}
+                            {isLightboxOpen && (
+                                <div
+                                    className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 lg:p-10 animate-fade-in"
+                                    onClick={() => setIsLightboxOpen(false)}
+                                >
+                                    <button
+                                        onClick={() => setIsLightboxOpen(false)}
+                                        className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
+                                    >
+                                        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+
+                                    <div
+                                        className="relative w-full max-w-7xl h-full flex items-center justify-center overflow-hidden cursor-zoom-in"
+                                        onClick={(e) => e.stopPropagation()}
+                                        onMouseMove={(e) => {
+                                            const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                                            const x = ((e.clientX - left) / width) * 100;
+                                            const y = ((e.clientY - top) / height) * 100;
+                                            e.currentTarget.style.setProperty('--x', `${x}%`);
+                                            e.currentTarget.style.setProperty('--y', `${y}%`);
+                                        }}
+                                        style={{ '--x': '50%', '--y': '50%' }}
+                                    >
+                                        <img
+                                            src={selectedImage || '/placeholder-product.jpg'}
+                                            alt={product.name}
+                                            className="max-w-full max-h-full object-contain transition-transform duration-200 ease-out hover:scale-[2] origin-[var(--x)_var(--y)]"
+                                        />
+                                    </div>
+                                </div>
                             )}
                         </div>
 
@@ -256,21 +310,22 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
                     {/* RIGHT COLUMN: Details (lg:span-5) */}
                     <div className="lg:col-span-5 flex flex-col h-full">
-                        <div className="sticky top-24 space-y-8">
+                        <div className="sticky top-24 space-y-4 lg:space-y-6">
 
                             {/* Header Card */}
-                            <div className="bg-white/60 backdrop-blur-md rounded-3xl p-6 lg:p-8 border border-white/60 shadow-lg space-y-6">
-                                <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900 leading-tight">
+                            {/* Header Card */}
+                            <div className="glass-panel-pro rounded-2xl lg:rounded-3xl p-5 lg:p-8 shadow-xl space-y-4 lg:space-y-6 transform transition-all hover:scale-[1.01] duration-500" style={{ animationDelay: '0.1s' }}>
+                                <h1 className="text-2xl lg:text-5xl font-black tracking-tight text-gray-900 leading-tight bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent">
                                     {product.name}
                                 </h1>
 
                                 <div className="flex items-center justify-between">
-                                    <div className="flex items-baseline gap-3">
-                                        <span className="text-4xl font-black bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">
-                                            ${currentPrice}
+                                    <div className="flex items-baseline gap-2 lg:gap-3">
+                                        <span className="text-3xl lg:text-5xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 bg-clip-text text-transparent animate-shine">
+                                            {formatPrice(currentPrice)}
                                         </span>
                                         {oldPrice > currentPrice && (
-                                            <span className="text-xl text-gray-400 line-through">${oldPrice}</span>
+                                            <span className="text-xl text-gray-400 line-through">{formatPrice(oldPrice)}</span>
                                         )}
                                     </div>
                                     <div className="flex items-center gap-1.5 bg-yellow-50 px-3 py-1.5 rounded-xl border border-yellow-100">
@@ -287,7 +342,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
                             {/* Variants - PRO TILES */}
                             {product.hasVariants && product.variantTypes?.length > 0 && (
-                                <div className="bg-white/60 backdrop-blur-md rounded-3xl p-6 lg:p-8 border border-white/60 shadow-lg space-y-6">
+                                <div className="glass-panel-pro rounded-2xl lg:rounded-3xl p-5 lg:p-8 shadow-xl space-y-4 lg:space-y-6" style={{ animationDelay: '0.2s' }}>
                                     {product.variantTypes.map(vt => (
                                         <div key={vt.name}>
                                             <div className="flex justify-between items-center mb-4">
@@ -307,17 +362,17 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                                             key={opt}
                                                             onClick={() => handleOptionSelect(vt.name, opt)}
                                                             className={`
-                                                                relative px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 border
+                                                                relative px-6 py-4 rounded-2xl text-sm font-bold transition-all duration-300 border-2
                                                                 ${isSelected
-                                                                    ? 'border-purple-500 bg-purple-50 text-purple-900 shadow-md ring-1 ring-purple-500'
-                                                                    : 'border-transparent bg-white text-gray-600 hover:border-gray-200 hover:bg-gray-50 hover:shadow-sm'
+                                                                    ? 'border-purple-500 bg-white/80 text-purple-900 shadow-[0_4px_14px_0_rgba(168,85,247,0.39)] transform -translate-y-1'
+                                                                    : 'border-transparent bg-white/40 text-gray-600 hover:border-purple-200 hover:bg-white/60 hover:shadow-md'
                                                                 }
                                                             `}
                                                         >
                                                             {opt}
                                                             {isSelected && (
-                                                                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-purple-600 rounded-full border-2 border-white flex items-center justify-center">
-                                                                    <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                                                <span className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white flex items-center justify-center shadow-lg transform scale-100 transition-transform animate-bounce-custom">
+                                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                                                                 </span>
                                                             )}
                                                         </button>
@@ -330,7 +385,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                             )}
 
                             {/* Action Area */}
-                            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 lg:p-8 border border-white/60 shadow-xl space-y-6 transform transition-all hover:scale-[1.01]" ref={addToCartRef}>
+                            <div className="glass-panel-pro rounded-2xl lg:rounded-3xl p-5 lg:p-8 shadow-2xl space-y-4 lg:space-y-6 transform transition-all hover:scale-[1.02] duration-500 border border-white/60" ref={addToCartRef} style={{ animationDelay: '0.3s' }}>
                                 {/* Stock Logic */}
                                 {!isOutOfStock ? (
                                     <div className="flex items-center text-green-700 font-bold text-sm gap-2 bg-green-50 w-fit px-3 py-1 rounded-full">
@@ -349,25 +404,25 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
                                 {/* Quantity & Add */}
                                 <div className="flex items-center gap-4">
-                                    <div className="flex items-center bg-gray-50 border border-gray-200 rounded-2xl h-14 w-36 overflow-hidden">
+                                    <div className="flex items-center glass-pill p-1 h-14 w-40">
                                         <button
                                             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                            className="w-12 h-full flex items-center justify-center text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+                                            className="w-10 h-full flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-red-400 transition-all font-bold text-xl active:scale-95"
                                             disabled={quantity <= 1}
                                         >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
+                                            −
                                         </button>
                                         <input
                                             type="number"
                                             value={quantity}
                                             readOnly
-                                            className="flex-1 w-full text-center font-bold text-lg text-gray-900 border-none bg-transparent focus:ring-0 p-0"
+                                            className="flex-1 w-full text-center font-black text-xl text-gray-800 border-none bg-transparent focus:ring-0 p-0"
                                         />
                                         <button
                                             onClick={() => setQuantity(quantity + 1)}
-                                            className="w-12 h-full flex items-center justify-center text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+                                            className="w-10 h-full flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-green-400 transition-all font-bold text-xl active:scale-95"
                                         >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                                            +
                                         </button>
                                     </div>
                                 </div>
@@ -376,10 +431,11 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                 <button
                                     onClick={handleOrderNow}
                                     disabled={isOutOfStock}
-                                    className="relative w-full overflow-hidden group h-16 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                                    className="relative w-full overflow-hidden group h-14 lg:h-16 rounded-xl lg:rounded-2xl shadow-xl hover:shadow-[0_15px_30px_rgba(236,72,153,0.4)] transition-all duration-300 transform hover:-translate-y-1"
                                 >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 group-hover:from-black group-hover:to-gray-800 transition-all"></div>
-                                    <div className="relative flex items-center justify-center gap-3 text-white font-bold text-xl">
+                                    <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.3)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-shine opacity-30 group-hover:opacity-50"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 group-hover:from-pink-500 group-hover:to-purple-500 transition-all"></div>
+                                    <div className="relative flex items-center justify-center gap-3 text-white font-black text-lg lg:text-xl tracking-wide">
                                         <span>ORDER NOW</span>
                                         <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                                     </div>
@@ -404,12 +460,12 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                 </div>
 
                 {/* Content Sections Below - Stacked (User Request) */}
-                <div className="mt-20 lg:mt-32 max-w-5xl mx-auto space-y-12">
+                <div className="mt-10 lg:mt-24 max-w-5xl mx-auto space-y-8 lg:space-y-12">
 
                     {/* Description Section */}
-                    <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 lg:p-12 border border-white/60 shadow-xl">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-                            <span className="w-1.5 h-8 bg-purple-500 rounded-full"></span>
+                    <div className="glass-panel-pro rounded-2xl lg:rounded-[2.5rem] p-6 lg:p-12 shadow-xl animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                        <h2 className="text-2xl lg:text-4xl font-black text-gray-900 mb-6 lg:mb-10 flex items-center gap-4">
+                            <span className="w-1.5 h-10 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full shadow-lg"></span>
                             Description
                         </h2>
                         <div
@@ -419,24 +475,88 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     </div>
 
                     {/* Reviews Section */}
-                    <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 lg:p-12 border border-white/60 shadow-xl">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3">
+                    <div className="bg-white/80 backdrop-blur-xl rounded-2xl lg:rounded-[2rem] p-6 lg:p-12 border border-white/60 shadow-xl">
+                        <h2 className="text-xl lg:text-3xl font-bold text-gray-900 mb-6 lg:mb-8 flex items-center gap-3">
                             <span className="w-1.5 h-8 bg-purple-500 rounded-full"></span>
                             Reviews ({product.comments?.length || 0})
                         </h2>
                         <div className="space-y-8">
                             <ReviewSummary comments={product.comments} />
-                            <div className="space-y-6">
-                                {product.comments?.length > 0 ? product.comments.map(comment => (
-                                    <div key={comment.id} className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <h4 className="font-bold text-gray-900">{comment.userFullName || 'Customer'}</h4>
-                                            <span className="text-yellow-500">{'★'.repeat(comment.score)}</span>
+
+                            {/* Enhanced Review List */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8 mt-12">
+                                {product.comments?.length > 0 ? product.comments.map((comment, index) => (
+                                    <div
+                                        key={comment.id || index}
+                                        className="glass-panel-pro p-6 lg:p-8 rounded-3xl relative overflow-hidden group hover:shadow-xl transition-all duration-500 animate-slide-up"
+                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                    >
+                                        {/* Decoration Gradient */}
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-bl-full -mr-6 -mt-6 transition-all group-hover:scale-150"></div>
+
+                                        <div className="flex items-start justify-between mb-6 relative">
+                                            <div className="flex items-center gap-4">
+                                                {/* Avatar */}
+                                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-white shadow-inner flex items-center justify-center text-lg font-bold text-gray-600">
+                                                    {comment.createdByAdmin
+                                                        ? (comment.customName ? comment.customName[0].toUpperCase() : 'A')
+                                                        : (comment.userEmail ? comment.userEmail[0].toUpperCase() : 'U')
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold text-gray-900 text-lg flex items-center gap-2">
+                                                        {comment.createdByAdmin
+                                                            ? (comment.customName || "Happy Customer")
+                                                            : (comment.userEmail?.split('@')[0] || "Customer")
+                                                        }
+                                                        <span className="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
+                                                            <span>✓</span> Verified
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex text-yellow-400 text-sm mt-0.5">
+                                                        {'★'.repeat(comment.score)}
+                                                        <span className="text-gray-200">{'★'.repeat(5 - comment.score)}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="text-xs text-gray-400 font-medium bg-gray-50 px-3 py-1 rounded-full">
+                                                Recent
+                                            </div>
                                         </div>
-                                        <p className="text-gray-600 leading-relaxed">{comment.content}</p>
+
+                                        <div className="relative z-10">
+                                            <p className="text-gray-600 leading-relaxed font-medium text-lg italic">
+                                                "{comment.content}"
+                                            </p>
+                                            {/* Render Comment Images */}
+                                            {comment.images && comment.images.length > 0 && (
+                                                <div className="flex flex-wrap gap-2 mt-4">
+                                                    {comment.images.map((img, imgIdx) => (
+                                                        <div key={imgIdx} className="relative w-24 h-24 rounded-xl overflow-hidden shadow-sm border border-gray-100 group/img cursor-pointer transition-all hover:scale-105">
+                                                            <img
+                                                                src={img}
+                                                                alt={`Review attachment ${imgIdx + 1}`}
+                                                                className="w-full h-full object-cover"
+                                                                onClick={() => setSelectedImage(img)} /* Reusing the main product lightbox/gallery logic if desired, or we can add a specific lightbox for reviews later */
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Like/Helpful Actions (Mock) */}
+                                        <div className="mt-6 flex items-center gap-4 pt-6 border-t border-gray-100/50">
+                                            <button className="text-sm font-bold text-gray-400 hover:text-pink-500 transition-colors flex items-center gap-1 group/btn">
+                                                <span className="group-hover/btn:scale-125 transition-transform">❤️</span> Helpful
+                                            </button>
+                                        </div>
                                     </div>
                                 )) : (
-                                    <div className="text-center py-12 text-gray-500">No reviews yet.</div>
+                                    <div className="col-span-full text-center py-12">
+                                        <div className="text-6xl mb-4">💬</div>
+                                        <p className="text-gray-500 text-xl font-bold">No reviews yet. Be the first to review!</p>
+                                    </div>
                                 )}
                             </div>
                             {settings?.reviewFormEnabled === 'true' && (
@@ -446,7 +566,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     </div>
 
                     {/* Shipping and Returns */}
-                    <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 lg:p-12 border border-white/60 shadow-xl">
+                    <div className="bg-white/80 backdrop-blur-xl rounded-2xl lg:rounded-[2rem] p-6 lg:p-12 border border-white/60 shadow-xl">
                         <ShippingReturns />
                     </div>
 

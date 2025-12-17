@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUserOrders } from '../api/apiService';
 import Loader from '../components/Loader';
+import { formatPrice } from '../utils/currency';
 
 const UserOrdersPage = () => {
     const [orders, setOrders] = useState([]);
@@ -24,8 +25,8 @@ const UserOrdersPage = () => {
     }, []);
 
     const calculateTotal = (items) => {
-        if (!items) return '0.00';
-        return items.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+        if (!items) return 0;
+        return items.reduce((total, item) => total + (item.price * item.quantity), 0);
     };
 
     if (loading) {
@@ -46,7 +47,7 @@ const UserOrdersPage = () => {
                                 <div className="flex items-center space-x-3 mb-2 md:mb-0">
                                     <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
                                         <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                                            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                         </svg>
                                     </div>
                                     <div>
@@ -55,14 +56,13 @@ const UserOrdersPage = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-col md:items-end">
-                                    <span className="text-2xl font-bold text-gray-800 mb-1">${calculateTotal(order.orderItems)}</span>
-                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                        order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                        order.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
-                                        order.status === 'SHIPPED' ? 'bg-purple-100 text-purple-800' :
-                                        order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
-                                        'bg-gray-100 text-gray-800'
-                                    }`}>
+                                    <span className="text-2xl font-bold text-gray-800 mb-1">{formatPrice(calculateTotal(order.orderItems))}</span>
+                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                            order.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
+                                                order.status === 'SHIPPED' ? 'bg-purple-100 text-purple-800' :
+                                                    order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
+                                                        'bg-gray-100 text-gray-800'
+                                        }`}>
                                         {order.status}
                                     </span>
                                 </div>
@@ -71,7 +71,7 @@ const UserOrdersPage = () => {
                             <div className="border-t pt-4">
                                 <h3 className="font-semibold text-gray-700 mb-3 flex items-center">
                                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z"/>
+                                        <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z" />
                                     </svg>
                                     Items ({order.orderItems ? order.orderItems.length : 0})
                                 </h3>
@@ -82,7 +82,7 @@ const UserOrdersPage = () => {
                                                 <p className="font-medium text-gray-800">{item.productName}</p>
                                                 <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
                                             </div>
-                                            <span className="font-semibold text-gray-700">${item.price.toFixed(2)}</span>
+                                            <span className="font-semibold text-gray-700">{formatPrice(item.price)}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -94,19 +94,19 @@ const UserOrdersPage = () => {
                 <div className="text-center py-12">
                     <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full mb-6">
                         <svg className="w-12 h-12 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                     </div>
                     <h3 className="text-xl font-semibold text-gray-800 mb-2">No Orders Yet</h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto">
                         You haven't placed any orders yet. Start shopping to see your order history here!
                     </p>
-                    <a 
-                        href="/products" 
+                    <a
+                        href="/products"
                         className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold rounded-xl hover:from-pink-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                     >
                         <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                         </svg>
                         Start Shopping
                     </a>

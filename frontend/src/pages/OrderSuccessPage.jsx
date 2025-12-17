@@ -4,6 +4,7 @@ import { getOrderById } from '../api/apiService';
 import Loader from '../components/Loader';
 import { trackEvent } from '../utils/facebookPixel';
 import ReactGA from 'react-ga4';
+import { formatPrice } from '../utils/currency';
 
 /**
  * Order Success Page
@@ -52,7 +53,7 @@ const OrderSuccessPage = () => {
                 content_ids: loadedOrder.items ? loadedOrder.items.map(item => item.productId) : [],
                 content_type: 'product',
                 value: loadedOrder.total,
-                currency: 'USD',
+                currency: 'MAD',
                 order_id: loadedOrder.id
             });
 
@@ -189,7 +190,7 @@ const OrderSuccessPage = () => {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', paddingTop: '15px', borderTop: '2px solid #dee2e6' }}>
                                     <span style={{ color: '#666', fontSize: '1.1rem' }}>المجموع / Total:</span>
                                     <span style={{ fontWeight: 'bold', fontSize: '1.3rem', color: '#ff69b4' }}>
-                                        ${parseFloat(order.total).toFixed(2)}
+                                        {formatPrice(order.total)}
                                     </span>
                                 </div>
                             )}

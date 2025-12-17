@@ -26,8 +26,8 @@ public class CommentController {
     @PostMapping("/product/{productId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentDTO> addComment(@PathVariable Long productId,
-                                                 @AuthenticationPrincipal UserDetails userDetails,
-                                                 @Valid @RequestBody CommentDTO commentDTO){
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody CommentDTO commentDTO) {
         Long userId = ((User) userDetails).getId();
         return ResponseEntity.ok(commentService.addComment(productId, userId, commentDTO));
     }
@@ -36,8 +36,8 @@ public class CommentController {
     @PostMapping("/pack/{packId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CommentDTO> addCommentToPack(@PathVariable Long packId,
-                                                       @AuthenticationPrincipal UserDetails userDetails,
-                                                       @Valid @RequestBody CommentDTO commentDTO) {
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody CommentDTO commentDTO) {
         Long userId = ((User) userDetails).getId();
         return ResponseEntity.ok(commentService.addCommentToPack(packId, userId, commentDTO));
     }
@@ -46,10 +46,10 @@ public class CommentController {
     @PostMapping(value = "/admin/product/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('COMMENT:CREATE') or hasAuthority('COMMENT:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CommentDTO> addAdminComment(@PathVariable Long productId,
-                                                      @RequestParam("content") String content,
-                                                      @RequestParam("score") Integer score,
-                                                      @RequestParam("name") String name,
-                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+            @RequestParam("content") String content,
+            @RequestParam("score") Integer score,
+            @RequestParam("name") String name,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.addAdminComment(productId, content, score, name, images));
     }
 
@@ -57,16 +57,16 @@ public class CommentController {
     @PostMapping(value = "/admin/pack/{packId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('COMMENT:CREATE') or hasAuthority('COMMENT:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CommentDTO> addAdminCommentToPack(@PathVariable Long packId,
-                                                            @RequestParam("content") String content,
-                                                            @RequestParam("score") Integer score,
-                                                            @RequestParam("name") String name,
-                                                            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+            @RequestParam("content") String content,
+            @RequestParam("score") Integer score,
+            @RequestParam("name") String name,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok(commentService.addAdminCommentToPack(packId, content, score, name, images));
     }
 
     // Get comments by product
     @GetMapping("/product/{productId}")
-    public ResponseEntity<List<CommentDTO>> getCommentsByProduct(@PathVariable Long productId){
+    public ResponseEntity<List<CommentDTO>> getCommentsByProduct(@PathVariable Long productId) {
         return ResponseEntity.ok(commentService.getCommentsByProduct(productId));
     }
 
@@ -87,20 +87,18 @@ public class CommentController {
     @PutMapping("/product/{commentId}")
     @PreAuthorize("hasAuthority('COMMENT:EDIT') or hasAuthority('COMMENT:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CommentDTO> updateProductComment(@PathVariable Long commentId,
-                                                           @RequestPart("comment") @Valid CommentDTO commentDTO,
-                                                           @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
-        return ResponseEntity.ok(commentService.updateComment(commentId, commentDTO, image));
+            @RequestPart("comment") @Valid CommentDTO commentDTO,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+        return ResponseEntity.ok(commentService.updateComment(commentId, commentDTO, images));
     }
 
     // Update pack comment (admin only) - NEW
     @PutMapping(value = "/pack/{commentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('COMMENT:EDIT') or hasAuthority('COMMENT:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CommentDTO> updatePackComment(@PathVariable Long commentId,
-                                                        @RequestParam("content") String content,
-                                                        @RequestParam("score") Integer score,
-                                                        @RequestParam("name") String name,
-                                                        @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
-        return ResponseEntity.ok(commentService.updatePackComment(commentId, content, score, name, images));
+            @RequestPart("comment") @Valid CommentDTO commentDTO,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+        return ResponseEntity.ok(commentService.updatePackComment(commentId, commentDTO, images));
     }
 
     // Delete product comment (admin only)

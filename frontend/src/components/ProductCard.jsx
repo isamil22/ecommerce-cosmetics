@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ReactGA from "react-ga4";
 import { addToCart } from '../api/apiService';
 import { toast } from 'react-toastify';
+import { formatPrice } from '../utils/currency';
 
 const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -207,11 +208,11 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                     {/* Price Section */}
                     <div className="flex items-center gap-2">
                         <span className="text-2xl font-extrabold text-pink-600">
-                            ${product.price?.toFixed(2)}
+                            {formatPrice(product.price)}
                         </span>
                         {hasDiscount && (
                             <span className="text-sm text-gray-400 line-through">
-                                ${product.oldPrice?.toFixed(2)}
+                                {formatPrice(product.oldPrice)}
                             </span>
                         )}
                     </div>
@@ -219,7 +220,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                     {/* Size/Unit Info */}
                     {product.size && product.unit && (
                         <p className="text-xs text-gray-500">
-                            (${(product.price / product.size).toFixed(2)} / {product.unit})
+                            ({formatPrice(product.price / product.size)} / {product.unit})
                         </p>
                     )}
 

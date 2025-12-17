@@ -119,8 +119,8 @@ function App() {
 
     return (
         <BrowserRouter>
-            {/* AnnouncementBar - Disabled for minimal design */}
-            {/* <AnnouncementBar /> */}
+            {/* AnnouncementBar */}
+            <AnnouncementBar />
 
             <div
                 className="flex flex-col min-h-screen"

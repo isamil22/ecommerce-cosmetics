@@ -38,7 +38,8 @@ public interface ProductMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "images", ignore = true)
+    // @Mapping(target = "images", ignore = true) // REMOVED to allow updating
+    // images list from DTO
     @Mapping(target = "variantTypes", ignore = true)
     @Mapping(target = "variants", ignore = true)
     @Mapping(target = "frequentlyBoughtTogether", ignore = true)

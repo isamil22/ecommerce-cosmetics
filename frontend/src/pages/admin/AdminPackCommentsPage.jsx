@@ -10,7 +10,7 @@ const AdminPackCommentsPage = () => {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingComment, setEditingComment] = useState(null);
-    const [newImage, setNewImage] = useState(null);
+    const [newImage, setNewImage] = useState([]);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [newCommentData, setNewCommentData] = useState({
         name: '',
@@ -54,20 +54,22 @@ const AdminPackCommentsPage = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('content', editingComment.content);
-        formData.append('score', editingComment.score);
-        formData.append('name', editingComment.userFullName);
-        if (newImage) {
-            formData.append('images', newImage);
+        formData.append('comment', new Blob([JSON.stringify(editingComment)], { type: "application/json" }));
+
+        if (newImage && newImage.length > 0) {
+            newImage.forEach(img => {
+                formData.append('images', img);
+            });
         }
 
         try {
             await updatePackComment(editingComment.id, formData);
             toast.success("Comment updated successfully!");
             setEditingComment(null);
-            setNewImage(null);
+            setNewImage([]);
             fetchPackComments();
         } catch (error) {
+            console.error("Update failed:", error);
             toast.error("Failed to update comment.");
         }
     };
@@ -244,14 +246,39 @@ const AdminPackCommentsPage = () => {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
-                                    New Image
+                                    New Images (Append)
                                 </label>
                                 <input
                                     id="image"
                                     type="file"
-                                    onChange={(e) => setNewImage(e.target.files[0])}
+                                    multiple
+                                    onChange={(e) => setNewImage(Array.from(e.target.files))}
                                     className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0"
                                 />
+                                {newImage && newImage.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {newImage.map((file, index) => (
+                                            <div key={index} className="relative">
+                                                <img
+                                                    src={URL.createObjectURL(file)}
+                                                    alt="Preview"
+                                                    className="w-16 h-16 object-cover rounded border border-gray-200"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const updatedImages = [...newImage];
+                                                        updatedImages.splice(index, 1);
+                                                        setNewImage(updatedImages);
+                                                    }}
+                                                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 shadow-sm"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                             <div className="flex items-center justify-between">
                                 <button
@@ -276,25 +303,25 @@ const AdminPackCommentsPage = () => {
             <div className="bg-white shadow-md rounded my-6">
                 <table className="min-w-full table-auto">
                     <thead className="bg-gray-200">
-                    <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comment</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comment</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                    {comments.map((comment) => (
-                        <tr key={comment.id}>
-                            <td className="px-6 py-4 whitespace-nowrap">{comment.userFullName}</td>
-                            <td className="px-6 py-4">{comment.content}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{comment.score}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <button onClick={() => handleEdit(comment)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
-                                <button onClick={() => handleDelete(comment.id)} className="ml-4 text-red-600 hover:text-red-900">Delete</button>
-                            </td>
-                        </tr>
-                    ))}
+                        {comments.map((comment) => (
+                            <tr key={comment.id}>
+                                <td className="px-6 py-4 whitespace-nowrap">{comment.userFullName}</td>
+                                <td className="px-6 py-4">{comment.content}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{comment.score}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button onClick={() => handleEdit(comment)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
+                                    <button onClick={() => handleDelete(comment.id)} className="ml-4 text-red-600 hover:text-red-900">Delete</button>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
