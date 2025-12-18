@@ -1,4 +1,4 @@
-name: ecommerce-copy
+version: '3.8'
 
 services:
   db:

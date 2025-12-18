@@ -6,12 +6,12 @@ import { getPackById, updatePack, getAllProducts, getAllPacks } from '../../api/
 import Loader from '../../components/Loader';
 import { Editor } from '@tinymce/tinymce-react';
 import { toast } from 'react-toastify';
-import { 
-    FiPackage, 
-    FiImage, 
-    FiPlus, 
-    FiX, 
-    FiCheck, 
+import {
+    FiPackage,
+    FiImage,
+    FiPlus,
+    FiX,
+    FiCheck,
     FiAlertTriangle,
     FiSearch,
     FiFilter,
@@ -91,7 +91,7 @@ const AdminPackEditPage = () => {
     // Validation functions
     const validateField = (name, value) => {
         const newErrors = { ...errors };
-        
+
         switch (name) {
             case 'name':
                 if (!value.trim()) {
@@ -112,7 +112,7 @@ const AdminPackEditPage = () => {
             default:
                 break;
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -132,13 +132,13 @@ const AdminPackEditPage = () => {
                 toast.error('Please select a valid image file');
                 return;
             }
-            
+
             // Validate file size (5MB limit)
             if (file.size > 5 * 1024 * 1024) {
                 toast.error('Image size must be less than 5MB');
                 return;
             }
-            
+
             setImage(file);
             setImagePreview(URL.createObjectURL(file));
             setIsDirty(true);
@@ -153,7 +153,7 @@ const AdminPackEditPage = () => {
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             const file = files[0];
@@ -197,7 +197,7 @@ const AdminPackEditPage = () => {
         const newIds = currentIds.includes(productId)
             ? currentIds.filter(id => id !== productId)
             : [...currentIds, productId];
-        
+
         setPackData({ ...packData, recommendedProductIds: newIds });
         setIsDirty(true);
     };
@@ -207,7 +207,7 @@ const AdminPackEditPage = () => {
         const newIds = currentIds.includes(packId)
             ? currentIds.filter(id => id !== packId)
             : [...currentIds, packId];
-        
+
         setPackData({ ...packData, recommendedPackIds: newIds });
         setIsDirty(true);
     };
@@ -226,8 +226,8 @@ const AdminPackEditPage = () => {
 
         const formData = new FormData();
         const description = editorRef.current ? editorRef.current.getContent() : packData.description;
-        formData.append('pack', new Blob([JSON.stringify({ 
-            ...packData, 
+        formData.append('pack', new Blob([JSON.stringify({
+            ...packData,
             description,
             recommendedProductIds: packData.recommendedProductIds,
             recommendedPackIds: packData.recommendedPackIds
@@ -299,16 +299,15 @@ const AdminPackEditPage = () => {
             }
         };
 
-        const selectedProducts = isMultiple 
+        const selectedProducts = isMultiple
             ? (Array.isArray(value) ? products.filter(p => value.includes(p.id)) : [])
             : (value ? products.filter(p => p.id === value) : []);
 
         return (
             <div className="relative" ref={dropdownRef}>
                 <div
-                    className={`border rounded-lg cursor-pointer transition-colors ${
-                        size === "small" ? "px-3 py-2" : "px-4 py-3"
-                    } ${isOpen ? 'border-pink-500 ring-2 ring-pink-200' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`border rounded-lg cursor-pointer transition-colors ${size === "small" ? "px-3 py-2" : "px-4 py-3"
+                        } ${isOpen ? 'border-pink-500 ring-2 ring-pink-200' : 'border-gray-200 hover:border-gray-300'}`}
                     onClick={() => setIsOpen(!isOpen)}
                 >
                     <div className="flex items-center justify-between">
@@ -371,16 +370,15 @@ const AdminPackEditPage = () => {
                                 filteredProducts.map(product => (
                                     <div
                                         key={product.id}
-                                        className={`flex items-center p-3 hover:bg-gray-50 cursor-pointer ${
-                                            isMultiple && value && value.includes(product.id) ? 'bg-pink-50' : ''
-                                        }`}
+                                        className={`flex items-center p-3 hover:bg-gray-50 cursor-pointer ${isMultiple && value && value.includes(product.id) ? 'bg-pink-50' : ''
+                                            }`}
                                         onClick={() => handleSelect(product.id)}
                                     >
                                         {isMultiple && (
                                             <input
                                                 type="checkbox"
                                                 checked={Array.isArray(value) && value.includes(product.id)}
-                                                onChange={() => {}} // Handled by parent onClick
+                                                onChange={() => { }} // Handled by parent onClick
                                                 className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded mr-3"
                                             />
                                         )}
@@ -439,27 +437,24 @@ const AdminPackEditPage = () => {
                         const Icon = step.icon;
                         const isActive = currentStep === step.id;
                         const isCompleted = currentStep > step.id;
-                        
+
                         return (
                             <div key={step.id} className="flex items-center">
-                                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                                    isCompleted 
-                                        ? 'bg-green-500 border-green-500 text-white' 
-                                        : isActive 
-                                            ? 'bg-pink-500 border-pink-500 text-white' 
+                                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${isCompleted
+                                        ? 'bg-green-500 border-green-500 text-white'
+                                        : isActive
+                                            ? 'bg-pink-500 border-pink-500 text-white'
                                             : 'border-gray-300 text-gray-400'
-                                }`}>
+                                    }`}>
                                     {isCompleted ? <FiCheck className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
                                 </div>
-                                <span className={`ml-2 text-sm font-medium ${
-                                    isActive ? 'text-pink-600' : isCompleted ? 'text-green-600' : 'text-gray-400'
-                                }`}>
+                                <span className={`ml-2 text-sm font-medium ${isActive ? 'text-pink-600' : isCompleted ? 'text-green-600' : 'text-gray-400'
+                                    }`}>
                                     {step.name}
                                 </span>
                                 {index < steps.length - 1 && (
-                                    <div className={`w-16 h-0.5 mx-4 ${
-                                        isCompleted ? 'bg-green-500' : 'bg-gray-300'
-                                    }`} />
+                                    <div className={`w-16 h-0.5 mx-4 ${isCompleted ? 'bg-green-500' : 'bg-gray-300'
+                                        }`} />
                                 )}
                             </div>
                         );
@@ -484,24 +479,23 @@ const AdminPackEditPage = () => {
                         <FiPackage className="w-5 h-5 text-pink-500 mr-2" />
                         <h3 className="text-lg font-semibold text-gray-800">Basic Information</h3>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Pack Name */}
                         <div className="lg:col-span-2">
                             <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                                 Pack Name *
                             </label>
-                            <input 
-                                type="text" 
-                                name="name" 
-                                id="name" 
-                                value={packData.name} 
-                                onChange={handleInputChange} 
-                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${
-                                    errors.name ? 'border-red-500' : 'border-gray-200'
-                                }`}
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                value={packData.name}
+                                onChange={handleInputChange}
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${errors.name ? 'border-red-500' : 'border-gray-200'
+                                    }`}
                                 placeholder="Enter pack name"
-                                required 
+                                required
                             />
                             {errors.name && (
                                 <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -518,18 +512,17 @@ const AdminPackEditPage = () => {
                             </label>
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                                <input 
-                                    type="number" 
-                                    step="0.01" 
-                                    name="price" 
-                                    id="price" 
-                                    value={packData.price} 
-                                    onChange={handleInputChange} 
-                                    className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${
-                                        errors.price ? 'border-red-500' : 'border-gray-200'
-                                    }`}
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="price"
+                                    id="price"
+                                    value={packData.price}
+                                    onChange={handleInputChange}
+                                    className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${errors.price ? 'border-red-500' : 'border-gray-200'
+                                        }`}
                                     placeholder="0.00"
-                                    required 
+                                    required
                                 />
                             </div>
                             {errors.price && (
@@ -546,9 +539,8 @@ const AdminPackEditPage = () => {
                                 Pack Image
                             </label>
                             <div
-                                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                                    imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-pink-400'
-                                }`}
+                                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-pink-400'
+                                    }`}
                                 onDragOver={handleDragOver}
                                 onDrop={handleDrop}
                             >
@@ -563,10 +555,10 @@ const AdminPackEditPage = () => {
                                 />
                                 {imagePreview ? (
                                     <div className="space-y-3">
-                                        <img 
-                                            src={imagePreview} 
-                                            alt="Pack preview" 
-                                            className="mx-auto h-32 w-auto rounded-lg border p-1 bg-white" 
+                                        <img
+                                            src={imagePreview}
+                                            alt="Pack preview"
+                                            className="mx-auto h-32 w-auto rounded-lg border p-1 bg-white"
                                         />
                                         <div className="flex justify-center space-x-2">
                                             <button
@@ -642,9 +634,9 @@ const AdminPackEditPage = () => {
                             <FiPlus className="w-5 h-5 text-pink-500 mr-2" />
                             <h3 className="text-lg font-semibold text-gray-800">Pack Items</h3>
                         </div>
-                        <button 
-                            type="button" 
-                            onClick={addItem} 
+                        <button
+                            type="button"
+                            onClick={addItem}
                             className="flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
                         >
                             <FiPlus className="w-4 h-4 mr-2" />
@@ -671,9 +663,9 @@ const AdminPackEditPage = () => {
                                 <div className="flex items-center justify-between mb-4">
                                     <h4 className="text-md font-semibold text-gray-800">Item {index + 1}</h4>
                                     {packData.items.length > 1 && (
-                                        <button 
-                                            type="button" 
-                                            onClick={() => removeItem(index)} 
+                                        <button
+                                            type="button"
+                                            onClick={() => removeItem(index)}
                                             className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                                         >
                                             <FiX className="w-5 h-5" />
@@ -730,7 +722,7 @@ const AdminPackEditPage = () => {
                         <FiEye className="w-5 h-5 text-pink-500 mr-2" />
                         <h3 className="text-lg font-semibold text-gray-800">Display Settings</h3>
                     </div>
-                    
+
                     <div className="space-y-4">
                         {/* Purchase Notifications Toggle */}
                         <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
@@ -738,7 +730,7 @@ const AdminPackEditPage = () => {
                                 type="checkbox"
                                 checked={packData.showPurchaseNotifications || false}
                                 onChange={(e) => {
-                                    setPackData({...packData, showPurchaseNotifications: e.target.checked});
+                                    setPackData({ ...packData, showPurchaseNotifications: e.target.checked });
                                     setIsDirty(true);
                                 }}
                                 className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
@@ -758,7 +750,7 @@ const AdminPackEditPage = () => {
                                 type="checkbox"
                                 checked={packData.showCountdownTimer || false}
                                 onChange={(e) => {
-                                    setPackData({...packData, showCountdownTimer: e.target.checked});
+                                    setPackData({ ...packData, showCountdownTimer: e.target.checked });
                                     setIsDirty(true);
                                 }}
                                 className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
@@ -786,7 +778,7 @@ const AdminPackEditPage = () => {
                             Description
                         </label>
                         <Editor
-                            apiKey='jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'
+                            apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
                             onInit={(evt, editor) => editorRef.current = editor}
                             initialValue={packData.description}
                             init={{
@@ -935,15 +927,15 @@ const AdminPackEditPage = () => {
                             <p className="text-gray-600">Review your pack details and save the changes</p>
                         </div>
                         <div className="flex space-x-3">
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={() => navigate('/admin/packs')}
                                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                                 Cancel
                             </button>
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 disabled={loading}
                                 className="flex items-center px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             >

@@ -592,7 +592,7 @@ const AdminProductForm = () => {
                                     Description
                                 </label>
                                 <Editor
-                                    apiKey='jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'
+                                    apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
                                     onInit={(evt, editor) => editorRef.current = editor}
                                     initialValue={product.description}
                                     init={{

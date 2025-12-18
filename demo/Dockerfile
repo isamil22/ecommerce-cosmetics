@@ -1,33 +1,13 @@
-# Use Eclipse Temurin (formerly AdoptOpenJDK) - Ubuntu-based slim image
-FROM eclipse-temurin:17-jdk-jammy
-
-# Set the working directory inside the container
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
-
-# Create uploads directory with proper permissions
-RUN mkdir -p /app/uploads/images/{products,categories,packs,hero,comments}
-
-# Copy the Maven wrapper executable and the wrapper configuration
-COPY mvnw .
-COPY .mvn ./.mvn
-
-# Copy the pom.xml to leverage Docker's layer caching
 COPY pom.xml .
-
-# Make the mvnw script executable
-RUN chmod +x mvnw
-
-# Download dependencies. This will use the pom.xml to download all necessary libraries.
-RUN ./mvnw dependency:go-offline
-
-# Copy the rest of the application source code
+RUN mvn dependency:go-offline
 COPY src ./src
+RUN mvn package -DskipTests
 
-# Package the application into a JAR file, skipping tests
-RUN ./mvnw package -DskipTests
-
-# Expose the port the application will run on
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+RUN mkdir -p /app/uploads/images/{products,categories,packs,hero,comments}
 EXPOSE 8080
-
-# Command to run the application
-ENTRYPOINT ["java","-jar","target/demo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]

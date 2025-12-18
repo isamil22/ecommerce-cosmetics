@@ -120,7 +120,6 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                 checked={isSelected}
                 onChange={() => onSelectionChange(packItemId, product.id)}
                 className="h-5 w-5 sm:h-6 sm:w-6 text-pink-600 focus:ring-pink-500 border-gray-300 ml-3 shrink-0"
-                aria-hidden="true"
             />
         </label>
     );
@@ -317,76 +316,24 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     };
 
     useEffect(() => {
-        if (!pack || Object.keys(selections).length === 0) return;
-        const isDefaultSelection = JSON.stringify(selections) === JSON.stringify(initialSelections);
-
-        if (isDefaultSelection && initialPackImageUrl) {
-            setComposedImageUrl(initialPackImageUrl);
-            return;
-        }
-
-        const composeImage = async () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            const imageUrls = pack.items.map(item => {
-                const selectedProductId = selections[item.id];
-                const allProducts = [item.defaultProduct, ...item.variationProducts];
-                const selectedProduct = allProducts.find(p => p && p.id === selectedProductId);
-                return selectedProduct?.images?.[0] || null;
-            }).filter(Boolean);
-
-            if (imageUrls.length === 0) {
-                setComposedImageUrl(initialPackImageUrl);
-                return;
-            };
-
-            try {
-                const images = await Promise.all(imageUrls.map(url => {
-                    return new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.crossOrigin = "Anonymous";
-                        img.onload = () => resolve(img);
-                        img.onerror = (err) => reject(new Error(`Failed to load image: ${url}`));
-                        img.src = url;
-                    });
-                }));
-
-                let totalWidth = 0;
-                let maxHeight = 0;
-                images.forEach(img => {
-                    totalWidth += img.width;
-                    if (img.height > maxHeight) {
-                        maxHeight = img.height;
-                    }
-                });
-
-                canvas.width = totalWidth;
-                canvas.height = maxHeight;
-
-                let currentX = 0;
-                images.forEach(img => {
-                    ctx.drawImage(img, currentX, 0);
-                    currentX += img.width;
-                });
-
-                setComposedImageUrl(canvas.toDataURL('image/png'));
-            } catch (err) {
-                console.error("Image composition failed:", err);
-                setComposedImageUrl(initialPackImageUrl);
-            }
-        };
-
-        composeImage();
-
-    }, [selections, pack, initialPackImageUrl, initialSelections]);
-
-    useEffect(() => {
         fetchPack();
     }, [id]);
 
+    // Simplified logic: Updates the main image to show the selected product
     const handleSelectionChange = (packItemId, selectedProductId) => {
         setSelections(prev => ({ ...prev, [packItemId]: selectedProductId }));
+
+        // Find and set the image of the selected product
+        if (pack && pack.items) {
+            const item = pack.items.find(i => i.id === packItemId);
+            if (item) {
+                const allProducts = [item.defaultProduct, ...(item.variationProducts || [])];
+                const product = allProducts.find(p => p && p.id === selectedProductId);
+                if (product && product.images && product.images.length > 0) {
+                    setComposedImageUrl(product.images[0]);
+                }
+            }
+        }
     };
 
     const handleReset = () => {

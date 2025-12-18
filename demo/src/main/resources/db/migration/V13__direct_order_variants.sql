@@ -10,4 +10,4 @@ ALTER TABLE order_item ADD COLUMN variant_name VARCHAR(255);
 UPDATE order_item oi
 JOIN product p ON oi.product_id = p.id
 SET oi.product_name = p.name,
-    oi.product_image = (SELECT image_url FROM product_images pi WHERE pi.product_id = p.id LIMIT 1);
+    oi.product_image = (SELECT images FROM product_images pi WHERE pi.product_id = p.id LIMIT 1);

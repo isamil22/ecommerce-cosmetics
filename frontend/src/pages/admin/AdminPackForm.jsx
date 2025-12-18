@@ -6,12 +6,12 @@ import { createPack, getAllProducts, getAllPacks } from '../../api/apiService';
 import Loader from '../../components/Loader';
 import { Editor } from '@tinymce/tinymce-react';
 import { toast } from 'react-toastify';
-import { 
-    FiPackage, 
-    FiImage, 
-    FiPlus, 
-    FiX, 
-    FiCheck, 
+import {
+    FiPackage,
+    FiImage,
+    FiPlus,
+    FiX,
+    FiCheck,
     FiAlertTriangle,
     FiSearch,
     FiFilter,
@@ -57,21 +57,21 @@ const AdminPackForm = () => {
                     getAllProducts(),
                     getAllPacks()
                 ]);
-                
+
                 console.log('AdminPackForm: API responses received:', {
                     productsResponse,
                     packsResponse
                 });
-                
+
                 // Add defensive checks for API responses
                 const productsList = productsResponse?.data?.content || productsResponse?.data || [];
                 const packsList = packsResponse?.data || [];
-                
+
                 console.log('AdminPackForm: Processed data:', {
                     productsList,
                     packsList
                 });
-                
+
                 // Ensure we have arrays
                 if (!Array.isArray(productsList)) {
                     console.warn('Products response is not an array:', productsList);
@@ -79,14 +79,14 @@ const AdminPackForm = () => {
                 } else {
                     setProducts(productsList);
                 }
-                
+
                 if (!Array.isArray(packsList)) {
                     console.warn('Packs response is not an array:', packsList);
                     setAllPacks([]);
                 } else {
                     setAllPacks(packsList);
                 }
-                
+
                 console.log('AdminPackForm: Data fetch completed successfully');
             } catch (err) {
                 setError('Failed to fetch data. Please try again later.');
@@ -134,7 +134,7 @@ const AdminPackForm = () => {
     // Validation functions
     const validateField = (name, value) => {
         const newErrors = { ...errors };
-        
+
         switch (name) {
             case 'name':
                 if (!value.trim()) {
@@ -155,7 +155,7 @@ const AdminPackForm = () => {
             default:
                 break;
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -175,13 +175,13 @@ const AdminPackForm = () => {
                 toast.error('Please select a valid image file');
                 return;
             }
-            
+
             // Validate file size (5MB limit)
             if (file.size > 5 * 1024 * 1024) {
                 toast.error('Image size must be less than 5MB');
                 return;
             }
-            
+
             setImage(file);
             setImagePreview(URL.createObjectURL(file));
             setIsDirty(true);
@@ -196,7 +196,7 @@ const AdminPackForm = () => {
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             const file = files[0];
@@ -270,21 +270,21 @@ const AdminPackForm = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!packData.name.trim()) {
             newErrors.name = 'Pack name is required';
         }
-        
+
         if (!packData.price || parseFloat(packData.price) <= 0) {
             newErrors.price = 'Valid price is required';
         }
-        
+
         for (let i = 0; i < packData.items.length; i++) {
             if (!packData.items[i].defaultProductId) {
                 newErrors[`item_${i}`] = 'Default product is required for each item';
             }
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -300,8 +300,8 @@ const AdminPackForm = () => {
 
         const formData = new FormData();
         const description = editorRef.current ? editorRef.current.getContent() : packData.description;
-        formData.append('pack', new Blob([JSON.stringify({ 
-            ...packData, 
+        formData.append('pack', new Blob([JSON.stringify({
+            ...packData,
             description,
             recommendedProductIds: packData.recommendedProductIds,
             recommendedPackIds: packData.recommendedPackIds
@@ -362,7 +362,7 @@ const AdminPackForm = () => {
             product?.name?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
-        const selectedProducts = isMultiple 
+        const selectedProducts = isMultiple
             ? (Array.isArray(products) ? products : []).filter(p => value && Array.isArray(value) && value.includes(p.id))
             : (Array.isArray(products) ? products : []).find(p => p.id === value);
 
@@ -380,8 +380,8 @@ const AdminPackForm = () => {
         };
 
         const getProductImage = (product) => {
-            return product.images && product.images.length > 0 
-                ? product.images[0] 
+            return product.images && product.images.length > 0
+                ? product.images[0]
                 : 'https://placehold.co/60x60/E91E63/FFFFFF?text=No+Image';
         };
 
@@ -389,9 +389,8 @@ const AdminPackForm = () => {
             <div className="relative" ref={dropdownRef}>
                 <div
                     onClick={() => setIsOpen(!isOpen)}
-                    className={`cursor-pointer border rounded-lg bg-white hover:border-pink-400 transition-colors ${
-                        itemIndex !== null && errors[`item_${itemIndex}`] ? 'border-red-500' : 'border-gray-200'
-                    } ${size === "small" ? 'px-3 py-2' : 'px-4 py-3'}`}
+                    className={`cursor-pointer border rounded-lg bg-white hover:border-pink-400 transition-colors ${itemIndex !== null && errors[`item_${itemIndex}`] ? 'border-red-500' : 'border-gray-200'
+                        } ${size === "small" ? 'px-3 py-2' : 'px-4 py-3'}`}
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -465,11 +464,10 @@ const AdminPackForm = () => {
                                     <div
                                         key={product.id}
                                         onClick={() => handleSelect(product)}
-                                        className={`flex items-center space-x-3 p-3 hover:bg-gray-50 cursor-pointer transition-colors ${
-                                            isMultiple && value && value.includes(product.id) 
-                                                ? 'bg-pink-50 border-l-4 border-pink-500' 
+                                        className={`flex items-center space-x-3 p-3 hover:bg-gray-50 cursor-pointer transition-colors ${isMultiple && value && value.includes(product.id)
+                                                ? 'bg-pink-50 border-l-4 border-pink-500'
                                                 : ''
-                                        }`}
+                                            }`}
                                     >
                                         <img
                                             src={getProductImage(product)}
@@ -552,27 +550,24 @@ const AdminPackForm = () => {
                         const Icon = step.icon;
                         const isActive = currentStep === step.id;
                         const isCompleted = currentStep > step.id;
-                        
+
                         return (
                             <div key={step.id} className="flex items-center">
-                                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                                    isCompleted 
-                                        ? 'bg-green-500 border-green-500 text-white' 
-                                        : isActive 
-                                            ? 'bg-pink-500 border-pink-500 text-white' 
+                                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${isCompleted
+                                        ? 'bg-green-500 border-green-500 text-white'
+                                        : isActive
+                                            ? 'bg-pink-500 border-pink-500 text-white'
                                             : 'border-gray-300 text-gray-400'
-                                }`}>
+                                    }`}>
                                     {isCompleted ? <FiCheck className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
                                 </div>
-                                <span className={`ml-2 text-sm font-medium ${
-                                    isActive ? 'text-pink-600' : isCompleted ? 'text-green-600' : 'text-gray-400'
-                                }`}>
+                                <span className={`ml-2 text-sm font-medium ${isActive ? 'text-pink-600' : isCompleted ? 'text-green-600' : 'text-gray-400'
+                                    }`}>
                                     {step.name}
                                 </span>
                                 {index < steps.length - 1 && (
-                                    <div className={`w-16 h-0.5 mx-4 ${
-                                        isCompleted ? 'bg-green-500' : 'bg-gray-300'
-                                    }`} />
+                                    <div className={`w-16 h-0.5 mx-4 ${isCompleted ? 'bg-green-500' : 'bg-gray-300'
+                                        }`} />
                                 )}
                             </div>
                         );
@@ -597,24 +592,23 @@ const AdminPackForm = () => {
                         <FiPackage className="w-5 h-5 text-pink-500 mr-2" />
                         <h3 className="text-lg font-semibold text-gray-800">Basic Information</h3>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Pack Name */}
                         <div className="lg:col-span-2">
                             <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                                 Pack Name *
                             </label>
-                            <input 
-                                type="text" 
-                                name="name" 
-                                id="name" 
-                                value={packData.name} 
-                                onChange={handleInputChange} 
-                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${
-                                    errors.name ? 'border-red-500' : 'border-gray-200'
-                                }`}
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                value={packData.name}
+                                onChange={handleInputChange}
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${errors.name ? 'border-red-500' : 'border-gray-200'
+                                    }`}
                                 placeholder="Enter pack name"
-                                required 
+                                required
                             />
                             {errors.name && (
                                 <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -631,18 +625,17 @@ const AdminPackForm = () => {
                             </label>
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                                <input 
-                                    type="number" 
-                                    step="0.01" 
-                                    name="price" 
-                                    id="price" 
-                                    value={packData.price} 
-                                    onChange={handleInputChange} 
-                                    className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${
-                                        errors.price ? 'border-red-500' : 'border-gray-200'
-                                    }`}
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="price"
+                                    id="price"
+                                    value={packData.price}
+                                    onChange={handleInputChange}
+                                    className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${errors.price ? 'border-red-500' : 'border-gray-200'
+                                        }`}
                                     placeholder="0.00"
-                                    required 
+                                    required
                                 />
                             </div>
                             {errors.price && (
@@ -659,9 +652,8 @@ const AdminPackForm = () => {
                                 Pack Image
                             </label>
                             <div
-                                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                                    imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-pink-400'
-                                }`}
+                                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-pink-400'
+                                    }`}
                                 onDragOver={handleDragOver}
                                 onDrop={handleDrop}
                             >
@@ -676,10 +668,10 @@ const AdminPackForm = () => {
                                 />
                                 {imagePreview ? (
                                     <div className="space-y-3">
-                                        <img 
-                                            src={imagePreview} 
-                                            alt="Pack preview" 
-                                            className="mx-auto h-32 w-auto rounded-lg border p-1 bg-white" 
+                                        <img
+                                            src={imagePreview}
+                                            alt="Pack preview"
+                                            className="mx-auto h-32 w-auto rounded-lg border p-1 bg-white"
                                         />
                                         <div className="flex justify-center space-x-2">
                                             <button
@@ -759,7 +751,7 @@ const AdminPackForm = () => {
                             Description
                         </label>
                         <Editor
-                            apiKey='jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'
+                            apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
                             onInit={(evt, editor) => editorRef.current = editor}
                             initialValue={packData.description}
                             init={{
@@ -797,9 +789,9 @@ const AdminPackForm = () => {
                             <FiPlus className="w-5 h-5 text-pink-500 mr-2" />
                             <h3 className="text-lg font-semibold text-gray-800">Pack Items</h3>
                         </div>
-                        <button 
-                            type="button" 
-                            onClick={addItem} 
+                        <button
+                            type="button"
+                            onClick={addItem}
                             className="flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
                         >
                             <FiPlus className="w-4 h-4 mr-2" />
@@ -826,9 +818,9 @@ const AdminPackForm = () => {
                                 <div className="flex items-center justify-between mb-4">
                                     <h4 className="text-md font-semibold text-gray-800">Item {index + 1}</h4>
                                     {packData.items.length > 1 && (
-                                        <button 
-                                            type="button" 
-                                            onClick={() => removeItem(index)} 
+                                        <button
+                                            type="button"
+                                            onClick={() => removeItem(index)}
                                             className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                                         >
                                             <FiX className="w-5 h-5" />
@@ -885,7 +877,7 @@ const AdminPackForm = () => {
                         <FiEye className="w-5 h-5 text-pink-500 mr-2" />
                         <h3 className="text-lg font-semibold text-gray-800">Display Settings</h3>
                     </div>
-                    
+
                     <div className="space-y-4">
                         {/* Purchase Notifications Toggle */}
                         <label className="flex items-center cursor-pointer p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition bg-gray-50">
@@ -893,7 +885,7 @@ const AdminPackForm = () => {
                                 type="checkbox"
                                 checked={packData.showPurchaseNotifications || false}
                                 onChange={(e) => {
-                                    setPackData({...packData, showPurchaseNotifications: e.target.checked});
+                                    setPackData({ ...packData, showPurchaseNotifications: e.target.checked });
                                     setIsDirty(true);
                                 }}
                                 className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
@@ -913,7 +905,7 @@ const AdminPackForm = () => {
                                 type="checkbox"
                                 checked={packData.showCountdownTimer || false}
                                 onChange={(e) => {
-                                    setPackData({...packData, showCountdownTimer: e.target.checked});
+                                    setPackData({ ...packData, showCountdownTimer: e.target.checked });
                                     setIsDirty(true);
                                 }}
                                 className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
@@ -1055,15 +1047,15 @@ const AdminPackForm = () => {
                             <p className="text-gray-600">Review your pack details and create the bundle</p>
                         </div>
                         <div className="flex space-x-3">
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={() => navigate('/admin/packs')}
                                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                                 Cancel
                             </button>
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 disabled={loading}
                                 className="flex items-center px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
