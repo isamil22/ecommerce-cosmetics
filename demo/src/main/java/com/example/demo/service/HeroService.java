@@ -26,6 +26,7 @@ public class HeroService {
             newHero.setSubtitle("Default Subtitle");
             newHero.setLinkText("Shop Now");
             newHero.setLinkUrl("/products");
+            newHero.setTitleFont("sans-serif");
             newHero.setImageUrl("https://placehold.co/1200x400/E91E63/FFFFFF?text=Beauty+Cosmetics");
             return heroRepository.save(newHero);
         });
@@ -40,6 +41,7 @@ public class HeroService {
         hero.setSubtitle(heroDTO.getSubtitle());
         hero.setLinkText(heroDTO.getLinkText());
         hero.setLinkUrl(heroDTO.getLinkUrl());
+        hero.setTitleFont(heroDTO.getTitleFont());
 
         if (image != null && !image.isEmpty()) {
             try {

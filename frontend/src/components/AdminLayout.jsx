@@ -59,3 +59,4 @@ const AdminLayout = () => {
 };
 
 export default AdminLayout;
+// Forced update for sidebar refresh

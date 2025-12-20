@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getHero, updateHero } from '../../api/apiService';
 import { toast } from 'react-toastify';
-import { 
+import {
     FiMonitor, FiSave, FiUpload, FiImage, FiEye, FiEdit3, FiRefreshCw,
-    FiCheckCircle, FiAlertCircle, FiX, FiTrash2, FiZap, FiHeart, 
+    FiCheckCircle, FiAlertCircle, FiX, FiTrash2, FiZap, FiHeart,
     FiShield, FiSettings, FiPlus, FiArrowLeft, FiCamera, FiTarget,
     FiAlertTriangle, FiInfo, FiCheck, FiClock, FiStar, FiLink,
     FiType, FiFileText, FiGlobe, FiExternalLink, FiMaximize2,
@@ -12,7 +12,7 @@ import {
 
 const AdminHeroPage = () => {
     const fileInputRef = useRef(null);
-    const [hero, setHero] = useState({ title: '', subtitle: '', linkText: '', linkUrl: '' });
+    const [hero, setHero] = useState({ title: '', subtitle: '', linkText: '', linkUrl: '', titleFont: 'sans-serif' });
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
     const [loading, setLoading] = useState(true);
@@ -87,7 +87,7 @@ const AdminHeroPage = () => {
         const { name, value } = e.target;
         setHero(prev => ({ ...prev, [name]: value }));
         setIsDirty(true);
-        
+
         // Clear error for this field
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
@@ -98,7 +98,7 @@ const AdminHeroPage = () => {
         if (file) {
             setImage(file);
             setIsDirty(true);
-            
+
             // Create preview
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -129,7 +129,7 @@ const AdminHeroPage = () => {
         e.preventDefault();
         e.stopPropagation();
         setDragActive(false);
-        
+
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             const file = e.dataTransfer.files[0];
             if (file.type.startsWith('image/')) {
@@ -151,45 +151,45 @@ const AdminHeroPage = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!hero.title.trim()) {
             newErrors.title = 'Hero title is required';
         } else if (hero.title.trim().length < 3) {
             newErrors.title = 'Hero title must be at least 3 characters';
         }
-        
+
         if (!hero.subtitle.trim()) {
             newErrors.subtitle = 'Hero subtitle is required';
         } else if (hero.subtitle.trim().length < 5) {
             newErrors.subtitle = 'Hero subtitle must be at least 5 characters';
         }
-        
+
         if (!hero.linkText.trim()) {
             newErrors.linkText = 'Link text is required';
         }
-        
+
         if (!hero.linkUrl.trim()) {
             newErrors.linkUrl = 'Link URL is required';
         } else if (!hero.linkUrl.startsWith('/') && !hero.linkUrl.startsWith('http')) {
             newErrors.linkUrl = 'Link URL must start with / or http';
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             toast.error('Please fix the errors before submitting.');
             return;
         }
-        
+
         setIsSubmitting(true);
         const formData = new FormData();
         formData.append('hero', new Blob([JSON.stringify(hero)], { type: 'application/json' }));
-        
+
         if (image) {
             formData.append('image', image);
         }
@@ -355,16 +355,15 @@ const AdminHeroPage = () => {
                                     <span>Hero Title</span>
                                     <span className="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="title" 
-                                    id="title" 
-                                    value={hero.title} 
-                                    onChange={handleChange} 
-                                    required 
-                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                                        errors.title ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-pink-300'
-                                    }`}
+                                <input
+                                    type="text"
+                                    name="title"
+                                    id="title"
+                                    value={hero.title}
+                                    onChange={handleChange}
+                                    required
+                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent ${errors.title ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-pink-300'
+                                        }`}
                                     placeholder="Enter your hero title (e.g., Welcome to Our Store)"
                                 />
                                 {errors.title && (
@@ -375,6 +374,28 @@ const AdminHeroPage = () => {
                                 )}
                             </div>
 
+                            {/* Title Font Field */}
+                            <div>
+                                <label htmlFor="titleFont" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
+                                    <FiType className="w-5 h-5 text-gray-500" />
+                                    <span>Title Font</span>
+                                </label>
+                                <select
+                                    name="titleFont"
+                                    id="titleFont"
+                                    value={hero.titleFont || 'sans-serif'}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent hover:border-gray-300"
+                                >
+                                    <option value="sans-serif">Default (Sans Serif)</option>
+                                    <option value="'Dancing Script', cursive">Dancing Script (Cursive)</option>
+                                    <option value="'Playfair Display', serif">Playfair Display (Serif)</option>
+                                    <option value="'Great Vibes', cursive">Great Vibes (Calligraphic)</option>
+                                    <option value="'Cinzel', serif">Cinzel (Luxury)</option>
+                                    <option value="'Montserrat', sans-serif">Montserrat (Modern)</option>
+                                </select>
+                            </div>
+
                             {/* Subtitle Field */}
                             <div>
                                 <label htmlFor="subtitle" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
@@ -382,16 +403,15 @@ const AdminHeroPage = () => {
                                     <span>Hero Subtitle</span>
                                     <span className="text-red-500">*</span>
                                 </label>
-                                <textarea 
-                                    name="subtitle" 
-                                    id="subtitle" 
-                                    value={hero.subtitle} 
-                                    onChange={handleChange} 
+                                <textarea
+                                    name="subtitle"
+                                    id="subtitle"
+                                    value={hero.subtitle}
+                                    onChange={handleChange}
                                     required
                                     rows="3"
-                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                                        errors.subtitle ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-blue-300'
-                                    }`}
+                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${errors.subtitle ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-blue-300'
+                                        }`}
                                     placeholder="Enter your hero subtitle (e.g., Discover amazing products at great prices)"
                                 />
                                 {errors.subtitle && (
@@ -409,16 +429,15 @@ const AdminHeroPage = () => {
                                     <span>Button Text</span>
                                     <span className="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="linkText" 
-                                    id="linkText" 
-                                    value={hero.linkText} 
-                                    onChange={handleChange} 
-                                    required 
-                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-green-500 focus:border-transparent ${
-                                        errors.linkText ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-green-300'
-                                    }`}
+                                <input
+                                    type="text"
+                                    name="linkText"
+                                    id="linkText"
+                                    value={hero.linkText}
+                                    onChange={handleChange}
+                                    required
+                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-green-500 focus:border-transparent ${errors.linkText ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-green-300'
+                                        }`}
                                     placeholder="Enter button text (e.g., Shop Now, Explore, Get Started)"
                                 />
                                 {errors.linkText && (
@@ -436,16 +455,15 @@ const AdminHeroPage = () => {
                                     <span>Button URL</span>
                                     <span className="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="linkUrl" 
-                                    id="linkUrl" 
-                                    value={hero.linkUrl} 
-                                    onChange={handleChange} 
-                                    required 
-                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
-                                        errors.linkUrl ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-purple-300'
-                                    }`}
+                                <input
+                                    type="text"
+                                    name="linkUrl"
+                                    id="linkUrl"
+                                    value={hero.linkUrl}
+                                    onChange={handleChange}
+                                    required
+                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.linkUrl ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-purple-300'
+                                        }`}
                                     placeholder="Enter button URL (e.g., /products, /shop, https://example.com)"
                                 />
                                 {errors.linkUrl && (
@@ -463,14 +481,13 @@ const AdminHeroPage = () => {
                                     <span>Hero Background Image</span>
                                     <span className="text-sm text-gray-500">(Optional)</span>
                                 </label>
-                                
+
                                 {/* Image Upload Area */}
-                                <div 
-                                    className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${
-                                        dragActive 
-                                            ? 'border-pink-400 bg-pink-50' 
-                                            : 'border-gray-300 hover:border-pink-400 hover:bg-pink-50'
-                                    }`}
+                                <div
+                                    className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${dragActive
+                                        ? 'border-pink-400 bg-pink-50'
+                                        : 'border-gray-300 hover:border-pink-400 hover:bg-pink-50'
+                                        }`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
                                     onDragOver={handleDrag}
@@ -485,12 +502,12 @@ const AdminHeroPage = () => {
                                         accept="image/*"
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     />
-                                    
+
                                     {imagePreview ? (
                                         <div className="relative">
-                                            <img 
-                                                src={imagePreview} 
-                                                alt="Hero preview" 
+                                            <img
+                                                src={imagePreview}
+                                                alt="Hero preview"
                                                 className="mx-auto max-h-32 rounded-lg shadow-lg"
                                             />
                                             <button
@@ -524,7 +541,7 @@ const AdminHeroPage = () => {
                                         </div>
                                     )}
                                 </div>
-                                
+
                                 <p className="mt-2 text-sm text-gray-500">
                                     Recommended size: 1200x400px. Supported formats: JPG, PNG, GIF. Max size: 5MB
                                 </p>
@@ -532,8 +549,8 @@ const AdminHeroPage = () => {
 
                             {/* Submit Button */}
                             <div className="pt-4">
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     disabled={isSubmitting}
                                     className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
@@ -577,17 +594,20 @@ const AdminHeroPage = () => {
                             <div className="relative bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl overflow-hidden min-h-80 flex items-center justify-center">
                                 {/* Background Image */}
                                 {imagePreview && (
-                                    <div 
+                                    <div
                                         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                                         style={{ backgroundImage: `url(${imagePreview})` }}
                                     >
                                         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                                     </div>
                                 )}
-                                
+
                                 {/* Content */}
                                 <div className="relative z-10 text-center px-8 py-12">
-                                    <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
+                                    <h1
+                                        className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg"
+                                        style={{ fontFamily: hero.titleFont || 'sans-serif' }}
+                                    >
                                         {hero.title || 'Your Hero Title'}
                                     </h1>
                                     <p className="text-lg md:text-xl text-white mb-8 drop-shadow-lg max-w-2xl mx-auto">
@@ -597,13 +617,13 @@ const AdminHeroPage = () => {
                                         {hero.linkText || 'Your Button Text'}
                                     </button>
                                 </div>
-                                
+
                                 {/* Preview Overlay */}
                                 <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-xs">
                                     Live Preview
                                 </div>
                             </div>
-                            
+
                             {/* Preview Info */}
                             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                                 <h3 className="font-semibold text-gray-900 mb-2 flex items-center">

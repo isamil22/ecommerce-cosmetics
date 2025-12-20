@@ -318,11 +318,40 @@ const OrderPage = () => {
                                                     {/* Product Info */}
                                                     <div className="flex-grow">
                                                         <h3 className="font-semibold text-gray-900 mb-1">{item.productName}</h3>
-                                                        {item.variantName && (
-                                                            <p className="text-sm text-pink-600 font-medium mb-1">
-                                                                {item.variantName}
-                                                            </p>
-                                                        )}
+
+                                                        {/* Dynamic Pack Contents Display */}
+                                                        {(() => {
+                                                            if (!item.variantName) return null;
+                                                            try {
+                                                                const parsed = JSON.parse(item.variantName);
+                                                                if (Array.isArray(parsed)) {
+                                                                    return (
+                                                                        <div className="flex flex-wrap gap-2 mt-1 mb-2">
+                                                                            {parsed.map((p, idx) => (
+                                                                                <div key={idx} className="relative group cursor-help">
+                                                                                    <img
+                                                                                        src={p.image}
+                                                                                        alt={p.name}
+                                                                                        title={p.name}
+                                                                                        className="w-8 h-8 object-cover rounded border border-gray-200"
+                                                                                        onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
+                                                                                    />
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    );
+                                                                }
+                                                            } catch (e) {
+                                                                // Legacy fallback
+                                                                return (
+                                                                    <p className="text-sm text-pink-600 font-medium mb-1">
+                                                                        {item.variantName}
+                                                                    </p>
+                                                                );
+                                                            }
+                                                            return <p className="text-sm text-pink-600 font-medium mb-1">{item.variantName}</p>;
+                                                        })()}
+
                                                         <p className="text-sm text-gray-600">الكمية / Qty: {item.quantity}</p>
                                                         <p className="text-sm text-gray-600">{formatPrice(parseFloat(item.price || 0))} لكل قطعة / each</p>
                                                     </div>

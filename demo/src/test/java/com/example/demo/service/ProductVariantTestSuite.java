@@ -61,7 +61,7 @@ public class ProductVariantTestSuite {
         // Create size variant type
         VariantTypeDto sizeVariantType = new VariantTypeDto();
         sizeVariantType.setName("Size");
-        sizeVariantType.setOptions(Arrays.asList("S", "M", "L", "XL"));
+        sizeVariantType.setOptions(createOptions("S", "M", "L", "XL"));
         productDTO.setVariantTypes(Arrays.asList(sizeVariantType));
 
         // Create size variants
@@ -118,11 +118,11 @@ public class ProductVariantTestSuite {
         // Create variant types
         VariantTypeDto colorVariantType = new VariantTypeDto();
         colorVariantType.setName("Color");
-        colorVariantType.setOptions(Arrays.asList("Red", "Blue", "Green"));
+        colorVariantType.setOptions(createOptions("Red", "Blue", "Green"));
 
         VariantTypeDto sizeVariantType = new VariantTypeDto();
         sizeVariantType.setName("Size");
-        sizeVariantType.setOptions(Arrays.asList("M", "L"));
+        sizeVariantType.setOptions(createOptions("M", "L"));
 
         productDTO.setVariantTypes(Arrays.asList(colorVariantType, sizeVariantType));
 
@@ -199,15 +199,15 @@ public class ProductVariantTestSuite {
         // Create three variant types
         VariantTypeDto materialType = new VariantTypeDto();
         materialType.setName("Material");
-        materialType.setOptions(Arrays.asList("Cotton", "Polyester"));
+        materialType.setOptions(createOptions("Cotton", "Polyester"));
 
         VariantTypeDto colorType = new VariantTypeDto();
         colorType.setName("Color");
-        colorType.setOptions(Arrays.asList("Black", "White"));
+        colorType.setOptions(createOptions("Black", "White"));
 
         VariantTypeDto sizeType = new VariantTypeDto();
         sizeType.setName("Size");
-        sizeType.setOptions(Arrays.asList("M", "L"));
+        sizeType.setOptions(createOptions("M", "L"));
 
         productDTO.setVariantTypes(Arrays.asList(materialType, colorType, sizeType));
 
@@ -290,7 +290,7 @@ public class ProductVariantTestSuite {
         // Create color variant type
         VariantTypeDto colorVariantType = new VariantTypeDto();
         colorVariantType.setName("Color");
-        colorVariantType.setOptions(Arrays.asList("Red", "Blue", "Black"));
+        colorVariantType.setOptions(createOptions("Red", "Blue", "Black"));
         productDTO.setVariantTypes(Arrays.asList(colorVariantType));
 
         // Create variants with images
@@ -351,7 +351,7 @@ public class ProductVariantTestSuite {
 
         VariantTypeDto sizeVariantType = new VariantTypeDto();
         sizeVariantType.setName("Size");
-        sizeVariantType.setOptions(Arrays.asList("S", "M", "L"));
+        sizeVariantType.setOptions(createOptions("S", "M", "L"));
         updateDTO.setVariantTypes(Arrays.asList(sizeVariantType));
 
         ProductVariantDto smallVariant = createVariant(
@@ -399,7 +399,7 @@ public class ProductVariantTestSuite {
 
         VariantTypeDto emptyVariantType = new VariantTypeDto();
         emptyVariantType.setName("Size");
-        emptyVariantType.setOptions(Arrays.asList()); // Empty options
+        emptyVariantType.setOptions(new java.util.ArrayList<>()); // Empty options
         productDTO.setVariantTypes(Arrays.asList(emptyVariantType));
 
         // This should throw an exception
@@ -436,7 +436,7 @@ public class ProductVariantTestSuite {
 
         VariantTypeDto qualityType = new VariantTypeDto();
         qualityType.setName("Quality");
-        qualityType.setOptions(Arrays.asList("Standard", "Premium", "Deluxe"));
+        qualityType.setOptions(createOptions("Standard", "Premium", "Deluxe"));
         productDTO.setVariantTypes(Arrays.asList(qualityType));
 
         ProductVariantDto standardVariant = createVariant(
@@ -484,7 +484,7 @@ public class ProductVariantTestSuite {
 
         VariantTypeDto sizeType = new VariantTypeDto();
         sizeType.setName("Size");
-        sizeType.setOptions(Arrays.asList("Small", "Large"));
+        sizeType.setOptions(createOptions("Small", "Large"));
         productDTO.setVariantTypes(Arrays.asList(sizeType));
 
         ProductVariantDto smallVariant = createVariant(
@@ -523,7 +523,7 @@ public class ProductVariantTestSuite {
 
         VariantTypeDto sizeType = new VariantTypeDto();
         sizeType.setName("Size");
-        sizeType.setOptions(Arrays.asList("S", "M", "L"));
+        sizeType.setOptions(createOptions("S", "M", "L"));
         productDTO.setVariantTypes(Arrays.asList(sizeType));
 
         // Different stock levels for each variant
@@ -583,6 +583,15 @@ public class ProductVariantTestSuite {
         variant.setPrice(price);
         variant.setStock(stock);
         return variant;
+    }
+    private java.util.List<com.example.demo.dto.VariantOptionDto> createOptions(String... values) {
+        return java.util.Arrays.stream(values)
+                .map(value -> {
+                    com.example.demo.dto.VariantOptionDto dto = new com.example.demo.dto.VariantOptionDto();
+                    dto.setValue(value);
+                    return dto;
+                })
+                .collect(java.util.stream.Collectors.toList());
     }
 }
 

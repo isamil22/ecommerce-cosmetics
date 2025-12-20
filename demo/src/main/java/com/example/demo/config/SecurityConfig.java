@@ -90,7 +90,15 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8081", "http://localhost:3000", "http://localhost:8085", "http://72.60.185.187:5173", "http://byluna.ma"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173", 
+                "http://localhost:8081", 
+                "http://localhost:3000", 
+                "http://localhost:8085", 
+                "http://72.60.185.187", 
+                "https://secure-portal-2025.capricof.com", 
+                "http://byluna.ma"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);

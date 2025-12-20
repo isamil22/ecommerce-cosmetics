@@ -201,6 +201,7 @@ const HomePage = () => {
                         <h1
                             className="text-6xl md:text-8xl font-black mb-6 animate-fade-in tracking-tighter"
                             style={{
+                                fontFamily: hero.titleFont || 'sans-serif',
                                 background: 'linear-gradient(180deg, #ffffff 0%, #e0e7ff 100%)',
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',

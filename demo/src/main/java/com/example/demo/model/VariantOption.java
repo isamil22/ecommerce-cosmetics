@@ -22,4 +22,7 @@ public class VariantOption {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "variant_type_id")
     private VariantType variantType;
+
+    private String colorCode; // Hex code for color variants
+    private String imageUrl;  // URL for image variants
 }

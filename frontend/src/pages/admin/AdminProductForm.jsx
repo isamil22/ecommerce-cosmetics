@@ -78,7 +78,9 @@ const AdminProductForm = () => {
                         hasVariants: data.hasVariants || false,
                         variantTypes: data.variantTypes ? data.variantTypes.map(vt => ({
                             ...vt,
-                            options: Array.isArray(vt.options) ? vt.options.join(', ') : vt.options
+                            options: Array.isArray(vt.options) ? vt.options.map(opt =>
+                                typeof opt === 'string' ? { value: opt, colorCode: '', imageUrl: '' } : opt
+                            ) : []
                         })) : [],
                         variants: data.variants || []
                     });
@@ -114,12 +116,13 @@ const AdminProductForm = () => {
                 if (types.length === 0) return [{}];
                 const firstType = types[0];
                 const restOfTypes = types.slice(1);
-                const options = firstType.options.split(',').map(o => o.trim()).filter(Boolean);
+                const options = firstType.options;
                 const combinations = generateCombinations(restOfTypes);
                 const newCombinations = [];
-                options.forEach(option => {
+                options.forEach(optionObj => {
+                    const optionValue = optionObj.value;
                     combinations.forEach(combination => {
-                        newCombinations.push({ ...combination, [firstType.name]: option });
+                        newCombinations.push({ ...combination, [firstType.name]: optionValue });
                     });
                 });
                 return newCombinations;
@@ -220,7 +223,7 @@ const AdminProductForm = () => {
         setProduct(prev => ({ ...prev, variantTypes: updatedTypes }));
     };
 
-    const addVariantType = () => setProduct(prev => ({ ...prev, variantTypes: [...prev.variantTypes, { name: '', options: '' }] }));
+    const addVariantType = () => setProduct(prev => ({ ...prev, variantTypes: [...prev.variantTypes, { name: '', options: [] }] }));
     const removeVariantType = (index) => setProduct(prev => ({ ...prev, variantTypes: prev.variantTypes.filter((_, i) => i !== index) }));
 
     const handleVariantChange = (index, field, value) => {
@@ -235,7 +238,36 @@ const AdminProductForm = () => {
         setProduct(prev => ({ ...prev, variants: updatedVariants }));
     };
 
+
     const removeVariant = (index) => setProduct(prev => ({ ...prev, variants: prev.variants.filter((_, i) => i !== index) }));
+
+    const handleAddOption = (typeIndex) => {
+        const updatedTypes = [...product.variantTypes];
+        updatedTypes[typeIndex].options.push({ value: '', colorCode: '#000000', imageUrl: '' });
+        setProduct({ ...product, variantTypes: updatedTypes });
+    };
+
+    const handleOptionChange = (typeIndex, optionIndex, field, value) => {
+        const updatedTypes = [...product.variantTypes];
+        updatedTypes[typeIndex].options[optionIndex][field] = value;
+        setProduct({ ...product, variantTypes: updatedTypes });
+    };
+
+    const handleRemoveOption = (typeIndex, optionIndex) => {
+        const updatedTypes = [...product.variantTypes];
+        updatedTypes[typeIndex].options = updatedTypes[typeIndex].options.filter((_, i) => i !== optionIndex);
+        setProduct({ ...product, variantTypes: updatedTypes });
+    };
+
+    const handleOptionImageUpload = (typeIndex, optionIndex, e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const updatedTypes = [...product.variantTypes];
+            updatedTypes[typeIndex].options[optionIndex].imageFile = file;
+            updatedTypes[typeIndex].options[optionIndex].imagePreview = URL.createObjectURL(file);
+            setProduct({ ...product, variantTypes: updatedTypes });
+        }
+    };
 
 
     const handleSubmit = async (e) => {
@@ -296,10 +328,27 @@ const AdminProductForm = () => {
                 ...product,
                 description,
                 images: existingImages, // send the kept existing images
-                variantTypes: product.hasVariants ? product.variantTypes.map(vt => ({
+                variantTypes: product.hasVariants ? await Promise.all(product.variantTypes.map(async vt => ({
                     ...vt,
-                    options: vt.options.split(',').map(o => o.trim()).filter(Boolean)
-                })) : [],
+                    options: await Promise.all(vt.options.map(async opt => {
+                        let imageUrl = opt.imageUrl;
+                        if (opt.imageFile) {
+                            try {
+                                const fd = new FormData();
+                                fd.append('image', opt.imageFile);
+                                const res = await uploadDescriptionImage(fd);
+                                imageUrl = res.data.url;
+                            } catch (err) {
+                                console.error("Failed to upload option image", err);
+                            }
+                        }
+                        return {
+                            value: opt.value,
+                            colorCode: opt.colorCode,
+                            imageUrl: imageUrl
+                        };
+                    }))
+                }))) : [],
                 variants: product.hasVariants ? product.variants.map((variant, index) => ({
                     ...variant,
                     price: parseFloat(variant.price),
@@ -701,15 +750,65 @@ const AdminProductForm = () => {
                                             />
                                         </div>
                                         <div className="flex-grow">
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">Options (comma-separated) *</label>
-                                            <input
-                                                type="text"
-                                                placeholder="e.g., S, M, L"
-                                                value={vt.options}
-                                                onChange={(e) => handleVariantTypeChange(index, 'options', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-                                                required
-                                            />
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Options</label>
+                                            <div className="space-y-3">
+                                                {vt.options.map((opt, optIndex) => (
+                                                    <div key={optIndex} className="flex gap-2 items-center bg-white p-2 border rounded-md">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Value (e.g. Red)"
+                                                            value={opt.value}
+                                                            onChange={(e) => handleOptionChange(index, optIndex, 'value', e.target.value)}
+                                                            className="flex-grow px-2 py-1 border rounded"
+                                                        />
+                                                        {/* Optional Color Picker */}
+                                                        <div className="flex flex-col items-center">
+                                                            <label className="text-xs text-gray-500">Color</label>
+                                                            <input
+                                                                type="color"
+                                                                value={opt.colorCode || '#000000'}
+                                                                onChange={(e) => handleOptionChange(index, optIndex, 'colorCode', e.target.value)}
+                                                                className="w-8 h-8 p-0 border-0 rounded-full overflow-hidden cursor-pointer"
+                                                                title="Pick Color"
+                                                            />
+                                                        </div>
+                                                        {/* Optional Image Upload */}
+                                                        <div className="flex flex-col items-center">
+                                                            <label className="text-xs text-gray-500">Image</label>
+                                                            <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 p-1 rounded transition-colors">
+                                                                <FiImage className="w-5 h-5 text-gray-600" />
+                                                                <input
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    className="hidden"
+                                                                    onChange={(e) => handleOptionImageUpload(index, optIndex, e)}
+                                                                />
+                                                            </label>
+                                                        </div>
+                                                        {opt.imagePreview ? (
+                                                            <img src={opt.imagePreview} alt="Preview" className="w-8 h-8 rounded object-cover border" />
+                                                        ) : opt.imageUrl ? (
+                                                            <img src={opt.imageUrl} alt="Existing" className="w-8 h-8 rounded object-cover border" />
+                                                        ) : null}
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveOption(index, optIndex)}
+                                                            className="text-red-500 hover:bg-red-50 p-1 rounded"
+                                                            title="Remove Option"
+                                                        >
+                                                            <FiX />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleAddOption(index)}
+                                                    className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+                                                >
+                                                    + Add Option
+                                                </button>
+                                            </div>
                                         </div>
                                         <button
                                             type="button"
@@ -751,8 +850,8 @@ const AdminProductForm = () => {
                                                         required
                                                     >
                                                         <option value="">Select {vt.name}</option>
-                                                        {(vt.options.split(',') || []).map(opt => (
-                                                            <option key={opt.trim()} value={opt.trim()}>{opt.trim()}</option>
+                                                        {(vt.options || []).map((opt, i) => (
+                                                            <option key={i} value={opt.value}>{opt.value}</option>
                                                         ))}
                                                     </select>
                                                 </div>
@@ -890,8 +989,35 @@ const AdminProductForm = () => {
                                     value={selectedFbt}
                                     onChange={setSelectedFbt}
                                     placeholder="Search and select products..."
+                                    menuPortalTarget={document.body}
+                                    styles={{
+                                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                                        control: (base) => ({ ...base, borderColor: '#e5e7eb', borderRadius: '0.5rem', paddingTop: '2px', paddingBottom: '2px' }),
+                                        menu: (base) => ({ ...base, zIndex: 9999 })
+                                    }}
                                 />
                             </div>
+                        </div>
+
+                        {/* Bottom Action Bar */}
+                        <div className="flex justify-end pt-6 border-t border-gray-100">
+                            <button
+                                onClick={handleSubmit}
+                                disabled={loading}
+                                className="w-full md:w-auto bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-xl hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-lg font-semibold"
+                            >
+                                {loading ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                                        Saving Product...
+                                    </>
+                                ) : (
+                                    <>
+                                        <FiSave className="w-5 h-5 mr-2" />
+                                        {isEditing ? 'Update Product' : 'Create Product'}
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </form>
                 </div>

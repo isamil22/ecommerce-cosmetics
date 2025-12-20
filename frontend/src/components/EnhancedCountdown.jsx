@@ -4,14 +4,21 @@ import { getCountdown } from '../api/apiService';
 
 const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
     const [timeLeft, setTimeLeft] = useState({
+        days: 0,
         hours: 0,
         minutes: 0,
         seconds: 0,
-        total: 0
+        total: null // Start with null to prevent premature "expired" state
     });
     const [isUrgent, setIsUrgent] = useState(false);
     const [config, setConfig] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const fallbackEndTimeRef = React.useRef(fallbackEndTime);
+
+    useEffect(() => {
+        fallbackEndTimeRef.current = fallbackEndTime;
+    }, [fallbackEndTime]);
 
     // Fetch admin countdown settings
     const fetchCountdownSettings = useCallback(async () => {
@@ -20,10 +27,21 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
             // console.log('Countdown API Response:', response.data); 
 
             if (response.data) {
+                // Admin has set settings
+                // CRITICAL FIX: Check if the admin-set date is expired. If so, AUTO-RENEW using fallback logic
+                // This prevents the "Expired" banner from showing on the homepage for daily offers.
+                let calculatedEndDate = response.data.endDate ? new Date(response.data.endDate).getTime() : null;
+                const now = new Date().getTime();
+
+                if (!calculatedEndDate || calculatedEndDate <= now) {
+                    // Date is missing OR expired -> Use Fallback (Daily Reset)
+                    calculatedEndDate = fallbackEndTimeRef.current || (now + (24 * 60 * 60 * 1000));
+                }
+
                 // Admin has set settings - use them with all new fields
                 const adminConfig = {
                     ...response.data,
-                    endDate: response.data.endDate ? new Date(response.data.endDate).getTime() : (fallbackEndTime || (new Date().getTime() + (24 * 60 * 60 * 1000))),
+                    endDate: calculatedEndDate,
                     enabled: response.data.enabled !== undefined ? response.data.enabled : true,
                     // Use simple defaults if missing, but we will largely ignore specific color codes in favor of the glass theme
                     // unless they are critical. For "Pro Wow", we prefer our curated glass styles.
@@ -34,7 +52,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                 // Fallback
                 setConfig({
                     title: 'عرض محدود! / Offre Limitée !',
-                    endDate: fallbackEndTime || (new Date().getTime() + (24 * 60 * 60 * 1000)),
+                    endDate: fallbackEndTimeRef.current || (new Date().getTime() + (24 * 60 * 60 * 1000)),
                     urgentThreshold: 3600,
                     enabled: true,
                     showDays: false,
@@ -49,14 +67,14 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
             console.error('Error fetching countdown settings:', error);
             setConfig({
                 title: 'عرض محدود! / Offre Limitée !',
-                endDate: fallbackEndTime || (new Date().getTime() + (24 * 60 * 60 * 1000)),
+                endDate: fallbackEndTimeRef.current || (new Date().getTime() + (24 * 60 * 60 * 1000)),
                 urgentThreshold: 3600,
                 enabled: true
             });
         } finally {
             setIsLoading(false);
         }
-    }, [fallbackEndTime]);
+    }, []); // Removed fallbackEndTime dependency to prevent loops
 
     useEffect(() => {
         fetchCountdownSettings();
@@ -74,17 +92,31 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
     useEffect(() => {
         if (!config || isLoading) return;
 
-        const endTime = config.endDate;
+        // Debug log to see exactly what date is being used
+        // console.log('Countdown Target Date:', new Date(config.endDate).toLocaleString(), 'Current Time:', new Date().toLocaleString());
 
-        const timer = setInterval(() => {
+        const calculateTime = () => {
+            let endTime = config.endDate;
             const now = new Date().getTime();
-            const distance = endTime - now;
+            let distance = endTime - now;
+
+            // If expired, check if we should fallback to the provided fallbackEndTime (e.g. Daily Offer reset)
+            if (distance < 0 && fallbackEndTimeRef.current) {
+                const fallbackDist = fallbackEndTimeRef.current - now;
+                if (fallbackDist > 0) {
+                    // Fallback is valid and in future, switch to it
+                    endTime = fallbackEndTimeRef.current;
+                    distance = fallbackDist;
+                    // Optionally update config to reflect this change (so we don't check every tick)
+                    // But for safety inside this pure function, we just use local vars
+                }
+            }
 
             if (distance < 0) {
-                clearInterval(timer);
-                setTimeLeft({ hours: 0, minutes: 0, seconds: 0, total: 0 });
+                // Really expired
+                setTimeLeft({ hours: 0, minutes: 0, seconds: 0, days: 0, total: 0 });
                 if (onExpire) onExpire();
-                return;
+                return false; // Stop
             }
 
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -96,6 +128,16 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
 
             const urgentThresholdMs = (config.urgentThreshold || 3600) * 1000;
             setIsUrgent(distance < urgentThresholdMs);
+            return true; // Continue
+        };
+
+        // Run immediately to update UI instantly
+        if (!calculateTime()) return;
+
+        const timer = setInterval(() => {
+            if (!calculateTime()) {
+                clearInterval(timer);
+            }
         }, 1000);
 
         return () => clearInterval(timer);
@@ -116,7 +158,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
     if (!config || !config.enabled) return null;
 
     // Render Expired State
-    if (timeLeft.total <= 0) {
+    if (timeLeft.total !== null && timeLeft.total <= 0) {
         return (
             <div className="glass-panel-dark border-red-200/50 bg-red-50/50 rounded-2xl p-4 mb-6 text-center backdrop-blur-md">
                 <div className="text-3xl mb-1">⏰</div>
@@ -131,7 +173,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
 
     return (
         <div className={`
-            glass-panel-pro rounded-2xl p-4 mb-6 text-center transform transition-all duration-300
+            glass-panel-pro rounded-2xl p-4 text-center transform transition-all duration-300
             ${isUrgent ? 'border-red-200 shadow-[0_0_20px_rgba(220,38,38,0.15)]' : 'border-white/60 shadow-xl'}
         `}>
             {/* Header */}

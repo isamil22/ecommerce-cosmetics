@@ -264,6 +264,49 @@ const CartPage = () => {
                                                 <div className="flex justify-between items-start mb-2">
                                                     <div>
                                                         <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.productName}</h3>
+
+                                                        {/* Dynamic Pack Contents Display */}
+                                                        {(() => {
+                                                            if (!item.variantName) return null;
+                                                            try {
+                                                                const parsed = JSON.parse(item.variantName);
+                                                                if (Array.isArray(parsed)) {
+                                                                    return (
+                                                                        <div className="flex flex-wrap gap-2 mt-2 mb-2">
+                                                                            {parsed.map((p, idx) => (
+                                                                                <div key={idx} className="group relative">
+                                                                                    <img
+                                                                                        src={p.image}
+                                                                                        alt={p.name}
+                                                                                        title={p.name}
+                                                                                        className="w-10 h-10 object-cover rounded-md border border-gray-200 shadow-sm"
+                                                                                        onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
+                                                                                    />
+                                                                                    {/* Tooltip on hover */}
+                                                                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-10 transition-opacity opacity-0 group-hover:opacity-100">
+                                                                                        {p.name}
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    );
+                                                                }
+                                                            } catch (e) {
+                                                                // Legacy/Standard fallback
+                                                                return (
+                                                                    <p className="text-sm text-pink-600 font-medium mb-1">
+                                                                        {item.variantName}
+                                                                    </p>
+                                                                );
+                                                            }
+                                                            // Fallback if parsing succeeds but not array (shouldn't happen for packs)
+                                                            return (
+                                                                <p className="text-sm text-pink-600 font-medium mb-1">
+                                                                    {item.variantName}
+                                                                </p>
+                                                            );
+                                                        })()}
+
                                                         <p className="text-gray-600 text-sm">
                                                             {formatPrice(item.price)} each
                                                         </p>

@@ -24,10 +24,10 @@ public class OrderItem {
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "product_image")
+    @Column(name = "product_image", columnDefinition = "MEDIUMTEXT")
     private String productImage;
 
-    @Column(name = "variant_name")
+    @Column(name = "variant_name", columnDefinition = "MEDIUMTEXT")
     private String variantName;
 
     private Integer quantity;

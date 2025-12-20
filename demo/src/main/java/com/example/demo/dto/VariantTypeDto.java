@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class VariantTypeDto {
     private String name;
-    private List<String> options;
+    private List<VariantOptionDto> options;
 }

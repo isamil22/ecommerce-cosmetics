@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Data
 public class CartItemDTO {
-    private Long id;
+    private String id;
     private Long productId;
     private String productName;
     @Positive

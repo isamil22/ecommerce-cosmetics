@@ -1,7 +1,8 @@
 // Enhanced Pack Detail Page for Better User Experience - Moroccan Users
 import React, { useState, useEffect } from 'react';
+import { FaEye } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
-import { getPackById, addToCart as apiAddToCart } from '../api/apiService';
+import { getPackById, addToCart } from '../api/apiService';
 import Loader from '../components/Loader';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
 import { toast } from 'react-toastify';
@@ -12,6 +13,8 @@ import PurchaseNotifications from '../components/PurchaseNotifications';
 import StickyAddToCart from '../components/StickyAddToCart';
 import './PackDetailPage.css';
 import { formatPrice } from '../utils/currency';
+import PackVisualizer from '../components/PackVisualizer';
+import ProductDetailModal from '../components/ProductDetailModal';
 
 const StickyPackHeader = ({ pack, composedImageUrl, onScrollTop }) => (
     <div className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200 transform transition-all duration-300 animate-slide-down py-3 px-4 flex items-center justify-between sm:hidden">
@@ -41,7 +44,7 @@ const StickyPackHeader = ({ pack, composedImageUrl, onScrollTop }) => (
     </div>
 );
 
-const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChange, isDefault }) => {
+const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChange, isDefault, onViewDetails }) => {
     const imageUrl = (product.images && product.images.length > 0)
         ? product.images[0]
         : '/placeholder-image.svg';
@@ -70,6 +73,18 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                 }
             }}
         >
+            {/* View Details Button - Enhanced Eye Icon */}
+            <div
+                onClick={(e) => {
+                    e.stopPropagation(); // Prevent selection when clicking eye
+                    onViewDetails(product);
+                }}
+                className="absolute top-2 right-2 p-2 bg-white/80 hover:bg-white text-gray-400 hover:text-blue-600 rounded-full shadow-sm hover:shadow-md transition-all z-20 cursor-pointer"
+                title="عرض التفاصيل / Voir les détails"
+            >
+                <FaEye size={16} />
+            </div>
+
             {/* Selection Indicator - Smaller on mobile */}
             {isSelected && (
                 <div className="absolute -top-2 -left-2 bg-pink-500 text-white rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-xs sm:text-base animate-bounce-custom z-10">
@@ -90,7 +105,8 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
             </div>
 
             <div className="flex-grow min-w-0">
-                <div className="flex items-center mb-1 sm:mb-2 flex-wrap gap-1">
+                <div className="flex items-center mb-1 sm:mb-2 flex-wrap gap-1 pr-8">
+                    {/* pr-8 to avoid overlap with eye icon */}
                     <span className="text-gray-800 font-bold text-sm sm:text-lg truncate block max-w-full">
                         {product.name || 'Produit sans nom'}
                     </span>
@@ -101,9 +117,7 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                     )}
                 </div>
                 <div className="flex items-center justify-between">
-                    <span className="text-pink-600 font-bold text-base sm:text-xl">
-                        {formatPrice(product.price)}
-                    </span>
+
                     <div className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-sm font-semibold whitespace-nowrap ${isSelected
                         ? 'bg-pink-100 text-pink-700'
                         : 'bg-gray-100 text-gray-600'
@@ -125,7 +139,7 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
     );
 };
 
-const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
+const PackItemSelector = ({ item, selectedProductId, onSelectionChange, onViewDetails }) => (
     <div className="border border-gray-200 p-4 sm:p-6 rounded-xl mb-4 sm:mb-6 bg-white shadow-sm hover:shadow-md transition-shadow relative">
         {/* Section Header - More Compact */}
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-3 sm:p-4 rounded-lg mb-4 -mx-4 -mt-4 sm:-mx-6 sm:-mt-6 border-b border-gray-100">
@@ -154,6 +168,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
                     packItemId={item.id}
                     selectedProductId={selectedProductId}
                     onSelectionChange={onSelectionChange}
+                    onViewDetails={onViewDetails}
                     isDefault={true}
                 />
             </div>
@@ -180,6 +195,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
                             packItemId={item.id}
                             selectedProductId={selectedProductId}
                             onSelectionChange={onSelectionChange}
+                            onViewDetails={onViewDetails}
                             isDefault={false}
                         />
                     ))}
@@ -215,6 +231,17 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     const [highlightedElement, setHighlightedElement] = useState(null);
     // Sticky header state
     const [showStickyHeader, setShowStickyHeader] = useState(false);
+
+    // State for Product Detail Modal
+    const [viewProduct, setViewProduct] = useState(null);
+
+    const handleViewDetails = (product) => {
+        setViewProduct(product);
+    };
+
+    const handleCloseDetails = () => {
+        setViewProduct(null);
+    };
 
     const fetchPack = async () => {
         try {
@@ -319,21 +346,9 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
         fetchPack();
     }, [id]);
 
-    // Simplified logic: Updates the main image to show the selected product
+    // Simplified logic: Updates the selections state
     const handleSelectionChange = (packItemId, selectedProductId) => {
         setSelections(prev => ({ ...prev, [packItemId]: selectedProductId }));
-
-        // Find and set the image of the selected product
-        if (pack && pack.items) {
-            const item = pack.items.find(i => i.id === packItemId);
-            if (item) {
-                const allProducts = [item.defaultProduct, ...(item.variationProducts || [])];
-                const product = allProducts.find(p => p && p.id === selectedProductId);
-                if (product && product.images && product.images.length > 0) {
-                    setComposedImageUrl(product.images[0]);
-                }
-            }
-        }
     };
 
     const handleReset = () => {
@@ -347,41 +362,46 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
         setMessage('');
         setError('');
         try {
-            if (isAuthenticated) {
-                const promises = Object.values(selections).map(productId => apiAddToCart(productId, 1));
-                await Promise.all(promises);
-            } else {
-                let cart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
-                const allProductsInPack = pack?.items?.flatMap(item => [item.defaultProduct, ...(item.variationProducts || [])]) || [];
-
-                for (const packItemId in selections) {
-                    const selectedProductId = selections[packItemId];
-                    const productToAdd = allProductsInPack.find(p => p && p.id === selectedProductId);
-
-                    if (productToAdd) {
-                        const existingItemIndex = cart.items.findIndex(item => item.productId === productToAdd.id);
-
-                        if (existingItemIndex > -1) {
-                            cart.items[existingItemIndex].quantity += 1;
-                        } else {
-                            cart.items.push({
-                                productId: productToAdd.id,
-                                productName: productToAdd.name,
-                                price: productToAdd.price,
-                                quantity: 1,
-                                images: productToAdd.images || [],
-                            });
-                        }
-                    }
-                }
-                localStorage.setItem('cart', JSON.stringify(cart));
+            // Check if all items are selected
+            const allItemsSelected = pack?.items?.every(item => selections[item.id]);
+            if (!allItemsSelected) {
+                toast.warn('المرجو اختيار جميع المنتجات / Veuillez sélectionner tous les produits');
+                return;
             }
+
+            // Create a JSON string of selected products (name + image)
+            const selectedProductsData = pack?.items?.map(item => {
+                const selectedId = selections[item.id];
+                const product = [item.defaultProduct, ...(item.variationProducts || [])]
+                    .find(p => p && p.id === selectedId);
+                if (!product) return null;
+
+                const imageUrl = (product.images && product.images.length > 0)
+                    ? product.images[0]
+                    : '/placeholder-image.svg';
+
+                return { name: product.name, image: imageUrl };
+            }).filter(Boolean);
+
+            // Store as JSON string for frontend parsing, or fallback string for legacy/backend view
+            const variantNamePayload = JSON.stringify(selectedProductsData);
+
+            // Create the composite pack item
+            const packItem = {
+                productName: pack.name,
+                price: pack.price, // Uses the fixed pack price
+                imageUrl: composedImageUrl, // Uses the dynamic visualizer image
+                variantName: variantNamePayload, // Stores contents as the "variant"
+                quantity: 1
+            };
+
+            // Add the single pack item to cart
+            await addToCart(packItem, 1);
 
             if (window.fbq) {
                 window.fbq('track', 'AddToCart', {
-                    content_ids: Object.values(selections),
                     content_name: pack.name,
-                    content_type: 'product_group',
+                    content_type: 'product',
                     value: pack.price,
                     currency: 'MAD'
                 });
@@ -415,6 +435,12 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                     onScrollTop={scrollToTop}
                 />
             )}
+
+            {/* Product Detail Modal */}
+            <ProductDetailModal
+                product={viewProduct}
+                onClose={handleCloseDetails}
+            />
 
             {/* Welcome Overlay - Responsive */}
             {showWelcome && (
@@ -549,14 +575,8 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                         <div className="space-y-4 sm:space-y-6 lg:sticky lg:top-24 self-start">
                             {/* Pack Image Card */}
                             <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${highlightedElement === 'pack-image' ? 'ring-4 ring-yellow-400' : ''}`}>
-                                <div className="bg-gray-50 p-2 sm:p-4 flex items-center justify-center min-h-[250px] sm:min-h-[350px]">
-                                    <img
-                                        key={composedImageUrl}
-                                        src={composedImageUrl || 'https://placehold.co/1200x600/fde4f2/E91E63?text=Pack'}
-                                        alt={pack.name}
-                                        className="w-full h-auto object-contain max-h-[400px] rounded-lg shadow-sm"
-                                        onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
-                                    />
+                                <div className="bg-gray-50 p-1 sm:p-2 flex items-center justify-center min-h-[250px] sm:min-h-[350px] rounded-xl overflow-hidden">
+                                    <PackVisualizer pack={pack} selections={selections} />
                                 </div>
 
                                 <div className="p-4 sm:p-6 bg-white">
@@ -609,6 +629,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                             item={item}
                                             selectedProductId={selections[item.id]}
                                             onSelectionChange={handleSelectionChange}
+                                            onViewDetails={handleViewDetails}
                                         />
                                     </div>
                                 ))}

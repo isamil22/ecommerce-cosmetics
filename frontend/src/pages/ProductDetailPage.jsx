@@ -60,7 +60,9 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                     const initial = {};
                     prod.variantTypes.forEach(vt => {
                         if (vt?.options?.length > 0) {
-                            initial[vt.name] = vt.options[0];
+                            // Backend now sends options as objects or strings? VariantTypeDto has List<VariantOptionDto>.
+                            // So it is objects.
+                            initial[vt.name] = (typeof vt.options[0] === 'object' ? vt.options[0].value : vt.options[0]);
                         }
                     });
                     setSelectedOptions(initial);
@@ -355,12 +357,61 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                                 </span>
                                             </div>
                                             <div className="flex flex-wrap gap-3">
-                                                {vt.options.map(opt => {
-                                                    const isSelected = selectedOptions[vt.name] === opt;
+                                                {vt.options.map((optObj, optIdx) => {
+                                                    // Handle both object (new) and string (legacy/fallback) formats
+                                                    const optValue = typeof optObj === 'object' ? optObj.value : optObj;
+                                                    const colorCode = typeof optObj === 'object' ? optObj.colorCode : null;
+                                                    const imageUrl = typeof optObj === 'object' ? optObj.imageUrl : null;
+
+                                                    const isSelected = selectedOptions[vt.name] === optValue;
+
+                                                    // Render Image Swatch
+                                                    if (imageUrl) {
+                                                        return (
+                                                            <button
+                                                                key={optValue}
+                                                                onClick={() => handleOptionSelect(vt.name, optValue)}
+                                                                className={`
+                                                                    relative w-16 h-16 rounded-full overflow-hidden transition-all duration-300 border-2
+                                                                    ${isSelected ? 'border-purple-600 ring-2 ring-purple-200 transform scale-110 shadow-lg' : 'border-gray-200 opacity-80 hover:opacity-100 hover:scale-105'}
+                                                                `}
+                                                                title={optValue}
+                                                            >
+                                                                <img src={imageUrl} alt={optValue} className="w-full h-full object-cover" />
+                                                                {isSelected && <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
+                                                                    <svg className="w-6 h-6 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                                                </div>}
+                                                            </button>
+                                                        );
+                                                    }
+
+                                                    // Render Color Swatch
+                                                    if (colorCode) {
+                                                        return (
+                                                            <button
+                                                                key={optValue}
+                                                                onClick={() => handleOptionSelect(vt.name, optValue)}
+                                                                className={`
+                                                                    relative w-12 h-12 rounded-full transition-all duration-300 border-2 shadow-sm
+                                                                    ${isSelected ? 'border-purple-600 ring-2 ring-purple-200 transform scale-110' : 'border-gray-200 hover:scale-105'}
+                                                                `}
+                                                                style={{ backgroundColor: colorCode }}
+                                                                title={optValue}
+                                                            >
+                                                                {isSelected && (
+                                                                    <div className="flex items-center justify-center h-full">
+                                                                        <svg className="w-5 h-5 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                                                    </div>
+                                                                )}
+                                                            </button>
+                                                        );
+                                                    }
+
+                                                    // Default Text Button
                                                     return (
                                                         <button
-                                                            key={opt}
-                                                            onClick={() => handleOptionSelect(vt.name, opt)}
+                                                            key={optValue}
+                                                            onClick={() => handleOptionSelect(vt.name, optValue)}
                                                             className={`
                                                                 relative px-6 py-4 rounded-2xl text-sm font-bold transition-all duration-300 border-2
                                                                 ${isSelected
@@ -369,7 +420,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                                                 }
                                                             `}
                                                         >
-                                                            {opt}
+                                                            {optValue}
                                                             {isSelected && (
                                                                 <span className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white flex items-center justify-center shadow-lg transform scale-100 transition-transform animate-bounce-custom">
                                                                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>

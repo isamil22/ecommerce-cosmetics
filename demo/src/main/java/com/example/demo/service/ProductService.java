@@ -162,16 +162,19 @@ public class ProductService {
 
                     List<VariantOption> options = new ArrayList<>();
                     if (vtDto.getOptions() != null && !vtDto.getOptions().isEmpty()) {
-                        Set<String> uniqueOptions = new LinkedHashSet<>();
-                        vtDto.getOptions().forEach(optionValue -> {
-                            if (optionValue != null && !optionValue.trim().isEmpty()) {
-                                uniqueOptions.add(optionValue.trim());
-                            }
+                        // Use a map to keep unique options by value
+                        Map<String, com.example.demo.dto.VariantOptionDto> uniqueOptionsMap = new LinkedHashMap<>();
+                        vtDto.getOptions().forEach(optionDto -> {
+                             if (optionDto != null && optionDto.getValue() != null && !optionDto.getValue().trim().isEmpty()) {
+                                 uniqueOptionsMap.put(optionDto.getValue().trim(), optionDto);
+                             }
                         });
 
-                        uniqueOptions.forEach(optionValue -> {
+                        uniqueOptionsMap.forEach((value, optionDto) -> {
                             VariantOption option = new VariantOption();
-                            option.setValue(optionValue);
+                            option.setValue(value);
+                            option.setColorCode(optionDto.getColorCode());
+                            option.setImageUrl(optionDto.getImageUrl());
                             option.setVariantType(variantType);
                             options.add(option);
                         });

@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 const Footer = () => {
+    const { settings } = useSiteSettings();
     const [email, setEmail] = useState('');
     const [isSubscribing, setIsSubscribing] = useState(false);
 
@@ -70,10 +72,13 @@ const Footer = () => {
                                 <span className="text-white font-bold text-xl">BC</span>
                             </div>
                             <div>
-                                <h3 className="text-2xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-                                    BeautyCosmetics
+                                <h3
+                                    className="text-2xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent"
+                                    style={{ fontFamily: settings?.site_title_font || 'sans-serif' }}
+                                >
+                                    {settings?.site_title || 'BeautyCosmetics'}
                                 </h3>
-                                <p className="text-xs text-gray-400">متجر التجميل / Magasin de Beauté</p>
+                                <p className="text-xs text-gray-400">{settings?.site_subtitle || 'متجر التجميل / Magasin de Beauté'}</p>
                             </div>
                         </div>
                         <p className="text-sm text-gray-400 leading-relaxed mb-6">
@@ -208,7 +213,7 @@ const Footer = () => {
                 <div className="mt-12 pt-8 border-t border-gray-700">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <p className="text-sm text-gray-400 text-center md:text-left">
-                            &copy; {new Date().getFullYear()} BeautyCosmetics. جميع الحقوق محفوظة / Tous droits réservés.
+                            &copy; {new Date().getFullYear()} {settings?.site_title || 'BeautyCosmetics'}. جميع الحقوق محفوظة / Tous droits réservés.
                         </p>
 
                         {/* Social Media */}

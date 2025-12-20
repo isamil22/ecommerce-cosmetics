@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare, FiChevronRight, FiActivity, FiShield, FiKey, FiFacebook, FiLayout } from 'react-icons/fi';
+import { FiGrid, FiBox, FiTag, FiShoppingBag, FiUsers, FiStar, FiPercent, FiSettings, FiBarChart2, FiHome, FiPackage, FiTarget, FiDollarSign, FiEye, FiBell, FiMessageSquare, FiChevronRight, FiActivity, FiShield, FiKey, FiFacebook, FiLayout, FiImage, FiLayers } from 'react-icons/fi';
 import { usePermissions } from '../contexts/PermissionContext';
 import PermissionGuard from './PermissionGuard';
 
@@ -53,18 +53,18 @@ const DynamicAdminSidebar = () => {
                 <PermissionGuard anyPermissions={['PRODUCT:VIEW', 'PRODUCT:CREATE', 'PRODUCT:EDIT', 'CATEGORY:VIEW']}>
                     <div className="pt-4">
                         <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-3 px-4 hover:text-pink-400 transition-colors duration-300">Products</p>
-                        
-                        <ProtectedNavLink 
-                            to="/admin/products" 
-                            icon={FiBox} 
-                            label="Products" 
+
+                        <ProtectedNavLink
+                            to="/admin/products"
+                            icon={FiBox}
+                            label="Products"
                             anyPermissions={['PRODUCT:VIEW', 'PRODUCT:CREATE', 'PRODUCT:EDIT']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/categories" 
-                            icon={FiTag} 
-                            label="Categories" 
+
+                        <ProtectedNavLink
+                            to="/admin/categories"
+                            icon={FiTag}
+                            label="Categories"
                             anyPermissions={['CATEGORY:VIEW', 'CATEGORY:CREATE', 'CATEGORY:EDIT']}
                         />
                     </div>
@@ -74,18 +74,18 @@ const DynamicAdminSidebar = () => {
                 <PermissionGuard anyPermissions={['PACK:VIEW', 'PACK:CREATE', 'CUSTOM_PACK:VIEW']}>
                     <div className="pt-2">
                         <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-3 px-4 hover:text-pink-400 transition-colors duration-300">Packs</p>
-                        
-                        <ProtectedNavLink 
-                            to="/admin/packs" 
-                            icon={FiPackage} 
-                            label="Packs" 
+
+                        <ProtectedNavLink
+                            to="/admin/packs"
+                            icon={FiPackage}
+                            label="Packs"
                             anyPermissions={['PACK:VIEW', 'PACK:CREATE', 'PACK:EDIT']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/custom-packs" 
-                            icon={FiTarget} 
-                            label="Custom Packs" 
+
+                        <ProtectedNavLink
+                            to="/admin/custom-packs"
+                            icon={FiTarget}
+                            label="Custom Packs"
                             anyPermissions={['CUSTOM_PACK:VIEW', 'CUSTOM_PACK:CREATE', 'CUSTOM_PACK:EDIT']}
                         />
                     </div>
@@ -95,18 +95,18 @@ const DynamicAdminSidebar = () => {
                 <PermissionGuard anyPermissions={['ORDER:VIEW', 'ORDER:MANAGE', 'COUPON:VIEW']}>
                     <div className="pt-2">
                         <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-3 px-4 hover:text-pink-400 transition-colors duration-300">Sales</p>
-                        
-                        <ProtectedNavLink 
-                            to="/admin/orders" 
-                            icon={FiShoppingBag} 
-                            label="Orders" 
+
+                        <ProtectedNavLink
+                            to="/admin/orders"
+                            icon={FiShoppingBag}
+                            label="Orders"
                             anyPermissions={['ORDER:VIEW', 'ORDER:MANAGE']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/coupons" 
-                            icon={FiDollarSign} 
-                            label="Coupons" 
+
+                        <ProtectedNavLink
+                            to="/admin/coupons"
+                            icon={FiDollarSign}
+                            label="Coupons"
                             anyPermissions={['COUPON:VIEW', 'COUPON:CREATE', 'COUPON:EDIT']}
                         />
                     </div>
@@ -116,18 +116,18 @@ const DynamicAdminSidebar = () => {
                 <PermissionGuard anyPermissions={['USER:VIEW', 'REVIEW:VIEW']}>
                     <div className="pt-2">
                         <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-3 px-4 hover:text-pink-400 transition-colors duration-300">Users</p>
-                        
-                        <ProtectedNavLink 
-                            to="/admin/users" 
-                            icon={FiUsers} 
-                            label="Users" 
+
+                        <ProtectedNavLink
+                            to="/admin/users"
+                            icon={FiUsers}
+                            label="Users"
                             anyPermissions={['USER:VIEW', 'USER:EDIT']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/reviews" 
-                            icon={FiStar} 
-                            label="Reviews" 
+
+                        <ProtectedNavLink
+                            to="/admin/reviews"
+                            icon={FiStar}
+                            label="Reviews"
                             anyPermissions={['REVIEW:VIEW', 'REVIEW:APPROVE']}
                         />
                     </div>
@@ -137,53 +137,53 @@ const DynamicAdminSidebar = () => {
                 <PermissionGuard anyPermissions={['HERO:VIEW', 'ANNOUNCEMENT:VIEW', 'ANALYTICS:VIEW']}>
                     <div className="pt-2">
                         <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-3 px-4 hover:text-pink-400 transition-colors duration-300">Content</p>
-                        
-                        <ProtectedNavLink 
-                            to="/admin/hero" 
-                            icon={FiEye} 
-                            label="Hero Section" 
+
+                        <ProtectedNavLink
+                            to="/admin/hero"
+                            icon={FiEye}
+                            label="Hero Section"
                             anyPermissions={['HERO:VIEW', 'HERO:EDIT']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/announcement" 
-                            icon={FiBell} 
-                            label="Announcements" 
+
+                        <ProtectedNavLink
+                            to="/admin/announcement"
+                            icon={FiBell}
+                            label="Announcements"
                             anyPermissions={['ANNOUNCEMENT:VIEW', 'ANNOUNCEMENT:EDIT']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/landing-pages" 
-                            icon={FiLayout} 
-                            label="Landing Pages" 
+
+                        <ProtectedNavLink
+                            to="/admin/landing-pages"
+                            icon={FiLayout}
+                            label="Landing Pages"
                             anyPermissions={['LANDING_PAGE:VIEW', 'LANDING_PAGE:CREATE', 'LANDING_PAGE:EDIT']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/countdown" 
-                            icon={FiBarChart2} 
-                            label="Countdown" 
+
+                        <ProtectedNavLink
+                            to="/admin/countdown"
+                            icon={FiBarChart2}
+                            label="Countdown"
                             role="ADMIN"
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/enhanced-visitor-counter" 
-                            icon={FiUsers} 
-                            label="Enhanced Counter" 
+
+                        <ProtectedNavLink
+                            to="/admin/enhanced-visitor-counter"
+                            icon={FiUsers}
+                            label="Enhanced Counter"
                             role="ADMIN"
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/review-form-settings" 
-                            icon={FiMessageSquare} 
-                            label="Review Form Settings" 
+
+                        <ProtectedNavLink
+                            to="/admin/review-form-settings"
+                            icon={FiMessageSquare}
+                            label="Review Form Settings"
                             anyPermissions={['SETTINGS:VIEW', 'SETTINGS:EDIT']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/analytics" 
-                            icon={FiBarChart2} 
-                            label="Analytics" 
+
+                        <ProtectedNavLink
+                            to="/admin/analytics"
+                            icon={FiBarChart2}
+                            label="Analytics"
                             anyPermissions={['ANALYTICS:VIEW']}
                         />
                     </div>
@@ -196,18 +196,18 @@ const DynamicAdminSidebar = () => {
                             <FiShield className="w-3 h-3 mr-1" />
                             Access Control
                         </p>
-                        
-                        <ProtectedNavLink 
-                            to="/admin/roles" 
-                            icon={FiShield} 
-                            label="Roles" 
+
+                        <ProtectedNavLink
+                            to="/admin/roles"
+                            icon={FiShield}
+                            label="Roles"
                             anyPermissions={['ROLE:VIEW', 'ROLE:CREATE', 'ROLE:EDIT']}
                         />
-                        
-                        <ProtectedNavLink 
-                            to="/admin/permissions" 
-                            icon={FiKey} 
-                            label="Permissions" 
+
+                        <ProtectedNavLink
+                            to="/admin/permissions"
+                            icon={FiKey}
+                            label="Permissions"
                             anyPermissions={['PERMISSION:VIEW', 'PERMISSION:CREATE', 'PERMISSION:EDIT']}
                         />
                     </div>
@@ -216,8 +216,13 @@ const DynamicAdminSidebar = () => {
                 {/* Facebook Pixel */}
                 <PermissionGuard anyPermissions={['SETTINGS:VIEW', 'SETTINGS:EDIT']}>
                     <div className="pt-4 border-t border-gray-700">
-                        <NavLink to="/admin/settings" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-300 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
-                            <FiFacebook className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                        <NavLink to="/admin/settings/brand" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-300 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
+                            <FiImage className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                            <span className="font-medium">Logo Settings</span>
+                            <FiChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                        </NavLink>
+                        <NavLink to="/admin/settings/integrations" className={({ isActive }) => `flex items-center py-3 px-4 rounded-xl transition-all duration-300 group ${isActive ? activeLinkClass : inactiveLinkClass}`}>
+                            <FiLayers className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
                             <span className="font-medium">Facebook Pixel</span>
                             <FiChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
                         </NavLink>
