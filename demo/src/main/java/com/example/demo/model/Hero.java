@@ -21,4 +21,7 @@ public class Hero {
     
     @Column(columnDefinition = "TEXT")
     private String imageUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String mobileImageUrl;
 }

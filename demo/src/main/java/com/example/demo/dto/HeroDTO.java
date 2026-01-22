@@ -11,4 +11,5 @@ public class HeroDTO {
     private String linkUrl;
     private String titleFont;
     private String imageUrl;
+    private String mobileImageUrl;
 }

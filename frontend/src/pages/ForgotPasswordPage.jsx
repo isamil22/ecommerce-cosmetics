@@ -12,9 +12,9 @@ const ForgotPasswordPage = () => {
         setError('');
         try {
             await forgotPassword(email);
-            setMessage('A password reset link has been sent to your email address.');
+            setMessage('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. / Un lien de réinitialisation a été envoyé à votre adresse email.');
         } catch (err) {
-            setError('Failed to send password reset link. Please check the email address.');
+            setError('فشل إرسال الرابط. يرجى التحقق من البريد الإلكتروني. / Échec de l\'envoi. Veuillez vérifier l\'adresse email.');
         }
     };
 
@@ -23,10 +23,12 @@ const ForgotPasswordPage = () => {
             <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
                 <div>
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Forgot Your Password?
+                        نسيت كلمة المرور؟ / Mot de passe oublié ?
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
-                        Enter your email address and we will send you a link to reset your password.
+                        أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.
+                        <br />
+                        Entrez votre email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
                     </p>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -40,7 +42,7 @@ const ForgotPasswordPage = () => {
                                 autoComplete="email"
                                 required
                                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-                                placeholder="Email address"
+                                placeholder="البريد الإلكتروني / Adresse Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
@@ -55,7 +57,7 @@ const ForgotPasswordPage = () => {
                             type="submit"
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                         >
-                            Send Reset Link
+                            إرسال رابط إعادة التعيين / Envoyer le lien
                         </button>
                     </div>
                 </form>

@@ -13,7 +13,7 @@ const ResetPasswordPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            setError('Passwords do not match.');
+            setError('كلمات المرور غير متطابقة / Les mots de passe ne correspondent pas');
             return;
         }
         setError('');
@@ -21,10 +21,10 @@ const ResetPasswordPage = () => {
 
         try {
             await resetPassword(token, password);
-            setMessage('Your password has been reset successfully! Redirecting to login...');
+            setMessage('تم تغيير كلمة المرور بنجاح! جاري التوجيه... / Mot de passe réinitialisé avec succès ! Redirection...');
             setTimeout(() => navigate('/auth'), 3000);
         } catch (err) {
-            setError('Failed to reset password. The link may be invalid or expired.');
+            setError('فشل إعادة التعيين. الرابط قد يكون منتهياً. / Échec. Le lien peut être expiré.');
         }
     };
 
@@ -33,13 +33,13 @@ const ResetPasswordPage = () => {
             <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
                 <div>
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Reset Your Password
+                        إعادة تعيين كلمة المرور / Réinitialiser le mot de passe
                     </h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="rounded-md shadow-sm space-y-4">
                         <div>
-                            <label htmlFor="password">New Password</label>
+                            <label htmlFor="password">كلمة المرور الجديدة / Nouveau mot de passe</label>
                             <input
                                 id="password"
                                 name="password"
@@ -51,7 +51,7 @@ const ResetPasswordPage = () => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="confirm-password">Confirm New Password</label>
+                            <label htmlFor="confirm-password">تأكيد كلمة المرور / Confirmer le mot de passe</label>
                             <input
                                 id="confirm-password"
                                 name="confirm-password"
@@ -72,7 +72,7 @@ const ResetPasswordPage = () => {
                             type="submit"
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                         >
-                            Reset Password
+                            إعادة تعيين كلمة المرور / Réinitialiser
                         </button>
                     </div>
                 </form>

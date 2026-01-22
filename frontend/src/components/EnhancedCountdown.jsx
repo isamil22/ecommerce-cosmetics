@@ -183,7 +183,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                 </span>
                 <h3 className={`font-black tracking-tight text-lg bg-clip-text text-transparent bg-gradient-to-r 
                     ${isUrgent ? 'from-red-600 to-pink-600' : 'from-purple-600 to-pink-500'}`}>
-                    {config.title || (isUrgent ? 'Hurry Up!' : 'Limited Time Offer')}
+                    {config.title || (isUrgent ? 'عجلوا! / Dépêchez-vous !' : 'عرض محدود / Offre Limitée')}
                 </h3>
             </div>
 
@@ -195,7 +195,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     <>
                         <TimeUnit
                             value={String(timeLeft.days).padStart(2, '0')}
-                            label="Days"
+                            label="أيام / Jours"
                             isUrgent={isUrgent}
                         />
                         <Separator isUrgent={isUrgent} />
@@ -207,7 +207,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     <>
                         <TimeUnit
                             value={String(timeLeft.hours).padStart(2, '0')}
-                            label="Hours"
+                            label="ساعات / Heures"
                             isUrgent={isUrgent}
                         />
                         <Separator isUrgent={isUrgent} />
@@ -219,7 +219,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                     <>
                         <TimeUnit
                             value={String(timeLeft.minutes).padStart(2, '0')}
-                            label="Mins"
+                            label="دقائق / Mins"
                             isUrgent={isUrgent}
                         />
                         <Separator isUrgent={isUrgent} />
@@ -230,7 +230,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
                 {(config.showSeconds !== false) && (
                     <TimeUnit
                         value={String(timeLeft.seconds).padStart(2, '0')}
-                        label="Secs"
+                        label="ثواني / Secs"
                         isUrgent={isUrgent}
                         animate={true}
                     />
@@ -241,8 +241,8 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
             {(config.showSubtitle !== false) && (
                 <p className="text-sm font-semibold text-gray-600">
                     {isUrgent
-                        ? (config.urgentMessage || '⚡ High demand! Prices may increase')
-                        : (config.subtitle || 'Prices reset when timer ends')}
+                        ? (config.urgentMessage || '⚡ طلب مرتفع! قد ترتفع الأسعار / Forte demande ! Les prix peuvent augmenter')
+                        : (config.subtitle || 'تتغير الأسعار عند انتهاء المؤقت / Les prix changent à la fin du compte à rebours')}
                 </p>
             )}
 

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { trackEvent } from '../utils/facebookPixel';
 
 const Footer = () => {
     const { settings } = useSiteSettings();
@@ -23,6 +24,7 @@ const Footer = () => {
         // Simulate API call
         setTimeout(() => {
             toast.success(`🎉 شكراً للاشتراك! / Merci de vous être abonné !`);
+            trackEvent('Lead');
             setEmail('');
             setIsSubscribing(false);
         }, 1000);
@@ -31,49 +33,49 @@ const Footer = () => {
     return (
         <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 mt-8">
             {/* Trust Badges Section */}
-            <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 py-8">
+            <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 py-4 md:py-8">
                 <div className="container-xl">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center">
-                        <div className="flex flex-col items-center space-y-2">
-                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 text-white text-center">
+                        <div className="flex flex-col items-center space-y-1 md:space-y-2">
+                            <svg className="w-7 h-7 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
-                            <p className="font-bold">منتجات أصلية<br />100% Authentique</p>
+                            <p className="font-bold text-[10px] md:text-base">منتجات أصلية<br />100% Authentique</p>
                         </div>
-                        <div className="flex flex-col items-center space-y-2">
-                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex flex-col items-center space-y-1 md:space-y-2">
+                            <svg className="w-7 h-7 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <p className="font-bold">ضمان الجودة<br />Qualité Garantie</p>
+                            <p className="font-bold text-[10px] md:text-base">ضمان الجودة<br />Qualité Garantie</p>
                         </div>
-                        <div className="flex flex-col items-center space-y-2">
-                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex flex-col items-center space-y-1 md:space-y-2">
+                            <svg className="w-7 h-7 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <p className="font-bold">شحن مجاني<br />Livraison Gratuite</p>
+                            <p className="font-bold text-[10px] md:text-base">شحن مجاني<br />Livraison Gratuite</p>
                         </div>
-                        <div className="flex flex-col items-center space-y-2">
-                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex flex-col items-center space-y-1 md:space-y-2">
+                            <svg className="w-7 h-7 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                             </svg>
-                            <p className="font-bold">إرجاع سهل<br />Retours Faciles</p>
+                            <p className="font-bold text-[10px] md:text-base">إرجاع سهل<br />Retours Faciles</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Main Footer Content */}
-            <div className="container-xl section-spacing-lg">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+            <div className="container-xl py-6 md:py-12 px-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-10">
                     {/* About Section */}
                     <div className="lg:col-span-2">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                                <span className="text-white font-bold text-xl">BC</span>
+                        <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
+                            <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                                <span className="text-white font-bold text-sm md:text-xl">BC</span>
                             </div>
                             <div>
                                 <h3
-                                    className="text-2xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent"
+                                    className="text-lg md:text-2xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent"
                                     style={{ fontFamily: settings?.site_title_font || 'sans-serif' }}
                                 >
                                     {settings?.site_title || 'BeautyCosmetics'}
@@ -81,23 +83,23 @@ const Footer = () => {
                                 <p className="text-xs text-gray-400">{settings?.site_subtitle || 'متجر التجميل / Magasin de Beauté'}</p>
                             </div>
                         </div>
-                        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+                        <p className="text-xs md:text-sm text-gray-400 leading-relaxed mb-3 md:mb-6">
                             متجرك الأول للحصول على أفضل منتجات التجميل. نؤمن بالجودة والشفافية وإظهار إشراقتك الداخلية.<br /><br />
                             Votre guichet unique pour le meilleur de la beauté. Nous croyons en la qualité, la transparence et la mise en valeur de votre éclat intérieur.
                         </p>
 
                         {/* Contact Info */}
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-3 text-sm">
-                                <svg className="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="space-y-2 md:space-y-3">
+                            <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm">
+                                <svg className="w-4 h-4 md:w-5 md:h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
                                 <a href="mailto:support@beautycosmetics.com" className="hover:text-pink-400 transition-colors">
                                     support@beautycosmetics.com
                                 </a>
                             </div>
-                            <div className="flex items-center gap-3 text-sm">
-                                <svg className="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm">
+                                <svg className="w-4 h-4 md:w-5 md:h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
                                 <a href="tel:+1234567890" className="hover:text-pink-400 transition-colors">
@@ -109,11 +111,11 @@ const Footer = () => {
 
                     {/* Shop Links */}
                     <div>
-                        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <h3 className="text-sm md:text-lg font-bold text-white mb-3 md:mb-6 flex items-center gap-2">
                             <span className="text-pink-500">🛍️</span>
                             <span>تسوق / Acheter</span>
                         </h3>
-                        <ul className="space-y-3 text-sm">
+                        <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
                             <li><Link to="/products" className="hover:text-pink-400 transition-colors flex items-center gap-2">
                                 <span>→</span><span>جميع المنتجات / Tous les Produits</span>
                             </Link></li>
@@ -134,11 +136,11 @@ const Footer = () => {
 
                     {/* Support Links */}
                     <div>
-                        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <h3 className="text-sm md:text-lg font-bold text-white mb-3 md:mb-6 flex items-center gap-2">
                             <span className="text-blue-500">💬</span>
                             <span>الدعم / Support</span>
                         </h3>
-                        <ul className="space-y-3 text-sm">
+                        <ul className="space-y-2 md:space-y-3 text-xs md:text-sm">
                             <li><Link to="/contact" className="hover:text-pink-400 transition-colors flex items-center gap-2">
                                 <span>→</span><span>اتصل بنا / Contactez-nous</span>
                             </Link></li>
@@ -156,27 +158,27 @@ const Footer = () => {
 
                     {/* Newsletter */}
                     <div>
-                        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <h3 className="text-sm md:text-lg font-bold text-white mb-3 md:mb-6 flex items-center gap-2">
                             <span className="text-purple-500">✉️</span>
                             <span>النشرة / Newsletter</span>
                         </h3>
-                        <p className="text-sm text-gray-400 mb-4">
+                        <p className="text-xs md:text-sm text-gray-400 mb-3 md:mb-4">
                             اشترك للحصول على آخر العروض<br />
                             Abonnez-vous pour les dernières offres
                         </p>
-                        <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+                        <form onSubmit={handleNewsletterSubmit} className="space-y-2 md:space-y-3">
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="بريدك الإلكتروني / Votre email"
-                                className="w-full px-4 py-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-pink-500 transition-colors"
+                                className="w-full px-3 py-2 md:px-4 md:py-3 bg-gray-800 text-white text-xs md:text-sm rounded-lg border border-gray-700 focus:outline-none focus:border-pink-500 transition-colors"
                                 required
                             />
                             <button
                                 type="submit"
                                 disabled={isSubscribing}
-                                className={`w-full font-bold py-3 rounded-lg transition-all duration-200 ${isSubscribing
+                                className={`w-full font-bold py-2 md:py-3 text-xs md:text-sm rounded-lg transition-all duration-200 ${isSubscribing
                                     ? 'bg-gray-700 text-gray-400 cursor-wait'
                                     : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 transform hover:scale-105'
                                     }`}
@@ -188,11 +190,11 @@ const Footer = () => {
                 </div>
 
                 {/* Payment Methods */}
-                <div className="mt-12 pt-8 border-t border-gray-700">
-                    <h4 className="text-center text-sm text-gray-400 mb-4">طرق الدفع المقبولة / Méthodes de paiement acceptées</h4>
-                    <div className="flex justify-center items-center flex-wrap gap-4">
-                        <div className="bg-white px-4 py-2 rounded shadow">
-                            <span className="text-blue-600 font-bold">VISA</span>
+                <div className="mt-6 md:mt-12 pt-4 md:pt-8 border-t border-gray-700">
+                    <h4 className="text-center text-xs md:text-sm text-gray-400 mb-3 md:mb-4">طرق الدفع المقبولة / Méthodes de paiement acceptées</h4>
+                    <div className="flex justify-center items-center flex-wrap gap-2 md:gap-4">
+                        <div className="bg-white px-2 py-1 md:px-4 md:py-2 rounded shadow">
+                            <span className="text-blue-600 font-bold text-xs md:text-base">VISA</span>
                         </div>
                         <div className="bg-white px-4 py-2 rounded shadow">
                             <span className="text-orange-600 font-bold">Mastercard</span>
@@ -210,17 +212,17 @@ const Footer = () => {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="mt-12 pt-8 border-t border-gray-700">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                        <p className="text-sm text-gray-400 text-center md:text-left">
+                <div className="mt-6 md:mt-12 pt-4 md:pt-8 border-t border-gray-700">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-6">
+                        <p className="text-xs md:text-sm text-gray-400 text-center md:text-left">
                             &copy; {new Date().getFullYear()} {settings?.site_title || 'BeautyCosmetics'}. جميع الحقوق محفوظة / Tous droits réservés.
                         </p>
 
                         {/* Social Media */}
-                        <div className="flex items-center gap-4">
-                            <span className="text-sm text-gray-400">تابعنا / Suivez-nous :</span>
-                            <div className="flex gap-3">
-                                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all duration-200 transform hover:scale-110">
+                        <div className="flex items-center gap-2 md:gap-4">
+                            <span className="text-xs md:text-sm text-gray-400">تابعنا / Suivez-nous :</span>
+                            <div className="flex gap-2 md:gap-3">
+                                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 md:w-10 md:h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all duration-200 transform hover:scale-110">
                                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                                     </svg>
@@ -243,7 +245,7 @@ const Footer = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3 text-sm text-gray-400">
+                        <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm text-gray-400">
                             <Link to="/privacy" className="hover:text-pink-400 transition-colors">سياسة الخصوصية / Confidentialité</Link>
                             <span>|</span>
                             <Link to="/terms" className="hover:text-pink-400 transition-colors">الشروط / Conditions</Link>
@@ -253,7 +255,7 @@ const Footer = () => {
             </div>
 
             {/* Back to Top Button */}
-            <div className="text-center py-6 bg-gray-900">
+            <div className="text-center py-4 md:py-6 bg-gray-900">
                 <button
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                     className="inline-flex items-center gap-2 text-gray-400 hover:text-pink-400 transition-colors group"
@@ -261,7 +263,7 @@ const Footer = () => {
                     <svg className="w-5 h-5 transform group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
                     </svg>
-                    <span className="font-semibold">العودة للأعلى / Retour en haut</span>
+                    <span className="font-semibold text-xs md:text-sm">العودة للأعلى / Retour en haut</span>
                 </button>
             </div>
         </footer>

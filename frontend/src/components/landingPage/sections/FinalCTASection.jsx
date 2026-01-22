@@ -10,18 +10,24 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
     const ctaData = { ...data, variants: data?.variants || availableVariants };
     const handleCTA = useLandingPageCTA(productId, ctaData);
     const {
-        title = 'Ready to Transform Your Life?',
-        subtitle = 'Join thousands of satisfied customers who made the decision to change',
-        ctaText = 'Buy Now - $49.99',
+        title: dbTitle,
+        subtitle: dbSubtitle,
+        ctaText: dbCtaText,
         ctaLink = '#order',
-        trustBadges = ['Free Shipping', '30-Day Money Back', 'Secure Checkout'],
+        trustBadges = ['شحن مجاني', 'ضمان استرداد الأموال 30 يوم', 'دفع آمن'],
         backgroundColor = '#ffffff',
         // New premium options
         price = '$49.99',
         originalPrice = '$99.99',
-        savings = 'Save 50%',
-        guarantee = '30-Day Money-Back Guarantee',
+        savings: dbSavings,
+        guarantee: dbGuarantee,
     } = data || {};
+
+    const title = (!dbTitle || dbTitle === 'Ready to Transform Your Life?') ? 'هل أنت مستعدة لتغيير حياتك؟' : dbTitle;
+    const subtitle = (!dbSubtitle || dbSubtitle === 'Join thousands of satisfied customers who made the decision to change') ? 'انضمي إلى الآلاف من العملاء الراضين الذين اتخذوا قرار التغيير' : dbSubtitle;
+    const ctaText = (!dbCtaText || dbCtaText === 'Buy Now - $49.99') ? 'اشتري الآن - $49.99' : dbCtaText;
+    const savings = (!dbSavings || dbSavings === 'Save 50%') ? 'وفر 50%' : dbSavings;
+    const guarantee = (!dbGuarantee || dbGuarantee === '30-Day Money-Back Guarantee') ? 'ضمان استرداد الأموال خلال 30 يوم' : dbGuarantee;
 
     const [isVisible, setIsVisible] = useState(false);
     const sectionRef = useRef(null);
@@ -101,7 +107,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                     transition: 'all 0.6s ease',
                 }}>
                     <span style={{ fontSize: '1.2rem' }}>🎁</span>
-                    Special Offer - Limited Time Only
+                    عرض خاص - لفترة محدودة فقط
                 </div>
 
                 {/* Title */}
@@ -313,7 +319,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                         textTransform: 'uppercase',
                         letterSpacing: '1px',
                     }}>
-                        Secure Payment Methods
+                        طرق دفع آمنة
                     </p>
                     <div style={{
                         display: 'flex',
@@ -337,7 +343,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                     opacity: isVisible ? 1 : 0,
                     transition: 'all 0.6s ease 0.7s',
                 }}>
-                    ⭐ Rated 4.9/5 by 50,000+ happy customers
+                    ⭐ تقييم 4.9/5 من أكثر من 50,000 عميل سعيد
                 </p>
             </div>
         </div>

@@ -5,11 +5,14 @@ import { useNavigate } from 'react-router-dom';
 
 const RelatedProductsSection = ({ data, productId, availableVariants, fetchCartCount }) => {
     const {
-        title = 'You Might Also Like',
-        subtitle = 'Perfect additions to your routine',
+        title: dbTitle,
+        subtitle: dbSubtitle,
         productIds = [],
         backgroundColor = '#ffffff', // Default to white for premium feel, or blend with gradient
     } = data || {};
+
+    const title = (!dbTitle || dbTitle === 'You Might Also Like') ? 'قد يعجبك أيضاً / Tu pourrais aussi aimer' : dbTitle;
+    const subtitle = (!dbSubtitle || dbSubtitle === 'Perfect additions to your routine') ? 'إضافات مثالية لروتينك / Compléments parfaits pour votre routine' : dbSubtitle;
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -122,7 +125,7 @@ const RelatedProductsSection = ({ data, productId, availableVariants, fetchCartC
                     justifyContent: 'center'
                 }}>
                     {loading ? (
-                        <p>Loading recommendations...</p>
+                        <p>جاري التحميل... / Chargement...</p>
                     ) : (
                         products.map((product, index) => (
                             <RelatedProductCard
@@ -248,7 +251,7 @@ const RelatedProductCard = ({ product, index, currentLandingPageProductId, fetch
                             gap: '8px'
                         }}
                     >
-                        Add to Cart
+                        أضف إلى السلة / Ajouter
                         <span style={{ fontSize: '1.2rem', lineHeight: 0, marginBottom: '2px' }}>+</span>
                     </button>
                 </div>

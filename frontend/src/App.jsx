@@ -44,6 +44,7 @@ import EnhancedVisitorCounterSettingsPage from './pages/admin/EnhancedVisitorCou
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FacebookPixel from './components/FacebookPixel.jsx';
+import GoogleAnalytics from './components/GoogleAnalytics.jsx';
 import AnalyticsTracker from './components/AnalyticsTracker.jsx';
 import AnnouncementBar from './components/AnnouncementBar.jsx';
 import FloatingActionButton from './components/FloatingActionButton.jsx';
@@ -63,6 +64,7 @@ import AdminPermissionsPage from './pages/admin/AdminPermissionsPage.jsx';
 import AdminLandingPagesPage from './pages/admin/AdminLandingPagesPage.jsx';
 import AdminLandingPageBuilder from './pages/admin/AdminLandingPageBuilder.jsx';
 import PublicLandingPage from './pages/PublicLandingPage.jsx';
+import NotFoundPage from './pages/NotFoundPage.jsx';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -128,10 +130,11 @@ function App() {
 
 
                 <div
-                    className="flex flex-col min-h-screen"
+                    className="flex flex-col min-h-screen overflow-x-hidden w-full relative"
                     style={{ paddingTop: 'var(--announcement-bar-height, 0px)', transition: 'padding-top 0.3s ease' }}
                 >
                     <FacebookPixel />
+                    <GoogleAnalytics />
                     <AnalyticsTracker />
                     <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={handleSetIsAuthenticated} userRole={userRole} cartCount={cartCount} />
                     <ToastContainer
@@ -213,9 +216,13 @@ function App() {
                                 <Route path="landing-pages/:id/edit" element={<AdminLandingPageBuilder />} />
                             </Route>
 
+
                             {/* Redirect admin users from profile and orders to dashboard */}
                             {userRole === 'ADMIN' && <Route path="/profile" element={<Navigate to="/admin/dashboard" replace />} />}
                             {userRole === 'ADMIN' && <Route path="/orders" element={<Navigate to="/admin/dashboard" replace />} />}
+
+                            {/* 404 Route */}
+                            <Route path="*" element={<NotFoundPage />} />
                         </Routes>
                     </main>
                     <Footer />

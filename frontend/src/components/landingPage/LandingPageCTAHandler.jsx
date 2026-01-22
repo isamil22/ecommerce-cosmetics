@@ -188,8 +188,13 @@ export const useLandingPageAddToCart = (productId, sectionData = null, fetchCart
                 }
             }
 
-            if (productId) {
-                // Standard Add to Cart with ID
+            // Updated Logic: Check for price override to handle Landing Page variants (e.g. 2_Pack custom price)
+            // If sectionData has a price, we use the Virtual Product flow to ensure that price is respected,
+            // effectively bypassing the database price lookup.
+            const hasPriceOverride = sectionData && sectionData.price !== undefined && sectionData.price !== null && sectionData.price !== '';
+
+            if (productId && !hasPriceOverride) {
+                // Standard Add to Cart with ID (Uses DB Price)
                 // We pass null for variantId currently as we don't have explicit variant IDs in this flow
                 await addToCart(productId, 1, null);
 

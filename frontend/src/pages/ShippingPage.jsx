@@ -3,21 +3,89 @@ import React from 'react';
 const ShippingPage = () => {
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Shipping & Returns</h1>
-            <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-                <div className="prose max-w-none">
-                    <h2>Shipping Policy</h2>
-                    <p>We are committed to getting your order to you as quickly as possible. We process orders within 1-2 business days.</p>
-                    <ul>
-                        <li><strong>Standard Shipping:</strong> 5-7 business days.</li>
-                        <li><strong>Express Shipping:</strong> 1-3 business days.</li>
-                    </ul>
-                    <p>Shipping costs are calculated at checkout based on your location and selected shipping method. We offer free standard shipping on all orders over $50.</p>
+            <div className="text-center mb-12">
+                <div className="inline-block mb-4">
+                    <span className="text-5xl">🚚</span>
+                </div>
+                <h1 className="text-4xl font-bold text-gray-800 mb-4">الشحن والاسترجاع / Livraison et Retours</h1>
+                <p className="text-gray-600 text-lg">
+                    معلومات عن التوصيل وسياسة الإرجاع / Informations sur la livraison et la politique de retour
+                </p>
+            </div>
 
-                    <h2 className="mt-8">Return Policy</h2>
-                    <p>Your satisfaction is our priority. If you are not completely satisfied with your purchase, you may return any unopened items within 30 days of the purchase date for a full refund.</p>
-                    <p>To initiate a return, please contact our customer service team through our Contact Us page with your order number and the reason for your return. Return shipping costs are the responsibility of the customer unless the item was damaged or incorrect upon arrival.</p>
-                    <p>Refunds will be processed to the original payment method within 5-7 business days after we receive the returned items.</p>
+            <div className="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <div className="prose max-w-none space-y-8">
+                    {/* Shipping Section */}
+                    <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                        <h2 className="text-2xl font-bold text-blue-900 flex items-center mb-4">
+                            <span className="ml-2 text-3xl">📦</span>
+                            سياسة الشحن / Politique de Livraison
+                        </h2>
+                        <p className="text-gray-700 leading-relaxed mb-4">
+                            نقوم بالتوصيل إلى جميع المدن المغربية. نلتزم بتوصيل طلبك في أسرع وقت ممكن.
+                            <br />
+                            Nous livrons dans toutes les villes du Maroc. Nous nous engageons à vous livrer votre commande le plus rapidement possible.
+                        </p>
+
+                        <div className="bg-white p-4 rounded-lg border border-blue-200 shadow-sm">
+                            <h3 className="font-semibold text-blue-800 mb-3">مواعيد التوصيل / Délais de livraison :</h3>
+                            <ul className="list-disc list-inside space-y-2 text-gray-700">
+                                <li>
+                                    <strong>الدار البيضاء، الرباط، مراكش، طنجة:</strong> 1-3 أيام عمل
+                                    <br />
+                                    <span className="text-sm text-gray-500">Casablanca, Rabat, Marrakech, Tanger : 1-3 jours ouvrables</span>
+                                </li>
+                                <li>
+                                    <strong>باقي المدن:</strong> 2-5 أيام عمل
+                                    <br />
+                                    <span className="text-sm text-gray-500">Autres villes : 2-5 jours ouvrables</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="mt-4 flex items-center text-blue-800 font-medium">
+                            <span className="text-xl ml-2">💵</span>
+                            <p>الدفع عند الاستلام متوفر لجميع الطلبات / Le paiement à la livraison est disponible pour toutes les commandes</p>
+                        </div>
+                    </div>
+
+                    {/* Returns Section */}
+                    <div className="bg-pink-50 p-6 rounded-xl border border-pink-100">
+                        <h2 className="text-2xl font-bold text-pink-900 flex items-center mb-4">
+                            <span className="ml-2 text-3xl">↩️</span>
+                            سياسة الاسترجاع / Politique de Retour
+                        </h2>
+                        <p className="text-gray-700 leading-relaxed mb-4">
+                            رضاكم هو أولويتنا. إذا لم تكن راضياً تماماً عن مشترياتك، يمكنك إرجاع أي منتجات غير مفتوحة خلال 30 يوماً من تاريخ الشراء.
+                            <br />
+                            Votre satisfaction est notre priorité. Si vous n'êtes pas entièrement satisfait de votre achat, vous pouvez retourner tout article non ouvert dans les 30 jours suivant la date d'achat.
+                        </p>
+
+                        <div className="bg-white p-4 rounded-lg border border-pink-200 shadow-sm space-y-3">
+                            <div className="flex items-start">
+                                <span className="text-pink-500 ml-2 mt-1">✓</span>
+                                <p className="text-sm text-gray-600">
+                                    يجب أن تكون المنتجات في حالتها الأصلية وغير مستخدمة.
+                                    <br />
+                                    Les articles doivent être dans leur état d'origine et inutilisés.
+                                </p>
+                            </div>
+                            <div className="flex items-start">
+                                <span className="text-pink-500 ml-2 mt-1">✓</span>
+                                <p className="text-sm text-gray-600">
+                                    تكاليف الشحن للإرجاع تقع على عاتق الزبون إلا في حالة وجود عيب في المنتج.
+                                    <br />
+                                    Les frais de retour sont à la charge du client, sauf en cas de produit défectueux.
+                                </p>
+                            </div>
+                        </div>
+
+                        <p className="mt-4 text-gray-700">
+                            للبدء في عملية الإرجاع، يرجى التواصل مع خدمة العملاء عبر صفحة "اتصل بنا".
+                            <br />
+                            Pour initier un retour, veuillez contacter notre service client via la page "Contactez-nous".
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

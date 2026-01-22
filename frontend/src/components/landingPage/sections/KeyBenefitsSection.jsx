@@ -7,16 +7,28 @@ import { useLandingPageCTA } from '../LandingPageCTAHandler';
  */
 const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
     const {
-        title = 'Why Choose Us?',
-        subtitle = 'Here are the key benefits of our product',
-        benefits = [
-            { icon: '💎', title: 'Premium Quality', description: 'Made with the finest ingredients' },
-            { icon: '⚡', title: 'Fast Results', description: 'See results in just 7 days' },
-            { icon: '🌿', title: 'Natural Formula', description: '100% natural and organic' },
-        ],
+        title: dbTitle,
+        subtitle: dbSubtitle,
+        benefits: dbBenefits,
         backgroundColor = '#ffffff',
         columns = 3,
     } = data || {};
+
+    const title = (!dbTitle || dbTitle === 'Why Choose Us?') ? 'لماذا تختاريننا؟' : dbTitle;
+    const subtitle = (!dbSubtitle || dbSubtitle === 'Here are the key benefits of our product') ? 'إليك الفوائد الرئيسية لمنتجنا' : dbSubtitle;
+
+    const benefits = (dbBenefits || []).map(b => {
+        if (b.title === 'Premium Quality') return { ...b, title: 'جودة ممتازة', description: 'مصنوع من أجود المكونات' };
+        if (b.title === 'Fast Results') return { ...b, title: 'نتائج سريعة', description: 'لاحظي الفرق في 7 أيام فقط' };
+        if (b.title === 'Natural Formula') return { ...b, title: 'تركيبة طبيعية', description: 'طبيعي وعضوي 100%' };
+        return b;
+    });
+
+    const finalBenefits = (benefits && benefits.length > 0) ? benefits : [
+        { icon: '💎', title: 'جودة ممتازة', description: 'مصنوع من أجود المكونات' },
+        { icon: '⚡', title: 'نتائج سريعة', description: 'لاحظي الفرق في 7 أيام فقط' },
+        { icon: '🌿', title: 'تركيبة طبيعية', description: 'طبيعي وعضوي 100%' },
+    ];
 
     // Merge section variants with global available variants for the CTA
     const ctaData = {
@@ -135,7 +147,7 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                     gridTemplateColumns: gridColumns[columns] || gridColumns[3],
                     gap: data.layout === 'ingredients' ? '50px' : '30px',
                 }}>
-                    {benefits.map((benefit, index) => (
+                    {finalBenefits.map((benefit, index) => (
                         <div
                             key={index}
                             style={(data.layout === 'ingredients' || data.layout === 'steps') ? {
@@ -345,7 +357,7 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                         color: '#666',
                         marginBottom: '20px',
                     }}>
-                        Ready to experience the difference?
+                        هل أنت مستعدة لتجربة الفرق؟
                     </p>
                     <a
                         href="#order"
@@ -368,7 +380,7 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                             e.target.style.gap = '8px';
                         }}
                     >
-                        Get Started Today <span>→</span>
+                        ابدئي اليوم <span>→</span>
                     </a>
                 </div>
             </div>

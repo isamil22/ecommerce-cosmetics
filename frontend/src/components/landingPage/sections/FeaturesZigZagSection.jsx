@@ -13,6 +13,7 @@ const FeaturesZigZagSection = ({ data }) => {
 
     return (
         <div style={{ backgroundColor, padding: '0', overflow: 'hidden' }} className="features-zigzag-section">
+
             <style>{`
                 .features-zigzag-section .feature-row {
                     display: flex;
@@ -37,6 +38,8 @@ const FeaturesZigZagSection = ({ data }) => {
                     position: relative;
                     overflow: hidden;
                     opacity: 0;
+                    border-radius: 30px !important;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
                     transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
                 }
                 
@@ -63,6 +66,7 @@ const FeaturesZigZagSection = ({ data }) => {
                     height: 100%;
                     object-fit: cover;
                     display: block;
+                    border-radius: 30px !important;
                     transition: transform 10s ease;
                     transform: scale(1.2);
                 }
@@ -153,7 +157,7 @@ const FeaturesZigZagSection = ({ data }) => {
 
             {features.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '100px 20px', color: '#888' }}>
-                    No features content added yet.
+                    لم يتم إضافة محتوى المميزات بعد.
                 </div>
             )}
         </div>
@@ -201,29 +205,42 @@ const FeatureRow = ({ feature, index, textColor }) => {
             <div
                 className="feature-image-side"
                 style={{
-                    transform: isVisible ? 'none' : slideImageStart
+                    borderRadius: '30px', /* Force inline style for shadow shape */
+                    transform: isVisible ? 'none' : slideImageStart,
+                    overflow: 'visible' /* Let the inner mask handle clipping */
                 }}
             >
-                {feature.image ? (
-                    <img
-                        src={feature.image}
-                        alt={feature.title}
-                        className="feature-image"
-                    />
-                ) : (
-                    <div style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: '#f5f5f5',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#ccc',
-                        fontSize: '1.2rem',
-                    }}>
-                        Image Placeholder
-                    </div>
-                )}
+                <div style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '30px',
+                    overflow: 'hidden',
+                    transform: 'translateZ(0)', /* Force GPU layer for clipping mask */
+                    isolation: 'isolate'
+                }}>
+                    {feature.image ? (
+                        <img
+                            src={feature.image}
+                            alt={feature.title}
+                            className="feature-image"
+                            style={{ borderRadius: '30px' }} /* Keep just in case */
+                        />
+                    ) : (
+                        <div style={{
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: '#f5f5f5',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#ccc',
+                            fontSize: '1.2rem',
+                            borderRadius: '30px'
+                        }}>
+                            صورة توضيحية
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* TEXT SIDE */}
@@ -237,9 +254,11 @@ const FeatureRow = ({ feature, index, textColor }) => {
                     {feature.title}
                 </h2>
                 <div className="feature-divider" />
-                <p className="feature-description" style={{ color: textColor }}>
-                    {feature.description}
-                </p>
+                <div
+                    className="feature-description"
+                    style={{ color: textColor }}
+                    dangerouslySetInnerHTML={{ __html: feature.description }}
+                />
             </div>
         </div>
     );

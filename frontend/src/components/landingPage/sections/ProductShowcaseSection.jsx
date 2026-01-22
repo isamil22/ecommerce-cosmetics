@@ -8,8 +8,8 @@ import { useLandingPageCTA, useLandingPageAddToCart } from '../LandingPageCTAHan
 const ProductShowcaseSection = ({ data, productId = null, availableVariants = [], fetchCartCount = null }) => {
     const {
         image = '/placeholder-image.jpg',
-        title = 'Our Amazing Product',
-        description = 'Discover the perfect solution for your needs. This product has been designed with you in mind.',
+        title: dbTitle,
+        description: dbDescription,
         features = [],
         imagePosition = 'left',
         backgroundColor = '#fafafa',
@@ -17,10 +17,14 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
         badge = '',
         price = '',
         originalPrice = '',
-        ctaText = '',
+        ctaText: dbCtaText,
         ctaLink = '#order',
         productId: sectionProductId // Extract productId from data if available
     } = data || {};
+
+    const title = (!dbTitle || dbTitle === 'Our Amazing Product') ? 'منتجنا المذهل' : dbTitle;
+    const description = (!dbDescription || dbDescription === 'Discover the perfect solution for your needs. This product has been designed with you in mind.') ? 'اكتشفي الحل الأمثل لاحتياجاتك. تم تصميم هذا المنتج خصيصاً لك.' : dbDescription;
+    const ctaText = (!dbCtaText || dbCtaText === 'Buy Now') ? 'اشتري الآن' : dbCtaText;
 
     console.log('ProductShowcase Debug:', {
         globalProductId: productId,
@@ -70,6 +74,19 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
         }
     }
 
+    // Calculate activePrice and activeOriginalPrice
+    let activePrice = price;
+    let activeOriginalPrice = originalPrice;
+
+    if (data?.optionVisuals) {
+        Object.entries(selectedVariants).forEach(([varName, varOption]) => {
+            const visualKey = `${varName}:${varOption}`;
+            const visual = data.optionVisuals[visualKey];
+            if (visual?.price) activePrice = visual.price;
+            if (visual?.originalPrice) activeOriginalPrice = visual.originalPrice;
+        });
+    }
+
     // Helper to format selected variants string
     const getVariantString = () => {
         if (!variants.length) return null;
@@ -115,6 +132,7 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
 
     const handleAddToCart = useLandingPageAddToCart(activeProductId, {
         ...data,
+        price: activePrice, // Pass the dynamic activePrice for overrides
         selectedVariant: getVariantString()
     }, fetchCartCount);
 
@@ -286,7 +304,7 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
                     </h2>
 
                     {/* Price Display */}
-                    {price && (
+                    {activePrice && (
                         <div style={{
                             display: 'flex',
                             alignItems: 'baseline',
@@ -298,15 +316,15 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
                                 fontWeight: '800',
                                 color: '#ff69b4',
                             }}>
-                                {price}
+                                {activePrice}
                             </span>
-                            {originalPrice && (
+                            {activeOriginalPrice && (
                                 <span style={{
                                     fontSize: '1.3rem',
                                     color: '#999',
                                     textDecoration: 'line-through',
                                 }}>
-                                    {originalPrice}
+                                    {activeOriginalPrice}
                                 </span>
                             )}
                         </div>
@@ -491,7 +509,8 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
                             e.target.style.transform = 'translateY(0)';
                         }}
                     >
-                        Add to Cart <span>+</span>
+                        Add to Cart
+                        أضف إلى السلة <span>+</span>
                     </button>
                 </div>
             </div>

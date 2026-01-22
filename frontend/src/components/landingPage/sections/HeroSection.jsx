@@ -19,7 +19,7 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
     // Helper to format selected variants string
     const getVariantString = () => {
         if (!variants.length) return null;
-        return variants.map(v => `${v.name}: ${selectedVariants[v.name] || 'Not Selected'}`).join(', ');
+        return variants.map(v => `${v.name}: ${selectedVariants[v.name] || 'غير محدد'}`).join(', ');
     };
 
     const allVariantsSelected = variants.every(v => selectedVariants[v.name]);
@@ -30,17 +30,23 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
     });
 
     const {
-        headline = 'Unleash Your Inner Star',
-        subheadline = 'Experience the cosmos of beauty with our premium collection.',
+        headline: dbHeadline,
+        subheadline: dbSubheadline,
         backgroundImage,
         backgroundColor = '#0f0c29', // Fallback deep dark color
-        ctaText = 'Shop the Galaxy',
+        ctaText: dbCtaText,
         ctaLink = '#order',
         textColor = '#fff',
-        badge = 'NEW ARRIVAL ✨',
-        secondaryCtaText = 'View Collection',
+        badge: dbBadge,
+        secondaryCtaText: dbSecondaryCtaText,
         secondaryCtaLink = '#packs',
     } = data || {};
+
+    const headline = (!dbHeadline || dbHeadline === 'Unleash Your Inner Star') ? 'أطلقي العنان لنجمك الداخلي' : dbHeadline;
+    const subheadline = (!dbSubheadline || dbSubheadline === 'Experience the cosmos of beauty with our premium collection.') ? 'اكتشفي عالم الجمال مع مجموعتنا المميزة.' : dbSubheadline;
+    const ctaText = (!dbCtaText || dbCtaText === 'Shop the Galaxy') ? 'تسوقي الآن' : dbCtaText;
+    const badge = (!dbBadge || dbBadge === 'NEW ARRIVAL ✨') ? 'وصل حديثاً ✨' : dbBadge;
+    const secondaryCtaText = (!dbSecondaryCtaText || dbSecondaryCtaText === 'View Collection') ? 'عرض المجموعة' : dbSecondaryCtaText;
 
     const [isVisible, setIsVisible] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -59,7 +65,7 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
     const handleBuyClick = (e) => {
         e.preventDefault();
         if (variants.length > 0 && !allVariantsSelected) {
-            alert('Please select all options before buying.');
+            alert('يرجى تحديد جميع الخيارات قبل الشراء.');
             return;
         }
         handleCTA(e);
@@ -361,24 +367,24 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{ background: 'rgba(255,215,0,0.2)', padding: '8px', borderRadius: '50%' }}>🏆</div>
                         <div style={{ textAlign: 'left' }}>
-                            <div style={{ fontSize: '0.8rem', opacity: 0.7, textTransform: 'uppercase' }}>Quality</div>
-                            <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>Premium Rating</div>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.7, textTransform: 'uppercase' }}>الجودة</div>
+                            <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>تصنيف ممتاز</div>
                         </div>
                     </div>
                     <div style={{ width: '1px', height: '30px', background: 'rgba(255,255,255,0.1)' }} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '8px', borderRadius: '50%' }}>🚚</div>
                         <div style={{ textAlign: 'left' }}>
-                            <div style={{ fontSize: '0.8rem', opacity: 0.7, textTransform: 'uppercase' }}>Delivery</div>
-                            <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>Fast & Free</div>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.7, textTransform: 'uppercase' }}>الشحن</div>
+                            <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>سريع ومجاني</div>
                         </div>
                     </div>
                     <div style={{ width: '1px', height: '30px', background: 'rgba(255,255,255,0.1)' }} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{ background: 'rgba(59, 130, 246, 0.2)', padding: '8px', borderRadius: '50%' }}>🛡️</div>
                         <div style={{ textAlign: 'left' }}>
-                            <div style={{ fontSize: '0.8rem', opacity: 0.7, textTransform: 'uppercase' }}>Secure</div>
-                            <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>Checkout</div>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.7, textTransform: 'uppercase' }}>دفع</div>
+                            <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>آمن</div>
                         </div>
                     </div>
                 </div>

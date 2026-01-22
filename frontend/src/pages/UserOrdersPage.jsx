@@ -51,17 +51,17 @@ const UserOrdersPage = () => {
                                         </svg>
                                     </div>
                                     <div>
-                                        <h2 className="text-xl font-bold text-gray-800">Order #{order.id}</h2>
+                                        <h2 className="text-xl font-bold text-gray-800">طلب رقم #{order.id} / Commande N°{order.id}</h2>
                                         <p className="text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-col md:items-end">
                                     <span className="text-2xl font-bold text-gray-800 mb-1">{formatPrice(calculateTotal(order.orderItems))}</span>
                                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                            order.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
-                                                order.status === 'SHIPPED' ? 'bg-purple-100 text-purple-800' :
-                                                    order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
-                                                        'bg-gray-100 text-gray-800'
+                                        order.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
+                                            order.status === 'SHIPPED' ? 'bg-purple-100 text-purple-800' :
+                                                order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
+                                                    'bg-gray-100 text-gray-800'
                                         }`}>
                                         {order.status}
                                     </span>
@@ -73,14 +73,14 @@ const UserOrdersPage = () => {
                                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z" />
                                     </svg>
-                                    Items ({order.orderItems ? order.orderItems.length : 0})
+                                    المنتجات ({order.orderItems ? order.orderItems.length : 0}) / Articles ({order.orderItems ? order.orderItems.length : 0})
                                 </h3>
                                 <div className="space-y-2">
                                     {order.orderItems && order.orderItems.map((item, index) => (
                                         <div key={item.id || index} className="flex justify-between items-center p-3 bg-white rounded-lg border border-gray-100">
                                             <div className="flex-1">
                                                 <p className="font-medium text-gray-800">{item.productName}</p>
-                                                <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                                                <p className="text-sm text-gray-500">الكمية: {item.quantity} / Qté: {item.quantity}</p>
                                             </div>
                                             <span className="font-semibold text-gray-700">{formatPrice(item.price)}</span>
                                         </div>
@@ -97,9 +97,11 @@ const UserOrdersPage = () => {
                             <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">No Orders Yet</h3>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">لا توجد طلبات بعد / Pas encore de commandes</h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                        You haven't placed any orders yet. Start shopping to see your order history here!
+                        لم تقم بأي طلبات بعد. ابدأ التسوق لرؤية سجل طلباتك هنا!
+                        <br />
+                        Vous n'avez pas encore passé de commande. Commencez vos achats pour voir votre historique ici !
                     </p>
                     <a
                         href="/products"
@@ -108,7 +110,7 @@ const UserOrdersPage = () => {
                         <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                         </svg>
-                        Start Shopping
+                        ابدأ التسوق / Commencer les achats
                     </a>
                 </div>
             )}

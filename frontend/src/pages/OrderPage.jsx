@@ -51,8 +51,8 @@ const OrderPage = () => {
                     const response = await getCart();
                     setCart(response.data);
                 } catch (err) {
-                    setError('Failed to fetch cart. Please login and try again.');
-                    toast.error('Failed to fetch cart. Please login and try again.');
+                    setError('فشل في جلب السلة. يرجى تسجيل الدخول والمحاولة مرة أخرى. / Échec de la récupération du panier. Veuillez vous connecter et réessayer.');
+                    toast.error('فشل في جلب السلة. يرجى تسجيل الدخول والمحاولة مرة أخرى. / Échec de la récupération du panier. Veuillez vous connecter et réessayer.');
                 }
             } else {
                 const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
@@ -74,7 +74,7 @@ const OrderPage = () => {
 
     const handleApplyCoupon = async () => {
         if (!couponCode.trim()) {
-            toast.warn('Please enter a coupon code.');
+            toast.warn('يرجى إدخال كود الخصم. / Veuillez entrer un code promo.');
             return;
         }
         setApplyingCoupon(true);
@@ -86,7 +86,7 @@ const OrderPage = () => {
         } catch (err) {
             setDiscount(0);
             setAppliedCoupon(null);
-            toast.error('❌ Invalid or expired coupon code.');
+            toast.error('❌ كود خصم غير صالح أو منتهي الصلاحية. / Code promo invalide ou expiré.');
         }
         setApplyingCoupon(false);
     };
@@ -106,7 +106,7 @@ const OrderPage = () => {
         setSubmitting(true);
 
         if (!formData.clientFullName || !formData.city || !formData.address || !formData.phoneNumber || (!isAuthenticated && !formData.email)) {
-            setError('All delivery details fields are required.');
+            setError('جميع حقول تفاصيل التسليم مطلوبة. / Tous les champs de détails de livraison sont obligatoires.');
             setSubmitting(false);
             return;
         }
@@ -155,7 +155,7 @@ const OrderPage = () => {
             // ------------------------------------
 
             setSuccess('Order placed successfully! Redirecting to success page...');
-            toast.success('🎉 Order placed successfully! Thank you for your purchase!');
+            toast.success('🎉 تم إرسال الطلب بنجاح! شكراً لشرائك! / Commande passée avec succès ! Merci pour votre achat !');
 
             // Redirect to order success page with order ID and order data
             const orderIdValue = orderResponse?.data?.id?.toString() || orderId;
@@ -168,7 +168,7 @@ const OrderPage = () => {
                 });
             }, 2000);
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Failed to place order.';
+            const errorMessage = err.response?.data?.message || 'فشل في إرسال الطلب. / Échec de l\'envoi de la commande.';
             setError(errorMessage);
             toast.error(`❌ ${errorMessage}`);
         }
@@ -213,18 +213,18 @@ const OrderPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 px-4">
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-4 px-2">
             <div className="container mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="text-center mb-12">
-                    <div className="inline-block mb-4">
-                        <span className="text-5xl">🛍️</span>
+                <div className="text-center mb-6">
+                    <div className="inline-block mb-2">
+                        <span className="text-3xl">🛍️</span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">
-                        تأكيد طلبك / Confirm Your Order
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800 mb-2">
+                        تأكيد طلبك / Confirmez commande
                     </h1>
-                    <p className="text-gray-600 text-lg">
-                        راجع منتجاتك وأكمل عملية الشراء / Review your items and complete your purchase
+                    <p className="text-gray-500 text-sm">
+                        أكمل عملية الشراء / Finalisez votre achat
                     </p>
                 </div>
 
@@ -238,12 +238,12 @@ const OrderPage = () => {
                                 </svg>
                             </div>
                             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                                تم إرسال طلبك بنجاح! / Order Placed Successfully!
+                                تم إرسال طلبك بنجاح! / Commande passée avec succès !
                             </h2>
                             <p className="text-gray-600 mb-8">{success}</p>
                             <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4 mb-8">
                                 <p className="text-blue-800 text-sm">
-                                    <span className="font-semibold">رقم الطلب / Order ID:</span> #{orderId}
+                                    <span className="font-semibold">رقم الطلب / Numéro de commande :</span> #{orderId}
                                 </p>
                             </div>
                             <FeedbackForm orderId={orderId} isAuthenticated={isAuthenticated} />
@@ -257,10 +257,10 @@ const OrderPage = () => {
                                 <div className="max-w-md mx-auto">
                                     <div className="text-8xl mb-6">🛒</div>
                                     <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-                                        سلة التسوق فارغة / Your cart is empty
+                                        سلة التسوق فارغة / Votre panier est vide
                                     </h2>
                                     <p className="text-gray-600 mb-8">
-                                        أضف منتجات إلى سلة التسوق قبل إرسال الطلب / Add items to your cart before placing an order
+                                        أضف منتجات إلى سلة التسوق قبل إرسال الطلب / Ajoutez des articles à votre panier avant de passer commande
                                     </p>
                                     <button
                                         onClick={() => navigate('/')}
@@ -269,7 +269,7 @@ const OrderPage = () => {
                                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                         </svg>
-                                        متابعة التسوق / Continue Shopping
+                                        متابعة التسوق / Continuer vos achats
                                     </button>
                                 </div>
                             </div>
@@ -277,24 +277,24 @@ const OrderPage = () => {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 {/* Order Summary */}
                                 <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                                    <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
-                                        <h2 className="text-2xl font-bold text-white flex items-center">
-                                            <span className="text-3xl mr-3">📋</span>
-                                            ملخص الطلب / Order Summary
+                                    <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-3">
+                                        <h2 className="text-lg font-bold text-white flex items-center">
+                                            <span className="text-xl mr-2">📋</span>
+                                            ملخص / Résumé
                                         </h2>
-                                        <p className="text-pink-100 mt-1">
-                                            {cart.items.length} {cart.items.length === 1 ? 'منتج / item' : 'منتجات / items'} في طلبك
+                                        <p className="text-pink-100 text-xs mt-0.5">
+                                            {cart.items.length} {cart.items.length === 1 ? 'منتج' : 'منتجات'} / produits
                                         </p>
                                     </div>
 
-                                    <div className="p-6">
+                                    <div className="p-3">
                                         {/* Items List */}
-                                        <div className="space-y-4 mb-6">
+                                        <div className="space-y-2 mb-4">
                                             {cart.items.map((item, index) => (
-                                                <div key={item.id || item.productId} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                                <div key={item.id || item.productId} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg border border-gray-100">
                                                     {/* Product Image */}
                                                     <div className="flex-shrink-0">
-                                                        <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                                        <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden">
                                                             {item.imageUrl ? (
                                                                 <img
                                                                     src={item.imageUrl}
@@ -307,7 +307,7 @@ const OrderPage = () => {
                                                                 />
                                                             ) : (
                                                                 <div className="w-full h-full flex items-center justify-center">
-                                                                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                                     </svg>
                                                                 </div>
@@ -316,8 +316,8 @@ const OrderPage = () => {
                                                     </div>
 
                                                     {/* Product Info */}
-                                                    <div className="flex-grow">
-                                                        <h3 className="font-semibold text-gray-900 mb-1">{item.productName}</h3>
+                                                    <div className="flex-grow min-w-0">
+                                                        <h3 className="font-bold text-sm text-gray-900 truncate">{item.productName}</h3>
 
                                                         {/* Dynamic Pack Contents Display */}
                                                         {(() => {
@@ -326,14 +326,13 @@ const OrderPage = () => {
                                                                 const parsed = JSON.parse(item.variantName);
                                                                 if (Array.isArray(parsed)) {
                                                                     return (
-                                                                        <div className="flex flex-wrap gap-2 mt-1 mb-2">
+                                                                        <div className="flex flex-wrap gap-1 mt-1">
                                                                             {parsed.map((p, idx) => (
-                                                                                <div key={idx} className="relative group cursor-help">
+                                                                                <div key={idx} className="relative group">
                                                                                     <img
                                                                                         src={p.image}
                                                                                         alt={p.name}
-                                                                                        title={p.name}
-                                                                                        className="w-8 h-8 object-cover rounded border border-gray-200"
+                                                                                        className="w-6 h-6 object-cover rounded border border-gray-200"
                                                                                         onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
                                                                                     />
                                                                                 </div>
@@ -342,23 +341,19 @@ const OrderPage = () => {
                                                                     );
                                                                 }
                                                             } catch (e) {
-                                                                // Legacy fallback
                                                                 return (
-                                                                    <p className="text-sm text-pink-600 font-medium mb-1">
+                                                                    <p className="text-xs text-pink-600 font-medium truncate">
                                                                         {item.variantName}
                                                                     </p>
                                                                 );
                                                             }
-                                                            return <p className="text-sm text-pink-600 font-medium mb-1">{item.variantName}</p>;
+                                                            return <p className="text-xs text-pink-600 font-medium truncate">{item.variantName}</p>;
                                                         })()}
 
-                                                        <p className="text-sm text-gray-600">الكمية / Qty: {item.quantity}</p>
-                                                        <p className="text-sm text-gray-600">{formatPrice(parseFloat(item.price || 0))} لكل قطعة / each</p>
-                                                    </div>
-
-                                                    {/* Price */}
-                                                    <div className="text-right">
-                                                        <p className="font-bold text-lg text-gray-900">{formatPrice(parseFloat(item.price || 0) * (item.quantity || 1))}</p>
+                                                        <div className="flex justify-between items-center mt-1">
+                                                            <p className="text-xs text-gray-500">x{item.quantity}</p>
+                                                            <p className="font-bold text-sm text-gray-900">{formatPrice(parseFloat(item.price || 0) * (item.quantity || 1))}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))}
@@ -368,14 +363,14 @@ const OrderPage = () => {
                                         <div className="border-t border-gray-200 pt-6 mb-6">
                                             <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
                                                 <span className="text-2xl mr-2">🎟️</span>
-                                                هل لديك كود خصم؟ / Have a coupon code?
+                                                هل لديك كود خصم؟ / Avez-vous un code promo ?
                                             </h3>
                                             <div className="flex gap-3">
                                                 <input
                                                     type="text"
                                                     value={couponCode}
                                                     onChange={(e) => setCouponCode(e.target.value)}
-                                                    placeholder="أدخل كود الخصم / Enter coupon code"
+                                                    placeholder="أدخل كود الخصم / Entrez le code promo"
                                                     className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
                                                 />
                                                 <button
@@ -386,10 +381,10 @@ const OrderPage = () => {
                                                     {applyingCoupon ? (
                                                         <div className="flex items-center">
                                                             <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                                                            جاري التطبيق... / Applying...
+                                                            جاري التطبيق... / Application...
                                                         </div>
                                                     ) : (
-                                                        'تطبيق / Apply'
+                                                        'تطبيق / Appliquer'
                                                     )}
                                                 </button>
                                             </div>
@@ -400,7 +395,7 @@ const OrderPage = () => {
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                                         </svg>
                                                         <span className="text-green-800 font-semibold">
-                                                            تم تطبيق الكود "{appliedCoupon}"! وفرت {formatPrice(discount)}! / Coupon applied! You saved {formatPrice(discount)}!
+                                                            تم تطبيق الكود "{appliedCoupon}"! وفرت {formatPrice(discount)}! / Code promo appliqué ! Vous avez économisé {formatPrice(discount)} !
                                                         </span>
                                                     </div>
                                                 </div>
@@ -410,12 +405,12 @@ const OrderPage = () => {
                                         {/* Price Breakdown */}
                                         <div className="space-y-3">
                                             <div className="flex justify-between text-gray-600">
-                                                <span>المجموع الفرعي / Subtotal</span>
+                                                <span>المجموع الفرعي / Sous-total</span>
                                                 <span className="font-medium text-gray-900">{formatPrice(subtotal)}</span>
                                             </div>
                                             {discount > 0 && (
                                                 <div className="flex justify-between text-green-600">
-                                                    <span>خصم / Discount ({appliedCoupon})</span>
+                                                    <span>خصم / Remise ({appliedCoupon})</span>
                                                     <span className="font-medium">-{formatPrice(discount)}</span>
                                                 </div>
                                             )}
@@ -431,20 +426,19 @@ const OrderPage = () => {
 
                                 {/* Delivery Information Form */}
                                 <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6">
-                                        <h2 className="text-2xl font-bold text-white flex items-center">
-                                            <span className="text-3xl mr-3">🚚</span>
-                                            تفاصيل التسليم / Delivery Details
+                                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3">
+                                        <h2 className="text-lg font-bold text-white flex items-center">
+                                            <span className="text-xl mr-2">🚚</span>
+                                            معلومات التوصيل / Livraison
                                         </h2>
-                                        <p className="text-blue-100 mt-1">إلى أين نرسل طلبك؟ / Where should we deliver your order?</p>
                                     </div>
 
-                                    <div className="p-6">
-                                        <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div className="p-4">
+                                        <form onSubmit={handleSubmit} className="space-y-3">
                                             {!isAuthenticated && (
                                                 <div>
-                                                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                                                        البريد الإلكتروني / Email Address <span className="text-red-500">*</span>
+                                                    <label htmlFor="email" className="block text-xs font-bold text-gray-700 mb-1">
+                                                        البريد الإلكتروني / Email <span className="text-red-500">*</span>
                                                     </label>
                                                     <input
                                                         type="email"
@@ -452,15 +446,15 @@ const OrderPage = () => {
                                                         id="email"
                                                         required
                                                         onChange={handleChange}
-                                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
+                                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
                                                         placeholder="your@email.com"
                                                     />
                                                 </div>
                                             )}
 
                                             <div>
-                                                <label htmlFor="clientFullName" className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    الاسم الكامل / Full Name <span className="text-red-500">*</span>
+                                                <label htmlFor="clientFullName" className="block text-xs font-bold text-gray-700 mb-1">
+                                                    الاسم الكامل / Nom complet <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
                                                     type="text"
@@ -468,14 +462,14 @@ const OrderPage = () => {
                                                     id="clientFullName"
                                                     required
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
-                                                    placeholder="الاسم الكامل / Your Full Name"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
+                                                    placeholder="الاسم الكامل / Nom complet"
                                                 />
                                             </div>
 
                                             <div>
-                                                <label htmlFor="city" className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    المدينة / City <span className="text-red-500">*</span>
+                                                <label htmlFor="city" className="block text-xs font-bold text-gray-700 mb-1">
+                                                    المدينة / Ville <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
                                                     list="cities"
@@ -483,8 +477,8 @@ const OrderPage = () => {
                                                     id="city"
                                                     required
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
-                                                    placeholder="اختر أو اكتب مدينتك / Select or type your city"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
+                                                    placeholder="المدينة / Ville"
                                                 />
                                                 <datalist id="cities">
                                                     {moroccanCities.map(city => <option key={city} value={city} />)}
@@ -492,8 +486,8 @@ const OrderPage = () => {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="address" className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    عنوان الشحن / Shipping Address <span className="text-red-500">*</span>
+                                                <label htmlFor="address" className="block text-xs font-bold text-gray-700 mb-1">
+                                                    عنوان الشحن / Adresse <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
                                                     type="text"
@@ -501,14 +495,14 @@ const OrderPage = () => {
                                                     id="address"
                                                     required
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
-                                                    placeholder="123 Main St, Anytown"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
+                                                    placeholder="العنوان / Adresse"
                                                 />
                                             </div>
 
                                             <div>
-                                                <label htmlFor="phoneNumber" className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    رقم الهاتف / Phone Number <span className="text-red-500">*</span>
+                                                <label htmlFor="phoneNumber" className="block text-xs font-bold text-gray-700 mb-1">
+                                                    رقم الهاتف / Téléphone <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
                                                     type="tel"
@@ -516,30 +510,21 @@ const OrderPage = () => {
                                                     id="phoneNumber"
                                                     required
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
-                                                    placeholder="123-456-7890"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
+                                                    placeholder="06..."
                                                 />
                                             </div>
 
                                             {/* Trust Badges */}
-                                            <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-4 space-y-3 border border-gray-200">
-                                                <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                                                    <span className="text-2xl mr-2">🔒</span>
-                                                    دفع آمن / Secure Checkout
+                                            <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg p-3 space-y-2 border border-gray-200">
+                                                <h4 className="font-bold text-xs text-gray-900 flex items-center">
+                                                    <span className="text-lg mr-1">🔒</span>
+                                                    دفع آمن / Paiement sécurisé
                                                 </h4>
-                                                <div className="space-y-2">
-                                                    <div className="flex items-center text-sm text-gray-600">
-                                                        <span className="text-green-500 mr-2">🔐</span>
-                                                        دفع مشفر SSL / SSL encrypted checkout
-                                                    </div>
-                                                    <div className="flex items-center text-sm text-gray-600">
-                                                        <span className="text-blue-500 mr-2">💳</span>
-                                                        الدفع عند الاستلام / Cash on delivery payment
-                                                    </div>
-                                                    <div className="flex items-center text-sm text-gray-600">
-                                                        <span className="text-purple-500 mr-2">↩️</span>
-                                                        إرجاع مجاني خلال 30 يوم / Free returns within 30 days
-                                                    </div>
+                                                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
+                                                    <span>🔐 SSL</span>
+                                                    <span>💳 الدفع عند الاستلام</span>
+                                                    <span>↩️ إرجاع مجاني</span>
                                                 </div>
                                             </div>
 
@@ -547,17 +532,16 @@ const OrderPage = () => {
                                             <button
                                                 type="submit"
                                                 disabled={submitting}
-                                                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-4 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base sticky bottom-2 z-10"
                                             >
                                                 {submitting ? (
                                                     <div className="flex items-center justify-center">
-                                                        <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-3"></div>
-                                                        جاري إرسال الطلب... / Placing Order...
+                                                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+                                                        جاري إرسال الطلب...
                                                     </div>
                                                 ) : (
                                                     <div className="flex items-center justify-center">
-                                                        <span className="text-xl mr-2">🛍️</span>
-                                                        <span>إرسال الطلب (الدفع عند الاستلام) / Place Order (Cash on Delivery)</span>
+                                                        <span>إرسال الطلب (الدفع عند الاستلام) / Commander</span>
                                                     </div>
                                                 )}
                                             </button>

@@ -14,7 +14,9 @@ const AdminHeroPage = () => {
     const fileInputRef = useRef(null);
     const [hero, setHero] = useState({ title: '', subtitle: '', linkText: '', linkUrl: '', titleFont: 'sans-serif' });
     const [image, setImage] = useState(null);
+    const [mobileImage, setMobileImage] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
+    const [mobileImagePreview, setMobileImagePreview] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -22,6 +24,7 @@ const AdminHeroPage = () => {
     const [isDirty, setIsDirty] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [dragActive, setDragActive] = useState(false);
+    const [mobileDragActive, setMobileDragActive] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [viewMode, setViewMode] = useState('form'); // 'form' or 'preview'
 
@@ -33,6 +36,9 @@ const AdminHeroPage = () => {
                 setHero(response.data);
                 if (response.data.imageUrl) {
                     setImagePreview(response.data.imageUrl);
+                }
+                if (response.data.mobileImageUrl) {
+                    setMobileImagePreview(response.data.mobileImageUrl);
                 }
             } catch (err) {
                 setError('Failed to load hero data.');
@@ -54,7 +60,7 @@ const AdminHeroPage = () => {
                     handleSubmit(e);
                 }
             }
-            // Ctrl/Cmd + P to toggle preview
+            // Ctrl/Cmd + P to toggle preview (only if not focused on input)
             if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
                 e.preventDefault();
                 setShowPreview(!showPreview);
@@ -138,6 +144,44 @@ const AdminHeroPage = () => {
                 toast.error('Please select a valid image file.');
             }
         }
+    }
+
+
+    const handleMobileImageChange = (file) => {
+        if (file) {
+            setMobileImage(file);
+            setIsDirty(true);
+            const reader = new FileReader();
+            reader.onload = (e) => setMobileImagePreview(e.target.result);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleMobileDrag = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === 'dragenter' || e.type === 'dragover') {
+            setMobileDragActive(true);
+        } else if (e.type === 'dragleave') {
+            setMobileDragActive(false);
+        }
+    };
+
+    const handleMobileDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setMobileDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            const file = e.dataTransfer.files[0];
+            if (file.type.startsWith('image/')) handleMobileImageChange(file);
+            else toast.error('Please select a valid image file.');
+        }
+    };
+
+    const removeMobileImage = () => {
+        setMobileImage(null);
+        setMobileImagePreview('');
+        setIsDirty(true);
     };
 
     const removeImage = () => {
@@ -192,6 +236,9 @@ const AdminHeroPage = () => {
 
         if (image) {
             formData.append('image', image);
+        }
+        if (mobileImage) {
+            formData.append('mobileImage', mobileImage);
         }
 
         setError('');
@@ -474,77 +521,81 @@ const AdminHeroPage = () => {
                                 )}
                             </div>
 
-                            {/* Hero Image Upload */}
-                            <div>
-                                <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
-                                    <FiCamera className="w-5 h-5 text-indigo-500" />
-                                    <span>Hero Background Image</span>
-                                    <span className="text-sm text-gray-500">(Optional)</span>
-                                </label>
-
-                                {/* Image Upload Area */}
-                                <div
-                                    className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${dragActive
-                                        ? 'border-pink-400 bg-pink-50'
-                                        : 'border-gray-300 hover:border-pink-400 hover:bg-pink-50'
-                                        }`}
-                                    onDragEnter={handleDrag}
-                                    onDragLeave={handleDrag}
-                                    onDragOver={handleDrag}
-                                    onDrop={handleDrop}
-                                >
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        name="image"
-                                        id="image"
-                                        onChange={handleFileInputChange}
-                                        accept="image/*"
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                    />
-
-                                    {imagePreview ? (
-                                        <div className="relative">
-                                            <img
-                                                src={imagePreview}
-                                                alt="Hero preview"
-                                                className="mx-auto max-h-32 rounded-lg shadow-lg"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={removeImage}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                                            >
-                                                <FiX className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-3">
-                                            <div className="w-12 h-12 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto">
-                                                <FiUpload className="w-6 h-6 text-pink-500" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Desktop Image Upload */}
+                                <div>
+                                    <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
+                                        <FiMonitor className="w-5 h-5 text-indigo-500" />
+                                        <span>Desktop Background</span>
+                                    </label>
+                                    <div
+                                        className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${dragActive
+                                            ? 'border-pink-400 bg-pink-50'
+                                            : 'border-gray-300 hover:border-pink-400 hover:bg-pink-50'
+                                            }`}
+                                        onDragEnter={handleDrag}
+                                        onDragLeave={handleDrag}
+                                        onDragOver={handleDrag}
+                                        onDrop={handleDrop}
+                                    >
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            onChange={handleFileInputChange}
+                                            accept="image/*"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                        {imagePreview ? (
+                                            <div className="relative">
+                                                <img src={imagePreview} alt="Desktop preview" className="mx-auto max-h-32 rounded-lg shadow-lg" />
+                                                <button type="button" onClick={removeImage} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"><FiX className="w-4 h-4" /></button>
                                             </div>
-                                            <div>
-                                                <p className="text-base font-medium text-gray-900">
-                                                    Drop your hero image here
-                                                </p>
-                                                <p className="text-sm text-gray-500">
-                                                    or click to browse
-                                                </p>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                <FiUpload className="w-8 h-8 text-pink-500 mx-auto" />
+                                                <p className="text-sm font-medium text-gray-900">Drop Desktop Image</p>
+                                                <p className="text-xs text-gray-500">1920x800px recommended</p>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => fileInputRef.current?.click()}
-                                                className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 text-sm"
-                                            >
-                                                Choose File
-                                            </button>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
 
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Recommended size: 1200x400px. Supported formats: JPG, PNG, GIF. Max size: 5MB
-                                </p>
+                                {/* Mobile Image Upload */}
+                                <div>
+                                    <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
+                                        <FiTarget className="w-5 h-5 text-purple-500" />
+                                        <span>Mobile Background</span>
+                                    </label>
+                                    <div
+                                        className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${mobileDragActive
+                                            ? 'border-purple-400 bg-purple-50'
+                                            : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
+                                            }`}
+                                        onDragEnter={handleMobileDrag}
+                                        onDragLeave={handleMobileDrag}
+                                        onDragOver={handleMobileDrag}
+                                        onDrop={handleMobileDrop}
+                                    >
+                                        <input
+                                            type="file"
+                                            onChange={(e) => handleMobileImageChange(e.target.files[0])}
+                                            accept="image/*"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                        {mobileImagePreview ? (
+                                            <div className="relative">
+                                                <img src={mobileImagePreview} alt="Mobile preview" className="mx-auto max-h-32 rounded-lg shadow-lg" />
+                                                <button type="button" onClick={removeMobileImage} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"><FiX className="w-4 h-4" /></button>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                <FiUpload className="w-8 h-8 text-purple-500 mx-auto" />
+                                                <p className="text-sm font-medium text-gray-900">Drop Mobile Image</p>
+                                                <p className="text-xs text-gray-500">800x1000px recommended</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Submit Button */}

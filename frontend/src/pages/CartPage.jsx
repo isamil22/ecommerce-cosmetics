@@ -10,6 +10,7 @@ const CartPage = () => {
     const [loading, setLoading] = useState(true);
     const [updatingItem, setUpdatingItem] = useState(null);
     const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+    const [itemToDelete, setItemToDelete] = useState(null);
     const navigate = useNavigate();
     const isAuthenticated = !!localStorage.getItem('token');
 
@@ -43,20 +44,24 @@ const CartPage = () => {
         }, 3000);
     };
 
-    const handleRemove = async (itemId) => {
-        if (window.confirm('Are you sure you want to remove this item from your cart?')) {
-            setUpdatingItem(itemId);
-            try {
-                await removeCartItem(itemId);
-                await fetchCart();
-                showNotification('Item removed from cart', 'success');
-            } catch (err) {
-                console.error("Remove item error:", err);
-                setError('Failed to remove item from cart.');
-                showNotification('Failed to remove item', 'error');
-            }
-            setUpdatingItem(null);
+    const handleRemove = (itemId) => {
+        setItemToDelete(itemId);
+    };
+
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
+        setUpdatingItem(itemToDelete);
+        try {
+            await removeCartItem(itemToDelete);
+            await fetchCart();
+            showNotification('تم إزالة المنتج من السلة / Article supprimé du panier', 'success');
+        } catch (err) {
+            console.error("Remove item error:", err);
+            setError('فشل في إزالة المنتج من السلة / Échec de la suppression de l\'article du panier');
+            showNotification('فشل في إزالة المنتج / Échec de la suppression de l\'article', 'error');
         }
+        setUpdatingItem(null);
+        setItemToDelete(null);
     };
 
     const handleQuantityChange = async (itemId, newQuantity) => {
@@ -86,7 +91,7 @@ const CartPage = () => {
             console.error("Failed to update quantity:", err);
             // Revert on error
             setCart(previousCart);
-            showNotification('Failed to update quantity', 'error');
+            showNotification('فشل في تحديث الكمية / Échec de la mise à jour de la quantité', 'error');
         }
 
         setTimeout(() => setUpdatingItem(null), 300);
@@ -175,278 +180,167 @@ const CartPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-purple-50 font-sans text-gray-900 pb-20 overflow-x-hidden">
             {/* Notification Toast */}
             {notification.show && (
-                <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
-                    } text-white animate-fade-in`}>
-                    <div className="flex items-center">
+                <div className={`fixed top-4 right-4 left-4 lg:right-4 lg:left-auto z-50 px-4 py-3 rounded-xl shadow-2xl transform transition-all duration-300 ${notification.type === 'success' ? 'bg-green-500/90 backdrop-blur-md' : 'bg-red-500/90 backdrop-blur-md'} text-white animate-fade-in-down`}>
+                    <div className="flex items-center justify-center lg:justify-start gap-2 text-sm font-bold">
                         {notification.type === 'success' ? (
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
                         ) : (
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         )}
-                        <span className="font-medium">{notification.message}</span>
+                        <span>{notification.message}</span>
                     </div>
                 </div>
             )}
 
-            <div className="container mx-auto max-w-7xl">
+            <div className="container mx-auto max-w-5xl px-2 lg:px-4 py-4 lg:py-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-2">Shopping Cart</h1>
-                    <p className="text-gray-600">
-                        {cart.items.length > 0 ? `${cart.items.length} ${cart.items.length === 1 ? 'item' : 'items'} in your cart` : 'Your cart is empty'}
+                <div className="mb-4 lg:mb-8 text-center lg:text-right animate-fade-in-down">
+                    <h1 className="text-2xl lg:text-4xl font-black text-gray-900 mb-1 flex items-center justify-center lg:justify-end gap-2">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                            سلة التسوق
+                        </span>
+                        <span className="text-gray-300 font-light">/</span>
+                        <span className="text-gray-800">Panier</span>
+                    </h1>
+                    <p className="text-xs lg:text-sm text-gray-500 font-medium">
+                        {cart.items.length > 0 ? `${cart.items.length} منتج / articles` : 'فارغ / Vide'}
                     </p>
                 </div>
 
                 {cart.items.length === 0 ? (
-                    /* Empty Cart State */
-                    <div className="bg-white rounded-2xl shadow-sm p-12 text-center">
-                        <div className="max-w-md mx-auto">
-                            <svg className="w-32 h-32 mx-auto text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-2">Your cart is empty</h2>
-                            <p className="text-gray-600 mb-8">Looks like you haven't added anything to your cart yet.</p>
-                            <Link
-                                to="/"
-                                className="inline-flex items-center bg-pink-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-pink-700 transition duration-300 shadow-md hover:shadow-lg"
-                            >
-                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
-                                Continue Shopping
-                            </Link>
+                    <div className="glass-panel-pro rounded-2xl lg:rounded-3xl p-8 lg:p-12 text-center animate-fade-in-up">
+                        <div className="bg-gray-50 w-20 h-20 lg:w-32 lg:h-32 rounded-full flex items-center justify-center mx-auto mb-4 lg:mb-6">
+                            <svg className="w-10 h-10 lg:w-16 lg:h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                         </div>
+                        <h2 className="text-lg lg:text-2xl font-bold text-gray-800 mb-2">سلة التسوق فارغة</h2>
+                        <Link to="/" className="inline-flex items-center justify-center gap-2 bg-gray-900 text-white font-bold py-3 px-6 lg:px-8 rounded-xl hover:bg-gray-800 transition duration-300 shadow-lg text-sm lg:text-base">
+                            <span>ابدأ التسوق / Commencer</span>
+                        </Link>
                     </div>
                 ) : (
-                    <div className="lg:grid lg:grid-cols-3 lg:gap-8">
-                        {/* Cart Items */}
-                        <div className="lg:col-span-2">
-                            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                                {cart.items.map((item, index) => (
-                                    <div
-                                        key={item.id || item.productId || index}
-                                        className={`p-6 ${index !== cart.items.length - 1 ? 'border-b border-gray-100' : ''} ${updatingItem === (item.id || item.productId) ? 'opacity-50 pointer-events-none' : ''
-                                            } transition-opacity duration-300 hover:bg-gray-50`}
-                                    >
-                                        <div className="flex gap-6">
-                                            {/* Product Image */}
-                                            <div className="flex-shrink-0">
-                                                <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
-                                                    {item.imageUrl ? (
-                                                        <img
-                                                            src={item.imageUrl}
-                                                            alt={item.productName}
-                                                            className="w-full h-full object-cover"
-                                                            onError={(e) => {
-                                                                e.target.onerror = null;
-                                                                e.target.src = '/placeholder-image.jpg';
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center">
-                                                            <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                            </svg>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8">
+                        {/* Cart Items List */}
+                        <div className="lg:col-span-8 space-y-3 lg:space-y-4">
+                            {cart.items.map((item, index) => (
+                                <div key={item.id || item.productId || index} className={`glass-panel-pro rounded-xl lg:rounded-2xl p-3 lg:p-6 transition-all duration-300 hover:shadow-lg ${updatingItem === (item.id || item.productId) ? 'opacity-50 pointer-events-none' : ''}`}>
+                                    <div className="flex gap-3 lg:gap-6">
+                                        {/* Image */}
+                                        <div className="flex-shrink-0">
+                                            <div className="w-16 h-16 lg:w-24 lg:h-24 bg-white rounded-lg lg:rounded-xl overflow-hidden shadow-sm border border-gray-100">
+                                                {item.imageUrl ? (
+                                                    <img
+                                                        src={item.imageUrl}
+                                                        alt={item.productName}
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.src = '/placeholder-image.jpg';
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center bg-gray-50"><span className="text-xs text-gray-300">No Img</span></div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Info */}
+                                        <div className="flex-grow min-w-0">
+                                            <div className="flex justify-between items-start">
+                                                <div className="space-y-1">
+                                                    <h3 className="text-sm lg:text-lg font-bold text-gray-900 truncate leading-tight">{item.productName}</h3>
+                                                    {/* Variants */}
+                                                    {item.variantName && (
+                                                        <div className="text-xs text-gray-500 font-medium">
+                                                            {(() => {
+                                                                try {
+                                                                    const parsed = JSON.parse(item.variantName);
+                                                                    if (Array.isArray(parsed)) return <span className="text-pink-600">{parsed.length} items pack</span>;
+                                                                    return parsed;
+                                                                } catch { return item.variantName; }
+                                                            })()}
                                                         </div>
                                                     )}
+                                                    <div className="text-xs font-semibold text-purple-600">{formatPrice(item.price)}</div>
                                                 </div>
+                                                <button
+                                                    onClick={() => handleRemove(item.id || item.productId)}
+                                                    className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                                                    title="Remove"
+                                                >
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                </button>
                                             </div>
 
-                                            {/* Product Info */}
-                                            <div className="flex-grow">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div>
-                                                        <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.productName}</h3>
-
-                                                        {/* Dynamic Pack Contents Display */}
-                                                        {(() => {
-                                                            if (!item.variantName) return null;
-                                                            try {
-                                                                const parsed = JSON.parse(item.variantName);
-                                                                if (Array.isArray(parsed)) {
-                                                                    return (
-                                                                        <div className="flex flex-wrap gap-2 mt-2 mb-2">
-                                                                            {parsed.map((p, idx) => (
-                                                                                <div key={idx} className="group relative">
-                                                                                    <img
-                                                                                        src={p.image}
-                                                                                        alt={p.name}
-                                                                                        title={p.name}
-                                                                                        className="w-10 h-10 object-cover rounded-md border border-gray-200 shadow-sm"
-                                                                                        onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
-                                                                                    />
-                                                                                    {/* Tooltip on hover */}
-                                                                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-10 transition-opacity opacity-0 group-hover:opacity-100">
-                                                                                        {p.name}
-                                                                                    </div>
-                                                                                </div>
-                                                                            ))}
-                                                                        </div>
-                                                                    );
-                                                                }
-                                                            } catch (e) {
-                                                                // Legacy/Standard fallback
-                                                                return (
-                                                                    <p className="text-sm text-pink-600 font-medium mb-1">
-                                                                        {item.variantName}
-                                                                    </p>
-                                                                );
-                                                            }
-                                                            // Fallback if parsing succeeds but not array (shouldn't happen for packs)
-                                                            return (
-                                                                <p className="text-sm text-pink-600 font-medium mb-1">
-                                                                    {item.variantName}
-                                                                </p>
-                                                            );
-                                                        })()}
-
-                                                        <p className="text-gray-600 text-sm">
-                                                            {formatPrice(item.price)} each
-                                                        </p>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleRemove(item.id || item.productId)}
-                                                        className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                                                        title="Remove item"
-                                                    >
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                    </button>
+                                            {/* Controls */}
+                                            <div className="flex items-center justify-between mt-3">
+                                                <div className="flex items-center bg-gray-50/50 rounded-lg border border-gray-200/60 p-0.5 h-8 lg:h-10">
+                                                    <button onClick={() => handleQuantityChange(item.id || item.productId, item.quantity - 1)} disabled={item.quantity <= 1} className="w-8 h-full flex items-center justify-center text-gray-500 hover:text-red-500 transition font-bold text-lg disabled:opacity-30"> - </button>
+                                                    <span className="w-8 text-center text-sm font-bold text-gray-900">{item.quantity}</span>
+                                                    <button onClick={() => handleQuantityChange(item.id || item.productId, item.quantity + 1)} className="w-8 h-full flex items-center justify-center text-gray-500 hover:text-green-500 transition font-bold text-lg"> + </button>
                                                 </div>
-
-                                                {/* Quantity Controls */}
-                                                <div className="flex items-center justify-between mt-4">
-                                                    <div className="flex items-center border border-gray-300 rounded-lg">
-                                                        <button
-                                                            onClick={() => handleQuantityChange(item.id || item.productId, item.quantity - 1)}
-                                                            className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg transition"
-                                                            disabled={item.quantity <= 1}
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
-                                                            </svg>
-                                                        </button>
-                                                        <span className="px-4 py-1 text-gray-900 font-medium border-l border-r border-gray-300">
-                                                            {item.quantity}
-                                                        </span>
-                                                        <button
-                                                            onClick={() => handleQuantityChange(item.id || item.productId, item.quantity + 1)}
-                                                            className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-lg transition"
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <p className="text-xl font-bold text-gray-900">
-                                                            {formatPrice(item.price * item.quantity)}
-                                                        </p>
-                                                    </div>
+                                                <div className="text-right">
+                                                    <p className="text-sm lg:text-lg font-black text-gray-900">{formatPrice(item.price * item.quantity)}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
 
-                            {/* Continue Shopping */}
-                            <div className="mt-6">
-                                <Link
-                                    to="/"
-                                    className="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium transition"
-                                >
-                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                    </svg>
-                                    Continue Shopping
+                            <div className="text-center pt-2">
+                                <Link to="/" className="text-xs lg:text-sm text-gray-500 hover:text-pink-600 font-medium transition underline decoration-gray-300 hover:decoration-pink-600">
+                                    متابعة التسوق / Continuer vos achats
                                 </Link>
                             </div>
                         </div>
 
-                        {/* Order Summary */}
-                        <div className="lg:col-span-1 mt-8 lg:mt-0">
-                            <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-4">
-                                <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+                        {/* Summary Sticky */}
+                        <div className="lg:col-span-4 mt-2 lg:mt-0">
+                            <div className="glass-panel-pro rounded-2xl lg:rounded-3xl p-5 lg:p-8 sticky top-4 shadow-xl">
+                                <h2 className="text-sm lg:text-xl font-black text-gray-900 mb-4 flex items-center justify-between">
+                                    <span>ملخص / Résumé</span>
+                                    <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
+                                </h2>
 
-                                <div className="space-y-4 mb-6">
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Subtotal</span>
-                                        <span className="font-medium text-gray-900">{formatPrice(calculateSubtotal())}</span>
+                                <div className="space-y-3 mb-6">
+                                    <div className="flex justify-between text-xs lg:text-sm text-gray-600">
+                                        <span>Total products</span>
+                                        <span className="font-bold text-gray-900">{formatPrice(calculateSubtotal())}</span>
                                     </div>
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Shipping</span>
-                                        <span className="font-medium text-gray-900">
-                                            {calculateShipping() === 0 ? (
-                                                <span className="text-green-600">FREE</span>
-                                            ) : (
-                                                formatPrice(calculateShipping())
-                                            )}
-                                        </span>
+                                    <div className="flex justify-between text-xs lg:text-sm text-gray-600">
+                                        <span>Livraison</span>
+                                        <span className="font-bold text-green-600">{calculateShipping() === 0 ? 'GRATUIT' : formatPrice(calculateShipping())}</span>
                                     </div>
-
-                                    {calculateSubtotal() < 100 && calculateSubtotal() > 0 && (
-                                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                                            <p className="text-sm text-blue-800">
-                                                <span className="font-semibold">
-                                                    Add {formatPrice(100 - calculateSubtotal())} more
-                                                </span> for free shipping!
-                                            </p>
-                                            <div className="mt-2 w-full bg-blue-200 rounded-full h-2">
-                                                <div
-                                                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                                                    style={{ width: `${(calculateSubtotal() / 100) * 100}%` }}
-                                                ></div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="border-t border-gray-200 pt-4">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-lg font-semibold text-gray-900">Total</span>
-                                            <span className="text-2xl font-bold text-pink-600">
-                                                {formatPrice(calculateTotal())}
-                                            </span>
-                                        </div>
+                                    <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-2"></div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm lg:text-lg font-bold text-gray-900">Total</span>
+                                        <span className="text-lg lg:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600">{formatPrice(calculateTotal())}</span>
                                     </div>
                                 </div>
 
                                 <button
                                     onClick={handleProceedToCheckout}
-                                    className="w-full bg-pink-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-pink-700 transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                    className="relative w-full overflow-hidden group h-12 lg:h-14 rounded-xl shadow-xl hover:shadow-pink-500/20 transition-all duration-300 transform hover:-translate-y-1"
                                 >
-                                    Proceed to Checkout
+                                    <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 group-hover:from-pink-500 group-hover:to-purple-500 transition-all"></div>
+                                    <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-shine opacity-30"></div>
+                                    <div className="relative flex items-center justify-center gap-2 text-white font-black text-sm lg:text-lg tracking-wide">
+                                        <span>إتمام الطلب / COMMANDER</span>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                                    </div>
                                 </button>
 
-                                {/* Trust Badges */}
-                                <div className="mt-6 pt-6 border-t border-gray-200">
-                                    <div className="space-y-3">
-                                        <div className="flex items-center text-sm text-gray-600">
-                                            <svg className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                            </svg>
-                                            Secure checkout
-                                        </div>
-                                        <div className="flex items-center text-sm text-gray-600">
-                                            <svg className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            Free returns within 30 days
-                                        </div>
-                                        <div className="flex items-center text-sm text-gray-600">
-                                            <svg className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                            </svg>
-                                            Multiple payment options
-                                        </div>
+                                <div className="mt-4 pt-4 border-t border-gray-100/50 space-y-2">
+                                    <div className="flex items-center justify-center gap-2 text-[10px] lg:text-xs text-gray-400 font-medium">
+                                        <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                        <span>Paiement 100% Sécurisé</span>
+                                    </div>
+                                    <div className="flex items-center justify-center gap-2 text-[10px] lg:text-xs text-gray-400 font-medium">
+                                        <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                                        <span>Satisfait ou Remboursé</span>
                                     </div>
                                 </div>
                             </div>
@@ -454,6 +348,37 @@ const CartPage = () => {
                     </div>
                 )}
             </div>
+
+            {/* Custom Delete Modal */}
+            {itemToDelete && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all scale-100 animate-bounce-in border border-gray-100">
+                        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">حذف المنتج؟ / Supprimer?</h3>
+                        <p className="text-gray-500 mb-6 text-sm">
+                            هل أنت متأكد أنك تريد إزالة هذا المنتج؟
+                            <br />
+                            Êtes-vous sûr de vouloir supprimer cet article ?
+                        </p>
+                        <div className="flex gap-3 justify-center">
+                            <button
+                                onClick={() => setItemToDelete(null)}
+                                className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 transition"
+                            >
+                                إلغاء / Annuler
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 shadow-lg shadow-red-500/30 transition"
+                            >
+                                حذف / Supprimer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

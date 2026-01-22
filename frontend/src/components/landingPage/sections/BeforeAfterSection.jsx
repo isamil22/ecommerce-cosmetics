@@ -7,11 +7,14 @@ import { useLandingPageCTA } from '../LandingPageCTAHandler';
  */
 const BeforeAfterSection = ({ data, availableVariants, productId }) => {
     const {
-        title = 'See The Transformation',
-        subtitle = 'Real results from real customers',
+        title: dbTitle,
+        subtitle: dbSubtitle,
         comparisons = [],
         backgroundColor = '#ffffff',
     } = data || {};
+
+    const title = (!dbTitle || dbTitle === 'See The Transformation') ? 'شاهدي التحول' : dbTitle;
+    const subtitle = (!dbSubtitle || dbSubtitle === 'Real results from real customers') ? 'نتائج حقيقية من عملاء حقيقيين' : dbSubtitle;
 
     // Merge section variants with global available variants for the CTA
     const ctaData = {
@@ -97,7 +100,7 @@ const BeforeAfterSection = ({ data, availableVariants, productId }) => {
                             fontWeight: '600',
                             marginBottom: '20px',
                         }}>
-                            ✨ Real Results
+                            ✨ نتائج حقيقية
                         </div>
                         {title && (
                             <h2 style={{
@@ -149,7 +152,7 @@ const BeforeAfterSection = ({ data, availableVariants, productId }) => {
                         color: '#666',
                         marginBottom: '15px',
                     }}>
-                        Ready to see your own transformation?
+                        هل أنت مستعدة لرؤية التحول بنفسك؟
                     </p>
                     <a
                         href="#order"
@@ -178,7 +181,7 @@ const BeforeAfterSection = ({ data, availableVariants, productId }) => {
                             e.target.style.boxShadow = '0 8px 25px rgba(255,105,180,0.35)';
                         }}
                     >
-                        Start Your Transformation →
+                        ابدئي رحلة التحول ←
                     </a>
                 </div>
             </div>
@@ -269,7 +272,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
                             color: '#155724',
                             fontSize: '1.2rem',
                         }}>
-                            📷 After Image
+                            📷 صورة بعد
                         </div>
                     )}
                 </div>
@@ -292,7 +295,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
                             color: '#721c24',
                             fontSize: '1.2rem',
                         }}>
-                            📷 Before Image
+                            📷 صورة قبل
                         </div>
                     )}
                 </div>
@@ -352,7 +355,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
                     fontWeight: '600',
                     zIndex: 5,
                 }}>
-                    {comparison.beforeLabel || 'Before'}
+                    {comparison.beforeLabel || 'قبل'}
                 </div>
                 <div style={{
                     position: 'absolute',
@@ -366,7 +369,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
                     fontWeight: '600',
                     zIndex: 5,
                 }}>
-                    {comparison.afterLabel || 'After'}
+                    {comparison.afterLabel || 'بعد'}
                 </div>
 
                 {/* Drag Hint */}
@@ -384,7 +387,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
                     opacity: isDragging ? 0 : 0.8,
                     transition: 'opacity 0.3s ease',
                 }}>
-                    ← Drag to compare →
+                    ← اسحبي للمقارنة →
                 </div>
             </div>
 
@@ -415,7 +418,7 @@ const ComparisonCard = ({ comparison, index, isVisible }) => {
                             color: '#888',
                             fontSize: '0.9rem',
                         }}>
-                            Results after {comparison.timeframe}
+                            النتائج بعد {comparison.timeframe}
                         </p>
                     )}
                 </div>

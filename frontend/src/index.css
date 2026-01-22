@@ -8,13 +8,23 @@
 /* --- Global Body Style --- */
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 body {
     overflow-x: hidden;
+    width: 100%;
+    position: relative;
     /* Prevents horizontal scrollbar from animations */
     line-height: 1.6;
     font-family: 'Outfit', sans-serif;
+}
+
+#root {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
 }
 
 /* --- STAR HERO THEME START --- */

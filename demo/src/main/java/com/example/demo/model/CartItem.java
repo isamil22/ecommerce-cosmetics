@@ -31,9 +31,9 @@ public class CartItem {
     @Column(name = "price")
     private java.math.BigDecimal price;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition = "MEDIUMTEXT")
     private String imageUrl;
 
-    @Column(name = "variant_name")
+    @Column(name = "variant_name", columnDefinition = "MEDIUMTEXT")
     private String variantName;
 }
