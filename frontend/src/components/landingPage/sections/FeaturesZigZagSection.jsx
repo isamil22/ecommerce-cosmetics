@@ -155,7 +155,7 @@ const FeaturesZigZagSection = ({ data }) => {
                 @media (max-width: 640px) {
                     .features-zigzag-section .feature-row {
                         flex-direction: column !important;
-                        padding-bottom: 30px;
+                        padding-bottom: 20px;
                     }
 
                     .features-zigzag-section .feature-image-side {
@@ -166,7 +166,7 @@ const FeaturesZigZagSection = ({ data }) => {
                     }
 
                     .features-zigzag-section .feature-text-side {
-                        padding: 15px 20px 25px;
+                        padding: 12px 15px 20px;
                         text-align: right;
                         align-items: flex-end;
                         direction: rtl;
@@ -175,20 +175,41 @@ const FeaturesZigZagSection = ({ data }) => {
                     }
 
                     .features-zigzag-section .feature-title {
-                        font-size: 1.5rem;
-                        margin-bottom: 12px;
-                        line-height: 1.2;
+                        font-size: 1.4rem;
+                        margin-bottom: 10px;
+                        line-height: 1.15;
                     }
                     
                     .features-zigzag-section .feature-description {
-                        font-size: 0.95rem;
-                        line-height: 1.45;
+                        font-size: 0.9rem;
+                        line-height: 1.4;
                         margin-right: 0;
                         margin-left: 0;
                     }
 
+                    /* Reduce spacing between paragraphs and list items */
+                    .features-zigzag-section .feature-description p {
+                        margin: 0 0 8px 0 !important;
+                    }
+
+                    .features-zigzag-section .feature-description br {
+                        display: block;
+                        content: "";
+                        margin-top: 6px;
+                    }
+
+                    .features-zigzag-section .feature-description ul,
+                    .features-zigzag-section .feature-description ol {
+                        margin: 8px 0 !important;
+                        padding-right: 20px !important;
+                    }
+
+                    .features-zigzag-section .feature-description li {
+                        margin-bottom: 6px !important;
+                    }
+
                     .features-zigzag-section .feature-divider {
-                        margin: 0 0 15px auto;
+                        margin: 0 0 12px auto;
                         height: 3px;
                     }
                 }
