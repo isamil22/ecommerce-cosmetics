@@ -86,13 +86,13 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                     z-index: 1;
                 }
 
-                .section-header {
+                .key-benefits-header {
                     opacity: 0;
                     transform: translateY(30px);
                     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
-                .section-header.is-visible {
+                .key-benefits-header.is-visible {
                     opacity: 1;
                     transform: translateY(0);
                 }
@@ -351,7 +351,7 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
 
             <div className="key-benefits-container">
                 {/* Section Header */}
-                <div className={`section-header ${isVisible ? 'is-visible' : ''}`}>
+                <div className={`key-benefits-header ${isVisible ? 'is-visible' : ''}`}>
                     <h2 className="section-title">
                         {title}
                     </h2>
