@@ -244,54 +244,6 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                     }
                 }
 
-                /* MOBILE RESPONSIVE (Phones) */
-                @media (max-width: 640px) {
-                    .key-benefits-section {
-                        padding: 60px 20px;
-                    }
-
-                    .section-subtitle {
-                        margin-bottom: 3rem;
-                        font-size: 1rem;
-                    }
-
-                    .section-title {
-                        font-size: 1.75rem; /* Smaller title */
-                    }
-
-                    .benefits-grid {
-                        grid-template-columns: 1fr !important; /* Stack columns */
-                        gap: 25px; /* Reduced gap */
-                    }
-
-                    /* Ingredients Specific Mobile */
-                    .ingredient-img-wrapper {
-                        width: 120px; /* Smaller image */
-                        height: 120px;
-                        margin-bottom: 15px;
-                    }
-
-                    .benefit-title {
-                        font-size: 1.25rem;
-                        margin-bottom: 8px;
-                    }
-
-                    .benefit-description {
-                        font-size: 0.95rem; /* Readable but smaller */
-                    }
-
-                    /* Standard Card Mobile */
-                    .benefit-card.style-standard {
-                        padding: 30px 20px;
-                    }
-                    
-                    .benefit-icon-wrapper {
-                        width: 70px;
-                        height: 70px;
-                        font-size: 2rem;
-                        margin-bottom: 15px;
-                    }
-                }
 
                 /* HYPER-COMPACT MOBILE (Small Screens) - WIDENED FOR ALL PHONES */
                 @media (max-width: 640px) {
