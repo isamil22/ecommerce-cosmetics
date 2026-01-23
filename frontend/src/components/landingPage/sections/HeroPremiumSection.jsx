@@ -282,6 +282,19 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                     .hero-premium-section .giant-text {
                         display: none; /* Hide on mobile to clean up */
                     }
+
+                    /* Hide large placeholder box on mobile if user hasn't set an image, 
+                       to avoid "empty area" below the background */
+                    .hero-premium-section .placeholder-image {
+                        display: none !important;
+                    }
+
+                    /* Remove float animation on mobile to keep things stable */
+                    .hero-premium-section .product-image {
+                        animation: none !important;
+                        max-height: 250px; /* Ensure image fits */
+                        filter: none; /* Simplify rendering */
+                    }
                 }
                 
                 @keyframes fadeInUp {
