@@ -59,20 +59,8 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
     }, []);
 
     const getBackground = () => {
-        switch (data.backgroundStyle) {
-            case 'gradient-pink':
-                return 'linear-gradient(135deg, #FFF0F5 0%, #ffffff 50%, #E6E6FA 100%)';
-            case 'gradient-blue':
-                return 'linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #e6e6fa 100%)';
-            case 'gradient-gold':
-                return 'linear-gradient(135deg, #fffdf2 0%, #ffffff 50%, #fff5e6 100%)';
-            case 'luxury':
-                return 'radial-gradient(circle at 50% 50%, #ffffff 0%, #f3f3f3 100%)';
-            default:
-                return backgroundColor === '#ffffff'
-                    ? 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 50%, #f8f9fa 100%)'
-                    : backgroundColor;
-        }
+        // Enforce simple white background as requested by user
+        return '#ffffff';
     };
 
     return (
