@@ -48,22 +48,6 @@ const TestimonialsSection = ({ data }) => {
         return url.startsWith('http') ? url : `${window.location.origin}${url}`;
     };
 
-    const getInitials = (name) => {
-        if (!name) return '?';
-        return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-    };
-
-    const randomGradient = (index) => {
-        const gradients = [
-            'linear-gradient(135deg, #ff69b4 0%, #ff1493 100%)',
-            'linear-gradient(135deg, #9370db 0%, #8b5cf6 100%)',
-            'linear-gradient(135deg, #4fc3f7 0%, #2196f3 100%)',
-            'linear-gradient(135deg, #81c784 0%, #4caf50 100%)',
-            'linear-gradient(135deg, #ffb74d 0%, #ff9800 100%)',
-        ];
-        return gradients[index % gradients.length];
-    };
-
     const getBackground = () => {
         switch (data.backgroundStyle) {
             case 'gradient-pink':
@@ -230,13 +214,69 @@ const TestimonialsSection = ({ data }) => {
                     gap: '30px',
                 }}>
                     <style>{`
-                        @media (max-width: 768px) {
-                           div[style*="padding: 100px 20px"] {
-                               padding: 60px 20px !important;
-                           }
-                           div[style*="grid-template-columns"] {
-                               grid-template-columns: 1fr !important;
-                           }
+                        @media (max-width: 991px) {
+                            div[style*="grid-template-columns"] {
+                                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+                            }
+                        }
+
+                        /* Mobile Optimization */
+                        @media (max-width: 640px) {
+                            /* Wrapper/Section Padding */
+                            div[style*="padding: 100px 20px"] {
+                                padding: 50px 15px !important;
+                            }
+                            
+                            /* Grid Layout */
+                            div[style*="grid-template-columns"] {
+                                grid-template-columns: 1fr !important;
+                                gap: 20px !important;
+                            }
+
+                            /* Card Styles */
+                            div[style*="padding: 35px"] {
+                                padding: 20px !important;
+                                text-align: right !important; /* Arabic Alignment */
+                                direction: rtl !important;
+                            }
+
+                            /* Title Size */
+                            h2 {
+                                font-size: 1.75rem !important;
+                                margin-bottom: 0.5rem !important;
+                            }
+
+                            /* Rating Number Size */
+                            div[style*="font-size: 3.5rem"] {
+                                font-size: 2.5rem !important;
+                            }
+
+                            /* Comment Text */
+                            p[style*="font-style: italic"] {
+                                font-size: 0.95rem !important;
+                                margin-bottom: 15px !important;
+                                line-height: 1.5 !important;
+                            }
+
+                            /* Customer Info Alignment */
+                            div[style*="justify-content: center"] {
+                               /* Keep summary centered or adjust if needed */
+                            }
+
+                            /* Customer Row inside Card */
+                            div[style*="display: flex"][style*="border-top: 1px solid"] {
+                                padding-top: 15px !important;
+                                margin-top: 0 !important;
+                                text-align: right !important;
+                            }
+                            
+                            /* Quote Icon */
+                             div[style*="font-family: Georgia"] {
+                                font-size: 2rem !important;
+                                right: auto !important;
+                                left: 15px !important; /* Move to left for RTL context */
+                                top: 15px !important;
+                             }
                         }
                     `}</style>
 
@@ -305,22 +345,16 @@ const TestimonialsSection = ({ data }) => {
                                     paddingTop: '20px',
                                     borderTop: '1px solid #f0f0f0',
                                 }}>
-                                    <div style={{
-                                        width: '55px',
-                                        height: '55px',
-                                        borderRadius: '50%',
-                                        background: avatarUrl ? 'none' : randomGradient(index),
-                                        marginRight: '15px',
-                                        overflow: 'hidden',
-                                        flexShrink: 0,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        color: 'white',
-                                        fontSize: '1.2rem',
-                                        fontWeight: '700',
-                                    }}>
-                                        {avatarUrl ? (
+                                    {avatarUrl && (
+                                        <div style={{
+                                            width: '55px',
+                                            height: '55px',
+                                            borderRadius: '50%',
+                                            background: 'none',
+                                            marginRight: '15px',
+                                            overflow: 'hidden',
+                                            flexShrink: 0,
+                                        }}>
                                             <img
                                                 src={avatarUrl}
                                                 alt={testimonial.name}
@@ -330,14 +364,11 @@ const TestimonialsSection = ({ data }) => {
                                                     objectFit: 'cover',
                                                 }}
                                                 onError={(e) => {
-                                                    e.target.style.display = 'none';
-                                                    e.target.parentElement.innerHTML = getInitials(testimonial.name);
+                                                    e.target.parentElement.style.display = 'none';
                                                 }}
                                             />
-                                        ) : (
-                                            getInitials(testimonial.name)
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                     <div>
                                         <div style={{
                                             fontWeight: '700',

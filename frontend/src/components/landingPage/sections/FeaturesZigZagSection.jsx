@@ -47,7 +47,9 @@ const FeaturesZigZagSection = ({ data }) => {
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
-                    text-align: left;
+                    text-align: right; /* Default to Right for Arabic */
+                    align-items: flex-end; /* Align items to right */
+                    direction: rtl; /* Enforce RTL */
                     opacity: 0;
                     transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
                 }
@@ -72,7 +74,7 @@ const FeaturesZigZagSection = ({ data }) => {
                 }
 
                 .features-zigzag-section .feature-title {
-                    font-size: clamp(2.5rem, 4vw, 3.5rem);
+                    font-size: clamp(2rem, 4vw, 3.5rem);
                     font-weight: 800;
                     margin-bottom: 25px;
                     line-height: 1.1;
@@ -84,7 +86,9 @@ const FeaturesZigZagSection = ({ data }) => {
                     height: 4px;
                     background: linear-gradient(to right, #ff69b4, #ff1493);
                     margin-bottom: 30px;
-                    transform-origin: left;
+                    transform-origin: right; /* Transform from right for RTL */
+                    margin-left: auto; /* Align to right */
+                    margin-right: 0;
                     transform: scaleX(0);
                     transition: transform 1s ease 0.8s;
                 }
@@ -95,17 +99,18 @@ const FeaturesZigZagSection = ({ data }) => {
 
                 .features-zigzag-section .feature-description {
                     font-size: 1.2rem;
-                    line-height: 1.8;
+                    line-height: 1.6;
                     opacity: 0.8;
                     max-width: 550px;
+                    white-space: pre-line;
                 }
 
-                /* Responsive Styles */
+                /* Tablet & Mobile Styles */
                 @media (max-width: 991px) {
                     .features-zigzag-section .feature-row {
                         flex-direction: column !important;
                         min-height: auto;
-                        padding-bottom: 60px;
+                        padding-bottom: 40px;
                     }
                     
                     .features-zigzag-section .feature-image-side,
@@ -116,28 +121,71 @@ const FeaturesZigZagSection = ({ data }) => {
                     }
 
                     .features-zigzag-section .feature-image-side {
-                        height: 400px;
+                        height: 50vh;
                         min-height: 300px;
+                        max-height: 500px;
                     }
 
                     .features-zigzag-section .feature-text-side {
-                        padding: 40px 20px;
-                        align-items: center; /* Center text on mobile if desired, or keep left */
-                        text-align: center;
+                        padding: 50px 30px;
+                        align-items: flex-end; /* Right align on tablet */
+                        text-align: right;
                     }
                     
                     .features-zigzag-section .feature-title {
-                        font-size: 2.5rem;
+                        font-size: 2.25rem;
+                        margin-bottom: 20px;
                     }
 
                     .features-zigzag-section .feature-divider {
-                        margin-left: auto;
-                        margin-right: auto;
+                        margin: 0 0 25px auto;
                     }
 
                     .features-zigzag-section .feature-description {
-                        margin-left: auto;
-                        margin-right: auto;
+                        margin: 0 0 0 auto;
+                        font-size: 1.1rem;
+                    }
+                }
+
+                /* Mobile Optimization */
+                @media (max-width: 640px) {
+                    .features-zigzag-section .feature-row {
+                        flex-direction: column !important;
+                        padding-bottom: 30px;
+                    }
+
+                    .features-zigzag-section .feature-image-side {
+                        height: 280px;
+                        min-height: 200px;
+                        width: 100% !important;
+                        flex: none !important;
+                    }
+
+                    .features-zigzag-section .feature-text-side {
+                        padding: 20px 20px 40px;
+                        text-align: right;
+                        align-items: flex-end;
+                        direction: rtl;
+                        width: 100% !important;
+                        flex: none !important;
+                    }
+
+                    .features-zigzag-section .feature-title {
+                        font-size: 1.5rem;
+                        margin-bottom: 15px;
+                        line-height: 1.25;
+                    }
+                    
+                    .features-zigzag-section .feature-description {
+                        font-size: 1rem;
+                        line-height: 1.5;
+                        margin-right: 0;
+                        margin-left: 0;
+                    }
+
+                    .features-zigzag-section .feature-divider {
+                        margin: 0 0 20px auto;
+                        height: 3px;
                     }
                 }
             `}</style>

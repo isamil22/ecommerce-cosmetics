@@ -514,6 +514,60 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
                     from { opacity: 1; }
                     to { opacity: 0; }
                 }
+
+                /* Mobile Optimization for Product Showcase */
+                @media (max-width: 640px) {
+                    /* Wrapper overrides - Force column */
+                    #product-showcase > div:nth-child(2) {
+                         flex-direction: column !important;
+                         gap: 40px !important;
+                    }
+                    
+                    /* Image Side overrides */
+                    #product-showcase > div:nth-child(2) > div:first-child {
+                        flex: none !important;
+                        width: 100% !important;
+                        margin: 0 !important;
+                        transform: none !important;
+                    }
+
+                    /* Content Side overrides */
+                    #product-showcase > div:nth-child(2) > div:last-child {
+                        flex: none !important;
+                        width: 100% !important;
+                        text-align: right !important; /* Arabic Alignment */
+                        direction: rtl !important;
+                        transform: none !important;
+                        padding-left: 0 !important;
+                        padding-right: 0 !important;
+                    }
+                    
+                    /* Title adjustment */
+                    #product-showcase h2 {
+                        font-size: 1.75rem !important;
+                        margin-bottom: 1rem !important;
+                    }
+
+                    /* Price alignment */
+                    #product-showcase p + div,
+                    #product-showcase h2 + div {
+                        justify-content: flex-start; /* RTL: Start is Right */
+                    }
+                    
+                    /* Features List alignment */
+                    #product-showcase ul li {
+                        justify-content: flex-start; /* RTL: Start is Right */
+                    }
+
+                    /* Button Alignment */
+                    #product-showcase a, 
+                    #product-showcase button {
+                        width: 100%;
+                        justify-content: center !important;
+                        margin-left: 0 !important;
+                        margin-bottom: 10px;
+                    }
+                }
             `}</style>
 
             {/* Premium Toast Notification */}
