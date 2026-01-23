@@ -334,133 +334,12 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                 </div>
 
                 {/* Benefits Grid */}
-<<<<<<< HEAD
                 <div className={`benefits-grid columns-${columns} ${data.layout === 'ingredients' ? 'style-ingredients' : ''}`}>
                     {benefits.map((benefit, index) => {
                         const delay = 0.1 * index;
                         const cardStyle = data.layout === 'ingredients' ? 'style-ingredients'
                             : data.layout === 'steps' ? 'style-steps'
                                 : 'style-standard';
-=======
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: gridColumns[columns] || gridColumns[3],
-                    gap: data.layout === 'ingredients' ? '50px' : '30px',
-                }}>
-                    {finalBenefits.map((benefit, index) => (
-                        <div
-                            key={index}
-                            style={(data.layout === 'ingredients' || data.layout === 'steps') ? {
-                                textAlign: 'center',
-                                opacity: isVisible ? 1 : 0,
-                                transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
-                                transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-                                transitionDelay: `${0.1 * index}s`,
-                                position: 'relative', // Needed for steps absolute positioning
-                            } : {
-                                padding: '45px 35px',
-                                background: 'white',
-                                borderRadius: '20px',
-                                boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-                                border: '1px solid rgba(0,0,0,0.03)',
-                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                                cursor: 'default',
-                                opacity: isVisible ? 1 : 0,
-                                transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
-                                transitionDelay: `${0.1 * index}s`,
-                                position: 'relative',
-                                overflow: 'hidden',
-                            }}
-                            onMouseEnter={(e) => {
-                                if (data.layout === 'ingredients') {
-                                    e.currentTarget.querySelector('img').style.transform = 'scale(1.1)';
-                                    e.currentTarget.querySelector('img').style.boxShadow = '0 15px 30px rgba(0,0,0,0.15)';
-                                } else if (data.layout === 'steps') {
-                                    e.currentTarget.style.transform = 'translateY(-5px)';
-                                } else {
-                                    e.currentTarget.style.transform = 'translateY(-10px)';
-                                    e.currentTarget.style.boxShadow = '0 20px 50px rgba(255,105,180,0.15)';
-                                    e.currentTarget.querySelector('.benefit-icon').style.transform = 'scale(1.1) rotate(5deg)';
-                                    e.currentTarget.querySelector('.benefit-glow').style.opacity = '1';
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                if (data.layout === 'ingredients') {
-                                    e.currentTarget.querySelector('img').style.transform = 'scale(1)';
-                                    e.currentTarget.querySelector('img').style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
-                                } else if (data.layout === 'steps') {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                } else {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
-                                    e.currentTarget.querySelector('.benefit-icon').style.transform = 'scale(1) rotate(0deg)';
-                                    e.currentTarget.querySelector('.benefit-glow').style.opacity = '0';
-                                }
-                            }}
-                        >
-                            {/* Pro Ingredients Layout */}
-                            {data.layout === 'ingredients' ? (
-                                <>
-                                    <div style={{
-                                        position: 'relative',
-                                        width: '180px',
-                                        height: '180px',
-                                        margin: '0 auto 25px',
-                                        borderRadius: '50%',
-                                        overflow: 'hidden',
-                                        border: '4px solid #fff',
-                                        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-                                    }}>
-                                        <img
-                                            src={benefit.image || '/placeholder-image.jpg'}
-                                            alt={benefit.title}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                objectFit: 'cover',
-                                                transition: 'all 0.5s ease',
-                                            }}
-                                            onError={(e) => {
-                                                e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23f0f0f0" width="100" height="100"/><text fill="%23999" font-family="Arial" font-size="12" x="50%" y="50%" text-anchor="middle" dy=".3em">No Image</text></svg>';
-                                            }}
-                                        />
-                                    </div>
-                                    <h3 style={{
-                                        fontSize: '1.3rem',
-                                        fontWeight: '700',
-                                        marginBottom: '10px',
-                                        color: '#222',
-                                    }}>{benefit.title}</h3>
-                                    <p style={{
-                                        fontSize: '0.95rem',
-                                        color: '#666',
-                                        lineHeight: '1.6',
-                                    }}>{benefit.description}</p>
-                                </>
-                            ) : data.layout === 'steps' ? (
-                                /* Process/Steps Layout */
-                                <>
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: '0',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)',
-                                        width: '40px',
-                                        height: '40px',
-                                        background: 'linear-gradient(135deg, #ff69b4, #ff1493)',
-                                        color: 'white',
-                                        borderRadius: '50%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontWeight: 'bold',
-                                        fontSize: '1.2rem',
-                                        boxShadow: '0 4px 10px rgba(255, 105, 180, 0.4)',
-                                        zIndex: 2,
-                                    }}>
-                                        {index + 1}
-                                    </div>
->>>>>>> 7166647e5c5572868c2220ba9a5ed890a9dded1c
 
                         return (
                             <div
@@ -533,6 +412,7 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                     })}
                 </div>
 
+
                 {/* Bottom CTA */}
                 <div style={{
                     marginTop: '60px',
@@ -571,8 +451,8 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                         ابدئي اليوم <span>→</span>
                     </a>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
