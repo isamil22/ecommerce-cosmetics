@@ -101,12 +101,12 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
     }, [timeLeft.seconds]);
 
     const TimeBlock = ({ value, label }) => (
-        <div style={{
+        <div className="time-block" style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
         }}>
-            <div style={{
+            <div className="time-block-inner" style={{
                 background: 'rgba(0,0,0,0.3)',
                 backdropFilter: 'blur(10px)',
                 borderRadius: '16px',
@@ -117,7 +117,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                 transform: pulse && label === 'Seconds' ? 'scale(1.05)' : 'scale(1)',
                 transition: 'transform 0.1s ease',
             }}>
-                <div style={{
+                <div className="time-digit" style={{
                     fontSize: 'clamp(2rem, 5vw, 3.5rem)',
                     fontWeight: '800',
                     lineHeight: 1,
@@ -126,7 +126,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                     {String(value).padStart(2, '0')}
                 </div>
             </div>
-            <div style={{
+            <div className="time-label" style={{
                 marginTop: '10px',
                 fontSize: '0.85rem',
                 fontWeight: '600',
@@ -142,6 +142,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
     return (
         <div
             ref={sectionRef}
+            className="urgency-section"
             style={{
                 background: `linear-gradient(135deg, ${backgroundColor} 0%, #ff1493 50%, #c71585 100%)`,
                 color: textColor,
@@ -205,7 +206,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                 </div>
 
                 {/* Title */}
-                <h2 style={{
+                <h2 className="urgency-title" style={{
                     fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
                     fontWeight: '700',
                     marginBottom: '20px',
@@ -217,7 +218,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                 </h2>
 
                 {/* Discount */}
-                <div style={{
+                <div className="discount-text" style={{
                     fontSize: 'clamp(3.5rem, 10vw, 6rem)',
                     fontWeight: '900',
                     marginBottom: '15px',
@@ -239,7 +240,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                 </p>
 
                 {/* Countdown Timer */}
-                <div style={{
+                <div className="timer-container" style={{
                     display: 'flex',
                     justifyContent: 'center',
                     gap: 'clamp(10px, 3vw, 25px)',
@@ -250,11 +251,11 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                     transition: 'all 0.6s ease 0.3s',
                 }}>
                     <TimeBlock value={timeLeft.days} label="أيام" />
-                    <div style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
+                    <div className="timer-separator" style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
                     <TimeBlock value={timeLeft.hours} label="ساعات" />
-                    <div style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
+                    <div className="timer-separator" style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
                     <TimeBlock value={timeLeft.minutes} label="دقائق" />
-                    <div style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
+                    <div className="timer-separator" style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
                     <TimeBlock value={timeLeft.seconds} label="ثواني" />
                 </div>
 
@@ -348,6 +349,40 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                 )}
 
                 <style>{`
+                    @media (max-width: 768px) {
+                        .urgency-section {
+                            padding: 40px 15px !important;
+                        }
+                        .timer-container {
+                            gap: 10px !important;
+                        }
+                        .time-block-inner {
+                            min-width: 60px !important;
+                            padding: 10px 10px !important;
+                            border-radius: 12px !important;
+                        }
+                        .time-digit {
+                            font-size: 1.8rem !important;
+                        }
+                        .time-label {
+                            font-size: 0.75rem !important;
+                        }
+                        .timer-separator {
+                            font-size: 1.5rem !important;
+                            margin: 0 2px !important;
+                        }
+                        .discount-text {
+                            font-size: 3.5rem !important;
+                        }
+                        .urgency-title {
+                            font-size: 1.5rem !important;
+                        }
+                        .stock-badge {
+                            width: 100%;
+                            justify-content: center;
+                            font-size: 0.9rem !important;
+                        }
+                    }
                     @media (max-width: 480px) {
                         .urgency-cta-btn {
                             padding: 15px 30px !important;
@@ -356,41 +391,22 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                             justify-content: center;
                         }
                     }
+                    /* Float Animation */
+                    @keyframes float {
+                        0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+                        50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+                    }
+                    @keyframes pulse {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.02); }
+                    }
+                    @keyframes buttonPulse {
+                        0%, 100% { box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+                        50% { box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 0 10px rgba(255,255,255,0.1); }
+                    }
                 `}</style>
-
-                {/* Guarantee Badge */}
-                <div style={{
-                    marginTop: '30px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    gap: '25px',
-                    fontSize: '0.9rem',
-                    opacity: 0.9,
-                    flexWrap: 'wrap',
-                }}>
-                    <span>✓ شحن مجاني</span>
-                    <span>✓ ضمان 30 يوم</span>
-                    <span>✓ دفع آمن</span>
-                </div>
             </div>
-
-            {/* CSS Animations */}
-            <style>{`
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
-                    50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
-                }
-                @keyframes pulse {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.02); }
-                }
-                @keyframes buttonPulse {
-                    0%, 100% { box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-                    50% { box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 0 10px rgba(255,255,255,0.1); }
-                }
-            `}</style>
-        </div>
-    );
+            );
 };
 
-export default UrgencyBannerSection;
+            export default UrgencyBannerSection;
