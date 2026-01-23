@@ -187,25 +187,41 @@ const FeaturesZigZagSection = ({ data }) => {
                         margin-left: 0;
                     }
 
-                    /* Reduce spacing between paragraphs and list items */
+                    /* Ultra-compact spacing for text elements */
                     .features-zigzag-section .feature-description p {
-                        margin: 0 0 8px 0 !important;
+                        margin: 0 0 4px 0 !important;
+                        padding: 0 !important;
                     }
 
                     .features-zigzag-section .feature-description br {
-                        display: block;
-                        content: "";
-                        margin-top: 6px;
+                        display: none !important;
                     }
 
                     .features-zigzag-section .feature-description ul,
                     .features-zigzag-section .feature-description ol {
-                        margin: 8px 0 !important;
+                        margin: 4px 0 !important;
+                        padding: 0 !important;
                         padding-right: 20px !important;
                     }
 
                     .features-zigzag-section .feature-description li {
-                        margin-bottom: 6px !important;
+                        margin-bottom: 3px !important;
+                        padding: 0 !important;
+                        line-height: 1.35 !important;
+                    }
+                    
+                    /* Remove spacing from strong/bold tags */
+                    .features-zigzag-section .feature-description strong,
+                    .features-zigzag-section .feature-description b {
+                        display: inline;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    
+                    /* Compact spacing for any divs inside description */
+                    .features-zigzag-section .feature-description div {
+                        margin: 0 0 4px 0 !important;
+                        padding: 0 !important;
                     }
 
                     .features-zigzag-section .feature-divider {
