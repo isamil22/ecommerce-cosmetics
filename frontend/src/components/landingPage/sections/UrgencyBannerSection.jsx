@@ -383,44 +383,53 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                             font-size: 0.9rem !important;
                         }
                     }
-                    /* Specific Mobile Optimization (Aggressive Reduction) */
+                    /* Specific Mobile Optimization (Hyper-Compact / High Density) */
                     @media (max-width: 480px) {
                         .urgency-section {
-                            padding: 25px 10px !important;
+                            padding: 20px 10px !important;
                         }
                         .time-block-inner {
-                            min-width: 45px !important;
-                            padding: 8px 5px !important;
-                            border-radius: 10px !important;
+                            min-width: 38px !important;
+                            padding: 5px 2px !important;
+                            border-radius: 8px !important;
                         }
                         .time-digit {
-                            font-size: 1.25rem !important;
+                            font-size: 1.1rem !important;
                         }
                         .time-label {
-                            font-size: 0.65rem !important;
-                            margin-top: 5px !important;
+                            font-size: 0.55rem !important;
+                            margin-top: 3px !important;
                         }
                         .timer-separator {
-                            font-size: 1.2rem !important;
-                            margin: 0 1px !important;
+                            font-size: 1rem !important;
+                            margin: 0 !important;
+                            opacity: 0.3 !important;
                         }
                         .discount-text {
-                            font-size: 2.5rem !important;
-                            margin-bottom: 10px !important;
+                            font-size: 2.2rem !important;
+                            margin-bottom: 5px !important;
                         }
                         .urgency-title {
-                            font-size: 1.25rem !important;
-                            margin-bottom: 10px !important;
+                            font-size: 1.1rem !important;
+                            margin-bottom: 5px !important;
                         }
-                         .urgency-cta-btn {
-                            padding: 12px 25px !important;
-                            font-size: 0.95rem !important;
-                            width: 100%;
-                            justify-content: center;
+                        p[style*="font-size: 1.2rem"] {
+                             font-size: 0.9rem !important;
+                             margin-bottom: 15px !important;
                         }
                         .stock-badge {
-                            font-size: 0.8rem !important;
-                            padding: 8px 15px !important;
+                            font-size: 0.75rem !important;
+                            padding: 6px 12px !important;
+                            margin-bottom: 5px !important;
+                        }
+                        .urgency-cta-btn {
+                            padding: 10px 20px !important;
+                            font-size: 0.9rem !important;
+                            margin-top: 5px !important;
+                        }
+                        /* Hide floating particles on mobile to reduce noise */
+                        div[style*="float"] {
+                            display: none !important;
                         }
                     }
                     /* Float Animation */
