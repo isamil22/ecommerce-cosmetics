@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart } from 'lucide-react';
+import { FiShoppingCart } from 'react-icons/fi';
 
 /**
  * Sticky Floating Cart Button
@@ -47,7 +47,7 @@ const StickyCartButton = ({ cartCount = 0 }) => {
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 105, 180, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1)';
             }}
         >
-            <ShoppingCart size={24} strokeWidth={2.5} />
+            <FiShoppingCart size={24} />
 
             {/* Cart Count Badge */}
             {cartCount > 0 && (
