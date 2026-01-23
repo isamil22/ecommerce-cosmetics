@@ -281,6 +281,58 @@ const TestimonialsSection = ({ data }) => {
                                 top: 15px !important;
                              }
                         }
+
+                        /* HYPER-COMPACT MOBILE (Small Screens) */
+                        @media (max-width: 480px) {
+                            div[style*="padding: 100px 20px"] {
+                                padding: 30px 10px !important;
+                            }
+                            h2 {
+                                font-size: 1.4rem !important;
+                                margin-bottom: 0.2rem !important;
+                            }
+                            p {
+                                font-size: 0.85rem !important;
+                            }
+                             /* Rating Number */
+                            div[style*="font-size: 3.5rem"] {
+                                font-size: 1.8rem !important;
+                            }
+                            /* Stars under rating */
+                            div[style*="font-size: 1.3rem"] {
+                                font-size: 0.9rem !important;
+                                margin: 4px 0 !important;
+                            }
+                            /* Count text */
+                            div[style*="font-size: 0.9rem"] {
+                                font-size: 0.75rem !important;
+                            }
+                             /* Card Padding */
+                            div[style*="padding: 35px"] {
+                                padding: 15px 12px !important;
+                                border-radius: 12px !important;
+                            }
+                             /* Quote Icon */
+                             div[style*="font-family: Georgia"] {
+                                font-size: 1.5rem !important;
+                                left: 10px !important;
+                                top: 10px !important;
+                             }
+                             /* Comment Text */
+                            p[style*="font-style: italic"] {
+                                font-size: 0.85rem !important;
+                                margin-bottom: 10px !important;
+                                line-height: 1.4 !important;
+                            }
+                             /* Grid Gap */
+                            div[style*="grid-template-columns"] {
+                                gap: 15px !important;
+                            }
+                             /* Section Bottom Padding */
+                            div[style*="margin-bottom: 50px"] {
+                                margin-bottom: 25px !important;
+                            }
+                        }
                     `}</style>
 
                     {testimonials.map((testimonial, index) => {
