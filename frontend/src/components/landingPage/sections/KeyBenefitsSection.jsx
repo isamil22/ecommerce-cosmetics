@@ -273,19 +273,19 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
 
                     .benefits-grid {
                         grid-template-columns: 1fr !important; /* Stack columns */
-                        gap: 40px; /* More space between stacked items */
+                        gap: 25px; /* Reduced gap */
                     }
 
                     /* Ingredients Specific Mobile */
                     .ingredient-img-wrapper {
-                        width: 140px; /* Smaller image */
-                        height: 140px;
+                        width: 120px; /* Smaller image */
+                        height: 120px;
                         margin-bottom: 15px;
                     }
 
                     .benefit-title {
                         font-size: 1.25rem;
-                        margin-bottom: 10px;
+                        margin-bottom: 8px;
                     }
 
                     .benefit-description {
@@ -302,6 +302,45 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                         height: 70px;
                         font-size: 2rem;
                         margin-bottom: 15px;
+                    }
+                }
+
+                /* HYPER-COMPACT MOBILE (Small Screens) */
+                @media (max-width: 480px) {
+                    .key-benefits-section {
+                        padding: 40px 15px !important;
+                    }
+                    .benefit-card.style-standard {
+                        padding: 20px 15px !important;
+                    }
+                    .section-title {
+                        font-size: 1.5rem !important;
+                        margin-bottom: 0.5rem !important;
+                    }
+                    .section-subtitle {
+                        font-size: 0.9rem !important;
+                        margin-bottom: 25px !important;
+                    }
+                    .ingredient-img-wrapper {
+                        width: 90px !important;
+                        height: 90px !important;
+                        margin-bottom: 10px !important;
+                        border-width: 3px !important;
+                    }
+                    .benefit-title {
+                        font-size: 1.1rem !important;
+                    }
+                    .benefit-description {
+                        font-size: 0.85rem !important;
+                    }
+                    .benefit-icon-wrapper {
+                        width: 50px !important;
+                        height: 50px !important;
+                        font-size: 1.5rem !important;
+                        margin-bottom: 10px !important;
+                    }
+                    .benefits-grid {
+                        gap: 20px !important;
                     }
                 }
             `}</style>
