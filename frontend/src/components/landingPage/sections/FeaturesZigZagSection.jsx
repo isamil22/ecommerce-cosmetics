@@ -106,7 +106,6 @@ const FeaturesZigZagSection = ({ data }) => {
                     line-height: 1.5;
                     opacity: 0.8;
                     max-width: 550px;
-                    white-space: pre-line;
                 }
 
                 /* Tablet & Mobile Styles */
@@ -182,15 +181,21 @@ const FeaturesZigZagSection = ({ data }) => {
                     
                     .features-zigzag-section .feature-description {
                         font-size: 0.9rem;
-                        line-height: 1.4;
+                        line-height: 1.3;
                         margin-right: 0;
                         margin-left: 0;
+                        white-space: normal !important;
                     }
 
                     /* Ultra-compact spacing for text elements */
                     .features-zigzag-section .feature-description p {
-                        margin: 0 0 4px 0 !important;
+                        margin: 0 0 3px 0 !important;
                         padding: 0 !important;
+                    }
+                    
+                    /* Hide empty paragraphs (including those with only comments/fragments) */
+                    .features-zigzag-section .feature-description p:empty {
+                        display: none !important;
                     }
 
                     .features-zigzag-section .feature-description br {
@@ -199,15 +204,20 @@ const FeaturesZigZagSection = ({ data }) => {
 
                     .features-zigzag-section .feature-description ul,
                     .features-zigzag-section .feature-description ol {
-                        margin: 4px 0 !important;
+                        margin: 3px 0 !important;
                         padding: 0 !important;
                         padding-right: 20px !important;
                     }
 
                     .features-zigzag-section .feature-description li {
-                        margin-bottom: 3px !important;
+                        margin-bottom: 2px !important;
                         padding: 0 !important;
-                        line-height: 1.35 !important;
+                        line-height: 1.3 !important;
+                    }
+                    
+                    /* Remove margin from paragraphs inside list items */
+                    .features-zigzag-section .feature-description li p {
+                        margin-bottom: 0 !important;
                     }
                     
                     /* Remove spacing from strong/bold tags */
@@ -220,7 +230,7 @@ const FeaturesZigZagSection = ({ data }) => {
                     
                     /* Compact spacing for any divs inside description */
                     .features-zigzag-section .feature-description div {
-                        margin: 0 0 4px 0 !important;
+                        margin: 0 0 3px 0 !important;
                         padding: 0 !important;
                     }
 
