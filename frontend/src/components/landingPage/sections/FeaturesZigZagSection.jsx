@@ -18,7 +18,7 @@ const FeaturesZigZagSection = ({ data }) => {
                 .features-zigzag-section .feature-row {
                     display: flex;
                     align-items: center;
-                    min-height: 80vh;
+                    min-height: 60vh;
                     flex-wrap: wrap;
                     opacity: 0;
                     transform: translateY(50px);
@@ -46,7 +46,7 @@ const FeaturesZigZagSection = ({ data }) => {
                 .features-zigzag-section .feature-text-side {
                     flex: 1;
                     min-width: 350px;
-                    padding: 80px;
+                    padding: 50px 60px;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
@@ -80,7 +80,7 @@ const FeaturesZigZagSection = ({ data }) => {
                 .features-zigzag-section .feature-title {
                     font-size: clamp(2rem, 4vw, 3.5rem);
                     font-weight: 800;
-                    margin-bottom: 25px;
+                    margin-bottom: 18px;
                     line-height: 1.1;
                     letter-spacing: -0.02em;
                 }
@@ -89,7 +89,7 @@ const FeaturesZigZagSection = ({ data }) => {
                     width: 60px;
                     height: 4px;
                     background: linear-gradient(to right, #ff69b4, #ff1493);
-                    margin-bottom: 30px;
+                    margin-bottom: 20px;
                     transform-origin: right; /* Transform from right for RTL */
                     margin-left: auto; /* Align to right */
                     margin-right: 0;
@@ -102,8 +102,8 @@ const FeaturesZigZagSection = ({ data }) => {
                 }
 
                 .features-zigzag-section .feature-description {
-                    font-size: 1.2rem;
-                    line-height: 1.6;
+                    font-size: 1.1rem;
+                    line-height: 1.5;
                     opacity: 0.8;
                     max-width: 550px;
                     white-space: pre-line;
@@ -166,7 +166,7 @@ const FeaturesZigZagSection = ({ data }) => {
                     }
 
                     .features-zigzag-section .feature-text-side {
-                        padding: 20px 20px 40px;
+                        padding: 15px 20px 25px;
                         text-align: right;
                         align-items: flex-end;
                         direction: rtl;
@@ -176,19 +176,19 @@ const FeaturesZigZagSection = ({ data }) => {
 
                     .features-zigzag-section .feature-title {
                         font-size: 1.5rem;
-                        margin-bottom: 15px;
-                        line-height: 1.25;
+                        margin-bottom: 12px;
+                        line-height: 1.2;
                     }
                     
                     .features-zigzag-section .feature-description {
-                        font-size: 1rem;
-                        line-height: 1.5;
+                        font-size: 0.95rem;
+                        line-height: 1.45;
                         margin-right: 0;
                         margin-left: 0;
                     }
 
                     .features-zigzag-section .feature-divider {
-                        margin: 0 0 20px auto;
+                        margin: 0 0 15px auto;
                         height: 3px;
                     }
                 }
