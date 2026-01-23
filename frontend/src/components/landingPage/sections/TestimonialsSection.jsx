@@ -325,72 +325,61 @@ const TestimonialsSection = ({ data }) => {
                                     lineHeight: 1,
                                 }}>"</div>
 
-                                {/* Rating */}
-                                <div style={{ marginBottom: '15px' }}>
-                                    {renderStars(testimonial.rating || 5)}
+                                {/* HEADER: User Info + Rating Combined */}
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginBottom: '15px',
+                                    direction: 'rtl', // Ensure RTL layout for header
+                                }}>
+                                    {/* User Info (Right Side) */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        {avatarUrl && (
+                                            <div style={{
+                                                width: '45px',
+                                                height: '45px',
+                                                borderRadius: '50%',
+                                                overflow: 'hidden',
+                                                flexShrink: 0,
+                                                border: '2px solid #f0f0f0',
+                                            }}>
+                                                <img
+                                                    src={avatarUrl}
+                                                    alt={testimonial.name}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    onError={(e) => e.target.parentElement.style.display = 'none'}
+                                                />
+                                            </div>
+                                        )}
+                                        <div style={{ textAlign: 'right' }}>
+                                            <div style={{ fontWeight: '700', fontSize: '1rem', color: '#222' }}>
+                                                {testimonial.name}
+                                            </div>
+                                            <div style={{ fontSize: '0.8rem', color: '#28a745', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                <span>شراء مؤكد</span>
+                                                <span>✓</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Stars (Left Side) */}
+                                    <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                                        {renderStars(testimonial.rating || 5)}
+                                    </div>
                                 </div>
 
                                 {/* Comment */}
                                 <p style={{
-                                    fontSize: '1.05rem',
-                                    color: '#444',
-                                    lineHeight: '1.7',
-                                    marginBottom: '25px',
-                                    fontStyle: 'italic',
+                                    fontSize: '1rem',
+                                    color: '#555',
+                                    lineHeight: '1.6',
+                                    marginBottom: '15px',
+                                    textAlign: 'right', // Force RTL alignment for text
+                                    dir: 'rtl'
                                 }}>
                                     "{testimonial.comment}"
                                 </p>
-
-                                {/* Customer Info */}
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    paddingTop: '20px',
-                                    borderTop: '1px solid #f0f0f0',
-                                }}>
-                                    {avatarUrl && (
-                                        <div style={{
-                                            width: '55px',
-                                            height: '55px',
-                                            borderRadius: '50%',
-                                            background: 'none',
-                                            marginRight: '15px',
-                                            overflow: 'hidden',
-                                            flexShrink: 0,
-                                        }}>
-                                            <img
-                                                src={avatarUrl}
-                                                alt={testimonial.name}
-                                                style={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    objectFit: 'cover',
-                                                }}
-                                                onError={(e) => {
-                                                    e.target.parentElement.style.display = 'none';
-                                                }}
-                                            />
-                                        </div>
-                                    )}
-                                    <div>
-                                        <div style={{
-                                            fontWeight: '700',
-                                            fontSize: '1.05rem',
-                                            color: '#222',
-                                        }}>
-                                            {testimonial.name}
-                                        </div>
-                                        <div style={{
-                                            fontSize: '0.85rem',
-                                            color: '#28a745',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '5px',
-                                        }}>
-                                            ✓ شراء مؤكد
-                                        </div>
-                                    </div>
-                                </div>
 
                                 {/* Product Images Gallery */}
                                 {productImages.length > 0 && (
