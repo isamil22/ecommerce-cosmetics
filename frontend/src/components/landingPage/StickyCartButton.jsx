@@ -1,16 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
-import { useCart } from '../../context/CartContext';
 
 /**
  * Sticky Floating Cart Button
  * Displays a fixed cart icon on the right side of the screen
  * Shows cart count badge and navigates to cart on click
  */
-const StickyCartButton = () => {
+const StickyCartButton = ({ cartCount = 0 }) => {
     const navigate = useNavigate();
-    const { cartCount } = useCart();
 
     const handleClick = () => {
         navigate('/cart');

@@ -149,7 +149,7 @@ const PublicLandingPage = (props) => {
     return (
         <div style={{ fontFamily, minHeight: '50vh' }}>
             {/* Sticky Floating Cart Button */}
-            <StickyCartButton />
+            <StickyCartButton cartCount={props.cartCount || 0} />
 
             {/* Render sections */}
             {landingPage.sections

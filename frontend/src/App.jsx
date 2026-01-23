@@ -168,7 +168,7 @@ function App() {
                             <Route path="/shipping" element={<ShippingPage />} />
 
                             {/* Public Landing Pages */}
-                            <Route path="/landing/:slug" element={<PublicLandingPage fetchCartCount={fetchCartCount} />} />
+                            <Route path="/landing/:slug" element={<PublicLandingPage fetchCartCount={fetchCartCount} cartCount={cartCount} />} />
 
                             {/* Authenticated User Routes */}
                             {userRole !== 'ADMIN' && <Route path="/profile" element={<ProfilePage />} />}
