@@ -52,6 +52,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
     return (
         <div
             ref={sectionRef}
+            className="final-cta-section"
             style={{
                 background: backgroundColor === '#ffffff'
                     ? 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 50%, #fff0f5 100%)'
@@ -140,7 +141,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                 </p>
 
                 {/* Price Box */}
-                <div style={{
+                <div className="cta-price-box" style={{
                     display: 'inline-block',
                     background: 'white',
                     borderRadius: '24px',
@@ -184,7 +185,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                                 {originalPrice}
                             </span>
                         )}
-                        <span style={{
+                        <span className="cta-price-text" style={{
                             fontSize: 'clamp(3rem, 8vw, 4rem)',
                             fontWeight: '900',
                             background: 'linear-gradient(135deg, #ff69b4 0%, #ff1493 100%)',
@@ -217,6 +218,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                                 position: 'relative',
                                 overflow: 'hidden',
                             }}
+                            className="final-cta-btn"
                             onMouseEnter={(e) => {
                                 e.target.style.transform = 'translateY(-4px) scale(1.02)';
                                 e.target.style.boxShadow = '0 15px 50px rgba(255,105,180,0.5)';
@@ -249,7 +251,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
 
                     {/* Guarantee */}
                     {guarantee && (
-                        <div style={{
+                        <div className="cta-guarantee" style={{
                             marginTop: '20px',
                             display: 'flex',
                             alignItems: 'center',
@@ -265,7 +267,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                 </div>
 
                 {/* Trust Badges */}
-                <div style={{
+                <div className="cta-trust-badges" style={{
                     display: 'flex',
                     justifyContent: 'center',
                     gap: '30px',
@@ -345,6 +347,61 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                 }}>
                     ⭐ تقييم 4.9/5 من أكثر من 50,000 عميل سعيد
                 </p>
+                <style>{`
+                    @media (max-width: 768px) {
+                        .final-cta-section {
+                            padding: 80px 20px !important;
+                        }
+                        .cta-price-box {
+                            padding: 30px 40px !important;
+                            border-radius: 20px !important;
+                            width: 90% !important;
+                        }
+                        .cta-price-text {
+                            font-size: 3.5rem !important;
+                        }
+                    }
+                    /* Mobile Optimization (Compact) */
+                    @media (max-width: 480px) {
+                        .final-cta-section {
+                            padding: 60px 15px !important;
+                        }
+                        .cta-price-box {
+                            padding: 25px 20px !important;
+                            border-radius: 16px !important;
+                            width: 100% !important;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+                            margin-bottom: 25px !important;
+                        }
+                        .cta-price-text {
+                            font-size: 2.5rem !important;
+                        }
+                        .final-cta-btn {
+                            padding: 15px 30px !important;
+                            font-size: 1.1rem !important;
+                            width: 100%;
+                            justify-content: center;
+                        }
+                        .cta-guarantee {
+                            font-size: 0.8rem !important;
+                            margin-top: 15px !important;
+                        }
+                        .cta-trust-badges {
+                            gap: 15px !important;
+                        }
+                        .cta-trust-badges div {
+                            padding: 8px 15px !important;
+                            font-size: 0.8rem !important;
+                        }
+                        h2 {
+                            font-size: 1.8rem !important;
+                            margin-bottom: 1rem !important;
+                        }
+                        p {
+                            font-size: 1rem !important;
+                        }
+                    }
+                `}</style>
             </div>
         </div>
     );
