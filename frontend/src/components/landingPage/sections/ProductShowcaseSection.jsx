@@ -633,89 +633,104 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
 
                 /* HYPER-COMPACT MOBILE (Small Screens) */
                 @media (max-width: 480px) {
-                    /* Section Padding */
+                    /* Section Padding - Ultra Minimal */
                     #product-showcase {
-                        padding: 20px 10px !important;
+                        padding: 15px 8px !important;
                     }
-                    /* Container Gap */
+                    /* Container Gap - Tight */
                     #product-showcase > div:nth-child(2) {
-                         gap: 20px !important;
+                         gap: 15px !important;
                     }
                     
-                    /* Image */
+                    /* Image - Compact */
                     #product-showcase img {
-                        border-radius: 12px !important;
+                        border-radius: 10px !important;
                     }
 
                     /* Content Padding */
                     #product-showcase > div:nth-child(2) > div:last-child {
-                        text-align: center !important; /* Center might be better for small screens, or keep right */
+                        text-align: right !important;
+                        padding: 0 5px !important;
                     }
 
-                    /* Title */
+                    /* Title - Smaller */
                     #product-showcase h2 {
-                        font-size: 1.5rem !important;
-                        margin-bottom: 0.5rem !important;
+                        font-size: 1.3rem !important;
+                        margin-bottom: 8px !important;
+                        line-height: 1.2 !important;
                     }
 
-                    /* Price */
+                    /* Price - Compact */
+                    #product-showcase h2 + div {
+                        margin-bottom: 10px !important;
+                    }
                     #product-showcase h2 + div span:first-child {
-                        font-size: 1.8rem !important;
+                        font-size: 1.6rem !important;
                     }
                     #product-showcase h2 + div span:last-child {
-                        font-size: 1.1rem !important;
+                        font-size: 1rem !important;
                     }
 
-                    /* Description */
+                    /* Description - Tighter */
                     #product-showcase p {
-                        font-size: 0.9rem !important;
-                        line-height: 1.5 !important;
-                        margin-bottom: 1rem !important;
+                        font-size: 0.85rem !important;
+                        line-height: 1.4 !important;
+                        margin-bottom: 10px !important;
                     }
                     
-                    /* Features */
+                    /* Features - Compact */
+                    #product-showcase ul {
+                        margin-bottom: 12px !important;
+                    }
                     #product-showcase ul li {
-                        font-size: 0.9rem !important;
-                        margin-bottom: 8px !important;
+                        font-size: 0.85rem !important;
+                        margin-bottom: 6px !important;
+                        line-height: 1.3 !important;
                     }
                     #product-showcase ul li span:first-child {
-                        width: 24px !important;
-                        height: 24px !important;
-                        font-size: 0.8rem !important;
-                        margin-right: 10px !important;
+                        width: 20px !important;
+                        height: 20px !important;
+                        font-size: 0.7rem !important;
+                        margin-right: 8px !important;
                     }
 
-                    /* Buttons */
+                    /* Buttons - Smaller but prominent */
                     #product-showcase a, 
                     #product-showcase button {
-                        padding: 12px 20px !important;
-                        font-size: 1rem !important;
-                        border-radius: 12px !important; /* Less rounded to save space visually */
+                        padding: 10px 18px !important;
+                        font-size: 0.95rem !important;
+                        border-radius: 10px !important;
+                        margin-bottom: 8px !important;
                     }
 
-                    /* Badges */
+                    /* Badges - Tiny */
                     div[style*="top: -15px"] {
-                        font-size: 0.75rem !important;
-                        padding: 6px 14px !important;
-                        top: -10px !important;
+                        font-size: 0.7rem !important;
+                        padding: 4px 10px !important;
+                        top: -8px !important;
                     }
 
-                    /* FIX: Variant/Option Buttons (Quantity, etc) */
-                    /* Targeted via the specific flex gap structure or button attributes if possible, 
-                       but here we use the fact they are inside the variant container structure */
+                    /* Variant Container - Compact */
+                    #product-showcase div[style*="flex-wrap: wrap"] {
+                        gap: 6px !important;
+                        margin-bottom: 10px !important;
+                        justify-content: center !important;
+                    }
+                    
+                    /* Variant/Option Buttons - Compact Pills */
                     #product-showcase div[style*="flex-wrap: wrap"] button {
                         width: auto !important;
-                        padding: 6px 16px !important;
-                        font-size: 0.9rem !important;
+                        padding: 5px 14px !important;
+                        font-size: 0.85rem !important;
                         margin-bottom: 0 !important;
                         border-radius: 50px !important;
                         flex: 0 0 auto !important;
-                        min-width: 60px !important;
+                        min-width: 55px !important;
                     }
                     
-                    /* Helper text for variants (e.g. :quantity) */
+                    /* Helper text for variants - Smaller */
                     #product-showcase div[style*="flex-wrap: wrap"] span {
-                        font-size: 0.9rem !important;
+                        font-size: 0.85rem !important;
                     }
                     
                     /* Center the variant row */
