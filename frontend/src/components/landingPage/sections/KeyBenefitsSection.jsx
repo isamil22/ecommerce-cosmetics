@@ -293,12 +293,13 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                     }
                 }
 
-                /* HYPER-COMPACT MOBILE (Small Screens) */
-                @media (max-width: 480px) {
+                /* HYPER-COMPACT MOBILE (Small Screens) - WIDENED FOR ALL PHONES */
+                @media (max-width: 640px) {
                     .key-benefits-section {
                         padding: 25px 10px !important;
                     }
-                    .benefit-card.style-standard {
+                    .benefit-card.style-standard,
+                    .benefit-card.style-ingredients {
                         padding: 15px 12px !important;
                     }
                     .section-title {
