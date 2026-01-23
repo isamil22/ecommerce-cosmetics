@@ -42,10 +42,50 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
     const [selectedVariants, setSelectedVariants] = useState({});
     const variants = (data?.variants && data.variants.length > 0) ? data.variants : availableVariants;
 
-    // Calculate activeImage with priority: Color Variant Image > Other Variant Image > Default Image
+    // Auto-rotation state for cycling through variant images
+    const [autoRotateIndex, setAutoRotateIndex] = useState(0);
+    const [isAutoRotating, setIsAutoRotating] = useState(true);
+
+    // Collect all available variant images for auto-rotation
+    const getAllVariantImages = () => {
+        const images = [image]; // Start with default image
+
+        if (data?.optionVisuals) {
+            Object.values(data.optionVisuals).forEach(visual => {
+                if (visual?.image && !images.includes(visual.image)) {
+                    images.push(visual.image);
+                }
+            });
+        }
+
+        return images;
+    };
+
+    const allImages = getAllVariantImages();
+
+    // Auto-rotate through images every 3 seconds
+    useEffect(() => {
+        if (!isAutoRotating || allImages.length <= 1) return;
+
+        const interval = setInterval(() => {
+            setAutoRotateIndex((prev) => (prev + 1) % allImages.length);
+        }, 3000); // 3 seconds
+
+        return () => clearInterval(interval);
+    }, [isAutoRotating, allImages.length]);
+
+    // Stop auto-rotation when user selects a variant
+    useEffect(() => {
+        if (Object.keys(selectedVariants).length > 0) {
+            setIsAutoRotating(false);
+        }
+    }, [selectedVariants]);
+
+    // Calculate activeImage with priority: Selected Variant > Auto-rotating Image > Default Image
     let activeImage = image;
 
-    if (data?.optionVisuals) {
+    // If user has selected variants, show that image
+    if (Object.keys(selectedVariants).length > 0 && data?.optionVisuals) {
         let colorImage = null;
         let otherImage = null;
 
@@ -66,12 +106,15 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
             }
         });
 
-        // Color takes precedence (so "Purple" wins over "50ml" if both have images)
+        // Color takes precedence
         if (colorImage) {
             activeImage = colorImage;
         } else if (otherImage) {
             activeImage = otherImage;
         }
+    } else if (isAutoRotating && allImages.length > 1) {
+        // Auto-rotate through images
+        activeImage = allImages[autoRotateIndex];
     }
 
     // Calculate activePrice and activeOriginalPrice
