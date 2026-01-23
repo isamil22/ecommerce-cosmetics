@@ -406,7 +406,8 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                     }
                 `}</style>
             </div>
-            );
+        </div>
+    );
 };
 
-            export default UrgencyBannerSection;
+export default UrgencyBannerSection;
