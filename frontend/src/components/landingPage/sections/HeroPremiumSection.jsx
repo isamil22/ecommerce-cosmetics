@@ -233,15 +233,16 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                     }
 
                     .hero-premium-section .image-column {
-                        order: 1;
-                        margin-bottom: 20px;
+                        order: 2;
+                        margin-top: 20px;
                         /* Optional: Animate product image */
                         animation: fadeInUp 0.8s ease-out forwards;
                     }
 
                     .hero-premium-section .text-column {
-                        order: 2;
+                        order: 1;
                         text-align: center;
+                        margin-bottom: 20px;
                     }
                     
                     /* Animations */
