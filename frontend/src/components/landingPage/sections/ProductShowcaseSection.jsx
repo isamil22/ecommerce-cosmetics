@@ -587,6 +587,76 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
                         margin-bottom: 10px;
                     }
                 }
+
+                /* HYPER-COMPACT MOBILE (Small Screens) */
+                @media (max-width: 480px) {
+                    /* Section Padding */
+                    #product-showcase {
+                        padding: 20px 10px !important;
+                    }
+                    /* Container Gap */
+                    #product-showcase > div:nth-child(2) {
+                         gap: 20px !important;
+                    }
+                    
+                    /* Image */
+                    #product-showcase img {
+                        border-radius: 12px !important;
+                    }
+
+                    /* Content Padding */
+                    #product-showcase > div:nth-child(2) > div:last-child {
+                        text-align: center !important; /* Center might be better for small screens, or keep right */
+                    }
+
+                    /* Title */
+                    #product-showcase h2 {
+                        font-size: 1.5rem !important;
+                        margin-bottom: 0.5rem !important;
+                    }
+
+                    /* Price */
+                    #product-showcase h2 + div span:first-child {
+                        font-size: 1.8rem !important;
+                    }
+                    #product-showcase h2 + div span:last-child {
+                        font-size: 1.1rem !important;
+                    }
+
+                    /* Description */
+                    #product-showcase p {
+                        font-size: 0.9rem !important;
+                        line-height: 1.5 !important;
+                        margin-bottom: 1rem !important;
+                    }
+                    
+                    /* Features */
+                    #product-showcase ul li {
+                        font-size: 0.9rem !important;
+                        margin-bottom: 8px !important;
+                    }
+                    #product-showcase ul li span:first-child {
+                        width: 24px !important;
+                        height: 24px !important;
+                        font-size: 0.8rem !important;
+                        margin-right: 10px !important;
+                    }
+
+                    /* Buttons */
+                    #product-showcase a, 
+                    #product-showcase button {
+                        padding: 12px 20px !important;
+                        font-size: 1rem !important;
+                        border-radius: 12px !important; /* Less rounded to save space visually */
+                    }
+
+                    /* Badges */
+                    div[style*="top: -15px"] {
+                        font-size: 0.75rem !important;
+                        padding: 6px 14px !important;
+                        top: -10px !important;
+                    }
+                }
             `}</style>
 
             {/* Premium Toast Notification */}
