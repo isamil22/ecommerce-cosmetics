@@ -10,10 +10,10 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
     const ctaData = { ...data, variants: data?.variants || availableVariants };
     const handleCTA = useLandingPageCTA(productId, ctaData);
     const {
-        title = '🔥 LIMITED TIME OFFER!',
-        discount = '20% OFF',
-        message = 'Offer ends soon',
-        ctaText = 'Claim Your Discount',
+        title: dbTitle,
+        discount: dbDiscount,
+        message: dbMessage,
+        ctaText: dbCtaText,
         ctaLink = '#order',
         backgroundColor = '#ff69b4',
         textColor = '#ffffff',
@@ -24,6 +24,11 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
         showBuyers = true,
         recentBuyers = 23,
     } = data || {};
+
+    const title = (!dbTitle || dbTitle === '🔥 LIMITED TIME OFFER!') ? '🔥 عرض لفترة محدودة!' : dbTitle;
+    const discount = (!dbDiscount || dbDiscount === '20% OFF') ? 'خصم 20%' : dbDiscount;
+    const message = (!dbMessage || dbMessage === 'Offer ends soon') ? 'ينتهي العرض قريبا' : dbMessage;
+    const ctaText = (!dbCtaText || dbCtaText === 'Claim Your Discount') ? 'احصل على الخصم' : dbCtaText;
 
     const [timeLeft, setTimeLeft] = useState({
         days: 2,
@@ -196,7 +201,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                     transition: 'all 0.6s ease',
                     animation: 'pulse 2s ease-in-out infinite',
                 }}>
-                    ⚡ Flash Sale - Don't Miss Out!
+                    ⚡ خصم خيالي - لا تفوت الفرصة!
                 </div>
 
                 {/* Title */}
@@ -244,13 +249,13 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                     transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
                     transition: 'all 0.6s ease 0.3s',
                 }}>
-                    <TimeBlock value={timeLeft.days} label="Days" />
+                    <TimeBlock value={timeLeft.days} label="أيام" />
                     <div style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
-                    <TimeBlock value={timeLeft.hours} label="Hours" />
+                    <TimeBlock value={timeLeft.hours} label="ساعات" />
                     <div style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
-                    <TimeBlock value={timeLeft.minutes} label="Minutes" />
+                    <TimeBlock value={timeLeft.minutes} label="دقائق" />
                     <div style={{ fontSize: '3rem', fontWeight: 'bold', alignSelf: 'center', opacity: 0.5 }}>:</div>
-                    <TimeBlock value={timeLeft.seconds} label="Seconds" />
+                    <TimeBlock value={timeLeft.seconds} label="ثواني" />
                 </div>
 
                 {/* Social Proof */}
@@ -274,7 +279,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                             borderRadius: '50px',
                         }}>
                             <span style={{ fontSize: '1.2rem' }}>📦</span>
-                            <span>Only <strong>{stockLeft}</strong> left in stock!</span>
+                            <span>متبقي <strong>{stockLeft}</strong> فقط في المخزون!</span>
                         </div>
                     )}
                     {showBuyers && (
@@ -287,7 +292,7 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                             borderRadius: '50px',
                         }}>
                             <span style={{ fontSize: '1.2rem' }}>👥</span>
-                            <span><strong>{recentBuyers}</strong> people bought today</span>
+                            <span><strong>{recentBuyers}</strong> شخص اشتروا هذا اليوم</span>
                         </div>
                     )}
                 </div>
@@ -363,9 +368,9 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                     opacity: 0.9,
                     flexWrap: 'wrap',
                 }}>
-                    <span>✓ Free Shipping</span>
-                    <span>✓ 30-Day Guarantee</span>
-                    <span>✓ Secure Checkout</span>
+                    <span>✓ شحن مجاني</span>
+                    <span>✓ ضمان 30 يوم</span>
+                    <span>✓ دفع آمن</span>
                 </div>
             </div>
 

@@ -9,7 +9,7 @@ import {
     FiCheck, FiX, FiAlertTriangle, FiCheckCircle,
     FiGrid, FiList, FiRefreshCw, FiSettings, FiBarChart,
     FiDollarSign, FiUsers, FiZap, FiHeart, FiShield, FiEye,
-    FiFilter, FiSortAsc, FiSortDesc, FiMoreVertical
+    FiFilter,   FiMoreVertical
 } from 'react-icons/fi';
 
 const AdminProductsPage = () => {

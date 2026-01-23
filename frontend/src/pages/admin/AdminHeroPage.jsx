@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getHero, updateHero } from '../../api/apiService';
 import { toast } from 'react-toastify';
-import { 
+import {
     FiMonitor, FiSave, FiUpload, FiImage, FiEye, FiEdit3, FiRefreshCw,
-    FiCheckCircle, FiAlertCircle, FiX, FiTrash2, FiZap, FiHeart, 
+    FiCheckCircle, FiAlertCircle, FiX, FiTrash2, FiZap, FiHeart,
     FiShield, FiSettings, FiPlus, FiArrowLeft, FiCamera, FiTarget,
     FiAlertTriangle, FiInfo, FiCheck, FiClock, FiStar, FiLink,
     FiType, FiFileText, FiGlobe, FiExternalLink, FiMaximize2,
@@ -12,9 +12,11 @@ import {
 
 const AdminHeroPage = () => {
     const fileInputRef = useRef(null);
-    const [hero, setHero] = useState({ title: '', subtitle: '', linkText: '', linkUrl: '' });
+    const [hero, setHero] = useState({ title: '', subtitle: '', linkText: '', linkUrl: '', titleFont: 'sans-serif' });
     const [image, setImage] = useState(null);
+    const [mobileImage, setMobileImage] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
+    const [mobileImagePreview, setMobileImagePreview] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -22,6 +24,7 @@ const AdminHeroPage = () => {
     const [isDirty, setIsDirty] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [dragActive, setDragActive] = useState(false);
+    const [mobileDragActive, setMobileDragActive] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [viewMode, setViewMode] = useState('form'); // 'form' or 'preview'
 
@@ -33,6 +36,9 @@ const AdminHeroPage = () => {
                 setHero(response.data);
                 if (response.data.imageUrl) {
                     setImagePreview(response.data.imageUrl);
+                }
+                if (response.data.mobileImageUrl) {
+                    setMobileImagePreview(response.data.mobileImageUrl);
                 }
             } catch (err) {
                 setError('Failed to load hero data.');
@@ -54,7 +60,7 @@ const AdminHeroPage = () => {
                     handleSubmit(e);
                 }
             }
-            // Ctrl/Cmd + P to toggle preview
+            // Ctrl/Cmd + P to toggle preview (only if not focused on input)
             if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
                 e.preventDefault();
                 setShowPreview(!showPreview);
@@ -87,7 +93,7 @@ const AdminHeroPage = () => {
         const { name, value } = e.target;
         setHero(prev => ({ ...prev, [name]: value }));
         setIsDirty(true);
-        
+
         // Clear error for this field
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
@@ -98,7 +104,7 @@ const AdminHeroPage = () => {
         if (file) {
             setImage(file);
             setIsDirty(true);
-            
+
             // Create preview
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -129,7 +135,7 @@ const AdminHeroPage = () => {
         e.preventDefault();
         e.stopPropagation();
         setDragActive(false);
-        
+
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             const file = e.dataTransfer.files[0];
             if (file.type.startsWith('image/')) {
@@ -138,6 +144,44 @@ const AdminHeroPage = () => {
                 toast.error('Please select a valid image file.');
             }
         }
+    }
+
+
+    const handleMobileImageChange = (file) => {
+        if (file) {
+            setMobileImage(file);
+            setIsDirty(true);
+            const reader = new FileReader();
+            reader.onload = (e) => setMobileImagePreview(e.target.result);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleMobileDrag = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === 'dragenter' || e.type === 'dragover') {
+            setMobileDragActive(true);
+        } else if (e.type === 'dragleave') {
+            setMobileDragActive(false);
+        }
+    };
+
+    const handleMobileDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setMobileDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            const file = e.dataTransfer.files[0];
+            if (file.type.startsWith('image/')) handleMobileImageChange(file);
+            else toast.error('Please select a valid image file.');
+        }
+    };
+
+    const removeMobileImage = () => {
+        setMobileImage(null);
+        setMobileImagePreview('');
+        setIsDirty(true);
     };
 
     const removeImage = () => {
@@ -151,47 +195,50 @@ const AdminHeroPage = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!hero.title.trim()) {
             newErrors.title = 'Hero title is required';
         } else if (hero.title.trim().length < 3) {
             newErrors.title = 'Hero title must be at least 3 characters';
         }
-        
+
         if (!hero.subtitle.trim()) {
             newErrors.subtitle = 'Hero subtitle is required';
         } else if (hero.subtitle.trim().length < 5) {
             newErrors.subtitle = 'Hero subtitle must be at least 5 characters';
         }
-        
+
         if (!hero.linkText.trim()) {
             newErrors.linkText = 'Link text is required';
         }
-        
+
         if (!hero.linkUrl.trim()) {
             newErrors.linkUrl = 'Link URL is required';
         } else if (!hero.linkUrl.startsWith('/') && !hero.linkUrl.startsWith('http')) {
             newErrors.linkUrl = 'Link URL must start with / or http';
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             toast.error('Please fix the errors before submitting.');
             return;
         }
-        
+
         setIsSubmitting(true);
         const formData = new FormData();
         formData.append('hero', new Blob([JSON.stringify(hero)], { type: 'application/json' }));
-        
+
         if (image) {
             formData.append('image', image);
+        }
+        if (mobileImage) {
+            formData.append('mobileImage', mobileImage);
         }
 
         setError('');
@@ -355,16 +402,15 @@ const AdminHeroPage = () => {
                                     <span>Hero Title</span>
                                     <span className="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="title" 
-                                    id="title" 
-                                    value={hero.title} 
-                                    onChange={handleChange} 
-                                    required 
-                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                                        errors.title ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-pink-300'
-                                    }`}
+                                <input
+                                    type="text"
+                                    name="title"
+                                    id="title"
+                                    value={hero.title}
+                                    onChange={handleChange}
+                                    required
+                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent ${errors.title ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-pink-300'
+                                        }`}
                                     placeholder="Enter your hero title (e.g., Welcome to Our Store)"
                                 />
                                 {errors.title && (
@@ -375,6 +421,28 @@ const AdminHeroPage = () => {
                                 )}
                             </div>
 
+                            {/* Title Font Field */}
+                            <div>
+                                <label htmlFor="titleFont" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
+                                    <FiType className="w-5 h-5 text-gray-500" />
+                                    <span>Title Font</span>
+                                </label>
+                                <select
+                                    name="titleFont"
+                                    id="titleFont"
+                                    value={hero.titleFont || 'sans-serif'}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent hover:border-gray-300"
+                                >
+                                    <option value="sans-serif">Default (Sans Serif)</option>
+                                    <option value="'Dancing Script', cursive">Dancing Script (Cursive)</option>
+                                    <option value="'Playfair Display', serif">Playfair Display (Serif)</option>
+                                    <option value="'Great Vibes', cursive">Great Vibes (Calligraphic)</option>
+                                    <option value="'Cinzel', serif">Cinzel (Luxury)</option>
+                                    <option value="'Montserrat', sans-serif">Montserrat (Modern)</option>
+                                </select>
+                            </div>
+
                             {/* Subtitle Field */}
                             <div>
                                 <label htmlFor="subtitle" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
@@ -382,16 +450,15 @@ const AdminHeroPage = () => {
                                     <span>Hero Subtitle</span>
                                     <span className="text-red-500">*</span>
                                 </label>
-                                <textarea 
-                                    name="subtitle" 
-                                    id="subtitle" 
-                                    value={hero.subtitle} 
-                                    onChange={handleChange} 
+                                <textarea
+                                    name="subtitle"
+                                    id="subtitle"
+                                    value={hero.subtitle}
+                                    onChange={handleChange}
                                     required
                                     rows="3"
-                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                                        errors.subtitle ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-blue-300'
-                                    }`}
+                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${errors.subtitle ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-blue-300'
+                                        }`}
                                     placeholder="Enter your hero subtitle (e.g., Discover amazing products at great prices)"
                                 />
                                 {errors.subtitle && (
@@ -409,16 +476,15 @@ const AdminHeroPage = () => {
                                     <span>Button Text</span>
                                     <span className="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="linkText" 
-                                    id="linkText" 
-                                    value={hero.linkText} 
-                                    onChange={handleChange} 
-                                    required 
-                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-green-500 focus:border-transparent ${
-                                        errors.linkText ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-green-300'
-                                    }`}
+                                <input
+                                    type="text"
+                                    name="linkText"
+                                    id="linkText"
+                                    value={hero.linkText}
+                                    onChange={handleChange}
+                                    required
+                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-green-500 focus:border-transparent ${errors.linkText ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-green-300'
+                                        }`}
                                     placeholder="Enter button text (e.g., Shop Now, Explore, Get Started)"
                                 />
                                 {errors.linkText && (
@@ -436,16 +502,15 @@ const AdminHeroPage = () => {
                                     <span>Button URL</span>
                                     <span className="text-red-500">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    name="linkUrl" 
-                                    id="linkUrl" 
-                                    value={hero.linkUrl} 
-                                    onChange={handleChange} 
-                                    required 
-                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
-                                        errors.linkUrl ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-purple-300'
-                                    }`}
+                                <input
+                                    type="text"
+                                    name="linkUrl"
+                                    id="linkUrl"
+                                    value={hero.linkUrl}
+                                    onChange={handleChange}
+                                    required
+                                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.linkUrl ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-purple-300'
+                                        }`}
                                     placeholder="Enter button URL (e.g., /products, /shop, https://example.com)"
                                 />
                                 {errors.linkUrl && (
@@ -456,84 +521,87 @@ const AdminHeroPage = () => {
                                 )}
                             </div>
 
-                            {/* Hero Image Upload */}
-                            <div>
-                                <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
-                                    <FiCamera className="w-5 h-5 text-indigo-500" />
-                                    <span>Hero Background Image</span>
-                                    <span className="text-sm text-gray-500">(Optional)</span>
-                                </label>
-                                
-                                {/* Image Upload Area */}
-                                <div 
-                                    className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${
-                                        dragActive 
-                                            ? 'border-pink-400 bg-pink-50' 
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Desktop Image Upload */}
+                                <div>
+                                    <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
+                                        <FiMonitor className="w-5 h-5 text-indigo-500" />
+                                        <span>Desktop Background</span>
+                                    </label>
+                                    <div
+                                        className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${dragActive
+                                            ? 'border-pink-400 bg-pink-50'
                                             : 'border-gray-300 hover:border-pink-400 hover:bg-pink-50'
-                                    }`}
-                                    onDragEnter={handleDrag}
-                                    onDragLeave={handleDrag}
-                                    onDragOver={handleDrag}
-                                    onDrop={handleDrop}
-                                >
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        name="image"
-                                        id="image"
-                                        onChange={handleFileInputChange}
-                                        accept="image/*"
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                    />
-                                    
-                                    {imagePreview ? (
-                                        <div className="relative">
-                                            <img 
-                                                src={imagePreview} 
-                                                alt="Hero preview" 
-                                                className="mx-auto max-h-32 rounded-lg shadow-lg"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={removeImage}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                                            >
-                                                <FiX className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-3">
-                                            <div className="w-12 h-12 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto">
-                                                <FiUpload className="w-6 h-6 text-pink-500" />
+                                            }`}
+                                        onDragEnter={handleDrag}
+                                        onDragLeave={handleDrag}
+                                        onDragOver={handleDrag}
+                                        onDrop={handleDrop}
+                                    >
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            onChange={handleFileInputChange}
+                                            accept="image/*"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                        {imagePreview ? (
+                                            <div className="relative">
+                                                <img src={imagePreview} alt="Desktop preview" className="mx-auto max-h-32 rounded-lg shadow-lg" />
+                                                <button type="button" onClick={removeImage} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"><FiX className="w-4 h-4" /></button>
                                             </div>
-                                            <div>
-                                                <p className="text-base font-medium text-gray-900">
-                                                    Drop your hero image here
-                                                </p>
-                                                <p className="text-sm text-gray-500">
-                                                    or click to browse
-                                                </p>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                <FiUpload className="w-8 h-8 text-pink-500 mx-auto" />
+                                                <p className="text-sm font-medium text-gray-900">Drop Desktop Image</p>
+                                                <p className="text-xs text-gray-500">1920x800px recommended</p>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => fileInputRef.current?.click()}
-                                                className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 text-sm"
-                                            >
-                                                Choose File
-                                            </button>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
-                                
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Recommended size: 1200x400px. Supported formats: JPG, PNG, GIF. Max size: 5MB
-                                </p>
+
+                                {/* Mobile Image Upload */}
+                                <div>
+                                    <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
+                                        <FiTarget className="w-5 h-5 text-purple-500" />
+                                        <span>Mobile Background</span>
+                                    </label>
+                                    <div
+                                        className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${mobileDragActive
+                                            ? 'border-purple-400 bg-purple-50'
+                                            : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
+                                            }`}
+                                        onDragEnter={handleMobileDrag}
+                                        onDragLeave={handleMobileDrag}
+                                        onDragOver={handleMobileDrag}
+                                        onDrop={handleMobileDrop}
+                                    >
+                                        <input
+                                            type="file"
+                                            onChange={(e) => handleMobileImageChange(e.target.files[0])}
+                                            accept="image/*"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                        {mobileImagePreview ? (
+                                            <div className="relative">
+                                                <img src={mobileImagePreview} alt="Mobile preview" className="mx-auto max-h-32 rounded-lg shadow-lg" />
+                                                <button type="button" onClick={removeMobileImage} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"><FiX className="w-4 h-4" /></button>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                <FiUpload className="w-8 h-8 text-purple-500 mx-auto" />
+                                                <p className="text-sm font-medium text-gray-900">Drop Mobile Image</p>
+                                                <p className="text-xs text-gray-500">800x1000px recommended</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Submit Button */}
                             <div className="pt-4">
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     disabled={isSubmitting}
                                     className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
@@ -577,17 +645,20 @@ const AdminHeroPage = () => {
                             <div className="relative bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl overflow-hidden min-h-80 flex items-center justify-center">
                                 {/* Background Image */}
                                 {imagePreview && (
-                                    <div 
+                                    <div
                                         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                                         style={{ backgroundImage: `url(${imagePreview})` }}
                                     >
                                         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                                     </div>
                                 )}
-                                
+
                                 {/* Content */}
                                 <div className="relative z-10 text-center px-8 py-12">
-                                    <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
+                                    <h1
+                                        className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg"
+                                        style={{ fontFamily: hero.titleFont || 'sans-serif' }}
+                                    >
                                         {hero.title || 'Your Hero Title'}
                                     </h1>
                                     <p className="text-lg md:text-xl text-white mb-8 drop-shadow-lg max-w-2xl mx-auto">
@@ -597,13 +668,13 @@ const AdminHeroPage = () => {
                                         {hero.linkText || 'Your Button Text'}
                                     </button>
                                 </div>
-                                
+
                                 {/* Preview Overlay */}
                                 <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-xs">
                                     Live Preview
                                 </div>
                             </div>
-                            
+
                             {/* Preview Info */}
                             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                                 <h3 className="font-semibold text-gray-900 mb-2 flex items-center">

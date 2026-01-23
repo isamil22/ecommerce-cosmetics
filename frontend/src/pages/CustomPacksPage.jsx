@@ -32,21 +32,21 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
             onMouseLeave={() => setIsHovered(false)}
         >
             {/* Premium Badges */}
-            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+            <div className="absolute top-2 left-2 z-20 flex flex-col gap-1">
                 {isNew && (
-                    <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
+                    <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full shadow-lg animate-pulse">
                         ✨ جديد / NOUVEAU
                     </span>
                 )}
-                <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full shadow-lg">
                     🎨 مخصص / PERSONNALISÉ
                 </span>
                 {isFixedPricing ? (
-                    <span className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    <span className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full shadow-lg">
                         💰 سعر ثابت / FIXE
                     </span>
                 ) : (
-                    <span className="bg-gradient-to-r from-orange-500 to-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    <span className="bg-gradient-to-r from-orange-500 to-red-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full shadow-lg">
                         🔥 خصم / REMISE
                     </span>
                 )}
@@ -104,31 +104,31 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
                 </div>
 
                 {/* Enhanced Pack Info */}
-                <div className="p-6 space-y-4 flex-1 flex flex-col">
+                <div className="p-3 md:p-6 space-y-2 md:space-y-4 flex-1 flex flex-col">
                     {/* Pack Title */}
                     <div>
-                        <h3 className="text-xl font-bold text-gray-800 line-clamp-2 leading-tight group-hover:text-purple-600 transition-colors mb-2">
+                        <h3 className="text-base md:text-xl font-bold text-gray-800 line-clamp-2 leading-tight group-hover:text-purple-600 transition-colors mb-1">
                             {pack.name}
                         </h3>
 
                         {/* Description */}
-                        <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-4">
+                        <p className="text-gray-600 text-xs md:text-sm line-clamp-3 leading-relaxed mb-2">
                             {pack.description || 'Créez votre pack beauté personnalisé parfait avec notre sélection de produits premium.'}
                         </p>
                     </div>
 
                     {/* Pack Details */}
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-gray-700">Plage d'articles :</span>
-                            <span className="text-sm bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-semibold">
+                            <span className="text-xs md:text-sm font-semibold text-gray-700">Plage d'articles :</span>
+                            <span className="text-xs md:text-sm bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold">
                                 {itemRange}
                             </span>
                         </div>
 
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-gray-700">Tarification :</span>
-                            <span className={`text-sm px-3 py-1 rounded-full font-semibold ${isFixedPricing
+                            <span className="text-xs md:text-sm font-semibold text-gray-700">Tarification :</span>
+                            <span className={`text-xs md:text-sm px-2 py-0.5 rounded-full font-semibold ${isFixedPricing
                                 ? 'bg-blue-100 text-blue-700'
                                 : 'bg-orange-100 text-orange-700'
                                 }`}>
@@ -139,13 +139,13 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
 
                     {/* Price Section */}
                     <div className="mt-auto">
-                        <div className="flex items-center gap-2 mb-3">
-                            <span className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                                 {priceDisplay}
                             </span>
                         </div>
 
-                        <p className="text-purple-600 text-sm font-semibold">
+                        <p className="text-purple-600 text-xs md:text-sm font-semibold">
                             🎨 Créez votre pack parfait
                         </p>
                     </div>
@@ -153,13 +153,13 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
             </Link>
 
             {/* Enhanced Action Button */}
-            <div className="p-6 pt-0">
+            <div className="p-3 md:p-6 pt-0">
                 <Link
                     to={`/custom-packs/${pack.id}`}
-                    className="block w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:from-purple-600 hover:to-indigo-700 hover:scale-105 hover:shadow-xl text-center group"
+                    className="block w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-2 md:py-4 px-4 md:px-6 rounded-xl transition-all duration-300 transform hover:from-purple-600 hover:to-indigo-700 hover:scale-105 hover:shadow-xl text-center group text-sm md:text-base"
                 >
                     <span className="flex items-center justify-center gap-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
                         </svg>
                         إنشاء الباقة / Créer le Pack
@@ -277,21 +277,21 @@ const CustomPacksPage = () => {
                     <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-indigo-200 rounded-full -translate-y-48 translate-x-48 opacity-30 animate-pulse"></div>
                     <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-200 to-purple-200 rounded-full translate-y-40 -translate-x-40 opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
 
-                    <div className="relative z-10 w-full py-8 md:py-12">
+                    <div className="relative z-10 w-full py-4 md:py-12">
                         <div className="container mx-auto px-4 text-center">
                             {/* Enhanced Page Header */}
-                            <div className="mb-8 md:mb-12">
-                                <div className="inline-block mb-4">
-                                    <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-5 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                            <div className="mb-4 md:mb-12">
+                                <div className="inline-block mb-2">
+                                    <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-3 py-1 rounded-full text-[10px] md:text-xs font-bold shadow-lg">
                                         🎨 منشئ الباقات المخصص / Créateur de Pack Personnalisé
                                     </span>
                                 </div>
 
-                                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4 leading-tight">
+                                <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-3 leading-tight">
                                     اصنع باقتك الخاصة / Créez Votre Propre Pack
                                 </h1>
 
-                                <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
+                                <p className="text-sm md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-4">
                                     صمم مجموعتك الجمالية المثالية مع منشئ الباقات المخصص لدينا. اختر منتجاتك المفضلة واستمتع بأسعار حصرية! / Concevez votre collection de beauté parfaite avec notre créateur de packs personnalisés. Choisissez vos produits préférés et profitez de prix exclusifs !
                                 </p>
 
@@ -317,13 +317,13 @@ const CustomPacksPage = () => {
             </div>
 
             {/* Enhanced Search and Filter Section - Sticky Toolbar Style */}
-            <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 w-full py-4 sm:py-8 mt-0 shadow-sm z-20 relative">
+            <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 w-full py-3 md:py-8 mt-0 shadow-sm z-20 relative">
                 <div className="container mx-auto px-4">
-                    <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
+                    <div className="flex flex-col lg:flex-row gap-2 items-center justify-between">
                         {/* Search */}
                         <div className="relative flex-1 max-w-md w-full">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="h-4 w-4 md:h-5 md:w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
@@ -332,7 +332,7 @@ const CustomPacksPage = () => {
                                 placeholder="ابحث عن منشئي الباقات... / Rechercher des créateurs..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm shadow-inner text-sm sm:text-base"
+                                className="block w-full pl-10 pr-3 py-2 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm shadow-inner text-sm md:text-base"
                             />
                         </div>
 
@@ -341,7 +341,7 @@ const CustomPacksPage = () => {
                             <select
                                 value={filterBy}
                                 onChange={(e) => setFilterBy(e.target.value)}
-                                className="px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full text-sm sm:text-base"
+                                className="px-2 py-2 md:px-4 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full text-sm md:text-base"
                             >
                                 <option value="all">جميع المنشئين / Tous les Créateurs</option>
                                 <option value="new">وصل حديثاً / Nouveautés</option>
@@ -352,7 +352,7 @@ const CustomPacksPage = () => {
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
-                                className="px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full text-sm sm:text-base"
+                                className="px-2 py-2 md:px-4 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full text-sm md:text-base"
                             >
                                 <option value="name">الاسم / Nom</option>
                                 <option value="newest">الأحدث أولاً / Plus Récents</option>
@@ -374,7 +374,7 @@ const CustomPacksPage = () => {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6 lg:gap-8">
                             {filteredAndSortedPacks.map((pack, index) => (
                                 <CustomPackCard
                                     key={pack.id}
@@ -444,9 +444,9 @@ const CustomPacksPage = () => {
                                 </div>
 
                                 {/* Content Section */}
-                                <div className="p-4 sm:p-6 md:p-8 flex flex-col justify-between">
+                                <div className="p-3 md:p-6 md:p-8 flex flex-col justify-between">
                                     <div>
-                                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{quickViewPack.name}</h2>
+                                        <h2 className="text-xl md:text-3xl font-bold text-gray-800 mb-4">{quickViewPack.name}</h2>
 
                                         <p className="text-gray-600 mb-6 leading-relaxed">
                                             {quickViewPack.description || 'Créez votre pack beauté personnalisé parfait avec notre sélection de produits premium.'}
@@ -487,14 +487,14 @@ const CustomPacksPage = () => {
                                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                                         <Link
                                             to={`/custom-packs/${quickViewPack.id}`}
-                                            className="flex-1 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-3 sm:py-4 px-6 rounded-xl transition-all duration-300 transform hover:from-purple-600 hover:to-indigo-700 hover:scale-105 text-center"
+                                            className="flex-1 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-2 md:py-4 px-6 rounded-xl transition-all duration-300 transform hover:from-purple-600 hover:to-indigo-700 hover:scale-105 text-center text-sm md:text-base"
                                             onClick={handleCloseQuickView}
                                         >
                                             ابدأ البناء / Commencer
                                         </Link>
                                         <button
                                             onClick={handleCloseQuickView}
-                                            className="px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-600 font-semibold rounded-xl hover:border-gray-400 hover:text-gray-800 transition-all duration-200"
+                                            className="px-6 py-2 md:py-4 border-2 border-gray-300 text-gray-600 font-semibold rounded-xl hover:border-gray-400 hover:text-gray-800 transition-all duration-200 text-sm md:text-base"
                                         >
                                             إغلاق / Fermer
                                         </button>

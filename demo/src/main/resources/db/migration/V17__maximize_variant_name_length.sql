@@ -1,0 +1,1 @@
+ALTER TABLE order_item MODIFY COLUMN variant_name MEDIUMTEXT;

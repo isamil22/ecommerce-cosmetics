@@ -26,13 +26,14 @@ public class HeroService {
             newHero.setSubtitle("Default Subtitle");
             newHero.setLinkText("Shop Now");
             newHero.setLinkUrl("/products");
+            newHero.setTitleFont("sans-serif");
             newHero.setImageUrl("https://placehold.co/1200x400/E91E63/FFFFFF?text=Beauty+Cosmetics");
             return heroRepository.save(newHero);
         });
         return heroMapper.toDTO(hero);
     }
 
-    public HeroDTO updateHero(HeroDTO heroDTO, MultipartFile image) throws IOException {
+    public HeroDTO updateHero(HeroDTO heroDTO, MultipartFile image, MultipartFile mobileImage) throws IOException {
         Hero hero = heroRepository.findById(1L)
                 .orElseThrow(() -> new ResourceNotFoundException("Hero section not found"));
 
@@ -40,6 +41,7 @@ public class HeroService {
         hero.setSubtitle(heroDTO.getSubtitle());
         hero.setLinkText(heroDTO.getLinkText());
         hero.setLinkUrl(heroDTO.getLinkUrl());
+        hero.setTitleFont(heroDTO.getTitleFont());
 
         if (image != null && !image.isEmpty()) {
             try {
@@ -49,6 +51,15 @@ public class HeroService {
                 // If file service fails, skip image update but continue with other updates
                 System.err.println("File service error, skipping image update: " + e.getMessage());
                 // Keep existing image URL if file service fails
+            }
+        }
+
+        if (mobileImage != null && !mobileImage.isEmpty()) {
+            try {
+                String mobileImageUrl = localFileService.saveImage(mobileImage, "hero");
+                hero.setMobileImageUrl(mobileImageUrl);
+            } catch (IOException e) {
+                System.err.println("File service error, skipping mobile image update: " + e.getMessage());
             }
         }
 

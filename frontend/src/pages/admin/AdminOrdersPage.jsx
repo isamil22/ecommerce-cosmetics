@@ -41,9 +41,9 @@ const StatusBadge = ({ status, count, percentage }) => (
     <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border">
         <div className="flex items-center">
             <div className={`w-3 h-3 rounded-full mr-3 ${status === 'PREPARING' ? 'bg-yellow-400' :
-                    status === 'DELIVERING' ? 'bg-blue-400' :
-                        status === 'DELIVERED' ? 'bg-green-400' :
-                            'bg-red-400'
+                status === 'DELIVERING' ? 'bg-blue-400' :
+                    status === 'DELIVERED' ? 'bg-green-400' :
+                        'bg-red-400'
                 }`}></div>
             <span className="text-sm font-medium text-gray-700">{status}</span>
         </div>
@@ -664,8 +664,8 @@ const AdminOrdersPage = () => {
                             <button
                                 onClick={() => setShowDeleted(!showDeleted)}
                                 className={`px-4 py-2 rounded-lg transition-colors ${showDeleted
-                                        ? 'bg-red-600 text-white'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                    ? 'bg-red-600 text-white'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                     }`}
                             >
                                 {showDeleted ? 'Show Active' : 'Show Deleted'}
@@ -947,8 +947,8 @@ const AdminOrdersPage = () => {
                                                 <button
                                                     onClick={() => setCurrentPage(page)}
                                                     className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${page === currentPage
-                                                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                                                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                                                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                                                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
                                                         }`}
                                                 >
                                                     {page}
@@ -1055,11 +1055,40 @@ const AdminOrdersPage = () => {
                                                             />
                                                             <div className="flex-1">
                                                                 <p className="text-sm font-semibold text-gray-900">{item.productName}</p>
-                                                                {item.variantName && (
-                                                                    <p className="text-xs text-gray-500 mt-1">
-                                                                        <span className="font-medium">Variant:</span> {item.variantName}
-                                                                    </p>
-                                                                )}
+                                                                {item.variantName && (() => {
+                                                                    try {
+                                                                        const parsedDiff = JSON.parse(item.variantName);
+                                                                        if (Array.isArray(parsedDiff)) {
+                                                                            return (
+                                                                                <div className="mt-2">
+                                                                                    <p className="text-xs font-medium text-gray-500 mb-1">Pack Contents:</p>
+                                                                                    <div className="flex -space-x-2 overflow-hidden">
+                                                                                        {parsedDiff.map((subItem, subIndex) => (
+                                                                                            <img
+                                                                                                key={subIndex}
+                                                                                                src={subItem.image}
+                                                                                                alt={subItem.name}
+                                                                                                title={subItem.name}
+                                                                                                className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
+                                                                                            />
+                                                                                        ))}
+                                                                                    </div>
+                                                                                </div>
+                                                                            );
+                                                                        }
+                                                                        return (
+                                                                            <p className="text-xs text-gray-500 mt-1">
+                                                                                <span className="font-medium">Variant:</span> {item.variantName}
+                                                                            </p>
+                                                                        );
+                                                                    } catch (e) {
+                                                                        return (
+                                                                            <p className="text-xs text-gray-500 mt-1">
+                                                                                <span className="font-medium">Variant:</span> {item.variantName}
+                                                                            </p>
+                                                                        );
+                                                                    }
+                                                                })()}
                                                                 <div className="flex items-center space-x-4 mt-1">
                                                                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                                                                         Qty: {item.quantity}

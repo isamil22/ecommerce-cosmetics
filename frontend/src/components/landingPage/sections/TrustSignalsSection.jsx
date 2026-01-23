@@ -6,22 +6,46 @@ import React, { useEffect, useState, useRef } from 'react';
  */
 const TrustSignalsSection = ({ data }) => {
     const {
-        badges = [
-            { icon: '🏆', text: 'Award Winning', subtext: 'Best Product 2024' },
-            { icon: '✓', text: '100% Guaranteed', subtext: '30-Day Money Back' },
-            { icon: '⭐', text: '50,000+ Reviews', subtext: '4.9 Average Rating' },
-            { icon: '🚚', text: 'Free Shipping', subtext: 'On Orders $50+' },
-        ],
+        badges: dbBadges,
         backgroundColor = '#ffffff',
         // New premium options
         showStats = true,
-        stats = [
-            { number: '50K+', label: 'Happy Customers' },
-            { number: '4.9', label: 'Star Rating' },
-            { number: '30', label: 'Day Guarantee' },
-            { number: '24/7', label: 'Support' },
-        ],
+        stats: dbStats,
     } = data || {};
+
+    // Override badges if they match defaults
+    const badges = (dbBadges || []).map(badge => {
+        if (badge.text === 'Award Winning') return { ...badge, text: 'حائز على جوائز', subtext: 'أفضل منتج لعام 2024' };
+        if (badge.text === '100% Guaranteed') return { ...badge, text: 'مضمون 100%', subtext: 'استرداد الأموال خلال 30 يوم' };
+        if (badge.text === '50,000+ Reviews') return { ...badge, text: '+50,000 مراجعة', subtext: '4.9 متوسط التقييم' };
+        if (badge.text === 'Free Shipping') return { ...badge, text: 'شحن مجاني', subtext: 'للطلبات أكثر من $50' };
+        return badge;
+    });
+
+    // Use default Arabic badges if DB badges are missing or empty
+    const finalBadges = (badges && badges.length > 0) ? badges : [
+        { icon: '🏆', text: 'حائز على جوائز', subtext: 'أفضل منتج لعام 2024' },
+        { icon: '✓', text: 'مضمون 100%', subtext: 'استرداد الأموال خلال 30 يوم' },
+        { icon: '⭐', text: '+50,000 مراجعة', subtext: '4.9 متوسط التقييم' },
+        { icon: '🚚', text: 'شحن مجاني', subtext: 'للطلبات أكثر من $50' },
+    ];
+
+    // Override stats labels
+    const stats = (dbStats || []).map(stat => {
+        if (stat.label === 'Happy Customers') return { ...stat, label: 'عملاء سعداء' };
+        if (stat.label === 'Star Rating') return { ...stat, label: 'تقييم النجوم' };
+        if (stat.label === 'Day Guarantee') return { ...stat, label: 'أيام ضمان' };
+        if (stat.label === 'Support') return { ...stat, label: 'دعم' };
+        return stat;
+    });
+
+    // Default stats if missing
+    const finalStats = (stats && stats.length > 0) ? stats : [
+        { number: '50K+', label: 'عملاء سعداء' },
+        { number: '4.9', label: 'تقييم النجوم' },
+        { number: '30', label: 'أيام ضمان' },
+        { number: '24/7', label: 'دعم' },
+    ];
 
     const [isVisible, setIsVisible] = useState(false);
     const sectionRef = useRef(null);
@@ -44,10 +68,10 @@ const TrustSignalsSection = ({ data }) => {
     }, []);
 
     return (
-        <div 
+        <div
             ref={sectionRef}
             style={{
-                background: backgroundColor === '#ffffff' 
+                background: backgroundColor === '#ffffff'
                     ? 'linear-gradient(180deg, #fafafa 0%, #ffffff 100%)'
                     : backgroundColor,
                 padding: '80px 20px',
@@ -70,7 +94,7 @@ const TrustSignalsSection = ({ data }) => {
                 margin: '0 auto',
             }}>
                 {/* Stats Counter Section */}
-                {showStats && stats && stats.length > 0 && (
+                {showStats && finalStats && finalStats.length > 0 && (
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
@@ -78,8 +102,8 @@ const TrustSignalsSection = ({ data }) => {
                         marginBottom: '60px',
                         textAlign: 'center',
                     }}>
-                        {stats.map((stat, index) => (
-                            <div 
+                        {finalStats.map((stat, index) => (
+                            <div
                                 key={index}
                                 style={{
                                     opacity: isVisible ? 1 : 0,
@@ -118,7 +142,7 @@ const TrustSignalsSection = ({ data }) => {
                     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                     gap: '25px',
                 }}>
-                    {badges.map((badge, index) => (
+                    {finalBadges.map((badge, index) => (
                         <div
                             key={index}
                             style={{
@@ -159,7 +183,7 @@ const TrustSignalsSection = ({ data }) => {
                             }}>
                                 {badge.icon}
                             </div>
-                            
+
                             {/* Badge Text */}
                             <h3 style={{
                                 fontSize: '1.2rem',
@@ -169,7 +193,7 @@ const TrustSignalsSection = ({ data }) => {
                             }}>
                                 {badge.text}
                             </h3>
-                            
+
                             {/* Subtext */}
                             {badge.subtext && (
                                 <p style={{
@@ -199,7 +223,7 @@ const TrustSignalsSection = ({ data }) => {
                         letterSpacing: '2px',
                         marginBottom: '25px',
                     }}>
-                        Trusted by thousands of happy customers
+                        موثوق من قبل الآلاف من العملاء السعداء
                     </p>
                     <div style={{
                         display: 'flex',

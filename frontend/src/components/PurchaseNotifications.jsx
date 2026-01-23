@@ -94,7 +94,7 @@ const PurchaseNotifications = ({ packName, productImage }) => {
                         <div className="text-xs text-gray-600 flex items-center gap-2">
                             <span className="font-bold">اشترت للتو</span>
                             <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                            <span className="font-medium tracking-wide opacity-90">Just purchased</span>
+                            <span className="font-medium tracking-wide opacity-90">Vient d'acheter</span>
                         </div>
                     </div>
 

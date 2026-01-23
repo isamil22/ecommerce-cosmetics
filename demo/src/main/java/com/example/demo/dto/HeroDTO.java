@@ -9,5 +9,7 @@ public class HeroDTO {
     private String subtitle;
     private String linkText;
     private String linkUrl;
+    private String titleFont;
     private String imageUrl;
+    private String mobileImageUrl;
 }

@@ -6,16 +6,30 @@ import React, { useState, useRef, useEffect } from 'react';
  */
 const FAQSection = ({ data }) => {
     const {
-        title = 'Frequently Asked Questions',
-        subtitle = 'Got questions? We have answers',
-        faqs = [
-            { question: 'How long does shipping take?', answer: 'We offer free shipping and delivery takes 3-5 business days.' },
-            { question: 'What is your return policy?', answer: 'We offer a 30-day money-back guarantee. If you\'re not satisfied, we\'ll refund you.' },
-            { question: 'Is this product safe to use?', answer: 'Yes, our product is made with natural ingredients and is safe for all skin types.' },
-            { question: 'How do I use this product?', answer: 'Apply a small amount to clean skin twice daily for best results.' },
-        ],
+        title: dbTitle,
+        subtitle: dbSubtitle,
+        faqs: dbFaqs,
         backgroundColor = '#fafafa',
     } = data || {};
+
+    const title = (!dbTitle || dbTitle === 'Frequently Asked Questions') ? 'الأسئلة الشائعة' : dbTitle;
+    const subtitle = (!dbSubtitle || dbSubtitle === 'Got questions? We have answers') ? 'لديكم أسئلة؟ لدينا الإجابات' : dbSubtitle;
+
+    const faqs = (dbFaqs || []).map(faq => {
+        if (faq.question === 'How long does shipping take?') return { ...faq, question: 'كم تستغرق عملية الشحن؟', answer: 'نقدم شحناً مجانياً ويستغرق التوصيل من 3 إلى 5 أيام عمل.' };
+        if (faq.question === 'What is your return policy?') return { ...faq, question: 'ما هي سياسة الاسترجاع؟', answer: 'نقدم ضمان استرداد الأموال خلال 30 يوم. إذا لم تكوني راضية، سنعيد لك أموالك.' };
+        if (faq.question === 'Is this product safe to use?') return { ...faq, question: 'هل هذا المنتج آمن للاستخدام؟', answer: 'نعم، منتجنا مصنوع من مكونات طبيعية وآمن لجميع أنواع البشرة.' };
+        if (faq.question === 'How do I use this product?') return { ...faq, question: 'كيف أستخدم هذا المنتج؟', answer: 'ضعي كمية صغيرة على بشرة نظيفة مرتين يومياً للحصول على أفضل النتائج.' };
+        return faq;
+    });
+
+    // Fallback if no FAQs loaded but default expected
+    const finalFaqs = (faqs && faqs.length > 0) ? faqs : [
+        { question: 'كم تستغرق عملية الشحن؟', answer: 'نقدم شحناً مجانياً ويستغرق التوصيل من 3 إلى 5 أيام عمل.' },
+        { question: 'ما هي سياسة الاسترجاع؟', answer: 'نقدم ضمان استرداد الأموال خلال 30 يوم. إذا لم تكوني راضية، سنعيد لك أموالك.' },
+        { question: 'هل هذا المنتج آمن للاستخدام؟', answer: 'نعم، منتجنا مصنوع من مكونات طبيعية وآمن لجميع أنواع البشرة.' },
+        { question: 'كيف أستخدم هذا المنتج؟', answer: 'ضعي كمية صغيرة على بشرة نظيفة مرتين يومياً للحصول على أفضل النتائج.' },
+    ];
 
     const [openIndex, setOpenIndex] = useState(0); // First one open by default
     const [isVisible, setIsVisible] = useState(false);
@@ -43,10 +57,10 @@ const FAQSection = ({ data }) => {
     };
 
     return (
-        <div 
+        <div
             ref={sectionRef}
             style={{
-                background: backgroundColor === '#fafafa' 
+                background: backgroundColor === '#fafafa'
                     ? 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'
                     : backgroundColor,
                 padding: '100px 20px',
@@ -101,7 +115,7 @@ const FAQSection = ({ data }) => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px',
                     }}>
-                        FAQ
+                        الأسئلة الشائعة
                     </span>
                     <h2 style={{
                         fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -125,7 +139,7 @@ const FAQSection = ({ data }) => {
 
                 {/* FAQ Items */}
                 <div>
-                    {faqs.map((faq, index) => (
+                    {finalFaqs.map((faq, index) => (
                         <FAQItem
                             key={index}
                             faq={faq}
@@ -154,13 +168,13 @@ const FAQSection = ({ data }) => {
                         marginBottom: '10px',
                         color: '#333',
                     }}>
-                        Still have questions?
+                        لا تزال لديكم أسئلة؟
                     </h3>
                     <p style={{
                         color: '#666',
                         marginBottom: '20px',
                     }}>
-                        We're here to help! Contact our friendly support team.
+                        نحن هنا للمساعدة! اتصل بفريق الدعم لدينا.
                     </p>
                     <a
                         href="mailto:support@example.com"
@@ -187,7 +201,7 @@ const FAQSection = ({ data }) => {
                             e.target.style.boxShadow = '0 4px 15px rgba(255,105,180,0.3)';
                         }}
                     >
-                        📧 Contact Support
+                        📧 اتصل بالدعم
                     </a>
                 </div>
             </div>
@@ -212,11 +226,11 @@ const FAQItem = ({ faq, index, isOpen, onToggle, isVisible }) => {
                 marginBottom: '15px',
                 background: 'white',
                 borderRadius: '16px',
-                boxShadow: isOpen 
-                    ? '0 10px 40px rgba(255,105,180,0.12)' 
+                boxShadow: isOpen
+                    ? '0 10px 40px rgba(255,105,180,0.12)'
                     : '0 2px 10px rgba(0,0,0,0.04)',
-                border: isOpen 
-                    ? '2px solid rgba(255,105,180,0.2)' 
+                border: isOpen
+                    ? '2px solid rgba(255,105,180,0.2)'
                     : '2px solid transparent',
                 overflow: 'hidden',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -248,8 +262,8 @@ const FAQItem = ({ faq, index, isOpen, onToggle, isVisible }) => {
                     width: '36px',
                     height: '36px',
                     borderRadius: '50%',
-                    background: isOpen 
-                        ? 'linear-gradient(135deg, #ff69b4 0%, #ff1493 100%)' 
+                    background: isOpen
+                        ? 'linear-gradient(135deg, #ff69b4 0%, #ff1493 100%)'
                         : '#f5f5f5',
                     display: 'flex',
                     alignItems: 'center',
@@ -270,14 +284,14 @@ const FAQItem = ({ faq, index, isOpen, onToggle, isVisible }) => {
                     </span>
                 </span>
             </button>
-            <div 
+            <div
                 style={{
                     height: height,
                     overflow: 'hidden',
                     transition: 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
             >
-                <div 
+                <div
                     ref={contentRef}
                     style={{
                         padding: '0 30px 25px 30px',

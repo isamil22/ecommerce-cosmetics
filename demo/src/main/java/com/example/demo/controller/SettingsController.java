@@ -21,6 +21,9 @@ public class SettingsController {
     @Autowired
     private SettingRepository settingRepository;
 
+    @Autowired
+    private com.example.demo.service.LocalFileService localFileService;
+
     /**
      * Retrieves all settings as a map of key-value pairs.
      * This endpoint is public to allow the frontend to fetch the Pixel ID.
@@ -32,6 +35,30 @@ public class SettingsController {
         Map<String, String> settingsMap = settings.stream()
                 .collect(Collectors.toMap(Setting::getSettingKey, Setting::getValue));
         return ResponseEntity.ok(settingsMap);
+    }
+
+    /**
+     * Uploads a logo and updates the site_logo_url setting.
+     * @param file The logo image file.
+     * @return The URL of the uploaded logo.
+     */
+    @PostMapping("/logo")
+    @PreAuthorize("hasAuthority('SETTINGS:EDIT') or hasAuthority('SETTINGS:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<Map<String, String>> uploadLogo(@RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
+        try {
+            String logoUrl = localFileService.saveImage(file, "system");
+            
+            // Save to database
+            Setting setting = settingRepository.findBySettingKey("site_logo_url")
+                    .orElse(new Setting());
+            setting.setSettingKey("site_logo_url");
+            setting.setValue(logoUrl);
+            settingRepository.save(setting);
+            
+            return ResponseEntity.ok(Map.of("url", logoUrl));
+        } catch (java.io.IOException e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to upload logo"));
+        }
     }
 
     /**

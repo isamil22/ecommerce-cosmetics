@@ -18,17 +18,23 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
     const handleCTA = useLandingPageCTA(activeProductId, ctaData);
 
     const {
-        titleBack = 'SKIN CARE',
-        headline = 'Love your bits...',
-        subheadline = '(and your bod)',
+        titleBack: dbTitleBack,
+        headline: dbHeadline,
+        subheadline: dbSubheadline,
         productImage,
         backgroundImage,
         backgroundColor = '#e6e6fa',
-        ctaText = 'Shop Now',
+        ctaText: dbCtaText,
         ctaLink = '#shop',
-        badge = 'New Arrival',
+        badge: dbBadge,
         textColor = '#333'
     } = data || {};
+
+    const titleBack = (!dbTitleBack || dbTitleBack === 'SKIN CARE') ? 'العناية بالبشرة' : dbTitleBack;
+    const headline = (!dbHeadline || dbHeadline === 'Love your bits...') ? 'أحبي بشرتك...' : dbHeadline;
+    const subheadline = (!dbSubheadline || dbSubheadline === '(and your bod)') ? '(وجمالك)' : dbSubheadline;
+    const ctaText = (!dbCtaText || dbCtaText === 'Shop Now') ? 'تسوقي الآن' : dbCtaText;
+    const badge = (!dbBadge || dbBadge === 'New Arrival') ? 'وصل حديثاً' : dbBadge;
 
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -45,19 +51,36 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
             className="hero-premium-section"
             onMouseMove={handleMouseMove}
             style={{
-                position: 'relative',
-                minHeight: '800px',
                 backgroundColor: backgroundColor,
-                backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                // Desktop background image is handled by CSS for better control
             }}
         >
             <style>{`
+                .hero-premium-section {
+                    position: relative;
+                    min-height: auto;
+                    background-size: cover;
+                    background-position: center;
+                    overflow: hidden;
+                    display: block;
+                    ${backgroundImage ? `background-image: url('${backgroundImage}');` : ''}
+                }
+                
+                @media (max-width: 991px) {
+                     .hero-premium-section {
+                        background-image: none !important;
+                     }
+                }
+
+                @media (min-width: 992px) {
+                    .hero-premium-section {
+                        min-height: 800px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+
                 .hero-premium-section .giant-text {
                     position: absolute;
                     top: 50%;
@@ -176,21 +199,44 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                     100% { transform: translateY(0px); }
                 }
 
-                /* Mobile Responsiveness */
                 @media (max-width: 991px) {
                     .hero-premium-section {
-                        min-height: auto;
-                        padding: 80px 0;
+                        min-height: auto !important;
+                        padding: 0; 
+                        display: grid !important; /* Switch to Grid for overlay */
+                        grid-template-areas: "hero-stack";
+                        background-image: none !important;
+                        overflow: hidden; /* Contain animations */
+                    }
+
+                    /* Both Image and Content occupy the same grid cell */
+                    .mobile-bg-image {
+                        grid-area: hero-stack;
+                        display: block !important;
+                        width: 100%;
+                        height: auto;
+                        max-height: unset; /* Allow full height */
+                        object-fit: contain;
+                        z-index: 1; /* Behind content */
                     }
 
                     .hero-premium-section .content-grid {
-                        grid-template-columns: 1fr;
-                        text-align: center;
-                        gap: 40px;
+                        grid-area: hero-stack;
+                        z-index: 2; /* On top of image */
+                        display: flex !important;
+                        flex-direction: column;
+                        justify-content: flex-end; /* Align content to bottom */
+                        align-items: center;
+                        padding: 20px !important;
+                        margin-top: 0 !important; /* Remove overlap margin */
+                        height: 100%; /* Full height to allow alignment */
                     }
 
                     .hero-premium-section .image-column {
-                        order: 1; /* Image first on mobile usually looks better for products */
+                        order: 1;
+                        margin-bottom: 20px;
+                        /* Optional: Animate product image */
+                        animation: fadeInUp 0.8s ease-out forwards;
                     }
 
                     .hero-premium-section .text-column {
@@ -198,20 +244,70 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                         text-align: center;
                     }
                     
-                    .hero-premium-section .product-image {
-                        max-height: 400px;
+                    /* Animations */
+                    .hero-premium-section .main-headline {
+                        font-size: 2.5rem; 
+                        margin-bottom: 5px;
+                        opacity: 0;
+                        animation: fadeInUp 0.8s ease-out 0.3s forwards;
                     }
 
-                    .hero-premium-section .giant-text {
-                        font-size: 18vw; /* Scale down giant text */
+                    .hero-premium-section .sub-headline {
+                        font-size: 1.5rem;
+                        margin-bottom: 20px;
+                        opacity: 0;
+                        animation: fadeInUp 0.8s ease-out 0.5s forwards;
                     }
 
                     .hero-premium-section .cta-button {
                         width: 100%;
-                        max-width: 300px;
+                        max-width: 250px;
+                        margin-top: 5px;
+                        padding: 14px 30px;
+                        opacity: 0;
+                        animation: fadeInUp 0.8s ease-out 0.7s forwards;
+                    }
+
+                    .hero-premium-section .badge {
+                         margin-bottom: 10px;
+                         opacity: 0;
+                         animation: fadeInUp 0.8s ease-out 0.2s forwards;
+                    }
+
+                    .hero-premium-section .product-image {
+                        max-height: 200px;
+                    }
+
+                    .hero-premium-section .giant-text {
+                        display: none; /* Hide on mobile to clean up */
                     }
                 }
+                
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                /* Desktop: Hide mobile bg image */
+                .mobile-bg-image {
+                    display: none;
+                }
             `}</style>
+
+            {/* Mobile-only Static Background Image */}
+            {data?.mobileImageUrl && (
+                <img
+                    src={data.mobileImageUrl}
+                    alt="Hero Background"
+                    className="mobile-bg-image"
+                />
+            )}
 
             {/* 1. LAYER ONE: Giant Background Text */}
             <div className="giant-text">
@@ -236,7 +332,7 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                         />
                     ) : (
                         <div className="placeholder-image">
-                            Upload Transparent Product Image
+                            تحميل صورة المنتج (شفافة)
                         </div>
                     )}
                 </div>

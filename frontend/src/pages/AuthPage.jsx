@@ -31,7 +31,7 @@ const AuthPage = ({ setIsAuthenticated }) => {
         setSuccess('');
 
         if (!recaptchaToken) {
-            setError('Please complete the reCAPTCHA.');
+            setError('يرجى إكمال اختبار reCAPTCHA. / Veuillez compléter le reCAPTCHA.');
             return;
         }
 
@@ -44,7 +44,7 @@ const AuthPage = ({ setIsAuthenticated }) => {
                 });
                 localStorage.setItem('token', response.data);
                 setIsAuthenticated(true);
-                
+
                 // Get user profile to determine redirection based on dashboard access
                 try {
                     const profileResponse = await getUserProfile();
@@ -59,12 +59,12 @@ const AuthPage = ({ setIsAuthenticated }) => {
                 }
             } else {
                 await registerUser({ ...formData, recaptchaToken });
-                setSuccess('Registration successful! A confirmation code has been sent to your email.');
+                setSuccess('تم التسجيل بنجاح! تم إرسال رمز التأكيد إلى بريدك الإلكتروني. / Inscription réussie ! Un code de confirmation a été envoyé à votre email.');
                 setTimeout(() => navigate(`/confirm-email/${formData.email}`), 3000);
             }
         } catch (err) {
-            const errorMessage = err.response?.data || 'An unexpected error occurred.';
-            setError(typeof errorMessage === 'string' ? errorMessage : 'Login or registration failed.');
+            const errorMessage = err.response?.data || 'حدث خطأ غير متوقع. / Une erreur inattendue s\'est produite.';
+            setError(typeof errorMessage === 'string' ? errorMessage : 'فشل تسجيل الدخول أو التسجيل. / Échec de la connexion ou de l\'inscription.');
             console.error(err);
         } finally {
             // Reset reCAPTCHA after submission attempt if needed, though it often resets on its own
@@ -84,12 +84,12 @@ const AuthPage = ({ setIsAuthenticated }) => {
         <div className="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 overflow-hidden">
             {/* Animated Background Layers */}
             <div className="absolute inset-0 bg-gradient-to-br from-pink-400/10 via-purple-400/10 to-blue-400/10"></div>
-            
+
             {/* Floating Decorative Elements */}
             <div className="absolute top-20 left-10 w-72 h-72 bg-pink-300/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
             <div className="absolute top-40 right-10 w-72 h-72 bg-purple-300/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
             <div className="absolute -bottom-8 left-20 w-72 h-72 bg-blue-300/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-            
+
             <div className="relative max-w-md w-full z-10">
                 {/* Logo/Brand Area */}
                 <div className="text-center mb-6">
@@ -104,14 +104,14 @@ const AuthPage = ({ setIsAuthenticated }) => {
                 <div className="bg-white/90 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-2xl border border-white/50 relative overflow-hidden">
                     {/* Decorative top gradient bar */}
                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"></div>
-                    
+
                     {/* Header */}
                     <div className="text-center mb-8">
                         <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                            {isLogin ? 'Welcome Back!' : 'Join Us Today'}
+                            {isLogin ? 'مرحباً بعودتك! / Bon retour !' : 'انضم إلينا اليوم / Rejoignez-nous'}
                         </h2>
                         <p className="text-sm text-gray-600 font-medium">
-                            {isLogin ? 'Sign in to continue your journey' : 'Create an account and start shopping'}
+                            {isLogin ? 'سجل الدخول لمتابعة رحلتك / Connectez-vous pour continuer' : 'أنشئ حساباً وابدأ التسوق / Créez un compte et commencez vos achats'}
                         </p>
                     </div>
 
@@ -120,11 +120,11 @@ const AuthPage = ({ setIsAuthenticated }) => {
                         {/* Full Name Field */}
                         {!isLogin && (
                             <div className="space-y-2 transform transition-all duration-300">
-                                <label 
-                                    htmlFor="full-name" 
-                                    className="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                                <label
+                                    htmlFor="full-name"
+                                    className="block text-xs font-bold text-gray-700 uppercase tracking-wider text-right"
                                 >
-                                    Full Name
+                                    الاسم الكامل / Nom Complet
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -137,8 +137,8 @@ const AuthPage = ({ setIsAuthenticated }) => {
                                         name="fullName"
                                         type="text"
                                         required={!isLogin}
-                                        className="appearance-none block w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300 hover:shadow-md bg-white"
-                                        placeholder="John Doe"
+                                        className="appearance-none block w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300 hover:shadow-md bg-white text-right"
+                                        placeholder="الاسم الكامل / Nom complet"
                                         value={formData.fullName}
                                         onChange={handleChange}
                                     />
@@ -148,11 +148,11 @@ const AuthPage = ({ setIsAuthenticated }) => {
 
                         {/* Email Field */}
                         <div className="space-y-2">
-                            <label 
-                                htmlFor="email-address" 
-                                className="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                            <label
+                                htmlFor="email-address"
+                                className="block text-xs font-bold text-gray-700 uppercase tracking-wider text-right"
                             >
-                                Email Address
+                                البريد الإلكتروني / Adresse Email
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -167,7 +167,7 @@ const AuthPage = ({ setIsAuthenticated }) => {
                                     autoComplete="email"
                                     required
                                     className="appearance-none block w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 hover:border-gray-300 hover:shadow-md bg-white"
-                                    placeholder="you@example.com"
+                                    placeholder="name@example.com"
                                     value={formData.email}
                                     onChange={handleChange}
                                 />
@@ -176,11 +176,11 @@ const AuthPage = ({ setIsAuthenticated }) => {
 
                         {/* Password Field */}
                         <div className="space-y-2">
-                            <label 
-                                htmlFor="password" 
-                                className="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                            <label
+                                htmlFor="password"
+                                className="block text-xs font-bold text-gray-700 uppercase tracking-wider text-right"
                             >
-                                Password
+                                كلمة المرور / Mot de passe
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -220,12 +220,12 @@ const AuthPage = ({ setIsAuthenticated }) => {
 
                         {/* Forgot Password Link */}
                         {isLogin && (
-                            <div className="flex justify-end">
-                                <Link 
-                                    to="/forgot-password" 
+                            <div className="flex justify-end dir-rtl">
+                                <Link
+                                    to="/forgot-password"
                                     className="text-sm font-semibold text-pink-600 hover:text-pink-700 transition-colors duration-200 hover:underline"
                                 >
-                                    Forgot password?
+                                    نسيت كلمة المرور؟ / Mot de passe oublié ?
                                 </Link>
                             </div>
                         )}
@@ -280,7 +280,7 @@ const AuthPage = ({ setIsAuthenticated }) => {
                                         )}
                                     </svg>
                                 </span>
-                                {isLogin ? 'Sign In' : 'Create Account'}
+                                {isLogin ? 'تسجيل الدخول / Se connecter' : 'إنشاء حساب / S\'inscrire'}
                             </button>
                         </div>
                     </form>
@@ -291,22 +291,19 @@ const AuthPage = ({ setIsAuthenticated }) => {
                             <div className="w-full border-t border-gray-200"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-4 bg-white text-gray-500 font-medium">OR</span>
+                            <span className="px-4 bg-white text-gray-500 font-medium">أو / OU</span>
                         </div>
                     </div>
 
                     {/* Toggle Form Link */}
-                    <div className="text-center">
-                        <p className="text-sm text-gray-600">
-                            {isLogin ? "Don't have an account?" : 'Already have an account?'}
-                            {' '}
-                            <button 
-                                onClick={toggleForm} 
-                                className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 transition-all duration-200"
-                            >
-                                {isLogin ? 'Create one now →' : 'Sign in here →'}
-                            </button>
-                        </p>
+                    <div className="flex justify-between items-center text-sm text-gray-600">
+                        <span>{isLogin ? "ليس لديك حساب؟ / Pas de compte ?" : 'لديك حساب بالفعل؟ / Déjà inscrit ?'}</span>
+                        <button
+                            onClick={toggleForm}
+                            className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 transition-all duration-200"
+                        >
+                            {isLogin ? 'أنشئ حساباً الآن → / Créez-en un' : 'سجل الدخول هنا → / Connectez-vous'}
+                        </button>
                     </div>
 
                     {/* Security Badge */}
@@ -314,7 +311,7 @@ const AuthPage = ({ setIsAuthenticated }) => {
                         <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
-                        <span className="font-medium">Secured with reCAPTCHA & SSL encryption</span>
+                        <span className="font-medium">محمية بواسطة reCAPTCHA وتشفير SSL / Sécurisé par reCAPTCHA et cryptage SSL</span>
                     </div>
                 </div>
             </div>

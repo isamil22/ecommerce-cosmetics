@@ -174,15 +174,15 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                     </div>
 
                     {/* Enhanced Search and Filter Section - Full Width Stripe */}
-                    <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 w-full py-4 sm:py-6">
+                    <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 w-full py-3 md:py-6">
                         <div className="container mx-auto px-4">
                             {/* Main Search Bar */}
-                            <div className="mb-6">
+                            <div className="mb-3 md:mb-6">
                                 <div className="relative">
                                     <form onSubmit={handleSearchSubmit} className="relative">
                                         <div className="relative">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div className="absolute inset-y-0 left-0 pl-3 md:pl-4 flex items-center pointer-events-none">
+                                                <svg className="h-4 w-4 md:h-5 md:w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                                 </svg>
                                             </div>
@@ -193,14 +193,14 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                                 value={filters.search}
                                                 onChange={handleFilterChange}
                                                 autoComplete="off"
-                                                className="w-full pl-12 pr-12 py-3 text-base border border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm"
+                                                className="w-full pl-10 pr-10 md:pl-12 md:pr-12 py-2 md:py-3 text-sm md:text-base border border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm"
                                             />
                                             <button
                                                 type="submit"
                                                 className="absolute inset-y-0 right-0 pr-2 flex items-center"
                                             >
-                                                <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-2 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-md">
-                                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-1.5 md:p-2 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-md">
+                                                    <svg className="h-4 w-4 md:h-5 md:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                                     </svg>
                                                 </div>
@@ -229,11 +229,11 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                             </div>
 
                             {/* Enhanced Filter Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4">
                                 {/* Category Filter */}
-                                <div className="space-y-1">
-                                    <label className="block text-xs font-semibold text-gray-700 mb-1 flex items-center gap-2">
-                                        <svg className="h-4 w-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="space-y-0.5 md:space-y-1">
+                                    <label className="block text-[10px] md:text-xs font-semibold text-gray-700 mb-0.5 md:mb-1 flex items-center gap-1 md:gap-2">
+                                        <svg className="h-3 w-3 md:h-4 md:w-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                                         </svg>
                                         الفئة / Catégorie
@@ -242,7 +242,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         name="categoryId"
                                         value={filters.categoryId}
                                         onChange={handleFilterChange}
-                                        className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md text-sm"
+                                        className="w-full px-2 py-1.5 md:px-3 md:py-2.5 border md:border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm hover:shadow-md text-xs md:text-sm"
                                         disabled={filters.productType === 'packs'}
                                     >
                                         <option value="">جميع الفئات / Toutes les Catégories</option>
@@ -253,9 +253,9 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                 </div>
 
                                 {/* Price Range Filters */}
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                        <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="space-y-1 md:space-y-2">
+                                    <label className="block text-[10px] md:text-sm font-semibold text-gray-700 mb-0.5 md:mb-2 flex items-center gap-1 md:gap-2">
+                                        <svg className="h-3 w-3 md:h-5 md:w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                                         </svg>
                                         السعر الأدنى / Prix Minimum
@@ -266,13 +266,13 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         placeholder="0 MAD"
                                         value={filters.minPrice}
                                         onChange={handleFilterChange}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                                        className="w-full px-2 py-1.5 md:px-4 md:py-3 border md:border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm md:shadow-lg hover:shadow-xl text-xs md:text-base"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                        <svg className="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="space-y-1 md:space-y-2">
+                                    <label className="block text-[10px] md:text-sm font-semibold text-gray-700 mb-0.5 md:mb-2 flex items-center gap-1 md:gap-2">
+                                        <svg className="h-3 w-3 md:h-5 md:w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                                         </svg>
                                         السعر الأعلى / Prix Maximum
@@ -283,14 +283,14 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         placeholder="1000 MAD"
                                         value={filters.maxPrice}
                                         onChange={handleFilterChange}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                                        className="w-full px-2 py-1.5 md:px-4 md:py-3 border md:border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm md:shadow-lg hover:shadow-xl text-xs md:text-base"
                                     />
                                 </div>
 
                                 {/* Gender Filter */}
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                        <svg className="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="space-y-1 md:space-y-2">
+                                    <label className="block text-[10px] md:text-sm font-semibold text-gray-700 mb-0.5 md:mb-2 flex items-center gap-1 md:gap-2">
+                                        <svg className="h-3 w-3 md:h-5 md:w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
                                         الجنس / Genre
@@ -299,7 +299,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         name="type"
                                         value={filters.type}
                                         onChange={handleFilterChange}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                                        className="w-full px-2 py-1.5 md:px-4 md:py-3 border md:border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm md:shadow-lg hover:shadow-xl text-xs md:text-base"
                                         disabled={filters.productType === 'packs'}
                                     >
                                         <option value="ALL">جميع الأجناس / Tous les Genres</option>
@@ -310,9 +310,9 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                 </div>
 
                                 {/* Product Type Filter */}
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                        <svg className="h-5 w-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="space-y-1 md:space-y-2">
+                                    <label className="block text-[10px] md:text-sm font-semibold text-gray-700 mb-0.5 md:mb-2 flex items-center gap-1 md:gap-2">
+                                        <svg className="h-3 w-3 md:h-5 md:w-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                         </svg>
                                         النوع / Type
@@ -321,7 +321,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                         name="productType"
                                         value={filters.productType}
                                         onChange={handleFilterChange}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                                        className="w-full px-2 py-1.5 md:px-4 md:py-3 border md:border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm md:shadow-lg hover:shadow-xl text-xs md:text-base"
                                     >
                                         <option value="products">منتجات / Produits</option>
                                         <option value="packs">باقات / Packs</option>
@@ -329,9 +329,9 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                 </div>
 
                                 {/* Sort Filter */}
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                        <svg className="h-5 w-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="space-y-1 md:space-y-2">
+                                    <label className="block text-[10px] md:text-sm font-semibold text-gray-700 mb-0.5 md:mb-2 flex items-center gap-1 md:gap-2">
+                                        <svg className="h-3 w-3 md:h-5 md:w-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                                         </svg>
                                         الترتيب / Trier
@@ -339,7 +339,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                                     <select
                                         value={sort}
                                         onChange={handleSortChange}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                                        className="w-full px-2 py-1.5 md:px-4 md:py-3 border md:border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-sm md:shadow-lg hover:shadow-xl text-xs md:text-base"
                                     >
                                         <option value="name,asc">الاسم: أ-ي / Nom : A-Z</option>
                                         <option value="name,desc">الاسم: ي-أ / Nom : Z-A</option>
@@ -350,17 +350,17 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
                             </div>
 
                             {/* Quick Filter Tags */}
-                            <div className="mt-8 pt-6 border-t border-gray-200">
-                                <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                                    <svg className="h-5 w-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="mt-4 pt-3 md:mt-8 md:pt-6 border-t border-gray-200">
+                                <h3 className="text-sm md:text-lg font-semibold text-gray-700 mb-2 md:mb-4 flex items-center gap-1 md:gap-2">
+                                    <svg className="h-4 w-4 md:h-5 md:w-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                     </svg>
                                     فلاتر سريعة / Filtres Rapides
                                 </h3>
-                                <div className="flex flex-wrap gap-3">
+                                <div className="flex flex-wrap gap-2 md:gap-3">
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, minPrice: '', maxPrice: '', categoryId: '', type: 'ALL' }))}
-                                        className="px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full text-sm font-medium hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                                        className="px-3 py-1.5 md:px-4 md:py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full text-xs md:text-sm font-medium hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >
                                         مسح الكل / Tout Effacer
                                     </button>
@@ -449,7 +449,7 @@ const ProductsPage = ({ fetchCartCount, isAuthenticated }) => { // Accept props 
 
                         {/* Products Grid */}
                         {items.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4 lg:gap-6">
                                 {items.map((item, index) => (
                                     <div
                                         key={item.id}

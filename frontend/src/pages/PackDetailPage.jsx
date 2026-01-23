@@ -1,7 +1,8 @@
 // Enhanced Pack Detail Page for Better User Experience - Moroccan Users
 import React, { useState, useEffect } from 'react';
+import { FaEye } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
-import { getPackById, addToCart as apiAddToCart } from '../api/apiService';
+import { getPackById, addToCart } from '../api/apiService';
 import Loader from '../components/Loader';
 import EnhancedVisitorCounter from '../components/EnhancedVisitorCounter.jsx';
 import { toast } from 'react-toastify';
@@ -12,36 +13,79 @@ import PurchaseNotifications from '../components/PurchaseNotifications';
 import StickyAddToCart from '../components/StickyAddToCart';
 import './PackDetailPage.css';
 import { formatPrice } from '../utils/currency';
+import PackVisualizer from '../components/PackVisualizer';
+import ProductDetailModal from '../components/ProductDetailModal';
 
-const StickyPackHeader = ({ pack, composedImageUrl, onScrollTop }) => (
-    <div className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200 transform transition-all duration-300 animate-slide-down py-3 px-4 flex items-center justify-between sm:hidden">
-        <div className="flex items-center gap-4 cursor-pointer" onClick={onScrollTop}>
-            <div className="relative shadow-md rounded-lg overflow-hidden group">
-                <img
-                    src={composedImageUrl || '/placeholder-image.svg'}
-                    alt="Pack Preview"
-                    className="w-20 h-20 object-contain bg-gray-50 transition-transform group-hover:scale-110"
-                    onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
-                />
+const StickyPackHeader = ({ pack, selections, onScrollTop }) => {
+    // Collect all selected products
+    const selectedProducts = [];
+
+    if (pack && pack.items && selections) {
+        pack.items.forEach(item => {
+            const selectedId = selections[item.id];
+            if (selectedId) {
+                const allProducts = [item.defaultProduct, ...(item.variationProducts || [])];
+                const product = allProducts.find(p => p && p.id === selectedId);
+                if (product) {
+                    selectedProducts.push(product);
+                }
+            } else if (item.defaultProduct) {
+                selectedProducts.push(item.defaultProduct);
+            }
+        });
+    }
+
+    // Determine grid layout based on number of products
+    let gridCols = 'grid-cols-2';
+    if (selectedProducts.length === 1) gridCols = 'grid-cols-1';
+    else if (selectedProducts.length >= 3) gridCols = 'grid-cols-3';
+
+    return (
+        <div className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200 transform transition-all duration-300 animate-slide-down py-2 px-3 flex items-center justify-between sm:hidden">
+            <div className="flex items-center gap-3 cursor-pointer flex-1" onClick={onScrollTop}>
+                {/* Mini Product Grid */}
+                <div className="relative w-20 h-20 bg-gray-50 rounded-lg overflow-hidden shadow-sm">
+                    <div className={`grid ${gridCols} gap-0.5 h-full p-1`}>
+                        {selectedProducts.slice(0, 4).map((product, index) => (
+                            <div key={`${product.id}-${index}`} className="flex items-center justify-center">
+                                <img
+                                    src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder-image.svg'}
+                                    alt={product.name}
+                                    className="w-full h-full object-contain"
+                                    onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    {selectedProducts.length > 4 && (
+                        <div className="absolute bottom-0 right-0 bg-pink-500 text-white text-[8px] font-bold px-1 rounded-tl">
+                            +{selectedProducts.length - 4}
+                        </div>
+                    )}
+                </div>
+
+                {/* Price Info */}
+                <div className="flex-1 min-w-0">
+                    <p className="text-[10px] text-gray-500 font-medium leading-tight mb-0.5">سعر الحزمة / Total</p>
+                    <p className="text-pink-600 font-black text-lg leading-none tracking-tight">{formatPrice(pack.price)}</p>
+                </div>
             </div>
-            <div>
-                <p className="text-xs text-gray-500 font-medium leading-tight mb-1">سعر الحزمة / Total</p>
-                <p className="text-pink-600 font-black text-xl leading-none tracking-tight">{formatPrice(pack.price)}</p>
-            </div>
+
+            {/* Scroll to Top Button */}
+            <button
+                onClick={onScrollTop}
+                className="bg-gray-100 p-2 rounded-full text-gray-600 hover:bg-gray-200 transition-colors shadow-sm active:scale-95 flex-shrink-0"
+                aria-label="Scroll to top"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                </svg>
+            </button>
         </div>
-        <button
-            onClick={onScrollTop}
-            className="bg-gray-100 p-3 rounded-full text-gray-600 hover:bg-gray-200 transition-colors shadow-sm active:scale-95"
-            aria-label="Scroll to top"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
-            </svg>
-        </button>
-    </div>
-);
+    );
+};
 
-const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChange, isDefault }) => {
+const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChange, isDefault, onViewDetails }) => {
     const imageUrl = (product.images && product.images.length > 0)
         ? product.images[0]
         : '/placeholder-image.svg';
@@ -50,7 +94,7 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
 
     // Compact container classes for mobile
     const containerClasses = `
-        relative flex items-center p-3 sm:p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 transform
+        relative flex items-center p-2 md:p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 transform
         ${isSelected
             ? 'bg-pink-50 border-pink-500 ring-2 sm:ring-4 ring-pink-200 shadow-md'
             : 'border-gray-200 hover:bg-gray-50 hover:border-pink-300'
@@ -70,6 +114,18 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                 }
             }}
         >
+            {/* View Details Button - Enhanced Eye Icon */}
+            <div
+                onClick={(e) => {
+                    e.stopPropagation(); // Prevent selection when clicking eye
+                    onViewDetails(product);
+                }}
+                className="absolute top-2 right-2 p-2 bg-white/80 hover:bg-white text-gray-400 hover:text-blue-600 rounded-full shadow-sm hover:shadow-md transition-all z-20 cursor-pointer"
+                title="عرض التفاصيل / Voir les détails"
+            >
+                <FaEye size={16} />
+            </div>
+
             {/* Selection Indicator - Smaller on mobile */}
             {isSelected && (
                 <div className="absolute -top-2 -left-2 bg-pink-500 text-white rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-xs sm:text-base animate-bounce-custom z-10">
@@ -90,8 +146,9 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
             </div>
 
             <div className="flex-grow min-w-0">
-                <div className="flex items-center mb-1 sm:mb-2 flex-wrap gap-1">
-                    <span className="text-gray-800 font-bold text-sm sm:text-lg truncate block max-w-full">
+                <div className="flex items-center mb-1 sm:mb-2 flex-wrap gap-1 pr-8">
+                    {/* pr-8 to avoid overlap with eye icon */}
+                    <span className="text-gray-800 font-bold text-xs md:text-lg truncate block max-w-full">
                         {product.name || 'Produit sans nom'}
                     </span>
                     {isDefault && (
@@ -101,9 +158,7 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                     )}
                 </div>
                 <div className="flex items-center justify-between">
-                    <span className="text-pink-600 font-bold text-base sm:text-xl">
-                        {formatPrice(product.price)}
-                    </span>
+
                     <div className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-sm font-semibold whitespace-nowrap ${isSelected
                         ? 'bg-pink-100 text-pink-700'
                         : 'bg-gray-100 text-gray-600'
@@ -120,17 +175,16 @@ const ProductOption = ({ product, packItemId, selectedProductId, onSelectionChan
                 checked={isSelected}
                 onChange={() => onSelectionChange(packItemId, product.id)}
                 className="h-5 w-5 sm:h-6 sm:w-6 text-pink-600 focus:ring-pink-500 border-gray-300 ml-3 shrink-0"
-                aria-hidden="true"
             />
         </label>
     );
 };
 
-const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
-    <div className="border border-gray-200 p-4 sm:p-6 rounded-xl mb-4 sm:mb-6 bg-white shadow-sm hover:shadow-md transition-shadow relative">
+const PackItemSelector = ({ item, selectedProductId, onSelectionChange, onViewDetails }) => (
+    <div className="border border-gray-200 p-3 md:p-6 rounded-xl mb-3 md:mb-6 bg-white shadow-sm hover:shadow-md transition-shadow relative">
         {/* Section Header - More Compact */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-3 sm:p-4 rounded-lg mb-4 -mx-4 -mt-4 sm:-mx-6 sm:-mt-6 border-b border-gray-100">
-            <h4 className="font-bold text-base sm:text-xl text-gray-800 flex items-center">
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-2 md:p-4 rounded-lg mb-4 -mx-3 -mt-3 md:-mx-6 md:-mt-6 border-b border-gray-100">
+            <h4 className="font-bold text-sm md:text-xl text-gray-800 flex items-center">
                 <span className="bg-pink-500 text-white rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-xs sm:text-sm mr-2 sm:mr-3 shrink-0">
                     📦
                 </span>
@@ -138,7 +192,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
                     {item.defaultProduct ? item.defaultProduct.name : 'منتج / Produit'}
                 </span>
             </h4>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1 ml-9">
+            <p className="text-[10px] md:text-sm text-gray-500 mt-1 ml-9">
                 اختر المنتج الذي تريده لهذا القسم / Choisissez le produit pour cette section
             </p>
         </div>
@@ -155,6 +209,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
                     packItemId={item.id}
                     selectedProductId={selectedProductId}
                     onSelectionChange={onSelectionChange}
+                    onViewDetails={onViewDetails}
                     isDefault={true}
                 />
             </div>
@@ -181,6 +236,7 @@ const PackItemSelector = ({ item, selectedProductId, onSelectionChange }) => (
                             packItemId={item.id}
                             selectedProductId={selectedProductId}
                             onSelectionChange={onSelectionChange}
+                            onViewDetails={onViewDetails}
                             isDefault={false}
                         />
                     ))}
@@ -216,6 +272,17 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     const [highlightedElement, setHighlightedElement] = useState(null);
     // Sticky header state
     const [showStickyHeader, setShowStickyHeader] = useState(false);
+
+    // State for Product Detail Modal
+    const [viewProduct, setViewProduct] = useState(null);
+
+    const handleViewDetails = (product) => {
+        setViewProduct(product);
+    };
+
+    const handleCloseDetails = () => {
+        setViewProduct(null);
+    };
 
     const fetchPack = async () => {
         try {
@@ -317,74 +384,10 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
     };
 
     useEffect(() => {
-        if (!pack || Object.keys(selections).length === 0) return;
-        const isDefaultSelection = JSON.stringify(selections) === JSON.stringify(initialSelections);
-
-        if (isDefaultSelection && initialPackImageUrl) {
-            setComposedImageUrl(initialPackImageUrl);
-            return;
-        }
-
-        const composeImage = async () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            const imageUrls = pack.items.map(item => {
-                const selectedProductId = selections[item.id];
-                const allProducts = [item.defaultProduct, ...item.variationProducts];
-                const selectedProduct = allProducts.find(p => p && p.id === selectedProductId);
-                return selectedProduct?.images?.[0] || null;
-            }).filter(Boolean);
-
-            if (imageUrls.length === 0) {
-                setComposedImageUrl(initialPackImageUrl);
-                return;
-            };
-
-            try {
-                const images = await Promise.all(imageUrls.map(url => {
-                    return new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.crossOrigin = "Anonymous";
-                        img.onload = () => resolve(img);
-                        img.onerror = (err) => reject(new Error(`Failed to load image: ${url}`));
-                        img.src = url;
-                    });
-                }));
-
-                let totalWidth = 0;
-                let maxHeight = 0;
-                images.forEach(img => {
-                    totalWidth += img.width;
-                    if (img.height > maxHeight) {
-                        maxHeight = img.height;
-                    }
-                });
-
-                canvas.width = totalWidth;
-                canvas.height = maxHeight;
-
-                let currentX = 0;
-                images.forEach(img => {
-                    ctx.drawImage(img, currentX, 0);
-                    currentX += img.width;
-                });
-
-                setComposedImageUrl(canvas.toDataURL('image/png'));
-            } catch (err) {
-                console.error("Image composition failed:", err);
-                setComposedImageUrl(initialPackImageUrl);
-            }
-        };
-
-        composeImage();
-
-    }, [selections, pack, initialPackImageUrl, initialSelections]);
-
-    useEffect(() => {
         fetchPack();
     }, [id]);
 
+    // Simplified logic: Updates the selections state
     const handleSelectionChange = (packItemId, selectedProductId) => {
         setSelections(prev => ({ ...prev, [packItemId]: selectedProductId }));
     };
@@ -400,41 +403,46 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
         setMessage('');
         setError('');
         try {
-            if (isAuthenticated) {
-                const promises = Object.values(selections).map(productId => apiAddToCart(productId, 1));
-                await Promise.all(promises);
-            } else {
-                let cart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
-                const allProductsInPack = pack?.items?.flatMap(item => [item.defaultProduct, ...(item.variationProducts || [])]) || [];
-
-                for (const packItemId in selections) {
-                    const selectedProductId = selections[packItemId];
-                    const productToAdd = allProductsInPack.find(p => p && p.id === selectedProductId);
-
-                    if (productToAdd) {
-                        const existingItemIndex = cart.items.findIndex(item => item.productId === productToAdd.id);
-
-                        if (existingItemIndex > -1) {
-                            cart.items[existingItemIndex].quantity += 1;
-                        } else {
-                            cart.items.push({
-                                productId: productToAdd.id,
-                                productName: productToAdd.name,
-                                price: productToAdd.price,
-                                quantity: 1,
-                                images: productToAdd.images || [],
-                            });
-                        }
-                    }
-                }
-                localStorage.setItem('cart', JSON.stringify(cart));
+            // Check if all items are selected
+            const allItemsSelected = pack?.items?.every(item => selections[item.id]);
+            if (!allItemsSelected) {
+                toast.warn('المرجو اختيار جميع المنتجات / Veuillez sélectionner tous les produits');
+                return;
             }
+
+            // Create a JSON string of selected products (name + image)
+            const selectedProductsData = pack?.items?.map(item => {
+                const selectedId = selections[item.id];
+                const product = [item.defaultProduct, ...(item.variationProducts || [])]
+                    .find(p => p && p.id === selectedId);
+                if (!product) return null;
+
+                const imageUrl = (product.images && product.images.length > 0)
+                    ? product.images[0]
+                    : '/placeholder-image.svg';
+
+                return { name: product.name, image: imageUrl };
+            }).filter(Boolean);
+
+            // Store as JSON string for frontend parsing, or fallback string for legacy/backend view
+            const variantNamePayload = JSON.stringify(selectedProductsData);
+
+            // Create the composite pack item
+            const packItem = {
+                productName: pack.name,
+                price: pack.price, // Uses the fixed pack price
+                imageUrl: composedImageUrl, // Uses the dynamic visualizer image
+                variantName: variantNamePayload, // Stores contents as the "variant"
+                quantity: 1
+            };
+
+            // Add the single pack item to cart
+            await addToCart(packItem, 1);
 
             if (window.fbq) {
                 window.fbq('track', 'AddToCart', {
-                    content_ids: Object.values(selections),
                     content_name: pack.name,
-                    content_type: 'product_group',
+                    content_type: 'product',
                     value: pack.price,
                     currency: 'MAD'
                 });
@@ -464,10 +472,16 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             {showStickyHeader && pack && (
                 <StickyPackHeader
                     pack={pack}
-                    composedImageUrl={composedImageUrl}
+                    selections={selections}
                     onScrollTop={scrollToTop}
                 />
             )}
+
+            {/* Product Detail Modal */}
+            <ProductDetailModal
+                product={viewProduct}
+                onClose={handleCloseDetails}
+            />
 
             {/* Welcome Overlay - Responsive */}
             {showWelcome && (
@@ -543,11 +557,11 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
             )}
 
             {/* Header Section */}
-            <div className="mb-4 sm:mb-8 text-center sm:text-left">
-                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-2 sm:mb-4 tracking-tight">
+            <div className="mb-3 md:mb-8 text-center sm:text-left">
+                <h1 className="text-xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-2 sm:mb-4 tracking-tight">
                     📦 {pack ? pack.name : '...جارٍ تحميل الحزمة / Chargement du pack...'}
                 </h1>
-                <p className="text-sm sm:text-lg text-gray-600 mb-4 sm:mb-6 max-w-3xl">
+                <p className="text-xs md:text-lg text-gray-600 mb-3 md:mb-6 max-w-3xl">
                     اصنع حزمتك الخاصة بالسعر الذي يناسبك / Créez votre propre pack au prix qui vous convient
                 </p>
 
@@ -599,30 +613,24 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                 <>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">
                         {/* Left Side: Pack Image & Summary */}
-                        <div className="space-y-4 sm:space-y-6 lg:sticky lg:top-24 self-start">
+                        <div className="space-y-3 md:space-y-6 lg:sticky lg:top-24 self-start">
                             {/* Pack Image Card */}
                             <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${highlightedElement === 'pack-image' ? 'ring-4 ring-yellow-400' : ''}`}>
-                                <div className="bg-gray-50 p-2 sm:p-4 flex items-center justify-center min-h-[250px] sm:min-h-[350px]">
-                                    <img
-                                        key={composedImageUrl}
-                                        src={composedImageUrl || 'https://placehold.co/1200x600/fde4f2/E91E63?text=Pack'}
-                                        alt={pack.name}
-                                        className="w-full h-auto object-contain max-h-[400px] rounded-lg shadow-sm"
-                                        onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
-                                    />
+                                <div className="bg-gray-50 p-1 md:p-2 flex items-center justify-center min-h-[200px] md:min-h-[350px] rounded-xl overflow-hidden">
+                                    <PackVisualizer pack={pack} selections={selections} />
                                 </div>
 
                                 <div className="p-4 sm:p-6 bg-white">
-                                    <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-4 sm:p-6 rounded-xl shadow-lg relative overflow-hidden">
+                                    <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-3 md:p-6 rounded-xl shadow-lg relative overflow-hidden">
                                         <div className="relative z-10">
-                                            <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">السعر الإجمالي للصفقة / Prix Total du Pack</p>
+                                            <p className="text-[10px] md:text-sm font-medium opacity-90 mb-1">السعر الإجمالي للصفقة / Prix Total du Pack</p>
                                             <div className="flex items-baseline gap-2">
-                                                <p className="text-3xl sm:text-5xl font-black tracking-tight">{formatPrice(pack.price)}</p>
+                                                <p className="text-2xl md:text-5xl font-black tracking-tight">{formatPrice(pack.price)}</p>
                                                 {pack.originalPrice > pack.price && (
                                                     <span className="text-lg text-pink-200 line-through">{formatPrice(pack.originalPrice)}</span>
                                                 )}
                                             </div>
-                                            <p className="text-xs sm:text-sm mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded">✨ توفير مميز / Économie Spéciale</p>
+                                            <p className="text-[10px] md:text-sm mt-2 font-medium bg-white/20 inline-block px-2 py-1 rounded">✨ توفير مميز / Économie Spéciale</p>
                                         </div>
                                         <div className="absolute right-[-20px] top-[-20px] w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                                     </div>
@@ -636,9 +644,9 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
                         {/* Right Side: Options */}
                         <div className={`transition-all duration-300 ${highlightedElement === 'customization' ? 'ring-2 ring-yellow-400 rounded-2xl p-2' : ''}`}>
-                            <div className="bg-indigo-600 text-white p-4 sm:p-6 rounded-2xl mb-6 shadow-md flex justify-between items-center flex-wrap gap-4">
+                            <div className="bg-indigo-600 text-white p-3 md:p-6 rounded-2xl mb-6 shadow-md flex justify-between items-center flex-wrap gap-4">
                                 <div>
-                                    <h2 className="text-xl sm:text-2xl font-bold flex items-center">
+                                    <h2 className="text-lg md:text-2xl font-bold flex items-center">
                                         <span className="mr-2 text-2xl">🎨</span>
                                         ابدأ التخصيص / Commencez la personnalisation
                                     </h2>
@@ -655,13 +663,14 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                                 </button>
                             </div>
 
-                            <div className={`space-y-4 sm:space-y-6 mb-8 ${highlightedElement === 'product-options' ? 'ring-2 ring-yellow-400 rounded-xl p-2' : ''}`}>
+                            <div className={`space-y-3 md:space-y-6 mb-8 ${highlightedElement === 'product-options' ? 'ring-2 ring-yellow-400 rounded-xl p-2' : ''}`}>
                                 {pack.items && pack.items.map((item, index) => (
                                     <div key={item.id} className="enhanced-pack-item">
                                         <PackItemSelector
                                             item={item}
                                             selectedProductId={selections[item.id]}
                                             onSelectionChange={handleSelectionChange}
+                                            onViewDetails={handleViewDetails}
                                         />
                                     </div>
                                 ))}
@@ -669,10 +678,10 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
                             {/* Sticky Mobile Checkout */}
                             <div className={`sticky bottom-2 z-30 transition-all duration-300 ${highlightedElement === 'add-to-cart' ? 'ring-4 ring-yellow-400 rounded-xl' : ''}`}>
-                                <div className="bg-white/95 backdrop-blur-md border border-gray-200 rounded-xl p-3 sm:p-6 shadow-2xl">
+                                <div className="bg-white/95 backdrop-blur-md border border-gray-200 rounded-xl p-2 md:p-6 shadow-2xl">
                                     <button
                                         onClick={handleAddToCart}
-                                        className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-3 sm:py-4 px-6 rounded-xl hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-base sm:text-xl shadow-lg transform active:scale-95 flex items-center justify-center gap-2"
+                                        className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-2 md:py-4 px-6 rounded-xl hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-sm md:text-xl shadow-lg transform active:scale-95 flex items-center justify-center gap-2"
                                     >
                                         <span className="animate-pulse">✨</span>
                                         إضافة الحزمة للسلة / Ajouter au Panier
@@ -683,7 +692,7 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
                         </div>
                     </div>
 
-                    <div className="mt-8 bg-white rounded-xl p-4 sm:p-6 border border-gray-200 shadow-sm">
+                    <div className="mt-8 bg-white rounded-xl p-3 md:p-6 border border-gray-200 shadow-sm">
                         <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center border-b pb-2">
                             <span className="mr-2">📝</span>
                             تفاصيل الحزمة / Détails du Pack
@@ -696,8 +705,8 @@ const PackDetailPage = ({ isAuthenticated, fetchCartCount }) => {
 
                     {/* Clean Luxury Reviews Section */}
                     <div className="mt-16 sm:mt-24">
-                        <div className="bg-white/80 backdrop-blur-xl rounded-2xl lg:rounded-[2rem] p-6 lg:p-12 border border-white/60 shadow-xl">
-                            <h2 className="text-xl lg:text-3xl font-bold text-gray-900 mb-6 lg:mb-10 flex items-center gap-3">
+                        <div className="bg-white/80 backdrop-blur-xl rounded-2xl lg:rounded-[2rem] p-4 md:p-12 border border-white/60 shadow-xl">
+                            <h2 className="text-lg md:text-3xl font-bold text-gray-900 mb-4 md:mb-10 flex items-center gap-3">
                                 <span className="w-1.5 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full shadow-lg"></span>
                                 💬 آراء العملاء / Avis Clients ({pack.comments?.length || 0})
                             </h2>

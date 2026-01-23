@@ -29,9 +29,10 @@ public class HeroController {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('HERO:EDIT') or hasAuthority('HERO:UPDATE') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> updateHero(@RequestPart("hero") @Valid HeroDTO heroDTO,
-                                              @RequestPart(value = "image", required = false) MultipartFile image) {
+                                              @RequestPart(value = "image", required = false) MultipartFile image,
+                                              @RequestPart(value = "mobileImage", required = false) MultipartFile mobileImage) {
         try {
-            HeroDTO updatedHero = heroService.updateHero(heroDTO, image);
+            HeroDTO updatedHero = heroService.updateHero(heroDTO, image, mobileImage);
             return ResponseEntity.ok(updatedHero);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(404).body(Map.of("error", "Hero section not found"));

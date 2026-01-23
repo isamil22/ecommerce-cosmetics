@@ -18,3 +18,20 @@ export const saveSettings = async (settings) => {
     const response = await apiService.post('/settings', settings);
     return response.data;
 };
+
+/**
+ * Uploads a logo file.
+ * @param {File} file - The logo file to upload.
+ * @returns {Promise<Object>} A promise that resolves to the uploaded logo URL.
+ */
+export const uploadLogo = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await apiService.post('/settings/logo', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data;
+};

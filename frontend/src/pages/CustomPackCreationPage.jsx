@@ -6,6 +6,7 @@ import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import './CustomPackCreationPage.css';
 import { formatPrice } from '../utils/currency';
+import ProductDetailModal from '../components/ProductDetailModal';
 
 // Simple Icons Components (Inline for portability or import from lucide-react if available)
 const Icons = {
@@ -29,6 +30,8 @@ const CustomPackCreationPage = () => {
     const [showWelcome, setShowWelcome] = useState(true);
     const [demoMode, setDemoMode] = useState(false);
     const [highlightedElement, setHighlightedElement] = useState(null);
+    const [viewProduct, setViewProduct] = useState(null);
+    const [showMobileStickyHeader, setShowMobileStickyHeader] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -76,6 +79,15 @@ const CustomPackCreationPage = () => {
             return () => clearTimeout(timer);
         }
     }, [packInfo, allowedProducts, showWelcome]);
+
+    // Scroll detection for mobile sticky header
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowMobileStickyHeader(window.scrollY > 200);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const startInteractiveTutorial = () => {
         const steps = [
@@ -135,16 +147,42 @@ const CustomPackCreationPage = () => {
         }
 
         try {
-            for (const product of selectedProducts) {
-                if (product && product.id) {
-                    await addToCart(product.id, 1);
-                }
-            }
+            // Prepare the payload for the cart (Single Pack Item)
+            const selectedProductsData = selectedProducts.map(product => ({
+                name: product.name,
+                image: (product.images && product.images.length > 0) ? product.images[0] : '/placeholder-image.svg'
+            }));
+
+            const variantNamePayload = JSON.stringify(selectedProductsData);
+
+            // Use the first product's image as the main pack image for the cart
+            const mainImage = (selectedProducts[0]?.images && selectedProducts[0]?.images.length > 0)
+                ? selectedProducts[0].images[0]
+                : '/placeholder-image.svg';
+
+            const packItem = {
+                productName: packInfo.name,
+                price: totalPrice,
+                imageUrl: mainImage,
+                variantName: variantNamePayload,
+                quantity: 1
+            };
+
+            await addToCart(packItem, 1);
             toast.success('🎉 تم إضافة الحزمة المخصصة للسلة! / Pack personnalisé ajouté au panier !');
         } catch (error) {
             console.error('Error adding to cart:', error);
             toast.error('فشل في إضافة المنتجات للسلة / Échec de l\'ajout au panier.');
         }
+    };
+
+    const handleViewDetails = (e, product) => {
+        e.stopPropagation(); // Prevent product selection when clicking view details
+        setViewProduct(product);
+    };
+
+    const handleCloseDetails = () => {
+        setViewProduct(null);
     };
 
     if (loading) return (
@@ -158,7 +196,7 @@ const CustomPackCreationPage = () => {
             <div>
                 <div className="text-6xl mb-4">😔</div>
                 <h2 className="text-2xl font-bold text-gray-800">لم يتم العثور على الحزمة / Pack introuvable</h2>
-                <p className="text-gray-500">Pack not found</p>
+                <p className="text-gray-500">الحزمة غير موجودة / Pack non trouvé</p>
                 <Link to="/custom-packs" className="mt-4 inline-block text-purple-600 hover:underline">
                     العودة للباقات المخصصة / Retour aux Packs
                 </Link>
@@ -237,6 +275,50 @@ const CustomPackCreationPage = () => {
                 </div>
             )}
 
+            {/* Mobile Sticky Header with Selected Products (appears on scroll) */}
+            {showMobileStickyHeader && selectedProducts.length > 0 && (
+                <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200 sm:hidden animate-slide-down">
+                    <div className="px-3 py-2">
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                            <div className="flex-1">
+                                <p className="text-[10px] text-gray-500 font-medium leading-tight">السعر الإجمالي / Prix Total</p>
+                                <p className="text-purple-600 font-black text-lg leading-none">{formatPrice(totalPrice)}</p>
+                            </div>
+                            <button
+                                onClick={handleAddToCart}
+                                disabled={!isMinMet}
+                                className={`px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1 ${isMinMet
+                                        ? 'bg-gradient-to-r from-gray-900 to-gray-800 text-white'
+                                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                    }`}
+                            >
+                                <span>إضافة / Ajouter</span>
+                                <Icons.Cart />
+                            </button>
+                        </div>
+
+                        {/* Selected Products Mini Grid */}
+                        <div className="flex gap-1 overflow-x-auto pb-1">
+                            {selectedProducts.map((product, index) => (
+                                <div key={product.id} className="flex-shrink-0 w-12 h-12 bg-gray-50 rounded-lg overflow-hidden border border-purple-200">
+                                    <img
+                                        src={product.images?.[0] || '/placeholder-image.svg'}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => { e.target.src = '/placeholder-image.svg'; }}
+                                    />
+                                </div>
+                            ))}
+                            {selectedProducts.length < packInfo.minItems && (
+                                <div className="flex-shrink-0 w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center border border-dashed border-purple-300">
+                                    <span className="text-purple-400 text-xs font-bold">+{packInfo.minItems - selectedProducts.length}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* sticky Header / Summary Bar */}
             <div className={`sticky top-0 z-30 transition-all duration-300 ${highlightedElement === 'counter' ? 'ring-4 ring-yellow-400 z-50' : ''}`}>
                 <div className="bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
@@ -277,7 +359,7 @@ const CustomPackCreationPage = () => {
                                     <button
                                         onClick={() => setShowHelp(!showHelp)}
                                         className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                        title="Help"
+                                        title="المساعدة / Aide"
                                     >
                                         <Icons.Help />
                                     </button>
@@ -383,18 +465,16 @@ const CustomPackCreationPage = () => {
                                         {product.name}
                                     </h3>
                                     <div className="flex items-center justify-between">
-                                        <span className="font-extrabold text-gray-900">{formatPrice(product.price)}</span>
+                                        <span className="font-extrabold text-gray-900 hidden">{formatPrice(product.price)}</span>
                                         {isSelected && <span className="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md">محدد / Sélectionné</span>}
                                     </div>
 
-                                    <Link
-                                        to={`/products/${product.id}`}
-                                        onClick={(e) => e.stopPropagation()}
-                                        target="_blank"
-                                        className="block mt-3 text-xs text-gray-400 hover:text-purple-600 font-medium transition-colors"
+                                    <button
+                                        onClick={(e) => handleViewDetails(e, product)}
+                                        className="block w-full mt-3 text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors bg-purple-50 hover:bg-purple-100 py-2 rounded-lg"
                                     >
-                                        عرض التفاصيل / Voir Détails
-                                    </Link>
+                                        👁️ عرض التفاصيل / Voir Détails
+                                    </button>
                                 </div>
                             </div>
                         );
@@ -410,6 +490,12 @@ const CustomPackCreationPage = () => {
                     <p className="text-gray-400 max-w-md mx-auto mt-2">هذه الباقة لا تحتوي على أي منتجات بعد. يرجى التحقق لاحقاً. / Ce pack n'a pas encore de produits assignés. Veuillez vérifier plus tard.</p>
                 </div>
             )}
+
+            {/* Product Detail Modal */}
+            <ProductDetailModal
+                product={viewProduct}
+                onClose={handleCloseDetails}
+            />
         </div>
     );
 };

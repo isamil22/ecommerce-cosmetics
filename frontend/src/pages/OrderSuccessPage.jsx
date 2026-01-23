@@ -117,13 +117,14 @@ const OrderSuccessPage = () => {
                 </div>
 
                 {/* Success Message */}
+                {/* Success Message */}
                 <h1 style={{
                     fontSize: 'clamp(2rem, 5vw, 3rem)',
                     fontWeight: '800',
                     color: '#222',
                     marginBottom: '20px',
                 }}>
-                    🎉 تم إرسال طلبك بنجاح! / Order Placed Successfully!
+                    🎉 تم إرسال طلبك بنجاح! / Commande passée avec succès !
                 </h1>
 
                 <p style={{
@@ -132,7 +133,7 @@ const OrderSuccessPage = () => {
                     marginBottom: '40px',
                     lineHeight: '1.6',
                 }}>
-                    شكراً لك على طلبك! / Thank you for your order!
+                    شكراً لك على طلبك! / Merci pour votre commande !
                 </p>
 
                 {/* Order ID */}
@@ -146,7 +147,7 @@ const OrderSuccessPage = () => {
                         display: 'inline-block',
                     }}>
                         <div style={{ fontSize: '0.9rem', opacity: 0.9, marginBottom: '8px' }}>
-                            رقم الطلب / Order ID
+                            رقم الطلب / Numéro de commande
                         </div>
                         <div style={{ fontSize: '1.8rem', fontWeight: 'bold' }}>
                             #{orderId}
@@ -164,19 +165,19 @@ const OrderSuccessPage = () => {
                         textAlign: 'left',
                     }}>
                         <h3 style={{ fontSize: '1.3rem', fontWeight: 'bold', marginBottom: '20px', color: '#333' }}>
-                            تفاصيل الطلب / Order Details
+                            تفاصيل الطلب / Détails de la commande
                         </h3>
                         <div style={{ display: 'grid', gap: '15px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#666' }}>الاسم / Name:</span>
+                                <span style={{ color: '#666' }}>الاسم / Nom :</span>
                                 <span style={{ fontWeight: '600' }}>{order.clientFullName}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#666' }}>المدينة / City:</span>
+                                <span style={{ color: '#666' }}>المدينة / Ville :</span>
                                 <span style={{ fontWeight: '600' }}>{order.city}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#666' }}>الحالة / Status:</span>
+                                <span style={{ color: '#666' }}>الحالة / Statut :</span>
                                 <span style={{
                                     fontWeight: '600',
                                     color: order.status === 'PREPARING' ? '#ffc107' :
@@ -188,7 +189,7 @@ const OrderSuccessPage = () => {
                             </div>
                             {order.total && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', paddingTop: '15px', borderTop: '2px solid #dee2e6' }}>
-                                    <span style={{ color: '#666', fontSize: '1.1rem' }}>المجموع / Total:</span>
+                                    <span style={{ color: '#666', fontSize: '1.1rem' }}>المجموع / Total :</span>
                                     <span style={{ fontWeight: 'bold', fontSize: '1.3rem', color: '#ff69b4' }}>
                                         {formatPrice(order.total)}
                                     </span>
@@ -207,10 +208,10 @@ const OrderSuccessPage = () => {
                     marginBottom: '30px',
                 }}>
                     <h4 style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '10px', color: '#856404' }}>
-                        📧 ما التالي؟ / What's Next?
+                        📧 ما التالي؟ / Quelle est la prochaine étape ?
                     </h4>
                     <p style={{ color: '#856404', lineHeight: '1.6', margin: 0 }}>
-                        ستصلك رسالة تأكيد على بريدك الإلكتروني قريباً. / You will receive a confirmation email shortly.
+                        ستصلك رسالة تأكيد على بريدك الإلكتروني قريباً. / Vous recevrez bientôt un e-mail de confirmation.
                     </p>
                 </div>
 
@@ -232,7 +233,7 @@ const OrderSuccessPage = () => {
                         onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
                         onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
                     >
-                        العودة للرئيسية / Back to Home
+                        العودة للرئيسية / Retour à l'accueil
                     </button>
                     <button
                         onClick={() => navigate('/orders')}
@@ -256,7 +257,7 @@ const OrderSuccessPage = () => {
                             e.target.style.color = '#ff69b4';
                         }}
                     >
-                        عرض طلباتي / View My Orders
+                        عرض طلباتي / Voir mes commandes
                     </button>
                 </div>
             </div>

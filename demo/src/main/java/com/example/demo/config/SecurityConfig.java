@@ -75,7 +75,8 @@ public class SecurityConfig {
                                 "/api/auth/debug/authorities", // Allow debug endpoint for troubleshooting
                                 "/api/orders/*/feedback", // Allow access to order feedback
                                 "/api/images/**", // Allow public access to images
-                                "/api/landing-pages/public/**" // Allow public access to published landing pages
+                                "/api/landing-pages/public/**", // Allow public access to published landing pages
+                                "/api/enhanced-visitor-counter-settings" // Allow public access to visitor settings
                         )
                         .permitAll()
                         .requestMatchers("/", "/index.html", "/images/**", "/vite.svg").permitAll()
@@ -89,7 +90,15 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8081", "http://localhost:3000", "http://localhost:8085"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173", 
+                "http://localhost:8081", 
+                "http://localhost:3000", 
+                "http://localhost:8085", 
+                "http://72.60.185.187", 
+                "https://secure-portal-2025.capricof.com", 
+                "http://byluna.ma"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);

@@ -53,7 +53,7 @@ const HomePage = () => {
 
             } catch (err) {
                 console.error("Error fetching data:", err);
-                setError("Could not fetch data from the server.");
+                setError("لا يمكن تحميل البيانات من الخادم / Impossible de récupérer les données du serveur.");
                 toast.error("فشل في تحميل البيانات / Échec du chargement des données");
             } finally {
                 setLoading(false);
@@ -110,7 +110,7 @@ const HomePage = () => {
             {/* Products Skeleton */}
             <div className="container mx-auto px-6 py-16 lg:py-20">
                 <div className="h-12 bg-gray-200 rounded-2xl w-96 mx-auto mb-16 animate-skeleton-pulse"></div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4 lg:gap-6 max-w-7xl mx-auto">
                     {[...Array(8)].map((_, i) => (
                         <div key={i} className="bg-gray-200 rounded-3xl h-96 animate-skeleton-pulse"></div>
                     ))}
@@ -124,7 +124,7 @@ const HomePage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 overflow-x-hidden">
             {/* Ultra Enhanced Countdown Timer - Admin Controllable */}
             <div className="w-full px-0 py-0">
                 <div className="w-full">
@@ -147,11 +147,22 @@ const HomePage = () => {
                         const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
                         setMousePosition({ x: moveX, y: moveY });
                     }}
-                    className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-cover bg-center text-white"
+                    className="relative min-h-[85vh] md:min-h-[92vh] flex items-center justify-center overflow-hidden bg-cover bg-center text-white"
                     style={{
                         backgroundImage: heroImageUrl ? `url(${heroImageUrl})` : `radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)`
                     }}
                 >
+                    <style>{`
+                        @media (max-width: 768px) {
+                            #home-hero {
+                                background-image: ${hero?.mobileImageUrl ? `url(${hero.mobileImageUrl}) !important` : 'inherit'};
+                                background-size: cover;
+                                background-position: center top;
+                                min-height: 70vh; /* Better mobile height */
+                            }
+                        }
+                    `}</style>
+
                     {/* 1. Dark Overlay & Star Background */}
                     <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/80 z-0"></div>
 
@@ -176,11 +187,11 @@ const HomePage = () => {
 
                     {/* Floating Parallax Blobs */}
                     <div
-                        className="absolute top-1/4 left-10 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none z-0"
+                        className="hidden md:block absolute top-1/4 left-10 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none z-0"
                         style={{ transform: `translate(${mousePosition.x * -2}px, ${mousePosition.y * -2}px)` }}
                     />
                     <div
-                        className="absolute bottom-10 right-10 w-80 h-80 bg-purple-600/20 rounded-full blur-[80px] pointer-events-none z-0"
+                        className="hidden md:block absolute bottom-10 right-10 w-80 h-80 bg-purple-600/20 rounded-full blur-[80px] pointer-events-none z-0"
                         style={{ transform: `translate(${mousePosition.x * 3}px, ${mousePosition.y * 3}px)` }}
                     />
 
@@ -190,80 +201,81 @@ const HomePage = () => {
                         style={{ transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)` }}
                     >
                         {/* Glass Badge */}
-                        <div className="flex justify-center mb-8">
-                            <div className="glass-pill animate-fade-in-down px-8 py-3 rounded-full flex items-center gap-3 text-white font-bold tracking-wider shadow-lg backdrop-blur-md border border-white/20">
-                                <span className="text-yellow-400 text-xl">✨</span>
+                        <div className="flex justify-center mb-6 md:mb-8">
+                            <div className="glass-pill animate-fade-in-down px-4 py-1 md:px-6 md:py-2 rounded-full flex items-center gap-2 text-white font-bold tracking-wider shadow-lg backdrop-blur-md border border-white/20 text-xs md:text-sm">
+                                <span className="text-yellow-400 text-base md:text-lg">✨</span>
                                 <span>عروض حصرية / Offres Exclusives</span>
                             </div>
                         </div>
 
                         {/* Massive Glowing Title */}
                         <h1
-                            className="text-6xl md:text-8xl font-black mb-6 animate-fade-in tracking-tighter"
+                            className="text-4xl sm:text-5xl md:text-8xl font-black mb-4 md:mb-6 animate-fade-in tracking-tighter leading-tight"
                             style={{
+                                fontFamily: hero.titleFont || 'sans-serif',
                                 background: 'linear-gradient(180deg, #ffffff 0%, #e0e7ff 100%)',
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
-                                filter: 'drop-shadow(0 0 40px rgba(255,255,255,0.4))'
+                                filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))'
                             }}
                         >
                             {hero.title}
                         </h1>
 
                         {/* Subtitle */}
-                        <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto font-light leading-relaxed animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                        <p className="text-lg md:text-2xl text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto font-light leading-relaxed animate-slide-up px-2" style={{ animationDelay: '0.2s' }}>
                             {hero.subtitle}
                         </p>
 
                         {/* CTA Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                        <div className="flex flex-row gap-3 justify-center items-center mb-10 md:mb-16 animate-slide-up w-full px-4" style={{ animationDelay: '0.4s' }}>
                             <Link
                                 to={hero.linkUrl}
-                                className="group relative overflow-hidden bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-5 px-12 rounded-full shadow-[0_0_30px_rgba(236,72,153,0.5)] hover:shadow-[0_0_50px_rgba(236,72,153,0.8)] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 border border-white/20"
+                                className="w-auto group relative overflow-hidden bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-2.5 px-6 md:py-3 md:px-8 rounded-full shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:shadow-[0_0_30px_rgba(236,72,153,0.6)] transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-105 border border-white/20 text-center"
                             >
-                                <span className="relative z-10 flex items-center gap-3 text-lg">
-                                    {hero.linkText} <span className="text-xl">✨</span>
+                                <span className="relative z-10 flex items-center justify-center gap-2 text-xs md:text-sm">
+                                    {hero.linkText} <span className="text-base">✨</span>
                                 </span>
                                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </Link>
 
                             <Link
                                 to="/packs"
-                                className="glass-panel-pro text-white font-bold py-5 px-10 rounded-full hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 border border-white/30 text-lg flex items-center gap-2"
+                                className="w-auto glass-panel-pro text-white font-bold py-2.5 px-6 md:py-3 md:px-8 rounded-full hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-0.5 border border-white/30 text-xs md:text-sm flex items-center justify-center gap-2 text-center"
                             >
-                                🎁 تصفح الباقات / Parcourir les Packs
+                                🎁 تصفح الباقات / Packs
                             </Link>
                         </div>
                     </div>
 
                     {/* Bottom Fade */}
-                    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-gray-50 via-gray-50/50 to-transparent z-10 pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-full h-16 md:h-32 bg-gradient-to-t from-gray-50 via-gray-50/50 to-transparent z-10 pointer-events-none" />
                 </div>
             )}
 
             {/* --- ULTRA ENHANCED Shop By Category Section --- */}
-            <div className="w-full px-4 py-8">
-                <div className="text-center mb-8">
-                    <div className="inline-block mb-4">
-                        <span className="text-5xl lg:text-6xl">🛍️</span>
+            <div className="w-full px-4 py-8 md:py-12">
+                <div className="text-center mb-8 md:mb-12">
+                    <div className="inline-block mb-3 md:mb-4">
+                        <span className="text-4xl md:text-5xl lg:text-6xl">🛍️</span>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+                    <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-2 md:mb-4 tracking-tight">
                         تسوق حسب الفئة
                     </h2>
-                    <h3 className="text-2xl md:text-3xl font-bold text-pink-600 mb-4">
-                        Shop by Category
+                    <h3 className="text-xl md:text-3xl font-bold text-pink-600 mb-3 md:mb-4">
+                        Achetez par Catégorie
                     </h3>
-                    <p className="text-gray-600 text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed font-semibold">
+                    <p className="text-gray-600 text-base md:text-xl max-w-3xl mx-auto leading-relaxed font-semibold px-2">
                         اكتشف منتجاتنا المميزة في فئات متنوعة / Découvrez nos produits vedettes dans diverses catégories
                     </p>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-4 w-full mx-auto">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-6 max-w-7xl mx-auto">
                     {categories.length > 0 ? categories.map((category, index) => (
                         <Link
                             key={category.id}
                             to={`/products?categoryId=${category.id}`}
-                            className="group relative block bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-700 overflow-hidden aspect-square transform hover:scale-110 hover:-translate-y-4 w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] lg:w-[calc(16.666%-0.833rem)]"
+                            className="group relative block bg-white rounded-2xl md:rounded-3xl shadow-lg md:shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden aspect-square transform hover:scale-105"
                             style={{ animationDelay: `${index * 0.1}s` }}
                             aria-label={`تسوق ${category.name} / Acheter ${category.name}`}
                         >
@@ -278,26 +290,21 @@ const HomePage = () => {
                             />
 
                             {/* Enhanced Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                             {/* Content */}
-                            <div className="absolute inset-0 flex flex-col items-center justify-end p-8 pb-10">
-                                <p className="font-black text-white text-xl md:text-2xl text-center leading-tight mb-4 transform group-hover:translate-y-0 transition-transform duration-700">
+                            <div className="absolute inset-0 flex flex-col items-center justify-end p-3 md:p-6 pb-4 md:pb-8">
+                                <p className="font-black text-white text-lg md:text-2xl text-center leading-tight mb-2 transform group-hover:translate-y-0 transition-transform duration-500">
                                     {category.name}
                                 </p>
-                                <p className="text-base md:text-lg text-center text-gray-200 max-w-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 px-4 leading-snug">
-                                    {category.description || 'استكشف المنتجات / Explorer les produits'}
+                                <p className="hidden md:block text-base text-center text-gray-200 max-w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 px-2 leading-snug">
+                                    {category.description || 'استكشف / Explorer'}
                                 </p>
 
-                                {/* Ultra Enhanced Arrow Icon */}
-                                <div className="mt-6 w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-700 transform translate-y-6 group-hover:translate-y-0 shadow-2xl">
-                                    <span className="text-white font-black text-xl">→</span>
+                                {/* Ultra Enhanced Arrow Icon - Hidden on small mobile to save space */}
+                                <div className="hidden md:flex mt-4 w-10 h-10 bg-pink-500 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-lg">
+                                    <span className="text-white font-black text-lg">→</span>
                                 </div>
-                            </div>
-
-                            {/* Ultra Enhanced Corner Badge */}
-                            <div className="absolute top-6 right-6 bg-pink-500 text-white text-base font-black px-6 py-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 shadow-xl">
-                                تسوق / Acheter
                             </div>
                         </Link>
                     )) : (
@@ -305,7 +312,6 @@ const HomePage = () => {
                             <div className="text-8xl mb-6">🛍️</div>
                             <p className="text-3xl text-gray-600 mb-4 font-black">لا توجد فئات متاحة حالياً</p>
                             <p className="text-2xl text-gray-400 font-semibold">Aucune catégorie disponible pour le moment</p>
-                            <p className="text-gray-500 mt-6 text-lg">سنضيف فئات جديدة قريباً! / De nouvelles catégories arrivent bientôt !</p>
                         </div>
                     )}
                 </div>
@@ -323,26 +329,26 @@ const HomePage = () => {
             <WhyChooseUsSection />
 
             {/* --- ULTRA ENHANCED PRODUCTS SECTION WITH TABS --- */}
-            <div className="w-full px-4 py-8">
-                <div className="text-center mb-8">
-                    <div className="inline-block mb-6">
-                        <span className="text-6xl">⭐</span>
+            <div className="w-full px-4 py-8 md:py-12">
+                <div className="text-center mb-8 md:mb-12">
+                    <div className="inline-block mb-3 md:mb-6">
+                        <span className="text-4xl md:text-6xl">⭐</span>
                     </div>
-                    <h2 className="text-5xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight">
+                    <h2 className="text-3xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight">
                         منتجاتنا المميزة
                     </h2>
-                    <h3 className="text-3xl md:text-4xl font-bold text-pink-600 mb-8">
+                    <h3 className="text-xl md:text-4xl font-bold text-pink-600 mb-6 md:mb-8">
                         Nos Produits Vedettes
                     </h3>
                 </div>
 
                 {/* Ultra Enhanced Tabs */}
-                <div className="flex justify-center mb-16">
-                    <div className="inline-flex bg-gray-100 rounded-full p-3 shadow-xl" role="tablist" aria-label="Product categories">
+                <div className="flex justify-center mb-8 md:mb-16 px-2">
+                    <div className="flex flex-col sm:flex-row bg-gray-100 rounded-3xl sm:rounded-full p-2 sm:p-3 shadow-lg w-full sm:w-auto" role="tablist" aria-label="Product categories">
                         <button
                             onClick={() => setActiveTab('bestsellers')}
-                            className={`px-10 py-4 rounded-full font-black transition-all duration-500 text-lg ${activeTab === 'bestsellers'
-                                ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-xl transform scale-110'
+                            className={`px-6 py-3 md:px-10 md:py-4 rounded-xl sm:rounded-full font-black transition-all duration-300 text-sm md:text-lg mb-2 sm:mb-0 ${activeTab === 'bestsellers'
+                                ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-xl transform scale-105'
                                 : 'text-gray-600 hover:text-gray-900 hover:bg-white'
                                 }`}
                             role="tab"
@@ -353,8 +359,8 @@ const HomePage = () => {
                         </button>
                         <button
                             onClick={() => setActiveTab('newArrivals')}
-                            className={`px-10 py-4 rounded-full font-black transition-all duration-500 text-lg ml-3 ${activeTab === 'newArrivals'
-                                ? 'bg-gradient-to-r from-blue-500 to-green-600 text-white shadow-xl transform scale-110'
+                            className={`px-6 py-3 md:px-10 md:py-4 rounded-xl sm:rounded-full font-black transition-all duration-300 text-sm md:text-lg sm:ml-3 ${activeTab === 'newArrivals'
+                                ? 'bg-gradient-to-r from-blue-500 to-green-600 text-white shadow-xl transform scale-105'
                                 : 'text-gray-600 hover:text-gray-900 hover:bg-white'
                                 }`}
                             role="tab"
@@ -373,7 +379,7 @@ const HomePage = () => {
                             id="bestsellers-panel"
                             role="tabpanel"
                             aria-labelledby="bestsellers-tab"
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 max-w-[95%] mx-auto animate-fade-in"
+                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 max-w-[98%] md:max-w-[95%] mx-auto animate-fade-in"
                         >
                             {bestsellers.length > 0 ? (
                                 bestsellers.map((product, index) => (
@@ -400,7 +406,7 @@ const HomePage = () => {
                             id="newArrivals-panel"
                             role="tabpanel"
                             aria-labelledby="newArrivals-tab"
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 max-w-[95%] mx-auto animate-fade-in"
+                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 max-w-[98%] md:max-w-[95%] mx-auto animate-fade-in"
                         >
                             {newArrivals.length > 0 ? (
                                 newArrivals.map((product, index) => (
@@ -424,74 +430,74 @@ const HomePage = () => {
                 </div>
 
                 {/* Ultra Enhanced View All Button */}
-                <div className="text-center mt-16">
+                <div className="text-center mt-12 md:mt-16">
                     <Link
                         to="/products"
-                        className="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black py-5 px-12 rounded-full hover:from-pink-600 hover:to-purple-700 transition-all duration-500 transform hover:scale-110 shadow-xl hover:shadow-2xl text-lg"
+                        className="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black py-4 px-8 md:py-5 md:px-12 rounded-full hover:from-pink-600 hover:to-purple-700 transition-all duration-500 transform hover:scale-105 shadow-xl hover:shadow-2xl text-base md:text-lg"
                         aria-label="عرض جميع المنتجات / Voir tous les produits"
                     >
                         <span>عرض جميع المنتجات / Voir Tous les Produits</span>
-                        <span className="text-2xl">→</span>
+                        <span className="text-xl md:text-2xl">→</span>
                     </Link>
                 </div>
             </div>
 
             {/* --- ULTRA ENHANCED REVIEWS SECTION --- */}
             <div className="w-full px-0 py-0">
-                <div className="bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50 w-full py-12 lg:py-16">
+                <div className="bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50 w-full py-6 md:py-12 lg:py-16">
                     <div className="container mx-auto px-4">
-                        <div className="text-center mb-12">
-                            <div className="inline-block mb-6">
-                                <span className="text-6xl">⭐</span>
+                        <div className="text-center mb-4 md:mb-12">
+                            <div className="inline-block mb-2 md:mb-6">
+                                <span className="text-3xl md:text-6xl">⭐</span>
                             </div>
-                            <h2 className="text-5xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight">
+                            <h2 className="text-xl md:text-6xl font-black text-gray-900 mb-2 md:mb-6 tracking-tight">
                                 آراء عملائنا السعداء
                             </h2>
-                            <h3 className="text-3xl md:text-4xl font-bold text-orange-600 mb-6">
+                            <h3 className="text-lg md:text-4xl font-bold text-orange-600 mb-2 md:mb-6">
                                 Ce que disent nos clients heureux
                             </h3>
-                            <p className="text-gray-600 text-xl max-w-3xl mx-auto leading-relaxed font-semibold">
+                            <p className="text-gray-600 text-sm md:text-xl max-w-3xl mx-auto leading-relaxed font-semibold">
                                 شاهد تجارب عملائنا الحقيقية / Voir les expériences réelles de nos clients
                             </p>
                         </div>
 
                         {reviews.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10">
                                 {reviews.map((review, index) => (
                                     <div
                                         key={review.id}
-                                        className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-l-4 border-yellow-400"
+                                        className="bg-white p-4 md:p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-l-4 border-yellow-400"
                                         style={{ animationDelay: `${index * 0.1}s` }}
                                     >
                                         {/* Stars at top */}
-                                        <div className="flex justify-between items-start mb-6">
+                                        <div className="flex justify-between items-start mb-3 md:mb-6">
                                             {renderStars(review.rating)}
-                                            <span className="bg-green-100 text-green-700 text-sm font-black px-4 py-2 rounded-full">
+                                            <span className="bg-green-100 text-green-700 text-[10px] md:text-sm font-black px-2 py-0.5 md:px-3 md:py-1 rounded-full">
                                                 ✓ مؤكد / Vérifié
                                             </span>
                                         </div>
 
                                         {/* Review Content */}
-                                        <p className="text-gray-700 mb-8 leading-relaxed text-lg italic font-semibold">
+                                        <p className="text-gray-700 mb-4 md:mb-8 leading-relaxed text-sm md:text-lg italic font-semibold">
                                             "{review.content}"
                                         </p>
 
                                         {/* Customer Info */}
-                                        <div className="flex items-center pt-6 border-t border-gray-100">
-                                            <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-orange-500 rounded-full flex items-center justify-center text-white font-black text-xl mr-4 shadow-xl">
+                                        <div className="flex items-center pt-4 md:pt-6 border-t border-gray-100">
+                                            <div className="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-pink-400 to-orange-500 rounded-full flex items-center justify-center text-white font-black text-base md:text-xl mr-3 md:mr-4 shadow-xl">
                                                 {(review.createdByAdmin ?
                                                     (review.customName || 'A') :
                                                     (review.userEmail || 'C')
                                                 )[0].toUpperCase()}
                                             </div>
                                             <div>
-                                                <p className="font-black text-gray-900 text-lg">
+                                                <p className="font-black text-gray-900 text-sm md:text-lg">
                                                     {review.createdByAdmin ?
                                                         (review.customName || 'عميل مميز / Client Privilégié') :
-                                                        (review.userEmail?.split('@')[0] || 'Customer')
+                                                        (review.userEmail?.split('@')[0] || 'زبون / Client')
                                                     }
                                                 </p>
-                                                <p className="text-sm text-gray-500 font-semibold">
+                                                <p className="text-[10px] md:text-sm text-gray-500 font-semibold">
                                                     عميل موثوق / Acheteur Vérifié
                                                 </p>
                                             </div>
@@ -509,22 +515,22 @@ const HomePage = () => {
 
                         {/* Ultra Enhanced Overall Rating Summary */}
                         {reviews.length > 0 && (
-                            <div className="mt-16 bg-white rounded-3xl p-8 shadow-xl">
+                            <div className="mt-12 md:mt-16 bg-white rounded-3xl p-6 md:p-8 shadow-xl">
                                 <div className="flex flex-col md:flex-row items-center justify-around gap-8">
                                     <div className="text-center">
-                                        <div className="text-6xl font-black text-yellow-500 mb-3">
+                                        <div className="text-5xl md:text-6xl font-black text-yellow-500 mb-3">
                                             {(reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)}
                                         </div>
                                         <div className="flex justify-center mb-3">
                                             {renderStars(reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length)}
                                         </div>
                                         <p className="text-gray-600 font-black text-lg">
-                                            من 5.0 / out of 5.0
+                                            من 5.0 / sur 5.0
                                         </p>
                                     </div>
 
                                     <div className="text-center">
-                                        <div className="text-5xl font-black text-pink-600 mb-3">
+                                        <div className="text-4xl md:text-5xl font-black text-pink-600 mb-3">
                                             {reviews.length}+
                                         </div>
                                         <p className="text-gray-600 font-black text-lg">
@@ -534,7 +540,7 @@ const HomePage = () => {
                                     </div>
 
                                     <div className="text-center">
-                                        <div className="text-5xl font-black text-green-600 mb-3">
+                                        <div className="text-4xl md:text-5xl font-black text-green-600 mb-3">
                                             98%
                                         </div>
                                         <p className="text-gray-600 font-black text-lg">

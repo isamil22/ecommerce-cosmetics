@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.dto.FrequentlyBoughtTogetherDTO;
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ProductVariantDto;
+import com.example.demo.dto.VariantOptionDto;
 import com.example.demo.dto.VariantTypeDto;
 import com.example.demo.model.Product;
 import com.example.demo.model.ProductVariant;
@@ -62,9 +63,18 @@ public interface ProductMapper {
         VariantTypeDto variantTypeDto = new VariantTypeDto();
         variantTypeDto.setName(variantType.getName());
         variantTypeDto.setOptions(variantType.getOptions().stream()
-                .map(VariantOption::getValue)
+                .map(this::variantOptionToVariantOptionDto)
                 .collect(Collectors.toList()));
         return variantTypeDto;
+    }
+
+    default VariantOptionDto variantOptionToVariantOptionDto(VariantOption variantOption) {
+        if (variantOption == null) return null;
+        VariantOptionDto dto = new VariantOptionDto();
+        dto.setValue(variantOption.getValue());
+        dto.setColorCode(variantOption.getColorCode());
+        dto.setImageUrl(variantOption.getImageUrl());
+        return dto;
     }
 
     default List<ProductVariantDto> mapProductVariants(List<ProductVariant> productVariants) {

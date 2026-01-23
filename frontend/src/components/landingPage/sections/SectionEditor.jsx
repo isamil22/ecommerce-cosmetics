@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ImageUploader from './ImageUploader';
+import { Editor } from '@tinymce/tinymce-react';
 import { getAllProducts } from '../../../api/apiService';
 
 /**
@@ -207,7 +208,13 @@ const HeroPremiumEditor = ({ data, onChange }) => {
             <ImageUploader
                 value={data.backgroundImage || ''}
                 onChange={(url) => update('backgroundImage', url)}
-                label="Background Image (Optional)"
+                label="Background Image (Desktop)"
+            />
+            <div style={{ marginTop: '15px' }}></div>
+            <ImageUploader
+                value={data.mobileImageUrl || ''}
+                onChange={(url) => update('mobileImageUrl', url)}
+                label="📱 Background Image (Mobile)"
             />
             <div style={{ marginTop: '15px' }}></div>
             <ImageUploader
@@ -499,11 +506,24 @@ const FeaturesZigZagEditor = ({ data, onChange }) => {
 
                     <div style={{ marginTop: '15px' }}>
                         <label style={styles.label}>Description</label>
-                        <textarea
+                        <Editor
+                            tinymceScriptSrc="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"
                             value={feature.description || ''}
-                            onChange={(e) => updateFeature(index, 'description', e.target.value)}
-                            placeholder="Describe this feature..."
-                            style={styles.textarea}
+                            onEditorChange={(content) => updateFeature(index, 'description', content)}
+                            init={{
+                                height: 200,
+                                menubar: false,
+                                plugins: [
+                                    'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
+                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                ],
+                                toolbar: 'undo redo | blocks | ' +
+                                    'bold italic forecolor | alignleft aligncenter ' +
+                                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                                    'removeformat | help',
+                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                            }}
                         />
                     </div>
                 </div>
@@ -934,6 +954,34 @@ const ProductShowcaseEditor = ({ data, onChange }) => {
                                                     onChange({ ...data, optionVisuals: newVisuals });
                                                 }}
                                                 style={styles.colorInput}
+                                            />
+                                        </div>
+                                        <div style={{ width: '120px' }}>
+                                            <label style={styles.label}>Override Price</label>
+                                            <input
+                                                type="text"
+                                                value={currentVisual.price || ''}
+                                                onChange={(e) => {
+                                                    const newVisuals = { ...data.optionVisuals };
+                                                    newVisuals[visualKey] = { ...currentVisual, price: e.target.value };
+                                                    onChange({ ...data, optionVisuals: newVisuals });
+                                                }}
+                                                placeholder="e.g. 199"
+                                                style={styles.input}
+                                            />
+                                        </div>
+                                        <div style={{ width: '120px' }}>
+                                            <label style={styles.label}>Orig. Price</label>
+                                            <input
+                                                type="text"
+                                                value={currentVisual.originalPrice || ''}
+                                                onChange={(e) => {
+                                                    const newVisuals = { ...data.optionVisuals };
+                                                    newVisuals[visualKey] = { ...currentVisual, originalPrice: e.target.value };
+                                                    onChange({ ...data, optionVisuals: newVisuals });
+                                                }}
+                                                placeholder="e.g. 299"
+                                                style={styles.input}
                                             />
                                         </div>
                                         <div style={{ flex: 1 }}>

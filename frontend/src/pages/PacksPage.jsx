@@ -57,19 +57,19 @@ const PackCard = ({ pack, index, onQuickView }) => {
             onMouseLeave={() => setIsHovered(false)}
         >
             {/* Premium Badges */}
-            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+            <div className="absolute top-2 left-2 md:top-4 md:left-4 z-20 flex flex-col gap-1 md:gap-2">
                 {isNew && (
-                    <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
+                    <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg animate-pulse">
                         ✨ جديد / NOUVEAU
                     </span>
                 )}
                 {savings > 0 && (
-                    <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg">
                         💰 وفر {formatPrice(savings)} / Éco {formatPrice(savings)}
                     </span>
                 )}
                 {pack.items && pack.items.length > 0 && (
-                    <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    <span className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg">
                         📦 {pack.items.length} منتج / Articles
                     </span>
                 )}
@@ -125,10 +125,10 @@ const PackCard = ({ pack, index, onQuickView }) => {
                 </div>
 
                 {/* Enhanced Pack Info */}
-                <div className="p-6 space-y-4 flex-1 flex flex-col">
+                <div className="p-3 md:p-6 space-y-2 md:space-y-4 flex-1 flex flex-col">
                     {/* Pack Title */}
                     <div>
-                        <h3 className="text-xl font-bold text-gray-800 line-clamp-2 leading-tight group-hover:text-pink-600 transition-colors mb-2">
+                        <h3 className="text-base md:text-xl font-bold text-gray-800 line-clamp-2 leading-tight group-hover:text-pink-600 transition-colors mb-2">
                             {pack.name}
                         </h3>
 
@@ -145,7 +145,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                         )}
 
                         {/* Description */}
-                        <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+                        <p className="hidden md:block text-gray-600 text-sm line-clamp-3 leading-relaxed">
                             {pack.description?.replace(/<[^>]*>/g, '') || 'Découvrez ce pack incroyable de produits de beauté premium.'}
                         </p>
                     </div>
@@ -153,7 +153,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                     {/* Pack Items Preview */}
                     {pack.items && pack.items.length > 0 && (
                         <div className="space-y-2">
-                            <h4 className="text-sm font-semibold text-gray-700">المنتجات في هذه الباقة / Articles dans ce pack :</h4>
+                            <h4 className="text-xs md:text-sm font-semibold text-gray-700">المنتجات في هذه الباقة / Articles dans ce pack :</h4>
                             <div className="flex flex-wrap gap-1">
                                 {pack.items.slice(0, 3).map(item => (
                                     item && item.defaultProduct ? (
@@ -174,11 +174,11 @@ const PackCard = ({ pack, index, onQuickView }) => {
                     {/* Price Section */}
                     <div className="mt-auto">
                         <div className="flex items-center gap-2 mb-3">
-                            <span className="text-3xl font-extrabold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                            <span className="text-xl md:text-3xl font-extrabold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
                                 {formatPrice(pack.price)}
                             </span>
                             {totalItemPrice > pack.price && (
-                                <span className="text-lg text-gray-400 line-through">
+                                <span className="text-sm md:text-lg text-gray-400 line-through">
                                     {formatPrice(totalItemPrice)}
                                 </span>
                             )}
@@ -194,10 +194,10 @@ const PackCard = ({ pack, index, onQuickView }) => {
             </Link>
 
             {/* Enhanced Action Button */}
-            <div className="p-6 pt-0">
+            <div className="p-3 pt-0 md:p-6">
                 <Link
                     to={`/packs/${pack.id}`}
-                    className="block w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:from-pink-600 hover:to-purple-700 hover:scale-105 hover:shadow-xl text-center group"
+                    className="block w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-2 md:py-4 px-4 md:px-6 rounded-lg md:rounded-xl text-sm md:text-base transition-all duration-300 transform hover:from-pink-600 hover:to-purple-700 hover:scale-105 hover:shadow-xl text-center group"
                 >
                     <span className="flex items-center justify-center gap-2">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,7 +319,7 @@ const PacksPage = () => {
 
                 <div className="relative z-10 w-full px-0 py-0">
                     {/* Enhanced Page Header - Full Width Stripe - Refined Sizing */}
-                    <div className="w-full py-8 md:py-12 bg-transparent">
+                    <div className="w-full py-4 md:py-12 bg-transparent">
                         <div className="container mx-auto px-4 text-center">
                             <div className="mb-8 md:mb-12">
                                 <div className="inline-block mb-4">
@@ -328,26 +328,26 @@ const PacksPage = () => {
                                     </span>
                                 </div>
 
-                                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-4 leading-tight">
+                                <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-4 leading-tight">
                                     اكتشف باقاتنا المختارة / Découvrez Nos Packs Exclusifs
                                 </h1>
 
-                                <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
+                                <p className="text-sm md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
                                     اكتشف باقات التجميل المختارة بعناية والتي تقدم قيمة استثنائية. / Découvrez des ensembles de beauté soigneusement sélectionnés offrant une valeur exceptionnelle.
                                 </p>
 
                                 {/* Stats - Logically Sized */}
-                                <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center max-w-2xl mx-auto">
-                                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
-                                        <div className="text-lg sm:text-2xl font-bold text-pink-600">{packs.length}</div>
+                                <div className="grid grid-cols-3 gap-2 md:gap-6 text-center max-w-2xl mx-auto">
+                                    <div className="bg-white/80 backdrop-blur-sm rounded-lg md:rounded-xl p-2 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
+                                        <div className="text-base md:text-2xl font-bold text-pink-600">{packs.length}</div>
                                         <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">باقات مميزة / Packs Premium</div>
                                     </div>
                                     <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
-                                        <div className="text-lg sm:text-2xl font-bold text-purple-600">Up to 50%</div>
+                                        <div className="text-base md:text-2xl font-bold text-purple-600">Up to 50%</div>
                                         <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">توفير / Économies</div>
                                     </div>
                                     <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow border border-white/50">
-                                        <div className="text-lg sm:text-2xl font-bold text-blue-600">Free</div>
+                                        <div className="text-base md:text-2xl font-bold text-blue-600">Free</div>
                                         <div className="text-[10px] sm:text-xs font-medium text-gray-600 uppercase tracking-wide mt-1">شحن / Livraison</div>
                                     </div>
                                 </div>
@@ -356,9 +356,9 @@ const PacksPage = () => {
                     </div>
 
                     {/* Enhanced Search and Filter Section - Logically Sized */}
-                    <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 w-full py-4 sm:py-8 mt-0 shadow-sm z-20 relative">
+                    <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 w-full py-3 md:py-8 mt-0 shadow-sm z-20 relative">
                         <div className="container mx-auto px-4">
-                            <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
+                            <div className="flex flex-col lg:flex-row gap-2 md:gap-3 items-center justify-between">
                                 {/* Search */}
                                 <div className="relative flex-1 max-w-md w-full">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -371,7 +371,7 @@ const PacksPage = () => {
                                         placeholder="ابحث عن الباقات... / Rechercher des packs..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm shadow-inner text-sm sm:text-base"
+                                        className="block w-full pl-10 pr-3 py-2 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm shadow-inner text-sm md:text-base"
                                     />
                                 </div>
 
@@ -380,7 +380,7 @@ const PacksPage = () => {
                                     <select
                                         value={filterBy}
                                         onChange={(e) => setFilterBy(e.target.value)}
-                                        className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full sm:w-auto"
+                                        className="px-3 py-2 md:px-4 md:py-3 text-xs md:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white/50 backdrop-blur-sm w-full sm:w-auto"
                                     >
                                         <option value="all">جميع الباقات / Tous les Packs</option>
                                         <option value="new">وصل حديثاً / Nouveautés</option>
@@ -414,7 +414,7 @@ const PacksPage = () => {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6 lg:gap-8">
                             {filteredAndSortedPacks.map((pack, index) => (
                                 <PackCard
                                     key={pack.id}

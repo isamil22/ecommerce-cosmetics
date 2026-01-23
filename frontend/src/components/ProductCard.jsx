@@ -110,30 +110,30 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
 
     return (
         <div
-            className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col transform hover:-translate-y-2 border-2 border-transparent hover:border-pink-200 max-w-sm mx-auto"
+            className="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col transform hover:-translate-y-2 border-2 border-transparent hover:border-pink-200 w-full mx-auto"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             {/* Badges Section */}
-            <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
+            <div className="absolute top-2 left-2 md:top-3 md:left-3 z-20 flex flex-col gap-1 md:gap-2">
                 {isNew && (
-                    <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
+                    <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg animate-pulse">
                         ✨ جديد / NOUVEAU
                     </span>
                 )}
                 {hasDiscount && (
-                    <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        🔥 خصم {discountPercent}% / -{discountPercent}%
+                    <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg">
+                        🔥 -{discountPercent}%
                     </span>
                 )}
                 {isLowStockStatus && !isOutOfStock && (
-                    <span className="bg-gradient-to-r from-orange-500 to-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        ⚠️ {product.quantity} متبقي / Restant
+                    <span className="bg-gradient-to-r from-orange-500 to-yellow-600 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg">
+                        ⚠️ {product.quantity}
                     </span>
                 )}
                 {isOutOfStock && (
-                    <span className="bg-gradient-to-r from-gray-600 to-gray-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        ❌ غير متوفر / Rupture de Stock
+                    <span className="bg-gradient-to-r from-gray-600 to-gray-800 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg">
+                        ❌ نفد / Rupture
                     </span>
                 )}
             </div>
@@ -141,7 +141,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
 
 
             {/* Quick Actions - Appear on Hover */}
-            <div className={`absolute top-3 right-3 z-20 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
+            <div className={`hidden md:flex absolute top-3 right-3 z-20 flex flex-col gap-2 transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
                 <button
                     onClick={handleQuickView}
                     className="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:bg-pink-500 hover:text-white transition-all duration-200 transform hover:scale-110"
@@ -180,38 +180,38 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4 space-y-2">
+                <div className="p-2 md:p-4 space-y-1 md:space-y-2">
                     {/* Category Badge */}
                     {product.categoryName && (
-                        <span className="inline-block bg-pink-100 text-pink-700 text-xs font-semibold px-2 py-1 rounded">
+                        <span className="inline-block bg-pink-100 text-pink-700 text-[10px] md:text-xs font-semibold px-2 py-0.5 md:py-1 rounded">
                             {product.categoryName}
                         </span>
                     )}
 
                     {/* Product Title */}
-                    <h3 className="text-base font-bold text-gray-800 line-clamp-2 leading-tight h-12 group-hover:text-pink-600 transition-colors">
+                    <h3 className="text-sm md:text-base font-bold text-gray-800 line-clamp-2 leading-tight h-10 md:h-12 group-hover:text-pink-600 transition-colors">
                         {product.name}
                     </h3>
 
                     {/* Rating & Reviews */}
                     {reviewCount > 0 && (
-                        <div className="flex items-center gap-2">
-                            <div className="flex items-center">
+                        <div className="flex items-center gap-1 md:gap-2">
+                            <div className="flex items-center scale-90 origin-left md:scale-100">
                                 {renderStars()}
                             </div>
-                            <span className="text-xs text-gray-500">
-                                ({reviewCount} {reviewCount === 1 ? 'مراجعة / avis' : 'مراجعات / avis'})
+                            <span className="text-[10px] md:text-xs text-gray-500">
+                                ({reviewCount})
                             </span>
                         </div>
                     )}
 
                     {/* Price Section */}
-                    <div className="flex items-center gap-2">
-                        <span className="text-2xl font-extrabold text-pink-600">
+                    <div className="flex items-center flex-wrap gap-1 md:gap-2">
+                        <span className="text-sm md:text-2xl font-extrabold text-pink-600">
                             {formatPrice(product.price)}
                         </span>
                         {hasDiscount && (
-                            <span className="text-sm text-gray-400 line-through">
+                            <span className="text-xs md:text-sm text-gray-400 line-through">
                                 {formatPrice(product.oldPrice)}
                             </span>
                         )}
@@ -219,21 +219,21 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
 
                     {/* Size/Unit Info */}
                     {product.size && product.unit && (
-                        <p className="text-xs text-gray-500">
+                        <p className="hidden md:block text-xs text-gray-500">
                             ({formatPrice(product.price / product.size)} / {product.unit})
                         </p>
                     )}
 
                     {/* Stock Status Bar with Urgency */}
                     {!isOutOfStock && product.quantity <= 10 && (
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center text-xs">
-                                <span className="text-gray-600">متوفر / Disponible</span>
-                                <span className="font-bold text-red-600 animate-pulse">{product.quantity} متبقي فقط! / Seulement restant !</span>
+                        <div className="space-y-1 md:space-y-2">
+                            <div className="flex justify-between items-center text-[10px] md:text-xs">
+                                <span className="text-gray-600 hidden md:inline">متوفر / Disponible</span>
+                                <span className="font-bold text-red-600 animate-pulse">{product.quantity} متبقي!</span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2 relative overflow-hidden">
+                            <div className="w-full bg-gray-200 rounded-full h-1.5 md:h-2 relative overflow-hidden">
                                 <div
-                                    className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-300 relative"
+                                    className="bg-gradient-to-r from-orange-500 to-red-500 h-1.5 md:h-2 rounded-full transition-all duration-300 relative"
                                     style={{ width: `${Math.min((product.quantity / 10) * 100, 100)}%` }}
                                 >
                                     <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
@@ -241,11 +241,11 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                             </div>
                             {/* Low Stock Warning */}
                             {product.quantity <= 3 && (
-                                <div className="bg-red-50 border border-red-200 rounded-lg p-2 animate-bounce">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-red-600 text-lg">⚠️</span>
-                                        <span className="text-red-700 text-xs font-bold">
-                                            ينفد قريباً! / Se vend rapidement !
+                                <div className="bg-red-50 border border-red-200 rounded-md md:rounded-lg p-1 md:p-2 animate-bounce">
+                                    <div className="flex items-center gap-1 md:gap-2">
+                                        <span className="text-red-600 text-sm md:text-lg">⚠️</span>
+                                        <span className="text-red-700 text-[10px] md:text-xs font-bold">
+                                            ينفد قريباً! / Vite !
                                         </span>
                                     </div>
                                 </div>
@@ -278,11 +278,11 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
             </Link>
 
             {/* Action Buttons */}
-            <div className="mt-auto p-4 pt-0">
+            <div className="mt-auto p-2 md:p-4 pt-0">
                 <button
                     onClick={handleAddToCart}
                     disabled={isOutOfStock || isAddingToCart}
-                    className={`w-full font-bold py-4 px-4 rounded-xl transition-all duration-300 transform flex items-center justify-center gap-2 relative overflow-hidden ${isOutOfStock
+                    className={`w-full font-bold py-1.5 md:py-4 px-2 md:px-4 rounded-lg md:rounded-xl text-xs md:text-base transition-all duration-300 transform flex items-center justify-center gap-1 md:gap-2 relative overflow-hidden ${isOutOfStock
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : isAddingToCart
                             ? 'bg-pink-400 text-white cursor-wait'
@@ -296,24 +296,24 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
 
                     {isAddingToCart ? (
                         <>
-                            <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <svg className="animate-spin h-4 w-4 md:h-5 md:w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span>جارٍ الإضافة... / Ajout en cours...</span>
+                            <span className="text-xs md:text-base">جارٍ... / Ajout...</span>
                         </>
                     ) : isOutOfStock ? (
-                        <span>❌ غير متوفر / Rupture de Stock</span>
+                        <span className="text-xs md:text-base">❌ نفد / Rupture</span>
                     ) : (
                         <>
-                            <svg className="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 md:w-5 md:h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <span className="relative z-10">🛒 أضف للسلة / Ajouter au Panier</span>
+                            <span className="relative z-10 text-xs md:text-base">أضف / Ajouter</span>
                             {/* Urgency Indicator */}
                             {product.quantity <= 5 && (
-                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
-                                    سريع! / Vite!
+                                <span className="absolute -top-1 -right-1 md:-top-2 md:-right-2 bg-red-500 text-white text-[10px] md:text-xs px-1.5 py-0.5 md:px-2 md:py-1 rounded-full animate-pulse">
+                                    !
                                 </span>
                             )}
                         </>

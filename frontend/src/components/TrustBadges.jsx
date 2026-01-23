@@ -3,10 +3,10 @@ import React from 'react';
 // For this example, we'll use simple text placeholders
 const TrustBadges = () => {
     const features = [
-        { icon: '🚚', text: 'Fast Shipping' },
-        { icon: '🔒', text: 'Secure Payment' },
-        { icon: '⭐', text: 'Premium Quality' },
-        { icon: '🔄', text: 'Easy Returns' },
+        { icon: '🚚', text: 'شحن سريع / Livraison Rapide' },
+        { icon: '🔒', text: 'دفع آمن / Paiement Sécurisé' },
+        { icon: '⭐', text: 'جودة ممتازة / Qualité Premium' },
+        { icon: '🔄', text: 'إرجاع سهل / Retours Faciles' },
     ];
 
     return (

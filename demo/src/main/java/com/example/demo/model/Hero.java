@@ -17,7 +17,11 @@ public class Hero {
     private String subtitle;
     private String linkText;
     private String linkUrl;
+    private String titleFont;
     
     @Column(columnDefinition = "TEXT")
     private String imageUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String mobileImageUrl;
 }

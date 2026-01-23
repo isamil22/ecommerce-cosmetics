@@ -6,11 +6,14 @@ import React, { useState, useEffect, useRef } from 'react';
  */
 const TestimonialsSection = ({ data }) => {
     const {
-        title = 'What Our Customers Say',
-        subtitle = 'Real reviews from real customers',
+        title: dbTitle,
+        subtitle: dbSubtitle,
         testimonials = [],
         backgroundColor = '#ffffff',
     } = data || {};
+
+    const title = (!dbTitle || dbTitle === 'What Our Customers Say') ? 'ماذا يقول عملاؤنا' : dbTitle;
+    const subtitle = (!dbSubtitle || dbSubtitle === 'Real reviews from real customers') ? 'مراجعات حقيقية من عملاء حقيقيين' : dbSubtitle;
 
     const [lightboxImage, setLightboxImage] = useState(null);
     const [isVisible, setIsVisible] = useState(false);
@@ -158,7 +161,7 @@ const TestimonialsSection = ({ data }) => {
                         fontWeight: '600',
                         marginBottom: '20px',
                     }}>
-                        ⭐ Customer Reviews
+                        ⭐ مراجعات العملاء
                     </div>
                     <h2 style={{
                         fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -202,7 +205,7 @@ const TestimonialsSection = ({ data }) => {
                             ★★★★★
                         </div>
                         <div style={{ color: '#666', fontSize: '0.9rem' }}>
-                            Based on {testimonials.length > 0 ? testimonials.length * 100 : 500}+ reviews
+                            بناءً على {testimonials.length > 0 ? testimonials.length * 100 : 500}+ مراجعة
                         </div>
                     </div>
                 </div>
@@ -384,7 +387,7 @@ const TestimonialsSection = ({ data }) => {
                                             alignItems: 'center',
                                             gap: '5px',
                                         }}>
-                                            ✓ Verified Buyer
+                                            ✓ شراء مؤكد
                                         </div>
                                     </div>
                                 </div>
@@ -404,7 +407,7 @@ const TestimonialsSection = ({ data }) => {
                                             alignItems: 'center',
                                             gap: '5px',
                                         }}>
-                                            📸 Customer photos
+                                            📸 صور العملاء
                                         </div>
                                         <div style={{
                                             display: 'flex',
@@ -485,7 +488,7 @@ const TestimonialsSection = ({ data }) => {
                             e.target.style.gap = '8px';
                         }}
                     >
-                        Read all customer reviews <span>→</span>
+                        قراءة جميع المراجعات <span>→</span>
                     </a>
                 </div>
             </div>

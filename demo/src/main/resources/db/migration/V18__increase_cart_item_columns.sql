@@ -1,0 +1,2 @@
+ALTER TABLE cart_item MODIFY COLUMN variant_name MEDIUMTEXT;
+ALTER TABLE cart_item MODIFY COLUMN image_url MEDIUMTEXT;

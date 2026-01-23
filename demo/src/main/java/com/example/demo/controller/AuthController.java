@@ -153,8 +153,13 @@ public class AuthController {
      */
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-        userService.forgotPassword(request.getEmail());
-        return ResponseEntity.ok("Password reset link sent to your email.");
+        try {
+            userService.forgotPassword(request.getEmail());
+            return ResponseEntity.ok("Password reset link sent to your email.");
+        } catch (Exception e) {
+            logger.error("Error sending forgot password email: ", e);
+            throw e;
+        }
     }
 
     /**
