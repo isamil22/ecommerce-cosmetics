@@ -296,39 +296,44 @@ const KeyBenefitsSection = ({ data, availableVariants, productId }) => {
                 /* HYPER-COMPACT MOBILE (Small Screens) */
                 @media (max-width: 480px) {
                     .key-benefits-section {
-                        padding: 40px 15px !important;
+                        padding: 25px 10px !important;
                     }
                     .benefit-card.style-standard {
-                        padding: 20px 15px !important;
+                        padding: 15px 12px !important;
                     }
                     .section-title {
-                        font-size: 1.5rem !important;
-                        margin-bottom: 0.5rem !important;
+                        font-size: 1.3rem !important;
+                        margin-bottom: 6px !important;
+                        line-height: 1.2 !important;
                     }
                     .section-subtitle {
-                        font-size: 0.9rem !important;
-                        margin-bottom: 25px !important;
+                        font-size: 0.8rem !important;
+                        margin-bottom: 20px !important;
+                        line-height: 1.3 !important;
                     }
                     .ingredient-img-wrapper {
-                        width: 90px !important;
-                        height: 90px !important;
-                        margin-bottom: 10px !important;
-                        border-width: 3px !important;
+                        width: 70px !important;
+                        height: 70px !important;
+                        margin-bottom: 8px !important;
+                        border-width: 2px !important;
                     }
                     .benefit-title {
-                        font-size: 1.1rem !important;
+                        font-size: 0.95rem !important;
+                        margin-bottom: 5px !important;
+                        line-height: 1.2 !important;
                     }
                     .benefit-description {
-                        font-size: 0.85rem !important;
+                        font-size: 0.75rem !important;
+                        line-height: 1.3 !important;
                     }
                     .benefit-icon-wrapper {
-                        width: 50px !important;
-                        height: 50px !important;
-                        font-size: 1.5rem !important;
-                        margin-bottom: 10px !important;
+                        width: 40px !important;
+                        height: 40px !important;
+                        font-size: 1.2rem !important;
+                        margin-bottom: 8px !important;
                     }
                     .benefits-grid {
-                        gap: 20px !important;
+                        gap: 15px !important;
                     }
                 }
             `}</style>
