@@ -656,6 +656,38 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
                         padding: 6px 14px !important;
                         top: -10px !important;
                     }
+
+                    /* FIX: Variant/Option Buttons (Quantity, etc) */
+                    /* Targeted via the specific flex gap structure or button attributes if possible, 
+                       but here we use the fact they are inside the variant container structure */
+                    #product-showcase div[style*="flex-wrap: wrap"] button {
+                        width: auto !important;
+                        padding: 6px 16px !important;
+                        font-size: 0.9rem !important;
+                        margin-bottom: 0 !important;
+                        border-radius: 50px !important;
+                        flex: 0 0 auto !important;
+                        min-width: 60px !important;
+                    }
+                    
+                    /* Helper text for variants (e.g. :quantity) */
+                    #product-showcase div[style*="flex-wrap: wrap"] span {
+                        font-size: 0.9rem !important;
+                    }
+                    
+                    /* Center the variant row */
+                    #product-showcase div[style*="flex-wrap: wrap"] {
+                        justify-content: center !important;
+                    }
+
+                    /* Main CTA Buttons (Keep full width but compact) */
+                    #product-showcase > div:nth-child(2) > div:last-child > a,
+                    #product-showcase > div:nth-child(2) > div:last-child > button:not([style*="width: 32px"]) { 
+                        /* Exclude color swatches (which are buttons with width 32px) */
+                        width: 100% !important;
+                        max-width: 350px !important; /* Prevent overly wide on tablets */
+                        margin: 0 auto 10px auto !important;
+                    }
                 }
             `}</style>
 
