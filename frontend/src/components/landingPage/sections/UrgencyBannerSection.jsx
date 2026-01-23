@@ -383,12 +383,44 @@ const UrgencyBannerSection = ({ data, isEditing = false, productId = null, avail
                             font-size: 0.9rem !important;
                         }
                     }
+                    /* Specific Mobile Optimization (Aggressive Reduction) */
                     @media (max-width: 480px) {
-                        .urgency-cta-btn {
-                            padding: 15px 30px !important;
-                            font-size: 1rem !important;
+                        .urgency-section {
+                            padding: 25px 10px !important;
+                        }
+                        .time-block-inner {
+                            min-width: 45px !important;
+                            padding: 8px 5px !important;
+                            border-radius: 10px !important;
+                        }
+                        .time-digit {
+                            font-size: 1.25rem !important;
+                        }
+                        .time-label {
+                            font-size: 0.65rem !important;
+                            margin-top: 5px !important;
+                        }
+                        .timer-separator {
+                            font-size: 1.2rem !important;
+                            margin: 0 1px !important;
+                        }
+                        .discount-text {
+                            font-size: 2.5rem !important;
+                            margin-bottom: 10px !important;
+                        }
+                        .urgency-title {
+                            font-size: 1.25rem !important;
+                            margin-bottom: 10px !important;
+                        }
+                         .urgency-cta-btn {
+                            padding: 12px 25px !important;
+                            font-size: 0.95rem !important;
                             width: 100%;
                             justify-content: center;
+                        }
+                        .stock-badge {
+                            font-size: 0.8rem !important;
+                            padding: 8px 15px !important;
                         }
                     }
                     /* Float Animation */
