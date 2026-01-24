@@ -74,9 +74,13 @@ export const addToCart = async (productOrId, quantity, productVariantId) => {
                 imageUrl: productOrId.imageUrl || productOrId.image,
                 variantName: productOrId.variantName || productOrId.selectedVariant
             };
-            return apiService.post(`/cart/add`, payload);
+            const response = await apiService.post(`/cart/add`, payload);
+            window.dispatchEvent(new Event('cartUpdated'));
+            return response;
         } else {
-            return apiService.post(`/cart/add`, { productId: productOrId, quantity, productVariantId });
+            const response = await apiService.post(`/cart/add`, { productId: productOrId, quantity, productVariantId });
+            window.dispatchEvent(new Event('cartUpdated'));
+            return response;
         }
     } else {
         // User is a guest, handle cart in local storage
@@ -137,6 +141,8 @@ export const addToCart = async (productOrId, quantity, productVariantId) => {
             }
 
             localStorage.setItem('cart', JSON.stringify(guestCart));
+            localStorage.setItem('cart', JSON.stringify(guestCart));
+            window.dispatchEvent(new Event('cartUpdated'));
             return Promise.resolve({ data: guestCart }); // Mock a successful response
         } catch (error) {
             console.error('Error adding to guest cart:', error);
@@ -160,7 +166,9 @@ export const removeCartItem = async (productId, productVariantId) => {
         // If it's a numeric ID, it's likely a Cart Item ID (for authenticated users)
         // If it's a GUID or string, it might be something else.
         // However, the backend expects CartItem ID for authenticated users.
-        return apiService.delete(`/cart/${productId}`);
+        const response = await apiService.delete(`/cart/${productId}`);
+        window.dispatchEvent(new Event('cartUpdated'));
+        return response;
     } else {
         // Remove from guest cart in localStorage
         const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
@@ -174,13 +182,17 @@ export const removeCartItem = async (productId, productVariantId) => {
         });
 
         localStorage.setItem('cart', JSON.stringify(guestCart));
+        localStorage.setItem('cart', JSON.stringify(guestCart));
+        window.dispatchEvent(new Event('cartUpdated'));
         return Promise.resolve({ data: guestCart });
     }
 };
 
 export const updateCartItemQuantity = async (cartItemId, quantity) => {
     if (isAuthenticated()) {
-        return apiService.put(`/cart/${cartItemId}`, { quantity });
+        const response = await apiService.put(`/cart/${cartItemId}`, { quantity });
+        window.dispatchEvent(new Event('cartUpdated'));
+        return response;
     } else {
         // Guest Cart Logic
         try {
@@ -196,6 +208,8 @@ export const updateCartItemQuantity = async (cartItemId, quantity) => {
                     guestCart.items[itemIndex].quantity = quantity;
                 }
                 localStorage.setItem('cart', JSON.stringify(guestCart));
+                localStorage.setItem('cart', JSON.stringify(guestCart));
+                window.dispatchEvent(new Event('cartUpdated'));
                 return Promise.resolve({ data: guestCart });
             }
             return Promise.reject(new Error("Item not found in guest cart"));
@@ -540,6 +554,10 @@ export const getOrderFeedbackByRating = (rating) => {
 
 export const createCoupon = (couponData) => {
     return apiService.post('/coupons', couponData);
+};
+
+export const updateCoupon = (id, couponData) => {
+    return apiService.put(`/coupons/${id}`, couponData);
 };
 
 export const validateCoupon = (code) => {

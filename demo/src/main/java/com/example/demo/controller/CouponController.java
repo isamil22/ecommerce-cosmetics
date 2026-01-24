@@ -43,11 +43,23 @@ public class CouponController {
         return ResponseEntity.ok(coupons);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('COUPON:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<CouponDTO> updateCoupon(@PathVariable Long id, @RequestBody CouponDTO couponDTO) {
+        CouponDTO updatedCoupon = couponService.updateCoupon(id, couponDTO);
+        return ResponseEntity.ok(updatedCoupon);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('COUPON:DELETE') or hasAuthority('COUPON:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
-        couponService.deleteCoupon(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteCoupon(@PathVariable Long id) {
+        try {
+            couponService.deleteCoupon(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Failed to delete coupon: " + e.getMessage()));
+        }
     }
 
     @GetMapping("/usage-statistics")
@@ -75,7 +87,8 @@ public class CouponController {
             System.out.println("✅ CouponController: Returning usage statistics for coupon " + id + ": " + result);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            System.out.println("❌ CouponController: Error in usage statistics for coupon " + id + ": " + e.getMessage());
+            System.out
+                    .println("❌ CouponController: Error in usage statistics for coupon " + id + ": " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body(List.of());
         }

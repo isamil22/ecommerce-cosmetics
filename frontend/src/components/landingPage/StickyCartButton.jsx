@@ -24,15 +24,16 @@ const StickyCartButton = ({ cartCount = 0 }) => {
                 right: '15px',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                zIndex: 9999,
-                width: '56px',
-                height: '56px',
+                zIndex: 2147483647, // Max Safe Integer
+                width: '60px',
+                height: '60px',
                 borderRadius: '50%',
                 background: 'linear-gradient(135deg, #ff69b4 0%, #ff1493 100%)',
                 border: 'none',
-                boxShadow: '0 4px 12px rgba(255, 105, 180, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
                 cursor: 'pointer',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'all 0.3s ease',
@@ -40,11 +41,9 @@ const StickyCartButton = ({ cartCount = 0 }) => {
             }}
             onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(255, 105, 180, 0.5), 0 3px 6px rgba(0, 0, 0, 0.15)';
             }}
             onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 105, 180, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1)';
             }}
         >
             <FiShoppingCart size={24} />

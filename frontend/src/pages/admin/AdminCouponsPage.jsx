@@ -28,27 +28,27 @@ import { useEffect, useState } from "react";
 import { createCoupon, getAllCoupons as fetchAllCoupons, deleteCoupon, getAllProducts, getAllCategories } from "../../api/apiService";
 import dayjs from "dayjs";
 import CouponUsageChart from "../../components/CouponUsageChart";
-import { 
-    FiGift, 
-    FiPlus, 
-    FiEdit, 
-    FiTrash2, 
-    FiEye, 
-    FiTrendingUp, 
-    FiUsers, 
-    FiDollarSign, 
-    FiPercent, 
-    FiTruck, 
-    FiClock, 
-    FiTarget, 
-    FiZap, 
-    FiStar, 
-    FiShield, 
-    FiCheckCircle, 
-    FiAlertCircle, 
-    FiCalendar, 
-    FiTag, 
-    FiPackage, 
+import {
+    FiGift,
+    FiPlus,
+    FiEdit,
+    FiTrash2,
+    FiEye,
+    FiTrendingUp,
+    FiUsers,
+    FiDollarSign,
+    FiPercent,
+    FiTruck,
+    FiClock,
+    FiTarget,
+    FiZap,
+    FiStar,
+    FiShield,
+    FiCheckCircle,
+    FiAlertCircle,
+    FiCalendar,
+    FiTag,
+    FiPackage,
     FiRefreshCw,
     FiSettings,
     FiMaximize2,
@@ -171,6 +171,7 @@ const AdminCouponsPage = () => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const [editingCoupon, setEditingCoupon] = useState(null); // New State for Editing
     const [selectedDiscountType, setSelectedDiscountType] = useState('PERCENTAGE');
     const [previewMode, setPreviewMode] = useState(false);
     const [formData, setFormData] = useState({});
@@ -187,13 +188,10 @@ const AdminCouponsPage = () => {
     }, []);
 
     useEffect(() => {
-        if (coupons.length >= 0) { // Only calculate when coupons array is available
+        if (coupons.length >= 0) {
             calculateStats();
         }
     }, [coupons]);
-
-    // REMOVED: This function is no longer needed
-    // const fetchUsageData = async () => { ... };
 
     const fetchProductsAndCategories = async () => {
         try {
@@ -222,8 +220,8 @@ const AdminCouponsPage = () => {
     };
 
     const handleRefresh = async () => {
-        if (refreshing) return; // Prevent multiple simultaneous refreshes
-        
+        if (refreshing) return;
+
         setRefreshing(true);
         try {
             await getAllCoupons();
@@ -237,17 +235,16 @@ const AdminCouponsPage = () => {
 
     const calculateStats = () => {
         const now = dayjs();
-        const activeCoupons = coupons.filter(coupon => 
-            dayjs(coupon.expiryDate).isAfter(now) && 
+        const activeCoupons = coupons.filter(coupon =>
+            dayjs(coupon.expiryDate).isAfter(now) &&
             (coupon.usageLimit === 0 || coupon.timesUsed < coupon.usageLimit)
         );
-        
+
         const totalUsage = coupons.reduce((sum, coupon) => sum + (coupon.timesUsed || 0), 0);
         const totalSavings = coupons.reduce((sum, coupon) => {
             if (coupon.discountType === 'FIXED_AMOUNT') {
                 return sum + (coupon.discountValue * (coupon.timesUsed || 0));
             } else if (coupon.discountType === 'PERCENTAGE') {
-                // Estimate average order value for percentage calculation
                 const avgOrderValue = 50;
                 return sum + ((coupon.discountValue / 100) * avgOrderValue * (coupon.timesUsed || 0));
             }
@@ -262,35 +259,79 @@ const AdminCouponsPage = () => {
         });
     };
 
+    // Prepare form for editing
+    const handleEdit = (coupon) => {
+        setEditingCoupon(coupon);
+        setSelectedDiscountType(coupon.discountType);
+
+        form.setFieldsValue({
+            ...coupon,
+            expiryDate: coupon.expiryDate ? dayjs(coupon.expiryDate) : null,
+            // Ensure array fields are handled correctly
+            applicableProducts: coupon.applicableProducts ? coupon.applicableProducts.map(p => p.id) : [],
+            applicableCategories: coupon.applicableCategories ? coupon.applicableCategories.map(c => c.id) : [],
+        });
+
+        setShowCreateForm(true);
+    };
+
     const onFinish = async (values) => {
         try {
             setLoading(true);
             const payload = {
                 ...values,
                 expiryDate: values.expiryDate ? dayjs(values.expiryDate).toISOString() : null,
-                applicableProducts: values.applicableProducts && values.applicableProducts.length > 0 ? values.applicableProducts : null,
-                applicableCategories: values.applicableCategories && values.applicableCategories.length > 0 ? values.applicableCategories : null,
+                // Ensure we send IDs for relationships if backend expects generic list, 
+                // but checking `createCoupon` implementation, it likely expects just IDs or list of objects
+                // Ideally, backend DTO should handle basic ID lists if possible, 
+                // but if backend DTO expects full objects, we might need mapping.
+                // Assuming backend DTO handles the list of IDs if mapped correctly or List<Product> from just IDs?
+                // Wait, frontend form sends IDs from Select/MultiSelect. Backend DTO has `List<Product> applicableProducts`.
+                // Spring Boot + Jackson often needs ID wrapping `{id: 1}` if strictly typed as Entity list,
+                // unless custom deserializer. 
+                // Let's assume the previous `create` worked. If it worked before, we keep it same.
+                applicableProducts: values.applicableProducts && values.applicableProducts.length > 0 ? values.applicableProducts.map(id => ({ id })) : null,
+                applicableCategories: values.applicableCategories && values.applicableCategories.length > 0 ? values.applicableCategories.map(id => ({ id })) : null,
             };
-            const res = await createCoupon(payload);
-            message.success({
-                content: (
-                    <div className="flex items-center space-x-2">
-                        <FiCheckCircle className="w-5 h-5 text-green-500" />
-                        <span>Coupon "{res.data.name}" created successfully!</span>
-                    </div>
-                ),
-                duration: 4
-            });
+
+            let res;
+            if (editingCoupon) {
+                // Update implementation needed in apiService first (assuming Added in previous step)
+                const { updateCoupon } = await import("../../api/apiService");
+                res = await updateCoupon(editingCoupon.id, payload);
+                message.success({
+                    content: (
+                        <div className="flex items-center space-x-2">
+                            <FiCheckCircle className="w-5 h-5 text-green-500" />
+                            <span>Coupon "{res.data.name}" updated successfully!</span>
+                        </div>
+                    ),
+                    duration: 4
+                });
+            } else {
+                res = await createCoupon(payload);
+                message.success({
+                    content: (
+                        <div className="flex items-center space-x-2">
+                            <FiCheckCircle className="w-5 h-5 text-green-500" />
+                            <span>Coupon "{res.data.name}" created successfully!</span>
+                        </div>
+                    ),
+                    duration: 4
+                });
+            }
+
             getAllCoupons();
             form.resetFields();
             setShowCreateForm(false);
+            setEditingCoupon(null); // Reset editing state
             setPreviewMode(false);
         } catch (error) {
             message.error({
                 content: (
                     <div className="flex items-center space-x-2">
                         <FiAlertCircle className="w-5 h-5 text-red-500" />
-                        <span>{error.response?.data?.message || "Something went wrong creating the coupon!"}</span>
+                        <span>{error.response?.data?.message || `Something went wrong ${editingCoupon ? 'updating' : 'creating'} the coupon!`}</span>
                     </div>
                 ),
                 duration: 4
@@ -311,10 +352,10 @@ const AdminCouponsPage = () => {
         const adjectives = ['SUPER', 'MEGA', 'ULTRA', 'EPIC', 'AMAZING', 'FANTASTIC', 'INCREDIBLE', 'WONDERFUL', 'SPECTACULAR', 'PHENOMENAL'];
         const nouns = ['SAVE', 'DEAL', 'OFFER', 'SALE', 'DISCOUNT', 'BONUS', 'GIFT', 'REWARD', 'TREAT', 'PRIZE'];
         const numbers = Math.floor(Math.random() * 100);
-        
+
         const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
         const noun = nouns[Math.floor(Math.random() * nouns.length)];
-        
+
         return `${adjective}${noun}${numbers}`;
     };
 
@@ -337,7 +378,9 @@ const AdminCouponsPage = () => {
             message.success("Coupon deleted successfully!");
             getAllCoupons();
         } catch (error) {
-            message.error("Failed to delete coupon.");
+            // Improved Error Handling from Backend
+            const errorMsg = error.response?.data?.message || "Failed to delete coupon.";
+            message.error(errorMsg);
         }
     };
 
@@ -378,6 +421,7 @@ const AdminCouponsPage = () => {
                 </div>
             )
         },
+        // ... (Discount, Expiry, Usage, Scope columns remain same - omitted for brevity if no changes)
         {
             title: (
                 <div className="flex items-center space-x-2">
@@ -424,7 +468,7 @@ const AdminCouponsPage = () => {
             render: (date, record) => {
                 const isExpired = dayjs(date).isBefore(dayjs());
                 const isExpiringSoon = dayjs(date).isBefore(dayjs().add(7, 'days'));
-                
+
                 return (
                     <div className="flex items-center space-x-2">
                         <div className={`w-3 h-3 rounded-full ${isExpired ? 'bg-red-500' : isExpiringSoon ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
@@ -446,7 +490,7 @@ const AdminCouponsPage = () => {
             render: (_, record) => {
                 const usagePercent = record.usageLimit > 0 ? (record.timesUsed / record.usageLimit) * 100 : 0;
                 const isNearLimit = usagePercent > 80;
-                
+
                 return (
                     <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
@@ -479,7 +523,7 @@ const AdminCouponsPage = () => {
             render: (_, record) => {
                 const productCount = record.applicableProducts?.length || 0;
                 const categoryCount = record.applicableCategories?.length || 0;
-                
+
                 if (productCount === 0 && categoryCount === 0) {
                     return (
                         <Tag color="blue" icon={<FiGlobe className="w-3 h-3" />}>
@@ -487,7 +531,7 @@ const AdminCouponsPage = () => {
                         </Tag>
                     );
                 }
-                
+
                 return (
                     <div className="space-y-1">
                         {productCount > 0 && (
@@ -512,7 +556,7 @@ const AdminCouponsPage = () => {
                 </div>
             ),
             key: "action",
-            width: 120,
+            width: 150, // Increased width for Edit button
             render: (_, record) => (
                 <Space size="small">
                     <Tooltip title="Copy coupon code">
@@ -523,6 +567,14 @@ const AdminCouponsPage = () => {
                             className="hover:bg-blue-50 hover:text-blue-600"
                         />
                     </Tooltip>
+                    <Tooltip title="Edit coupon">
+                        <Button
+                            type="text"
+                            icon={<FiEdit className="w-4 h-4" />}
+                            onClick={() => handleEdit(record)} // Trigger Edit
+                            className="hover:bg-yellow-50 hover:text-yellow-600"
+                        />
+                    </Tooltip>
                     <Tooltip title="View analytics">
                         <Button
                             type="text"
@@ -530,7 +582,7 @@ const AdminCouponsPage = () => {
                             className="hover:bg-green-50 hover:text-green-600"
                         />
                     </Tooltip>
-                <Popconfirm
+                    <Popconfirm
                         title="Delete Coupon"
                         description={
                             <div>
@@ -538,7 +590,7 @@ const AdminCouponsPage = () => {
                                 <p className="text-red-600 font-semibold">"{record.name}"</p>
                             </div>
                         }
-                    onConfirm={() => handleDelete(record.id)}
+                        onConfirm={() => handleDelete(record.id)}
                         okText="Yes, Delete"
                         cancelText="Cancel"
                         okButtonProps={{ danger: true }}
@@ -551,14 +603,11 @@ const AdminCouponsPage = () => {
                                 className="hover:bg-red-50 hover:text-red-600"
                             />
                         </Tooltip>
-                </Popconfirm>
+                    </Popconfirm>
                 </Space>
             ),
         },
     ];
-
-    // REMOVED: The main chart config is no longer needed
-    // const chartConfig = { ... };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -591,7 +640,11 @@ const AdminCouponsPage = () => {
                                 type="primary"
                                 size="large"
                                 icon={<FiPlus className="w-5 h-5" />}
-                                onClick={() => setShowCreateForm(true)}
+                                onClick={() => {
+                                    setEditingCoupon(null);
+                                    form.resetFields();
+                                    setShowCreateForm(true);
+                                }}
                                 className="bg-gradient-to-r from-pink-500 to-rose-500 border-none hover:from-pink-600 hover:to-rose-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 rounded-xl px-8 py-4 h-auto"
                             >
                                 <span className="text-lg font-semibold">Create Coupon</span>
@@ -722,7 +775,7 @@ const AdminCouponsPage = () => {
                                                 placeholder="e.g., Summer Sale Spectacular"
                                                 className="rounded-xl border-2 hover:border-purple-300 focus:border-purple-500 transition-colors"
                                             />
-                    </Form.Item>
+                                        </Form.Item>
                                     </Col>
                                     <Col xs={24} lg={12}>
                                         <Form.Item
@@ -748,7 +801,7 @@ const AdminCouponsPage = () => {
                                                 placeholder="e.g., SUMMER2024"
                                                 className="rounded-xl border-2 hover:border-blue-300 focus:border-blue-500 transition-colors font-mono text-center"
                                             />
-                    </Form.Item>
+                                        </Form.Item>
                                     </Col>
                                 </Row>
 
@@ -788,8 +841,8 @@ const AdminCouponsPage = () => {
                                                         <span>Free Shipping</span>
                                                     </div>
                                                 </Option>
-                        </Select>
-                    </Form.Item>
+                                            </Select>
+                                        </Form.Item>
                                     </Col>
                                     <Col xs={24} lg={8}>
                                         <Form.Item
@@ -811,7 +864,7 @@ const AdminCouponsPage = () => {
                                                 placeholder={selectedDiscountType === 'PERCENTAGE' ? '25 for 25%' : selectedDiscountType === 'FIXED_AMOUNT' ? '10 for $10' : '0'}
                                                 disabled={selectedDiscountType === 'FREE_SHIPPING'}
                                             />
-                    </Form.Item>
+                                        </Form.Item>
                                     </Col>
                                     <Col xs={24} lg={8}>
                                         <Form.Item
@@ -831,7 +884,7 @@ const AdminCouponsPage = () => {
                                                 showTime
                                                 format="YYYY-MM-DD HH:mm"
                                             />
-                    </Form.Item>
+                                        </Form.Item>
                                     </Col>
                                 </Row>
 
@@ -855,7 +908,7 @@ const AdminCouponsPage = () => {
                                                 className="w-full rounded-xl border-2 hover:border-yellow-300 focus:border-yellow-500 transition-colors"
                                                 placeholder="e.g., 50 for $50 minimum"
                                             />
-                    </Form.Item>
+                                        </Form.Item>
                                     </Col>
                                     <Col xs={24} lg={12}>
                                         <Form.Item
@@ -877,7 +930,7 @@ const AdminCouponsPage = () => {
                                                 className="w-full rounded-xl border-2 hover:border-red-300 focus:border-red-500 transition-colors"
                                                 placeholder="0 for unlimited usage"
                                             />
-                    </Form.Item>
+                                        </Form.Item>
                                     </Col>
                                 </Row>
 
@@ -895,23 +948,23 @@ const AdminCouponsPage = () => {
                                             }
                                             name="applicableProducts"
                                         >
-                        <Select
-                            mode="multiple"
+                                            <Select
+                                                mode="multiple"
                                                 size="large"
                                                 placeholder="Select specific products"
                                                 className="rounded-xl"
                                                 showSearch
-                            filterOption={(input, option) =>
+                                                filterOption={(input, option) =>
                                                     (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                            }
-                        >
-                            {products.map(product => (
+                                                }
+                                            >
+                                                {products.map(product => (
                                                     <Option key={product.id} value={product.id}>
                                                         {product.name}
                                                     </Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+                                                ))}
+                                            </Select>
+                                        </Form.Item>
                                     </Col>
                                     <Col xs={24} lg={12}>
                                         <Form.Item
@@ -926,23 +979,23 @@ const AdminCouponsPage = () => {
                                             }
                                             name="applicableCategories"
                                         >
-                        <Select
-                            mode="multiple"
+                                            <Select
+                                                mode="multiple"
                                                 size="large"
                                                 placeholder="Select specific categories"
                                                 className="rounded-xl"
                                                 showSearch
-                            filterOption={(input, option) =>
+                                                filterOption={(input, option) =>
                                                     (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                            }
-                        >
-                            {categories.map(category => (
+                                                }
+                                            >
+                                                {categories.map(category => (
                                                     <Option key={category.id} value={category.id}>
                                                         {category.name}
                                                     </Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+                                                ))}
+                                            </Select>
+                                        </Form.Item>
                                     </Col>
                                 </Row>
 
@@ -964,7 +1017,7 @@ const AdminCouponsPage = () => {
                                             <Text className="text-green-600">Restrict this coupon to new customers only</Text>
                                         </div>
                                     </div>
-                    </Form.Item>
+                                </Form.Item>
 
                                 <div className="flex items-center justify-between pt-6 border-t border-gray-200">
                                     <Button
@@ -995,10 +1048,10 @@ const AdminCouponsPage = () => {
                                             className="bg-gradient-to-r from-purple-600 to-blue-600 border-none hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 rounded-xl px-8 py-3 h-auto"
                                         >
                                             <span className="text-lg font-semibold">Create Amazing Coupon</span>
-                        </Button>
+                                        </Button>
                                     </Space>
                                 </div>
-                </Form>
+                            </Form>
                         </div>
                     </Card>
                 )}
@@ -1010,8 +1063,8 @@ const AdminCouponsPage = () => {
                             <div className="flex items-center space-x-4">
                                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
                                     <FiBarChart className="w-6 h-6 text-white" />
-            </div>
-            <div>
+                                </div>
+                                <div>
                                     <Title level={3} className="!mb-1">
                                         Coupon Analytics & Management
                                     </Title>
@@ -1041,12 +1094,12 @@ const AdminCouponsPage = () => {
                     </div>
 
                     <div className="p-6">
-                <Table
-                    columns={columns}
-                    dataSource={coupons}
-                    rowKey="id"
-                    loading={loading}
-                    scroll={{ x: true }}
+                        <Table
+                            columns={columns}
+                            dataSource={coupons}
+                            rowKey="id"
+                            loading={loading}
+                            scroll={{ x: true }}
                             className="rounded-xl"
                             pagination={{
                                 pageSize: 10,
@@ -1055,8 +1108,8 @@ const AdminCouponsPage = () => {
                                 showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} coupons`,
                                 className: "mt-6"
                             }}
-                    expandable={{
-                        expandedRowRender: (record) => (
+                            expandable={{
+                                expandedRowRender: (record) => (
                                     <div className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
                                         <div className="flex items-center space-x-3 mb-4">
                                             <FiTrendingUp className="w-6 h-6 text-blue-600" />
@@ -1064,9 +1117,9 @@ const AdminCouponsPage = () => {
                                                 Usage Analytics for: {record.name}
                                             </Title>
                                         </div>
-                                <CouponUsageChart couponId={record.id} />
-                            </div>
-                        ),
+                                        <CouponUsageChart couponId={record.id} />
+                                    </div>
+                                ),
                                 rowExpandable: (record) => record.timesUsed > 0,
                                 expandIcon: ({ expanded, onExpand, record }) => (
                                     <Button

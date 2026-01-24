@@ -48,6 +48,7 @@ import GoogleAnalytics from './components/GoogleAnalytics.jsx';
 import AnalyticsTracker from './components/AnalyticsTracker.jsx';
 import AnnouncementBar from './components/AnnouncementBar.jsx';
 import FloatingActionButton from './components/FloatingActionButton.jsx';
+import StickyCartButton from './components/landingPage/StickyCartButton.jsx';
 import AdminAnnouncementPage from './pages/admin/AdminAnnouncementPage.jsx';
 import AdminCountdownPage from './pages/admin/AdminCountdownPage.jsx';
 import AdminCustomPackForm from './pages/admin/AdminCustomPackForm';
@@ -64,7 +65,9 @@ import AdminPermissionsPage from './pages/admin/AdminPermissionsPage.jsx';
 import AdminLandingPagesPage from './pages/admin/AdminLandingPagesPage.jsx';
 import AdminLandingPageBuilder from './pages/admin/AdminLandingPageBuilder.jsx';
 import PublicLandingPage from './pages/PublicLandingPage.jsx';
+
 import NotFoundPage from './pages/NotFoundPage.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -112,6 +115,17 @@ function App() {
 
         checkAuthAndFetchRole();
         fetchCartCount();
+
+        // Listen for global cart update events (triggered by apiService)
+        const handleCartUpdate = () => {
+            console.log("Cart update event received, refreshing count...");
+            fetchCartCount();
+        };
+        window.addEventListener('cartUpdated', handleCartUpdate);
+
+        return () => {
+            window.removeEventListener('cartUpdated', handleCartUpdate);
+        };
     }, [isAuthenticated]);
 
     const handleSetIsAuthenticated = (authStatus) => {
@@ -124,6 +138,7 @@ function App() {
     return (
 
         <BrowserRouter>
+            <ScrollToTop />
             <SiteSettingsProvider>
                 {/* AnnouncementBar */}
                 <AnnouncementBar />
@@ -229,6 +244,9 @@ function App() {
 
                     {/* Floating Action Button - Disabled for minimal design */}
                     {/* <FloatingActionButton cartCount={cartCount} /> */}
+
+                    {/* Sticky Cart Button - Replaces FloatingActionButton */}
+                    <StickyCartButton cartCount={cartCount} />
                 </div>
             </SiteSettingsProvider>
         </BrowserRouter>

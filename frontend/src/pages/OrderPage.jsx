@@ -80,9 +80,27 @@ const OrderPage = () => {
         setApplyingCoupon(true);
         try {
             const response = await validateCoupon(couponCode.trim());
-            setDiscount(response.data.discountValue);
-            setAppliedCoupon(response.data.code);
-            toast.success(`🎉 Coupon "${response.data.code}" applied successfully! You saved ${formatPrice(response.data.discountValue)}!`);
+            const coupon = response.data;
+
+            let calculatedDiscount = 0;
+            if (coupon.discountType === 'PERCENTAGE') {
+                // Calculate percentage discount
+                const currentSubtotal = calculateSubtotal();
+                calculatedDiscount = (currentSubtotal * coupon.discountValue) / 100;
+            } else if (coupon.discountType === 'FIXED_AMOUNT') {
+                calculatedDiscount = coupon.discountValue;
+            } else if (coupon.discountType === 'FREE_SHIPPING') {
+                // For free shipping, we might strictly mean 0 shipping cost, 
+                // but usually this field tracks deduction from total. 
+                // If logic requires just 0 shipping, handle separately or here.
+                // For now assuming discountValue is 0 or ignored for free shipping in this simple view
+                calculatedDiscount = 0;
+                toast.info('تم تطبيق شحن مجاني! / Livraison gratuite appliquée !');
+            }
+
+            setDiscount(calculatedDiscount);
+            setAppliedCoupon(coupon.code);
+            toast.success(`🎉 Coupon "${coupon.code}" applied successfully! You saved ${formatPrice(calculatedDiscount)}!`);
         } catch (err) {
             setDiscount(0);
             setAppliedCoupon(null);

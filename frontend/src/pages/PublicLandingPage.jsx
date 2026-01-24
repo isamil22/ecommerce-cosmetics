@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { getProductById } from '../api/apiService';
 import { trackEvent } from '../utils/facebookPixel';
 import ReactGA from 'react-ga4';
-// import StickyCartButton from '../components/landingPage/StickyCartButton';
+import StickyCartButton from '../components/landingPage/StickyCartButton';
 
 /**
  * Public Landing Page Viewer
@@ -148,7 +148,7 @@ const PublicLandingPage = (props) => {
 
     return (
         <div style={{ fontFamily, minHeight: '50vh' }}>
-            {/* Sticky Floating Cart Button - Temporarily disabled due to build issues */}
+            {/* Sticky Floating Cart Button - Moved to App.jsx */}
             {/* <StickyCartButton cartCount={props.cartCount || 0} /> */}
 
             {/* Render sections */}
