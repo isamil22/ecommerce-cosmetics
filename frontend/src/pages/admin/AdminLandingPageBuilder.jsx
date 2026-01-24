@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
 import landingPageService from '../../api/landingPageService';
 import { SECTION_TYPE_LABELS, DEFAULT_SECTION_DATA, SECTION_COMPONENTS } from '../../components/landingPage/sections/SectionRegistry';
 import SectionEditor from '../../components/landingPage/sections/SectionEditor';
 import Loader from '../../components/Loader';
 import { getAllProducts } from '../../api/apiService';
+
+// ... (Drag and Drop Imports remain the same - no changes needed here, assuming they are effectively lines 9-27 in original)
 
 // Drag and Drop Imports
 import {
@@ -29,6 +32,7 @@ import { CSS } from '@dnd-kit/utilities';
  * Sortable Section Item Wrapper
  */
 const SortableSectionItem = ({ id, section, index, editingSection, setEditingSection, moveSection, deleteSection, updateSectionData, dragging }) => {
+    // ... (SortableSectionItem content remains exactly the same)
     const {
         attributes,
         listeners,
@@ -121,6 +125,8 @@ const SortableSectionItem = ({ id, section, index, editingSection, setEditingSec
 const AdminLandingPageBuilder = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    // Get sidebar context to determine layout width
+    const { isSidebarOpen } = useOutletContext() || { isSidebarOpen: false }; // Fallback safety
     const isEditMode = !!id;
 
     const [loading, setLoading] = useState(isEditMode);
@@ -238,14 +244,10 @@ const AdminLandingPageBuilder = () => {
             return;
         }
 
-        // Clean up _id before saving if backend doesn't expect it (optional, but good practice to keep it clean)
-        // But checking if we need to remove standard sectionOrder updates.
-        // We will update sectionOrder indices right before save just in case.
+        // Clean up _id before save
         const sectionsToSave = sections.map((s, idx) => ({
             ...s,
             sectionOrder: idx,
-            // We can keep _id for frontend consistency or remove it. 
-            // If backend ignores unknown fields, keeping it is fine.
         }));
 
         const landingPageData = {
@@ -261,19 +263,16 @@ const AdminLandingPageBuilder = () => {
 
         try {
             setSaving(true);
-
             if (isEditMode) {
                 await landingPageService.updateLandingPage(id, landingPageData);
                 alert('Landing page updated successfully!');
             } else {
                 await landingPageService.createLandingPage(landingPageData);
                 alert('Landing page created successfully!');
-                // Navigate back to list to see the new page
                 navigate('/admin/landing-pages');
             }
         } catch (error) {
             console.error('[LandingPageBuilder] Error saving landing page:', error);
-            console.error('[LandingPageBuilder] Error response:', error.response);
             alert(error.response?.data?.message || 'Failed to save landing page');
         } finally {
             setSaving(false);
@@ -281,16 +280,13 @@ const AdminLandingPageBuilder = () => {
     };
 
     const addSection = (sectionType) => {
-        // Check for duplicates
         const duplicateCount = sections.filter(s => s.sectionType === sectionType).length;
         if (duplicateCount > 0) {
             const confirmAdd = window.confirm(
                 `⚠️ You already have ${duplicateCount} "${SECTION_TYPE_LABELS[sectionType]}" section(s).\n\n` +
                 `Are you sure you want to add another one?`
             );
-            if (!confirmAdd) {
-                return;
-            }
+            if (!confirmAdd) return;
         }
 
         const newSection = {
@@ -307,35 +303,20 @@ const AdminLandingPageBuilder = () => {
 
     const deleteSection = (index) => {
         if (!confirm('Are you sure you want to delete this section?')) return;
-
         const updatedSections = sections.filter((_, i) => i !== index);
-        // Reorder sections
-        updatedSections.forEach((section, idx) => {
-            section.sectionOrder = idx;
-        });
+        updatedSections.forEach((section, idx) => { section.sectionOrder = idx; });
         setSections(updatedSections);
         setEditingSection(null);
     };
 
     const moveSection = (index, direction) => {
-        if (
-            (direction === 'up' && index === 0) ||
-            (direction === 'down' && index === sections.length - 1)
-        ) {
-            return;
-        }
-
+        if ((direction === 'up' && index === 0) || (direction === 'down' && index === sections.length - 1)) return;
         const newIndex = direction === 'up' ? index - 1 : index + 1;
         const updatedSections = [...sections];
         const temp = updatedSections[index];
         updatedSections[index] = updatedSections[newIndex];
         updatedSections[newIndex] = temp;
-
-        // Update section orders
-        updatedSections.forEach((section, idx) => {
-            section.sectionOrder = idx;
-        });
-
+        updatedSections.forEach((section, idx) => { section.sectionOrder = idx; });
         setSections(updatedSections);
     };
 
@@ -346,34 +327,25 @@ const AdminLandingPageBuilder = () => {
     };
 
     const generateSlugFromTitle = () => {
-        const generatedSlug = title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '');
+        const generatedSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
         setSlug(generatedSlug);
     };
 
     // --- Drag and Drop Handlers ---
-
     const handleDragStart = (event) => {
         setActiveDragId(event.active.id);
     };
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
-
         if (active.id !== over.id) {
             setSections((items) => {
                 const oldIndex = items.findIndex((item) => item._id === active.id);
                 const newIndex = items.findIndex((item) => item._id === over.id);
-
                 const newItems = arrayMove(items, oldIndex, newIndex);
-
-                // Update sectionOrder just to be safe immediately
                 return newItems.map((item, index) => ({ ...item, sectionOrder: index }));
             });
         }
-
         setActiveDragId(null);
     };
 
@@ -387,11 +359,16 @@ const AdminLandingPageBuilder = () => {
 
     return (
         <div style={{
+            position: 'fixed',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: isSidebarOpen ? '256px' : '0', // Adjust for sidebar width (w-64 = 256px)
+            zIndex: 90, // Above Header (usually 50), Below Sidebar (100)
             display: 'flex',
-            height: 'calc(100vh - 80px)', // Adjust based on header height
-            overflow: 'hidden',
-            margin: '-20px', // Counteract default page padding if necessary, or just use full width
-            backgroundColor: '#f5f7f9'
+            backgroundColor: '#f5f7f9',
+            transition: 'left 0.3s ease-in-out',
+            overflow: 'hidden' // Force no scroll on this container
         }}>
             {/* LEFT PANEL: Editor Controls (Settings & Builder) */}
             <div style={{
@@ -405,17 +382,51 @@ const AdminLandingPageBuilder = () => {
             }}>
                 {/* Editor Header */}
                 <div style={{
-                    padding: '15px 20px',
+                    padding: isSidebarOpen ? '15px 20px' : '15px 20px 15px 60px',
                     borderBottom: '1px solid #e1e4e8',
                     backgroundColor: 'white',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+                    transition: 'padding 0.3s ease-in-out'
                 }}>
-                    <h1 style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, color: '#2d3748' }}>
-                        {isEditMode ? 'Edit Page' : 'New Page'}
-                    </h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <button
+                                onClick={() => navigate('/admin/landing-pages')}
+                                style={{
+                                    background: 'transparent',
+                                    border: '1px solid #e2e8f0',
+                                    cursor: 'pointer',
+                                    color: '#4a5568',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '5px',
+                                    padding: '6px 12px',
+                                    borderRadius: '6px',
+                                    transition: 'all 0.2s',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '500'
+                                }}
+                                onMouseOver={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#edf2f7';
+                                    e.currentTarget.style.borderColor = '#cbd5e0';
+                                }}
+                                onMouseOut={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                    e.currentTarget.style.borderColor = '#e2e8f0';
+                                }}
+                                title="Back to Landing Pages"
+                            >
+                                <FiArrowLeft size={16} />
+                                Back
+                            </button>
+                            <h1 style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, color: '#2d3748' }}>
+                                {isEditMode ? 'Edit Page Details' : 'New Page'}
+                            </h1>
+                        </div>
+                    </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button
                             onClick={() => handleSave(false)}

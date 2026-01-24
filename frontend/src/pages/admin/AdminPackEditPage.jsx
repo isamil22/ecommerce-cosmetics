@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPackById, updatePack, getAllProducts, getAllPacks } from '../../api/apiService';
 import Loader from '../../components/Loader';
-import { Editor } from '@tinymce/tinymce-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { toast } from 'react-toastify';
 import {
     FiPackage,
@@ -36,7 +37,6 @@ const AdminPackEditPage = () => {
     const [errors, setErrors] = useState({});
     const [currentStep, setCurrentStep] = useState(1);
     const [isDirty, setIsDirty] = useState(false);
-    const editorRef = useRef(null);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -225,7 +225,7 @@ const AdminPackEditPage = () => {
         }
 
         const formData = new FormData();
-        const description = editorRef.current ? editorRef.current.getContent() : packData.description;
+        const description = packData.description;
         formData.append('pack', new Blob([JSON.stringify({
             ...packData,
             description,
@@ -777,26 +777,21 @@ const AdminPackEditPage = () => {
                         <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
                             Description
                         </label>
-                        <Editor
-                            apiKey={import.meta.env.VITE_TINYMCE_API_KEY || 'jeqjwvja4t9lzd3h889y3itf98ag6a1kp16xfns173v9cgr0'}
-                            onInit={(evt, editor) => editorRef.current = editor}
-                            initialValue={packData.description}
-                            init={{
-                                height: 300,
-                                menubar: false,
-                                plugins: [
-                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                ],
-                                toolbar: 'undo redo | blocks | ' +
-                                    'bold italic forecolor | alignleft aligncenter ' +
-                                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                                    'removeformat | help',
-                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                                branding: false,
-                                promotion: false
+                        <ReactQuill
+                            theme="snow"
+                            value={packData.description || ''}
+                            onChange={(value) => setPackData({ ...packData, description: value })}
+                            modules={{
+                                toolbar: [
+                                    [{ 'header': [1, 2, 3, false] }],
+                                    ['bold', 'italic', 'underline', 'strike'],
+                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                    [{ 'align': [] }],
+                                    ['link', 'image'],
+                                    ['clean']
+                                ]
                             }}
+                            style={{ height: '250px', marginBottom: '50px' }}
                         />
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ImageUploader from './ImageUploader';
-import { Editor } from '@tinymce/tinymce-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { getAllProducts } from '../../../api/apiService';
 
 /**
@@ -506,24 +507,21 @@ const FeaturesZigZagEditor = ({ data, onChange }) => {
 
                     <div style={{ marginTop: '15px' }}>
                         <label style={styles.label}>Description</label>
-                        <Editor
-                            tinymceScriptSrc="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"
+                        <ReactQuill
+                            theme="snow"
                             value={feature.description || ''}
-                            onEditorChange={(content) => updateFeature(index, 'description', content)}
-                            init={{
-                                height: 200,
-                                menubar: false,
-                                plugins: [
-                                    'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
-                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                ],
-                                toolbar: 'undo redo | blocks | ' +
-                                    'bold italic forecolor | alignleft aligncenter ' +
-                                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                                    'removeformat | help',
-                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                            onChange={(content) => updateFeature(index, 'description', content)}
+                            modules={{
+                                toolbar: [
+                                    [{ 'header': [1, 2, 3, false] }],
+                                    ['bold', 'italic', 'underline', 'strike'],
+                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                    [{ 'align': [] }],
+                                    ['link'],
+                                    ['clean']
+                                ]
                             }}
+                            style={{ height: '150px', marginBottom: '50px' }}
                         />
                     </div>
                 </div>

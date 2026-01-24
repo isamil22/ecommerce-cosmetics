@@ -30,11 +30,11 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
         textColor = '#333'
     } = data || {};
 
-    const titleBack = (!dbTitleBack || dbTitleBack === 'SKIN CARE') ? 'العناية بالبشرة' : dbTitleBack;
-    const headline = (!dbHeadline || dbHeadline === 'Love your bits...') ? 'أحبي بشرتك...' : dbHeadline;
-    const subheadline = (!dbSubheadline || dbSubheadline === '(and your bod)') ? '(وجمالك)' : dbSubheadline;
-    const ctaText = (!dbCtaText || dbCtaText === 'Shop Now') ? 'تسوقي الآن' : dbCtaText;
-    const badge = (!dbBadge || dbBadge === 'New Arrival') ? 'وصل حديثاً' : dbBadge;
+    const titleBack = dbTitleBack || '';
+    const headline = dbHeadline || '';
+    const subheadline = dbSubheadline || '';
+    const ctaText = dbCtaText || '';
+    const badge = dbBadge || '';
 
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -133,64 +133,74 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                 .hero-premium-section .placeholder-image {
                     width: 400px;
                     height: 500px;
-                    background: rgba(255,255,255,0.2);
+                    background: transparent;
                     border-radius: 20px;
-                    border: 2px dashed #fff;
+                    border: none;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    color: #fff;
+                    color: transparent;
                     max-width: 100%;
+                    opacity: 0;
                 }
 
                 .hero-premium-section .badge {
                     display: inline-block;
-                    padding: 8px 20px;
-                    border: 1px solid ${textColor};
+                    padding: 10px 24px;
+                    background: rgba(255, 255, 255, 0.95);
+                    border: none;
                     border-radius: 50px;
-                    font-size: 0.9rem;
-                    font-weight: 600;
+                    font-size: 0.85rem;
+                    font-weight: 700;
                     text-transform: uppercase;
-                    letter-spacing: 1px;
+                    letter-spacing: 1.5px;
                     margin-bottom: 20px;
-                    color: ${textColor};
+                    color: #333;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
                 }
 
                 .hero-premium-section .main-headline {
                     font-size: clamp(3rem, 5vw, 5rem);
                     line-height: 1.2;
                     margin: 0 0 10px 0;
-                    color: ${textColor};
-                    font-weight: 700;
+                    color: #1a1a1a;
+                    font-weight: 800;
+                    text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9), 
+                                 0 0 20px rgba(255, 255, 255, 0.5);
                 }
 
                 .hero-premium-section .sub-headline {
                     font-size: clamp(1.5rem, 3vw, 2.5rem);
-                    font-weight: 400;
+                    font-weight: 500;
                     font-style: normal;
                     margin-bottom: 40px;
-                    color: ${textColor};
-                    opacity: 0.9;
+                    color: #2d2d2d;
+                    text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8),
+                                 0 0 15px rgba(255, 255, 255, 0.4);
                 }
 
                 .hero-premium-section .cta-button {
                     display: inline-block;
-                    background: ${textColor};
-                    color: ${backgroundColor};
-                    padding: 18px 40px;
+                    background: linear-gradient(135deg, #FF1493 0%, #C71585 100%);
+                    color: #ffffff;
+                    padding: 20px 50px;
                     border-radius: 50px;
                     text-decoration: none;
-                    font-size: 1.1rem;
-                    font-weight: bold;
-                    letter-spacing: 1px;
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    letter-spacing: 1.5px;
                     transition: all 0.3s ease;
                     cursor: pointer;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                    box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4),
+                                0 2px 8px rgba(0, 0, 0, 0.15);
+                    border: 2px solid rgba(255, 255, 255, 0.3);
                 }
 
                 .hero-premium-section .cta-button:hover {
-                    transform: translateY(-3px);
-                    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+                    transform: translateY(-4px) scale(1.02);
+                    box-shadow: 0 12px 35px rgba(255, 20, 147, 0.6),
+                                0 4px 12px rgba(0, 0, 0, 0.2);
+                    background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
                 }
 
                 @keyframes float {
@@ -324,9 +334,11 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
             )}
 
             {/* 1. LAYER ONE: Giant Background Text */}
-            <div className="giant-text">
-                {titleBack.toUpperCase()}
-            </div>
+            {titleBack && (
+                <div className="giant-text">
+                    {titleBack.toUpperCase()}
+                </div>
+            )}
 
             {/* 2. LAYER TWO: Main Content Container (Grid) */}
             <div className="content-grid">
@@ -359,22 +371,28 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                         </span>
                     )}
 
-                    <h1 className="main-headline">
-                        {headline}
-                    </h1>
+                    {headline && (
+                        <h1 className="main-headline">
+                            {headline}
+                        </h1>
+                    )}
 
-                    <h2 className="sub-headline">
-                        {subheadline}
-                    </h2>
+                    {subheadline && (
+                        <h2 className="sub-headline">
+                            {subheadline}
+                        </h2>
+                    )}
 
-                    <a
-                        href={isEditing ? '#' : ctaLink}
-                        onClick={handleCTA}
-                        className="cta-button"
-                        style={{ cursor: isEditing ? 'default' : 'pointer' }}
-                    >
-                        {ctaText}
-                    </a>
+                    {ctaText && (
+                        <a
+                            href={isEditing ? '#' : ctaLink}
+                            onClick={handleCTA}
+                            className="cta-button"
+                            style={{ cursor: isEditing ? 'default' : 'pointer' }}
+                        >
+                            {ctaText}
+                        </a>
+                    )}
                 </div>
 
             </div>

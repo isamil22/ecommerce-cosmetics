@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPack, getAllProducts, getAllPacks } from '../../api/apiService';
 import Loader from '../../components/Loader';
-import { Editor } from '@tinymce/tinymce-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { toast } from 'react-toastify';
 import {
     FiPackage,
@@ -45,7 +46,6 @@ const AdminPackForm = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [isDirty, setIsDirty] = useState(false);
     const [autoSaveTimer, setAutoSaveTimer] = useState(null);
-    const editorRef = useRef(null);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -299,7 +299,7 @@ const AdminPackForm = () => {
         }
 
         const formData = new FormData();
-        const description = editorRef.current ? editorRef.current.getContent() : packData.description;
+        const description = packData.description;
         formData.append('pack', new Blob([JSON.stringify({
             ...packData,
             description,
@@ -750,34 +750,21 @@ const AdminPackForm = () => {
                         <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
                             Description
                         </label>
-                        <Editor
-                            apiKey={import.meta.env.VITE_TINYMCE_API_KEY || 'jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'}
-                            onInit={(evt, editor) => editorRef.current = editor}
-                            initialValue={packData.description}
-                            init={{
-                                height: 300,
-                                menubar: false,
-                                plugins: [
-                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                ],
-                                toolbar: 'undo redo | blocks | ' +
-                                    'bold italic forecolor | alignleft aligncenter ' +
-                                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                                    'removeformat | help',
-                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                                branding: false,
-                                promotion: false,
-                                setup: (editor) => {
-                                    editor.on('load', () => {
-                                        console.log('TinyMCE editor loaded successfully');
-                                    });
-                                    editor.on('error', (e) => {
-                                        console.error('TinyMCE editor error:', e);
-                                    });
-                                }
+                        <ReactQuill
+                            theme="snow"
+                            value={packData.description || ''}
+                            onChange={(value) => setPackData({ ...packData, description: value })}
+                            modules={{
+                                toolbar: [
+                                    [{ 'header': [1, 2, 3, false] }],
+                                    ['bold', 'italic', 'underline', 'strike'],
+                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                    [{ 'align': [] }],
+                                    ['link', 'image'],
+                                    ['clean']
+                                ]
                             }}
+                            style={{ height: '250px', marginBottom: '50px' }}
                         />
                     </div>
                 </div>

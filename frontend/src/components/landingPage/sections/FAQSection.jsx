@@ -151,59 +151,8 @@ const FAQSection = ({ data }) => {
                     ))}
                 </div>
 
-                {/* Contact CTA */}
-                <div style={{
-                    marginTop: '50px',
-                    textAlign: 'center',
-                    padding: '40px',
-                    background: 'linear-gradient(135deg, rgba(255,105,180,0.05) 0%, rgba(147,112,219,0.05) 100%)',
-                    borderRadius: '20px',
-                    opacity: isVisible ? 1 : 0,
-                    transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-                    transition: 'all 0.6s ease 0.5s',
-                }}>
-                    <h3 style={{
-                        fontSize: '1.3rem',
-                        fontWeight: '700',
-                        marginBottom: '10px',
-                        color: '#333',
-                    }}>
-                        لا تزال لديكم أسئلة؟
-                    </h3>
-                    <p style={{
-                        color: '#666',
-                        marginBottom: '20px',
-                    }}>
-                        نحن هنا للمساعدة! اتصل بفريق الدعم لدينا.
-                    </p>
-                    <a
-                        href="mailto:support@example.com"
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            background: 'linear-gradient(135deg, #ff69b4 0%, #ff1493 100%)',
-                            color: 'white',
-                            padding: '14px 30px',
-                            borderRadius: '50px',
-                            textDecoration: 'none',
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            boxShadow: '0 4px 15px rgba(255,105,180,0.3)',
-                            transition: 'all 0.3s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.transform = 'translateY(-2px)';
-                            e.target.style.boxShadow = '0 6px 20px rgba(255,105,180,0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = '0 4px 15px rgba(255,105,180,0.3)';
-                        }}
-                    >
-                        📧 اتصل بالدعم
-                    </a>
-                </div>
+
+                {/* Contact CTA - Hidden as per user request */}
             </div>
         </div>
     );

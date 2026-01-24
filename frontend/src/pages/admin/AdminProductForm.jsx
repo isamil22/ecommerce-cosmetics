@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createProduct, updateProduct, getProductById, uploadDescriptionImage, getAllCategories, getAllProducts, updateFrequentlyBoughtTogether } from '../../api/apiService';
 import Loader from '../../components/Loader';
@@ -40,7 +41,6 @@ const AdminProductForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditing = Boolean(id);
-    const editorRef = useRef(null);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -293,7 +293,7 @@ const AdminProductForm = () => {
         }
 
         try {
-            const description = editorRef.current ? editorRef.current.getContent() : product.description;
+            const description = product.description;
 
             const formData = new FormData();
 
@@ -640,22 +640,21 @@ const AdminProductForm = () => {
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Description
                                 </label>
-                                <Editor
-                                    apiKey={import.meta.env.VITE_TINYMCE_API_KEY || 'jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'}
-                                    onInit={(evt, editor) => editorRef.current = editor}
-                                    initialValue={product.description}
-                                    init={{
-                                        height: 500,
-                                        menubar: false,
-                                        plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount',
-                                        toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                                        images_upload_handler: async (blobInfo) => {
-                                            const formData = new FormData();
-                                            formData.append('image', blobInfo.blob(), blobInfo.filename());
-                                            const response = await uploadDescriptionImage(formData);
-                                            return response.data.url;
-                                        }
+                                <ReactQuill
+                                    theme="snow"
+                                    value={product.description || ''}
+                                    onChange={(value) => setProduct({ ...product, description: value })}
+                                    modules={{
+                                        toolbar: [
+                                            [{ 'header': [1, 2, 3, false] }],
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                            [{ 'align': [] }],
+                                            ['link', 'image'],
+                                            ['clean']
+                                        ]
                                     }}
+                                    style={{ height: '400px', marginBottom: '50px' }}
                                 />
                             </div>
                         </div>

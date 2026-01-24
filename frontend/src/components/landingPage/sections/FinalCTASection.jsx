@@ -24,7 +24,7 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
     } = data || {};
 
     const title = (!dbTitle || dbTitle === 'Ready to Transform Your Life?') ? 'هل أنت مستعدة لتغيير حياتك؟' : dbTitle;
-    const subtitle = (!dbSubtitle || dbSubtitle === 'Join thousands of satisfied customers who made the decision to change') ? 'انضمي إلى الآلاف من العملاء الراضين الذين اتخذوا قرار التغيير' : dbSubtitle;
+    const subtitle = dbSubtitle || '';
     const ctaText = (!dbCtaText || dbCtaText === 'Buy Now - $49.99') ? 'اشتري الآن - $49.99' : dbCtaText;
     const savings = (!dbSavings || dbSavings === 'Save 50%') ? 'وفر 50%' : dbSavings;
     const guarantee = (!dbGuarantee || dbGuarantee === '30-Day Money-Back Guarantee') ? 'ضمان استرداد الأموال خلال 30 يوم' : dbGuarantee;
@@ -126,19 +126,21 @@ const FinalCTASection = ({ data, isEditing = false, productId = null, availableV
                 </h2>
 
                 {/* Subtitle */}
-                <p style={{
-                    fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)',
-                    color: '#666',
-                    marginBottom: '3rem',
-                    maxWidth: '700px',
-                    margin: '0 auto 3rem',
-                    lineHeight: '1.6',
-                    opacity: isVisible ? 1 : 0,
-                    transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-                    transition: 'all 0.6s ease 0.2s',
-                }}>
-                    {subtitle}
-                </p>
+                {subtitle && (
+                    <p style={{
+                        fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)',
+                        color: '#666',
+                        marginBottom: '3rem',
+                        maxWidth: '700px',
+                        margin: '0 auto 3rem',
+                        lineHeight: '1.6',
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+                        transition: 'all 0.6s ease 0.2s',
+                    }}>
+                        {subtitle}
+                    </p>
+                )}
 
                 {/* Price Box */}
                 <div className="cta-price-box" style={{
