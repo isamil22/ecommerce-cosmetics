@@ -465,8 +465,8 @@ const AdminPackForm = () => {
                                         key={product.id}
                                         onClick={() => handleSelect(product)}
                                         className={`flex items-center space-x-3 p-3 hover:bg-gray-50 cursor-pointer transition-colors ${isMultiple && value && value.includes(product.id)
-                                                ? 'bg-pink-50 border-l-4 border-pink-500'
-                                                : ''
+                                            ? 'bg-pink-50 border-l-4 border-pink-500'
+                                            : ''
                                             }`}
                                     >
                                         <img
@@ -554,10 +554,10 @@ const AdminPackForm = () => {
                         return (
                             <div key={step.id} className="flex items-center">
                                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${isCompleted
-                                        ? 'bg-green-500 border-green-500 text-white'
-                                        : isActive
-                                            ? 'bg-pink-500 border-pink-500 text-white'
-                                            : 'border-gray-300 text-gray-400'
+                                    ? 'bg-green-500 border-green-500 text-white'
+                                    : isActive
+                                        ? 'bg-pink-500 border-pink-500 text-white'
+                                        : 'border-gray-300 text-gray-400'
                                     }`}>
                                     {isCompleted ? <FiCheck className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
                                 </div>
@@ -751,7 +751,7 @@ const AdminPackForm = () => {
                             Description
                         </label>
                         <Editor
-                            apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
+                            apiKey={import.meta.env.VITE_TINYMCE_API_KEY || 'jeqjwyja4t9lzd3h889y31tf98ag6a1kp16xfns173v9cgr0'}
                             onInit={(evt, editor) => editorRef.current = editor}
                             initialValue={packData.description}
                             init={{
