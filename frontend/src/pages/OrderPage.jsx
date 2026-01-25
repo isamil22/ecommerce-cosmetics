@@ -166,6 +166,15 @@ const OrderPage = () => {
         setDeleteModal({ ...deleteModal, isOpen: false });
 
         try {
+            // Handle transient items (Direct Purchase) that have no DB ID
+            if (!item.id && directPurchase) {
+                // Just clear the cart locally as it's a single-item direct purchase flow
+                setCart({ items: [] });
+                toast.success('✓ تم حذف المنتج بنجاح / Produit supprimé avec succès');
+                // Optional: navigate away if empty, but existing logic handles empty state UI
+                return;
+            }
+
             setRemovingItemId(item.id || item.productId);
 
             // Use the centralized apiService function which handles both Auth and Guest modes correctly
