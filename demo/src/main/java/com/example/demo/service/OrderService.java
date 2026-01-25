@@ -73,8 +73,11 @@ public class OrderService {
                     orderItem.setPrice(product.getPrice());
                 }
 
-                // Get first image if available
-                if (product.getImages() != null && !product.getImages().isEmpty()) {
+                // Set Image: Use DTO image if available (from Variant selection), else Product
+                // Default
+                if (itemDTO.getImageUrl() != null && !itemDTO.getImageUrl().isEmpty()) {
+                    orderItem.setProductImage(itemDTO.getImageUrl());
+                } else if (product.getImages() != null && !product.getImages().isEmpty()) {
                     orderItem.setProductImage(product.getImages().get(0));
                 }
             } else {

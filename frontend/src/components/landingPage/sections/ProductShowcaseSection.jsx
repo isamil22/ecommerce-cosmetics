@@ -152,7 +152,8 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
     const handleCTA = useLandingPageCTA(activeProductId, {
         ...data,
         price: activePrice, // Pass the dynamic activePrice for overrides
-        selectedVariant: getVariantString()
+        selectedVariant: getVariantString(),
+        image: activeImage // Use the active image (variant specific)
     });
 
     const handleBuyClick = (e) => {
@@ -177,7 +178,8 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
     const handleAddToCart = useLandingPageAddToCart(activeProductId, {
         ...data,
         price: activePrice, // Pass the dynamic activePrice for overrides
-        selectedVariant: getVariantString()
+        selectedVariant: getVariantString(),
+        image: activeImage // Use the active image (variant specific)
     }, fetchCartCount);
 
     const handleAddToCartClick = (e) => {

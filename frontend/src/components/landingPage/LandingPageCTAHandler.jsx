@@ -48,9 +48,9 @@ export const useLandingPageCTA = (productId, sectionData = null) => {
                 const hasSelection = !!sectionData.selectedVariant;
 
                 // Debug: Verify selected variant
-                if (hasSelection) {
-                    // toast.info(`Checkout Variant: ${sectionData.selectedVariant}`);
-                }
+                // if (hasSelection) {
+                //    // toast.info(`Checkout Variant: ${sectionData.selectedVariant}`);
+                // }
 
                 if (hasVariants && !hasSelection) {
                     // Logic to prompt user -> scroll to Product Showcase or Hero Section where variants are
@@ -198,7 +198,7 @@ export const useLandingPageAddToCart = (productId, sectionData = null, fetchCart
             // effectively bypassing the database price lookup.
             const hasPriceOverride = sectionData && sectionData.price !== undefined && sectionData.price !== null && sectionData.price !== '';
 
-            if (productId && !hasPriceOverride) {
+            if (productId && !hasPriceOverride && !sectionData?.selectedVariant) {
                 // Standard Add to Cart with ID (Uses DB Price)
                 // We pass null for variantId currently as we don't have explicit variant IDs in this flow
                 await addToCart(productId, 1, null);
