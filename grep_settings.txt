@@ -1,7 +1,0 @@
-import AdminBrandSettingsPage from './pages/admin/AdminBrandSettingsPage.jsx';
-import EnhancedVisitorCounterSettingsPage from './pages/admin/EnhancedVisitorCounterSettingsPage.jsx';
-import ReviewFormSettingsPage from './pages/admin/ReviewFormSettingsPage.jsx';
-                                <Route path="enhanced-visitor-counter" element={<EnhancedVisitorCounterSettingsPage />} />
-                                <Route path="review-form-settings" element={<ReviewFormSettingsPage />} />
-                                <Route path="settings" element={<SettingsPage />} />
-                                <Route path="settings/brand" element={<AdminBrandSettingsPage />} />
