@@ -1055,40 +1055,44 @@ const AdminOrdersPage = () => {
                                                             />
                                                             <div className="flex-1">
                                                                 <p className="text-sm font-semibold text-gray-900">{item.productName}</p>
-                                                                {item.variantName && (() => {
-                                                                    try {
-                                                                        const parsedDiff = JSON.parse(item.variantName);
-                                                                        if (Array.isArray(parsedDiff)) {
+                                                                {item.variantName && (
+                                                                    <div className="mt-1">
+                                                                        {(() => {
+                                                                            try {
+                                                                                const parsed = JSON.parse(item.variantName);
+                                                                                if (Array.isArray(parsed)) {
+                                                                                    // It's a Pack layout
+                                                                                    return (
+                                                                                        <>
+                                                                                            <p className="text-xs font-medium text-gray-500 mb-1">Pack Contents:</p>
+                                                                                            <div className="flex -space-x-2 overflow-hidden">
+                                                                                                {parsed.map((subItem, subIndex) => (
+                                                                                                    <img
+                                                                                                        key={subIndex}
+                                                                                                        src={subItem.image}
+                                                                                                        alt={subItem.name || 'Product'}
+                                                                                                        title={subItem.name}
+                                                                                                        className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
+                                                                                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                                                                                    />
+                                                                                                ))}
+                                                                                            </div>
+                                                                                        </>
+                                                                                    );
+                                                                                }
+                                                                            } catch (e) {
+                                                                                // Ignore parsing error, it's a regular string
+                                                                            }
+
+                                                                            // Default String Render
                                                                             return (
-                                                                                <div className="mt-2">
-                                                                                    <p className="text-xs font-medium text-gray-500 mb-1">Pack Contents:</p>
-                                                                                    <div className="flex -space-x-2 overflow-hidden">
-                                                                                        {parsedDiff.map((subItem, subIndex) => (
-                                                                                            <img
-                                                                                                key={subIndex}
-                                                                                                src={subItem.image}
-                                                                                                alt={subItem.name}
-                                                                                                title={subItem.name}
-                                                                                                className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
-                                                                                            />
-                                                                                        ))}
-                                                                                    </div>
-                                                                                </div>
+                                                                                <p className="text-xs text-gray-500">
+                                                                                    <span className="font-medium">Variant:</span> {item.variantName}
+                                                                                </p>
                                                                             );
-                                                                        }
-                                                                        return (
-                                                                            <p className="text-xs text-gray-500 mt-1">
-                                                                                <span className="font-medium">Variant:</span> {item.variantName}
-                                                                            </p>
-                                                                        );
-                                                                    } catch (e) {
-                                                                        return (
-                                                                            <p className="text-xs text-gray-500 mt-1">
-                                                                                <span className="font-medium">Variant:</span> {item.variantName}
-                                                                            </p>
-                                                                        );
-                                                                    }
-                                                                })()}
+                                                                        })()}
+                                                                    </div>
+                                                                )}
                                                                 <div className="flex items-center space-x-4 mt-1">
                                                                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                                                                         Qty: {item.quantity}

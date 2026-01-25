@@ -47,6 +47,11 @@ export const useLandingPageCTA = (productId, sectionData = null) => {
                 const hasVariants = sectionData.variants && sectionData.variants.length > 0;
                 const hasSelection = !!sectionData.selectedVariant;
 
+                // Debug: Verify selected variant
+                if (hasSelection) {
+                    // toast.info(`Checkout Variant: ${sectionData.selectedVariant}`);
+                }
+
                 if (hasVariants && !hasSelection) {
                     // Logic to prompt user -> scroll to Product Showcase or Hero Section where variants are
                     const showcaseSection = document.getElementById('product-showcase');
