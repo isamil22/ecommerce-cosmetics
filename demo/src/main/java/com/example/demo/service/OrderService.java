@@ -64,7 +64,14 @@ public class OrderService {
 
                 orderItem.setProduct(product);
                 orderItem.setProductName(product.getName());
-                orderItem.setPrice(product.getPrice());
+
+                // Fix for Admin Panel Price: Use price from DTO if provided (for
+                // packs/overrides), else use DB price
+                if (itemDTO.getPrice() != null) {
+                    orderItem.setPrice(itemDTO.getPrice());
+                } else {
+                    orderItem.setPrice(product.getPrice());
+                }
 
                 // Get first image if available
                 if (product.getImages() != null && !product.getImages().isEmpty()) {
