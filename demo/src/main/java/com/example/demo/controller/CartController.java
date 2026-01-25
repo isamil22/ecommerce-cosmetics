@@ -41,7 +41,8 @@ public class CartController {
         }
 
         return ResponseEntity
-                .ok(cartService.addToCart(userId, request.getProductId(), request.getQuantity(), virtualItem));
+                .ok(cartService.addToCart(userId, request.getProductId(), request.getQuantity(),
+                        request.getProductVariantId(), virtualItem));
     }
 
     @GetMapping
