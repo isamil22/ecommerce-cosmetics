@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final com.example.demo.repositories.ProductRepository productRepository; // Injected ProductRepository
     private final LocalFileService localFileService; // Injected LocalFileService
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO, MultipartFile image) throws IOException {
@@ -61,6 +62,14 @@ public class CategoryService {
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category not found with ID: " + id);
         }
+
+        // Check for associated products
+        long productCount = productRepository.countByCategory_Id(id);
+        if (productCount > 0) {
+            throw new IllegalStateException("Cannot delete category. It contains " + productCount
+                    + " products. Please delete or reassign them first.");
+        }
+
         categoryRepository.deleteById(id);
     }
 

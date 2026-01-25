@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllCategories, deleteCategory, getAllProducts } from '../../api/apiService';
 import { toast } from 'react-toastify';
-import { 
+import {
     FiGrid, FiPlus, FiEdit3, FiTrash2, FiSearch, FiFilter,
     FiTrendingUp, FiTrendingDown, FiRefreshCw, FiSettings,
     FiCheckCircle, FiAlertTriangle, FiX, FiPackage, FiEye,
@@ -17,7 +17,7 @@ const AdminCategoriesPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [refreshing, setRefreshing] = useState(false);
-    
+
     // Search and Filter States
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('name');
@@ -89,8 +89,9 @@ const AdminCategoriesPage = () => {
                 toast.success('Category deleted successfully!');
                 fetchCategories(); // Refresh list
             } catch (err) {
-                setError('Failed to delete category. It might be in use by some products.');
-                toast.error('Failed to delete category. It might be in use by some products.');
+                const errorMessage = err.response?.data?.message || 'Failed to delete category. It might be in use by some products.';
+                setError(errorMessage);
+                toast.error(errorMessage);
             } finally {
                 setDeletingCategoryId(null);
             }
@@ -100,7 +101,7 @@ const AdminCategoriesPage = () => {
     // Calculate analytics
     const analytics = useMemo(() => {
         const totalCategories = categories.length;
-        const categoriesWithProducts = categories.filter(category => 
+        const categoriesWithProducts = categories.filter(category =>
             products.some(product => product.categoryId === category.id)
         ).length;
         const emptyCategories = totalCategories - categoriesWithProducts;
@@ -117,7 +118,7 @@ const AdminCategoriesPage = () => {
 
         filtered.sort((a, b) => {
             let aValue, bValue;
-            
+
             switch (sortBy) {
                 case 'name':
                     aValue = a.name?.toLowerCase() || '';
@@ -242,7 +243,7 @@ const AdminCategoriesPage = () => {
                         </div>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <button 
+                        <button
                             onClick={handleRefresh}
                             disabled={refreshing}
                             className="flex items-center space-x-2 bg-white text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-purple-300 transition-all duration-300 group"
@@ -250,9 +251,9 @@ const AdminCategoriesPage = () => {
                             <FiRefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-transform duration-500 ${refreshing ? 'animate-spin' : ''}`} />
                             <span>Refresh</span>
                         </button>
-                        
-                        <Link 
-                            to="/admin/categories/new" 
+
+                        <Link
+                            to="/admin/categories/new"
                             className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group"
                         >
                             <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
@@ -436,20 +437,19 @@ const AdminCategoriesPage = () => {
                                 </Link>
                             </div>
                         ) : (
-                            <div className={viewMode === 'grid' 
+                            <div className={viewMode === 'grid'
                                 ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
                                 : 'space-y-4'
                             }>
                                 {filteredAndSortedCategories.map(category => {
                                     const productCount = getProductCount(category.id);
                                     const isEmpty = productCount === 0;
-                                    
+
                                     return (
                                         <div
                                             key={category.id}
-                                            className={`group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
-                                                viewMode === 'list' ? 'flex items-center p-4' : 'p-6'
-                                            }`}
+                                            className={`group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${viewMode === 'list' ? 'flex items-center p-4' : 'p-6'
+                                                }`}
                                         >
                                             {viewMode === 'grid' ? (
                                                 <>
@@ -467,11 +467,10 @@ const AdminCategoriesPage = () => {
                                                                 <p className="text-purple-600 font-medium">No Image</p>
                                                             </div>
                                                         )}
-                                                        
+
                                                         {/* Status Badge */}
-                                                        <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold ${
-                                                            isEmpty ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-green-100 text-green-800 border-green-200'
-                                                        }`}>
+                                                        <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold ${isEmpty ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-green-100 text-green-800 border-green-200'
+                                                            }`}>
                                                             {isEmpty ? (
                                                                 <>
                                                                     <FiAlertTriangle className="w-3 h-3 inline mr-1" />
@@ -555,9 +554,8 @@ const AdminCategoriesPage = () => {
                                                                 <h3 className="font-bold text-gray-900 truncate">
                                                                     {category.name}
                                                                 </h3>
-                                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                                                    isEmpty ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
-                                                                }`}>
+                                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${isEmpty ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
+                                                                    }`}>
                                                                     {isEmpty ? 'Empty' : `${productCount} products`}
                                                                 </span>
                                                             </div>
