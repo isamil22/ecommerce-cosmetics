@@ -24,7 +24,7 @@ public interface CartMapper {
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "productName", expression = "java(cartItem.getProduct() != null ? cartItem.getProduct().getName() : cartItem.getProductName())")
     @Mapping(target = "price", expression = "java(cartItem.getProduct() != null ? cartItem.getProduct().getPrice() : cartItem.getPrice())")
-    @Mapping(target = "imageUrl", expression = "java(cartItem.getProduct() != null && cartItem.getProduct().getImages() != null && !cartItem.getProduct().getImages().isEmpty() ? cartItem.getProduct().getImages().get(0) : cartItem.getImageUrl())")
+    @Mapping(target = "imageUrl", expression = "java(cartItem.getImageUrl() != null && !cartItem.getImageUrl().isEmpty() ? cartItem.getImageUrl() : (cartItem.getProduct() != null && cartItem.getProduct().getImages() != null && !cartItem.getProduct().getImages().isEmpty() ? cartItem.getProduct().getImages().get(0) : null))")
     @Mapping(target = "variantName", source = "variantName")
     @Mapping(target = "categoryId", source = "product.category.id")
     CartItemDTO toDTO(CartItem cartItem);
