@@ -472,6 +472,8 @@ const OrderPage = () => {
                                                             }
                                                             return <p className="text-xs text-pink-600 font-medium truncate">{item.variantName}</p>;
                                                         })()}
+                                                        {/* DEBUG: Show Raw Variant */}
+                                                        {/* <p className="text-[10px] text-red-500">Debug: {item.variantName || 'NULL'}</p> */}
 
                                                         <div className="flex justify-between items-center mt-1">
                                                             <p className="text-xs text-gray-500">x{item.quantity}</p>
