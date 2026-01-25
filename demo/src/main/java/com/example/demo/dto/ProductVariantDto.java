@@ -12,4 +12,5 @@ public class ProductVariantDto {
     private BigDecimal price;
     private int stock;
     private String imageUrl;
+    private String name;
 }

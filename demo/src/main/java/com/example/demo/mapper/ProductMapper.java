@@ -69,7 +69,8 @@ public interface ProductMapper {
     }
 
     default VariantOptionDto variantOptionToVariantOptionDto(VariantOption variantOption) {
-        if (variantOption == null) return null;
+        if (variantOption == null)
+            return null;
         VariantOptionDto dto = new VariantOptionDto();
         dto.setValue(variantOption.getValue());
         dto.setColorCode(variantOption.getColorCode());
@@ -97,6 +98,15 @@ public interface ProductMapper {
         dto.setStock(productVariant.getStock());
         dto.setImageUrl(productVariant.getImageUrl());
         dto.setId(productVariant.getId());
+
+        // Construct Name from Map
+        if (variantMap != null && !variantMap.isEmpty()) {
+            String name = variantMap.entrySet().stream()
+                    .map(e -> e.getKey() + ": " + e.getValue())
+                    .collect(Collectors.joining(", "));
+            dto.setName(name);
+        }
+
         return dto;
     }
 
