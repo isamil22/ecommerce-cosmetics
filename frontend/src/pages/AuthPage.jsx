@@ -48,7 +48,12 @@ const AuthPage = ({ setIsAuthenticated }) => {
                 // Get user profile to determine redirection based on dashboard access
                 try {
                     const profileResponse = await getUserProfile();
-                    if (profileResponse.data.hasDashboardAccess) {
+                    const { hasDashboardAccess, role, effectiveRole } = profileResponse.data;
+
+                    // Check if user is effectively an admin or manager
+                    const isAdmin = role === 'ADMIN' || effectiveRole === 'ADMIN' || effectiveRole === 'MANAGER';
+
+                    if (hasDashboardAccess && isAdmin) {
                         navigate('/admin/dashboard');
                     } else {
                         navigate('/profile');

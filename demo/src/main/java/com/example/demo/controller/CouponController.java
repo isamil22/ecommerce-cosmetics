@@ -27,12 +27,14 @@ public class CouponController {
     }
 
     @GetMapping("/validate/{code}")
-    public ResponseEntity<CouponDTO> validateCoupon(@PathVariable String code) {
+    public ResponseEntity<?> validateCoupon(@PathVariable String code) {
         try {
             CouponDTO validatedCoupon = couponService.validateCoupon(code);
             return ResponseEntity.ok(validatedCoupon);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null); // Or a custom error response
+            System.out.println("❌ Coupon Validation Failed for code " + code + ": " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 

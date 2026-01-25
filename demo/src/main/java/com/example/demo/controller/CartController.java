@@ -60,11 +60,16 @@ public class CartController {
 
     @DeleteMapping("/{itemId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> removeCartItem(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<CartDTO> removeCartItem(@AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long itemId) {
+        System.out.println("DEBUG CONTROLLER: Received DELETE request for itemId: " + itemId);
+        if (userDetails == null) {
+            System.out.println("DEBUG CONTROLLER: UserDetails is null!");
+            return ResponseEntity.status(401).build();
+        }
         Long userId = ((User) userDetails).getId();
-        cartService.removeItemFromCart(userId, itemId);
-        return ResponseEntity.noContent().build();
+        System.out.println("DEBUG CONTROLLER: User ID: " + userId);
+        return ResponseEntity.ok(cartService.removeItemFromCart(userId, itemId));
     }
 
     @PutMapping("/{itemId}")

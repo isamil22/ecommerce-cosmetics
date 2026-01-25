@@ -26,7 +26,11 @@ const AdminLayout = () => {
         const checkDashboardAccess = async () => {
             try {
                 const response = await getUserProfile();
-                if (response.data.hasDashboardAccess) {
+                const { hasDashboardAccess, effectiveRole } = response.data;
+
+                // Strict check: Must have dashboard access AND not be a basic 'USER'
+                // This prevents normal users from accessing admin area even if one flag is buggy
+                if (hasDashboardAccess && effectiveRole !== 'USER') {
                     setHasAccess(true);
                 } else {
                     // Redirect to profile page if user doesn't have dashboard access

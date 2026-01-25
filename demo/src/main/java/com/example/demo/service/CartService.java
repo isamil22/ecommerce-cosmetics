@@ -28,6 +28,7 @@ public class CartService {
     private final UserRepository userRepository;
     private final CartMapper cartMapper;
 
+    @org.springframework.transaction.annotation.Transactional
     public CartDTO addToCart(Long userId, Long productId, Integer quantity, CartItemDTO itemDTO) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -131,13 +132,28 @@ public class CartService {
 
     // New method for removing virtual items or specific items by Line Item ID
     // (better practice)
+    @org.springframework.transaction.annotation.Transactional
     public CartDTO removeItemFromCart(Long userId, Long cartItemId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user"));
 
-        cart.getItems().removeIf(item -> item.getId().equals(cartItemId));
+        System.out.println("DEBUG DELETE: User " + userId + " removing Item " + cartItemId);
+        System.out.println("DEBUG DELETE: Current Items: " + cart.getItems().size());
+
+        boolean removed = cart.getItems().removeIf(item -> {
+            boolean match = item.getId().equals(cartItemId);
+            if (match)
+                System.out.println("DEBUG DELETE: Found match " + item.getId());
+            return match;
+        });
+
+        if (!removed) {
+            System.out.println("DEBUG DELETE: Item not found in list!");
+            throw new RuntimeException("Item not found in cart");
+        }
 
         Cart savedCart = cartRepository.save(cart);
+        System.out.println("DEBUG DELETE: Saved. New Size: " + savedCart.getItems().size());
         return cartMapper.toDTO(savedCart);
     }
 

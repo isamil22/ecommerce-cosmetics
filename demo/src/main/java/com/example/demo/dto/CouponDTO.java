@@ -20,4 +20,6 @@ public class CouponDTO {
     private Integer usageLimit;
     private Integer timesUsed;
     private boolean firstTimeOnly;
+    private java.util.Set<Long> applicableProductIds;
+    private java.util.Set<Long> applicableCategoryIds;
 }

@@ -6,12 +6,13 @@ import java.math.BigDecimal;
 
 @Data
 public class CartItemDTO {
-    private String id;
+    private Long id;
     private Long productId;
     private String productName;
     @Positive
     private Integer quantity;
     private BigDecimal price;
     private String imageUrl;
-    private String variantName; // Add this field
+    private String variantName;
+    private Long categoryId;
 }

@@ -17,7 +17,7 @@ apiService.interceptors.request.use(config => {
 });
 
 // Helper function to check if user is authenticated
-const isAuthenticated = () => !!localStorage.getItem('token');
+export const isAuthenticated = () => !!localStorage.getItem('token');
 
 // --- UPDATED `createProduct` and `updateProduct` functions ---
 
