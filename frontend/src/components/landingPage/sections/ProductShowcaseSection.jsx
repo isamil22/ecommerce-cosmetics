@@ -151,6 +151,7 @@ const ProductShowcaseSection = ({ data, productId = null, availableVariants = []
 
     const handleCTA = useLandingPageCTA(activeProductId, {
         ...data,
+        price: activePrice, // Pass the dynamic activePrice for overrides
         selectedVariant: getVariantString()
     });
 
