@@ -14,5 +14,6 @@ public class OrderItemDTO {
     @Positive
     private BigDecimal price;
     private String imageUrl;
+    @com.fasterxml.jackson.annotation.JsonProperty("variantName")
     private String variantName;
 }

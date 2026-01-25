@@ -92,6 +92,8 @@ public class OrderService {
             }
 
             // Set Variant Name
+            System.out.println("DEBUG: Saving OrderItem. Product: " + orderItem.getProductName() + ", Variant: "
+                    + itemDTO.getVariantName());
             orderItem.setVariantName(itemDTO.getVariantName());
 
             return orderItem;
