@@ -81,9 +81,8 @@ public class LandingPageService {
                             "Product not found with ID: " + requestDTO.getProductId()));
             landingPage.setProduct(product);
         } else {
-            // Auto-generate a dummy product
-            Product placeholderProduct = createPlaceholderProduct(landingPage.getTitle());
-            landingPage.setProduct(placeholderProduct);
+            // Do not auto-generate product. Allow landing page to exist without a product.
+            landingPage.setProduct(null);
         }
 
         // Set default status if not provided
@@ -126,27 +125,6 @@ public class LandingPageService {
         return landingPageMapper.toResponseDTO(landingPage);
     }
 
-    private Product createPlaceholderProduct(String landingPageTitle) {
-        Product product = new Product();
-        product.setName(landingPageTitle + " - Offer");
-        product.setDescription("Auto-generated product for landing page: " + landingPageTitle);
-        product.setPrice(new java.math.BigDecimal("0.01")); // Minimal positive price
-        product.setQuantity(100);
-
-        // Find a default category
-        Category category = categoryRepository.findAll().stream().findFirst()
-                .orElseThrow(() -> new IllegalStateException("No categories found to create placeholder product"));
-        product.setCategory(category);
-
-        product.setType(Product.ProductType.BOTH);
-        product.setHasVariants(false);
-        product.setPackable(false);
-        product.setShowPurchaseNotifications(true);
-        product.setShowCountdownTimer(true);
-
-        return productRepository.save(product);
-    }
-
     /**
      * Update existing landing page
      */
@@ -172,17 +150,8 @@ public class LandingPageService {
             landingPage.setProduct(product);
         }
         // If ProductId is null in request, we DO NOT remove the existing product,
-        // unlike the previous logic which set it to null.
-        // This preserves the auto-generated product if the user edits the page but
-        // doesn't touch the product field.
-        // If they EXPLICITLY want to disconnect, they might need a specific flag, but
-        // for now this is safer.
-        else if (landingPage.getProduct() == null) {
-            // If existing product is null AND none provided in update, generate one now?
-            // Yes, consistent with "ensure it has an ID".
-            Product placeholderProduct = createPlaceholderProduct(landingPage.getTitle());
-            landingPage.setProduct(placeholderProduct);
-        }
+        // unless explicitly handled, but here we just leave it as is if not provided.
+        // We removed the auto-generation logic.
 
         // Update sections - must clear and add to existing collection to preserve
         // Hibernate's orphanRemoval tracking
