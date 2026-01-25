@@ -177,11 +177,18 @@ public class OrderService {
 
     @Transactional
     public OrderDTO createGuestOrder(GuestOrderRequestDTO request) {
+        // Generate synthetic email if missing (using phone number)
+        String email = request.getEmail();
+        if (email == null || email.trim().isEmpty()) {
+            email = request.getPhoneNumber().replaceAll("\\s+", "") + "@guest.local";
+        }
+        final String finalEmail = email;
+
         // Find or create a user for the guest
-        User guestUser = userRepository.findByEmail(request.getEmail())
+        User guestUser = userRepository.findByEmail(finalEmail)
                 .orElseGet(() -> {
                     User newUser = new User();
-                    newUser.setEmail(request.getEmail());
+                    newUser.setEmail(finalEmail);
                     newUser.setFullName(request.getClientFullName());
                     // Guests don't have a password until they register
                     newUser.setPassword(null);

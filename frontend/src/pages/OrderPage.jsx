@@ -223,7 +223,7 @@ const OrderPage = () => {
         setSuccess('');
         setSubmitting(true);
 
-        if (!formData.clientFullName || !formData.city || !formData.address || !formData.phoneNumber || (!isAuthenticated && !formData.email)) {
+        if (!formData.clientFullName || !formData.city || !formData.address || !formData.phoneNumber) {
             setError('جميع حقول تفاصيل التسليم مطلوبة. / Tous les champs de détails de livraison sont obligatoires.');
             setSubmitting(false);
             return;
@@ -575,22 +575,7 @@ const OrderPage = () => {
 
                                     <div className="p-4">
                                         <form onSubmit={handleSubmit} className="space-y-3">
-                                            {!isAuthenticated && (
-                                                <div>
-                                                    <label htmlFor="email" className="block text-xs font-bold text-gray-700 mb-1">
-                                                        البريد الإلكتروني / Email <span className="text-red-500">*</span>
-                                                    </label>
-                                                    <input
-                                                        type="email"
-                                                        name="email"
-                                                        id="email"
-                                                        required
-                                                        onChange={handleChange}
-                                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
-                                                        placeholder="your@email.com"
-                                                    />
-                                                </div>
-                                            )}
+
 
                                             <div>
                                                 <label htmlFor="clientFullName" className="block text-xs font-bold text-gray-700 mb-1">
