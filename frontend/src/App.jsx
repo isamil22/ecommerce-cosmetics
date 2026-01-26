@@ -22,7 +22,6 @@ import AdminProductForm from './pages/admin/AdminProductForm.jsx';
 import AdminOrdersPage from './pages/admin/AdminOrdersPage.jsx';
 import AdminUsersPage from './pages/admin/AdminUsersPage.jsx';
 import AdminReviewsPage from './pages/admin/AdminReviewsPage.jsx';
-import AdminReviewsPage from './pages/admin/AdminReviewsPage.jsx';
 import { getCart, getUserProfile, getMyActiveRewards } from './api/apiService.js';
 import RewardPopup from './components/RewardPopup.jsx';
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx';
