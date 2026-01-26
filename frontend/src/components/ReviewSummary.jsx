@@ -33,7 +33,7 @@ const ReviewSummary = ({ comments }) => {
                     <span className="text-gray-200">{'★'.repeat(5 - Math.round(averageRating))}</span>
                 </div>
                 <p className="text-gray-500 font-bold text-sm lg:text-base">
-                    Based on {totalReviews} reviews
+                    Basé sur {totalReviews} avis / بناءً على {totalReviews} مراجعات
                 </p>
             </div>
 

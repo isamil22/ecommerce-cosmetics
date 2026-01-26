@@ -135,7 +135,7 @@ const OrderPage = () => {
 
             setDiscount(calculatedDiscount);
             setAppliedCoupon(coupon.code);
-            toast.success(`🎉 Coupon "${coupon.code}" applied successfully! You saved ${formatPrice(calculatedDiscount)}!`);
+            toast.success(`🎉 تم تطبيق الكوبون "${coupon.code}" بنجاح! وفرت ${formatPrice(calculatedDiscount)}! / Code promo appliqué !`);
         } catch (err) {
             console.error(err);
             // Extract error message from backend if available
@@ -279,7 +279,7 @@ const OrderPage = () => {
             }
             // ------------------------------------
 
-            setSuccess('Order placed successfully! Redirecting to success page...');
+            setSuccess('الطلب تم بنجاح! جاري التوجيه... / Commande réussie ! Redirection...');
             toast.success('🎉 تم إرسال الطلب بنجاح! شكراً لشرائك! / Commande passée avec succès ! Merci pour votre achat !');
 
             setTimeout(() => {
@@ -303,7 +303,7 @@ const OrderPage = () => {
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-pink-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600 text-lg">Loading your order details...</p>
+                    <p className="text-gray-600 text-lg">جاري تحميل تفاصيل الطلب... / Chargement des détails...</p>
                 </div>
             </div>
         );
@@ -317,14 +317,14 @@ const OrderPage = () => {
                         <svg className="w-8 h-8 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <h3 className="text-red-800 font-bold text-xl">Order Error</h3>
+                        <h3 className="text-red-800 font-bold text-xl">خطأ في الطلب / Erreur de commande</h3>
                     </div>
                     <p className="text-red-600 mb-6">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
                         className="w-full bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition font-semibold"
                     >
-                        Try Again
+                        حاول مرة أخرى / Réessayer
                     </button>
                 </div>
             </div>
@@ -332,7 +332,7 @@ const OrderPage = () => {
     }
 
     if (!cart) {
-        return <div className="text-center py-20">Loading your order details...</div>;
+        return <div className="text-center py-20">جاري تحميل تفاصيل الطلب... / Chargement des détails...</div>;
     }
 
     return (

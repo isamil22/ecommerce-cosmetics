@@ -46,7 +46,7 @@ const StickyAddToCart = ({
                                     {pack.name}
                                 </h3>
                                 <p className="text-gray-500 text-xs">
-                                    In Stock
+                                    En Stock / متوفر
                                 </p>
                             </div>
                         </div>
@@ -60,7 +60,7 @@ const StickyAddToCart = ({
                                 onClick={onAddToCart}
                                 className="bg-gradient-to-r from-pink-600 to-purple-600 text-white px-4 py-2 lg:px-6 lg:py-2.5 rounded-lg font-bold text-xs lg:text-sm hover:from-pink-700 hover:to-purple-700 transition-all shadow-[0_4px_10px_rgba(236,72,153,0.3)] hover:shadow-[0_6px_15px_rgba(236,72,153,0.5)] transform hover:-translate-y-0.5"
                             >
-                                Add to Cart
+                                Ajouter au panier / أضف للسلة
                             </button>
                         </div>
                     </div>

@@ -141,9 +141,9 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                 </div>
                 <div className="flex-1">
                     <h2 className="text-2xl lg:text-3xl font-black bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-                        Frequently Bought Together
+                        Souvent achetés ensemble / غالبًا ما يتم شراؤها معًا
                     </h2>
-                    <p className="text-gray-500 font-medium">Customers often buy these products together for better results</p>
+                    <p className="text-gray-500 font-medium">Les clients achètent souvent ces produits ensemble / يشتري العملاء هذه المنتجات معًا غالبًا</p>
                 </div>
             </div>
 
@@ -205,7 +205,7 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                                 />
                                 {p.id === product.id && (
                                     <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md">
-                                        THIS ITEM
+                                        CET ARTICLE / هذا العنصر
                                     </div>
                                 )}
                             </div>
@@ -228,7 +228,7 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                                         navigate(`/products/${p.id}`);
                                     }}
                                 >
-                                    View Details
+                                    Voir les détails / التفاصيل
                                 </button>
                             </div>
                         </div>
@@ -240,12 +240,12 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
             <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-gray-100">
                 <div className="flex items-center gap-6">
                     <div className="text-center md:text-left">
-                        <p className="text-gray-500 font-bold uppercase text-xs tracking-wider mb-1">Bundle Total</p>
+                        <p className="text-gray-500 font-bold uppercase text-xs tracking-wider mb-1">Total du lot / المجموع</p>
                         <div className="flex items-baseline gap-2">
                             <span className="text-4xl font-black text-gray-900">{formatPrice(totalPrice)}</span>
                             {savings > 0 && (
                                 <span className="text-sm font-bold text-green-600 bg-green-100 px-2 py-1 rounded-md">
-                                    Save {formatPrice(savings)}
+                                    Économisez / توفير {formatPrice(savings)}
                                 </span>
                             )}
                         </div>
@@ -262,7 +262,7 @@ const FrequentlyBoughtTogether = ({ product, fetchCartCount, isAuthenticated }) 
                 >
                     <span className="relative z-10 flex items-center gap-3">
                         <FiShoppingCart className={`w-6 h-6 ${selectedProducts.length > 0 ? 'animate-bounce-custom' : ''}`} />
-                        Add {selectedProducts.length} Items to Cart
+                        Ajouter {selectedProducts.length} articles au panier / أضف {selectedProducts.length} عناصر للسلة
                     </span>
                     {selectedProducts.length > 0 && (
                         <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[length:200%_auto] animate-shine"></div>

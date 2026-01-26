@@ -84,7 +84,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
 
             } catch (err) {
                 console.error("Error fetching product:", err);
-                setError('Product not found or an error occurred.');
+                setError('Produit introuvable ou erreur survenue / المنتج غير موجود أو حدث خطأ');
             } finally {
                 setLoading(false);
             }
@@ -139,11 +139,11 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
         if (isAuthenticated) {
             try {
                 await addToCart(id, quantity, activeVariant?.id);
-                toast.success('Product added to cart');
+                toast.success('Produit ajouté au panier / تمت الإضافة للسلة');
                 fetchCartCount();
             } catch (err) {
                 console.error(err);
-                toast.error('Failed to add to cart');
+                toast.error('Échec de l\'ajout au panier / فشل في الإضافة للسلة');
             }
         } else {
             // Guest Cart
@@ -170,7 +170,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
             });
 
             localStorage.setItem('cart', JSON.stringify(guestCart));
-            toast.success('Product added to cart');
+            toast.success('Produit ajouté au panier / تمت الإضافة للسلة');
             fetchCartCount();
         }
 
@@ -197,7 +197,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
     const [activeTab, setActiveTab] = useState('desc');
 
     if (loading) return <Loader />;
-    if (error || !product) return <div className="min-h-screen flex items-center justify-center text-red-500">{error || 'Product not found'}</div>;
+    if (error || !product) return <div className="min-h-screen flex items-center justify-center text-red-500">{error || 'Produit introuvable / المنتج غير موجود'}</div>;
 
     const averageRating = product.comments?.length
         ? product.comments.reduce((acc, c) => acc + c.score, 0) / product.comments.length
@@ -508,7 +508,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                     disabled={isOutOfStock}
                                     className="w-full h-12 bg-white border-2 border-gray-100 text-gray-600 font-bold rounded-2xl hover:border-purple-200 hover:text-purple-600 hover:bg-purple-50 transition-all"
                                 >
-                                    Add to Cart
+                                    Ajouter au panier / أضف للسلة
                                 </button>
                             </div>
 
@@ -568,8 +568,8 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                                 <div>
                                                     <div className="font-bold text-gray-900 text-sm lg:text-lg flex items-center gap-2">
                                                         {comment.createdByAdmin
-                                                            ? (comment.customName || "Happy Customer")
-                                                            : (comment.userEmail?.split('@')[0] || "Customer")
+                                                            ? (comment.customName || "Client Satisfait / زبون سعيد")
+                                                            : (comment.userEmail?.split('@')[0] || "Client / زبون")
                                                         }
                                                         <span className="bg-green-100 text-green-700 text-[9px] lg:text-[10px] font-black px-1.5 py-0.5 lg:px-2 lg:py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
                                                             <span>✓</span> <span className="hidden sm:inline">موثق / Vérifié</span>

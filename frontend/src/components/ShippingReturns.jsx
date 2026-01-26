@@ -37,29 +37,65 @@ const AccordionItem = ({ icon: Icon, title, children, defaultOpen = false, delay
 const ShippingReturns = () => {
     return (
         <div className="space-y-4">
-            <AccordionItem icon={FiTruck} title="Shipping Information" defaultOpen={true} delay="0s">
-                <p className="mb-2">We offer <strong>Fast Express Shipping</strong> (24-48h) for all domestic orders.</p>
-                <ul className="space-y-2 mt-3">
-                    <li className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                        Orders placed before 2 PM are processed same day
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                        Real-time tracking number provided
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                        Secure packaging to ensure safety
-                    </li>
-                </ul>
+            <AccordionItem icon={FiTruck} title="Informations de Livraison | معلومات الشحن" defaultOpen={true} delay="0s">
+                <div className="space-y-4">
+                    <div>
+                        <p className="mb-2">Nous proposons une <strong>Livraison Express</strong> (24-48h) pour toutes les commandes.</p>
+                        <ul className="space-y-2 mt-1">
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                Commandes avant 14h expédiées le jour même
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                Numéro de suivi en temps réel
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                Emballage sécurisé
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="text-right border-t pt-3 border-gray-100" dir="rtl">
+                        <p className="mb-2">نقدم <strong>شحن سريع</strong> (24-48 ساعة) لجميع الطلبات.</p>
+                        <ul className="space-y-2 mt-1">
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                يتم شحن الطلبات قبل الساعة 2 ظهرًا في نفس اليوم
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                تتبع فوري للطلب
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                تغليف آمن
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </AccordionItem>
-            <AccordionItem icon={FiRefreshCw} title="Return Policy" delay="0.1s">
-                <p className="mb-3">We want you to be <strong>100% satisfied</strong> with your purchase.</p>
-                <p>If you're not happy, you can return your items within <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-bold">30 days</span> of delivery for a full refund or exchange. Items must be unused and in original packaging.</p>
+            <AccordionItem icon={FiRefreshCw} title="Politique de Retour | سياسة الاسترجاع" delay="0.1s">
+                <div className="space-y-4">
+                    <div>
+                        <p className="mb-3">Nous souhaitons que vous soyez <strong>100% satisfait</strong>.</p>
+                        <p>Retour possible sous <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-bold">30 jours</span> pour remboursement ou échange si l'article est inutilisé.</p>
+                    </div>
+                    <div className="text-right border-t pt-3 border-gray-100" dir="rtl">
+                        <p className="mb-3">نريدك أن تكون <strong>راضيًا بنسبة 100%</strong>.</p>
+                        <p>يمكنك الإرجاع خلال <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded font-bold">30 يومًا</span> لاسترداد المبلغ أو الاستبدال إذا كان المنتج غير مستخدم.</p>
+                    </div>
+                </div>
             </AccordionItem>
-            <AccordionItem icon={FiShield} title="Satisfaction Guarantee" delay="0.2s">
-                <p>All our products are <strong>100% authentic</strong> and quality checked. We offer a money-back guarantee if the product doesn't meet our high standards.</p>
+            <AccordionItem icon={FiShield} title="Garantie de Satisfaction | ضمان الرضا" delay="0.2s">
+                <div className="space-y-4">
+                    <div>
+                        <p>Produits <strong>100% authentiques</strong> et contrôlés. Garantie satisfait ou remboursé.</p>
+                    </div>
+                    <div className="text-right border-t pt-3 border-gray-100" dir="rtl">
+                        <p>منتجاتنا <strong>أصلية 100%</strong> ومفحوصة. ضمان استعادة الأموال إذا لم تكن راضيًا.</p>
+                    </div>
+                </div>
             </AccordionItem>
         </div>
     );
