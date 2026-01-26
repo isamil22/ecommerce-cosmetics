@@ -177,9 +177,11 @@ public class OrderService {
         OrderDTO orderDTO = orderMapper.toDTO(savedOrder);
 
         // Generate Next Purchase Coupon if eligible
-        String nextCoupon = generateNextPurchaseCoupon(savedOrder);
+        // Generate Next Purchase Coupon if eligible
+        Coupon nextCoupon = generateNextPurchaseCoupon(savedOrder);
         if (nextCoupon != null) {
-            orderDTO.setNextPurchaseCouponCode(nextCoupon);
+            orderDTO.setNextPurchaseCouponCode(nextCoupon.getCode());
+            orderDTO.setNextPurchaseCouponPercent(nextCoupon.getDiscountValue());
         }
 
         return orderDTO;
@@ -415,9 +417,11 @@ public class OrderService {
         OrderDTO orderDTO = orderMapper.toDTO(savedOrder);
 
         // Generate Next Purchase Coupon if eligible
-        String nextCoupon = generateNextPurchaseCoupon(savedOrder);
+        // Generate Next Purchase Coupon if eligible
+        Coupon nextCoupon = generateNextPurchaseCoupon(savedOrder);
         if (nextCoupon != null) {
-            orderDTO.setNextPurchaseCouponCode(nextCoupon);
+            orderDTO.setNextPurchaseCouponCode(nextCoupon.getCode());
+            orderDTO.setNextPurchaseCouponPercent(nextCoupon.getDiscountValue());
         }
 
         return orderDTO;
@@ -726,13 +730,12 @@ public class OrderService {
     /**
      * Generates a coupon for the next purchase depending on loyalty or order value.
      */
-    private String generateNextPurchaseCoupon(Order order) {
+    private Coupon generateNextPurchaseCoupon(Order order) {
         // --- 1. LOYALTY PROGRAM CHECK ---
         // Get configured loyalty count (default 3)
         int loyaltyCount = settingService.getIntSetting(com.example.demo.constant.SettingKeys.LOYALTY_ORDER_COUNT, 3);
 
-        // Count previous orders for this user (including this one, or not? Order is
-        // saved, so it's counted)
+        // Count previous orders for this user (including this one)
         long orderCount = orderRepository.countByUser_Id(order.getUser().getId());
 
         if (orderCount > 0 && orderCount % loyaltyCount == 0) {
@@ -766,7 +769,7 @@ public class OrderService {
         return null;
     }
 
-    private String createCoupon(Order order, String prefix, BigDecimal percent, String name) {
+    private Coupon createCoupon(Order order, String prefix, BigDecimal percent, String name) {
         Coupon coupon = new Coupon();
         String code = prefix + "-" + order.getId() + "-"
                 + java.util.UUID.randomUUID().toString().substring(0, 4).toUpperCase();
@@ -781,7 +784,6 @@ public class OrderService {
         coupon.setFirstTimeOnly(false);
         coupon.setMinPurchaseAmount(BigDecimal.ZERO);
 
-        couponRepository.save(coupon);
-        return code;
+        return couponRepository.save(coupon);
     }
 }

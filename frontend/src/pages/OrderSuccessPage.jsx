@@ -250,9 +250,9 @@ const OrderSuccessPage = () => {
                             {order.nextPurchaseCouponCode}
                         </div>
                         <p style={{ fontSize: '0.9rem', opacity: 0.9 }}>
-                            استخدم هذا الكود في طلبك القادم للحصول على خصم 10%!
+                            استخدم هذا الكود في طلبك القادم للحصول على خصم {order.nextPurchaseCouponPercent ? order.nextPurchaseCouponPercent : '10'}%!
                             <br />
-                            Utilisez ce code lors de votre prochaine commande pour obtenir 10% de réduction!
+                            Utilisez ce code lors de votre prochaine commande pour obtenir {order.nextPurchaseCouponPercent ? order.nextPurchaseCouponPercent : '10'}% de réduction!
                         </p>
                     </div>
                 )}
