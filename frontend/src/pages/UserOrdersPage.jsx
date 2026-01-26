@@ -99,6 +99,9 @@ const UserOrdersPage = () => {
                                         }`}>
                                         {order.status}
                                     </span>
+                                    <Link to={`/order-success?orderId=${order.id}`} className="text-sm text-pink-500 hover:text-pink-600 font-semibold mt-2">
+                                        عرض التفاصيل / Voir Détails &rarr;
+                                    </Link>
                                 </div>
                             </div>
 
