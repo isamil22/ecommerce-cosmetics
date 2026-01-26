@@ -113,7 +113,7 @@ const DynamicAdminSidebar = () => {
                             to="/admin/settings"
                             icon={FiPercent}
                             label="Discount Rules"
-                            anyPermissions={['SETTINGS:VIEW', 'SETTINGS:EDIT']}
+                            role="ADMIN"
                         />
                     </div>
                 </PermissionGuard>
