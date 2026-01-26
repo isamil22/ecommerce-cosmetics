@@ -38,15 +38,17 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // --- NEW METHOD START ---
     @Query("SELECT FUNCTION('DATE', o.createdAt) as date, COUNT(o) as count FROM Order o WHERE o.coupon.id = :couponId GROUP BY FUNCTION('DATE', o.createdAt)")
     List<Map<String, Object>> countByCouponUsageByDayForCoupon(@Param("couponId") Long couponId);
+
+    long countByUser_Id(Long userId);
     // --- NEW METHOD END ---
-    
+
     // Custom query for export with eager loading of relationships
     @Query("SELECT DISTINCT o FROM Order o " +
-           "LEFT JOIN FETCH o.user " +
-           "LEFT JOIN FETCH o.coupon " +
-           "LEFT JOIN FETCH o.items i " +
-           "LEFT JOIN FETCH i.product " +
-           "WHERE o.deleted = false " +
-           "ORDER BY o.createdAt DESC")
+            "LEFT JOIN FETCH o.user " +
+            "LEFT JOIN FETCH o.coupon " +
+            "LEFT JOIN FETCH o.items i " +
+            "LEFT JOIN FETCH i.product " +
+            "WHERE o.deleted = false " +
+            "ORDER BY o.createdAt DESC")
     List<Order> findAllForExportWithRelations();
 }

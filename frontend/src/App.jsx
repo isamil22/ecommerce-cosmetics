@@ -64,6 +64,7 @@ import AdminRolesPage from './pages/admin/AdminRolesPage.jsx';
 import AdminPermissionsPage from './pages/admin/AdminPermissionsPage.jsx';
 import AdminLandingPagesPage from './pages/admin/AdminLandingPagesPage.jsx';
 import AdminLandingPageBuilder from './pages/admin/AdminLandingPageBuilder.jsx';
+import AdminSettingsPage from './pages/admin/AdminSettingsPage.jsx';
 import PublicLandingPage from './pages/PublicLandingPage.jsx';
 
 import NotFoundPage from './pages/NotFoundPage.jsx';
@@ -221,7 +222,9 @@ function App() {
                                 <Route path="review-form-settings" element={<ReviewFormSettingsPage />} />
                                 <Route path="analytics" element={<AdminAnalyticsPage />} />
                                 <Route path="analytics" element={<AdminAnalyticsPage />} />
+                                <Route path="analytics" element={<AdminAnalyticsPage />} />
                                 {/* <Route path="settings" element={<SettingsPage />} /> */}
+                                <Route path="settings" element={<AdminSettingsPage />} />
                                 <Route path="settings/brand" element={<AdminBrandSettingsPage />} />
                                 <Route path="settings/integrations" element={<AdminIntegrationsPage />} />
                                 <Route path="roles" element={<AdminRolesPage />} />

@@ -727,4 +727,12 @@ export const saveSettings = (settings) => {
     return apiService.post('/settings', settings);
 };
 
+export const getDiscountSettings = () => {
+    return apiService.get('/admin/settings/discounts');
+};
+
+export const updateDiscountSettings = (settings) => {
+    return apiService.post('/admin/settings/discounts', settings);
+};
+
 export default apiService;

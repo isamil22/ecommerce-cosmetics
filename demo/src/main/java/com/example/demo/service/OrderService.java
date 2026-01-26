@@ -41,6 +41,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final CartMapper cartMapper;
     private final CouponRepository couponRepository;
+    private final SettingService settingService;
 
     private List<OrderItem> createOrderItemsFromDTO(List<CartItemDTO> itemDTOs, Order order) {
         return itemDTOs.stream().map(itemDTO -> {
@@ -722,40 +723,65 @@ public class OrderService {
      * threshold.
      * Rule: If Total > 500, Generate 10% OFF coupon.
      */
+    /**
+     * Generates a coupon for the next purchase depending on loyalty or order value.
+     */
     private String generateNextPurchaseCoupon(Order order) {
-        BigDecimal total = BigDecimal.ZERO;
+        // --- 1. LOYALTY PROGRAM CHECK ---
+        // Get configured loyalty count (default 3)
+        int loyaltyCount = settingService.getIntSetting(com.example.demo.constant.SettingKeys.LOYALTY_ORDER_COUNT, 3);
 
-        // Calculate total from items
+        // Count previous orders for this user (including this one, or not? Order is
+        // saved, so it's counted)
+        long orderCount = orderRepository.countByUser_Id(order.getUser().getId());
+
+        if (orderCount > 0 && orderCount % loyaltyCount == 0) {
+            // Generate Loyalty Coupon
+            BigDecimal discountPercent = settingService
+                    .getBigDecimalSetting(com.example.demo.constant.SettingKeys.LOYALTY_DISCOUNT_PERCENT, "15");
+
+            return createCoupon(order, "LOYALTY", discountPercent, "Loyalty Reward for Order #" + order.getId());
+        }
+
+        // --- 2. HIGH VALUE ORDER CHECK ---
+        BigDecimal total = BigDecimal.ZERO;
         for (OrderItem item : order.getItems()) {
             BigDecimal price = item.getPrice();
             total = total.add(price.multiply(BigDecimal.valueOf(item.getQuantity())));
         }
-
-        // Subtract discount
         if (order.getDiscountAmount() != null) {
             total = total.subtract(order.getDiscountAmount());
         }
 
-        // Threshold: 500 MAD (Can be configured)
-        if (total.compareTo(new BigDecimal("500")) > 0) {
-            Coupon coupon = new Coupon();
-            String code = "NEXT-" + order.getId() + "-"
-                    + java.util.UUID.randomUUID().toString().substring(0, 4).toUpperCase();
-            coupon.setCode(code);
-            coupon.setName("Thank you reward for Order #" + order.getId());
-            coupon.setDiscountType(Coupon.DiscountType.PERCENTAGE);
-            coupon.setDiscountValue(new BigDecimal("10")); // 10% OFF
-            coupon.setExpiryDate(LocalDateTime.now().plusDays(30)); // Valid for 30 days
-            coupon.setType(Coupon.CouponType.USER);
-            coupon.setUsageLimit(1);
-            coupon.setTimesUsed(0);
-            coupon.setFirstTimeOnly(false);
-            coupon.setMinPurchaseAmount(BigDecimal.ZERO);
+        BigDecimal highValueThreshold = settingService
+                .getBigDecimalSetting(com.example.demo.constant.SettingKeys.HIGH_VALUE_THRESHOLD, "500");
 
-            couponRepository.save(coupon);
-            return code;
+        if (total.compareTo(highValueThreshold) > 0) {
+            BigDecimal discountPercent = settingService
+                    .getBigDecimalSetting(com.example.demo.constant.SettingKeys.HIGH_VALUE_DISCOUNT_PERCENT, "10");
+
+            return createCoupon(order, "NEXT", discountPercent, "Thank you reward for Order #" + order.getId());
         }
 
         return null;
+    }
+
+    private String createCoupon(Order order, String prefix, BigDecimal percent, String name) {
+        Coupon coupon = new Coupon();
+        String code = prefix + "-" + order.getId() + "-"
+                + java.util.UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+        coupon.setCode(code);
+        coupon.setName(name);
+        coupon.setDiscountType(Coupon.DiscountType.PERCENTAGE);
+        coupon.setDiscountValue(percent);
+        coupon.setExpiryDate(LocalDateTime.now().plusDays(30));
+        coupon.setType(Coupon.CouponType.USER);
+        coupon.setUsageLimit(1);
+        coupon.setTimesUsed(0);
+        coupon.setFirstTimeOnly(false);
+        coupon.setMinPurchaseAmount(BigDecimal.ZERO);
+
+        couponRepository.save(coupon);
+        return code;
     }
 }

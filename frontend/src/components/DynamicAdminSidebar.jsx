@@ -109,6 +109,12 @@ const DynamicAdminSidebar = () => {
                             label="Coupons"
                             anyPermissions={['COUPON:VIEW', 'COUPON:CREATE', 'COUPON:EDIT']}
                         />
+                        <ProtectedNavLink
+                            to="/admin/settings"
+                            icon={FiPercent}
+                            label="Discount Rules"
+                            anyPermissions={['SETTINGS:VIEW', 'SETTINGS:EDIT']}
+                        />
                     </div>
                 </PermissionGuard>
 
