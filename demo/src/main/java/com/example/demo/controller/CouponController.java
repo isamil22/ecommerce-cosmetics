@@ -99,7 +99,7 @@ public class CouponController {
     // --- NEW ENDPOINT END ---
 
     @GetMapping("/my-active-rewards")
-    @PreAuthorize("hasAuthority('ROLE_USER')") // Only logged in users (or admin acting as user?)
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<CouponDTO>> getMyActiveRewards(
             @org.springframework.security.core.annotation.AuthenticationPrincipal com.example.demo.model.User user) {
         if (user == null) {
