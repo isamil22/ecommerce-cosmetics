@@ -91,7 +91,14 @@ const CartPage = () => {
             console.error("Failed to update quantity:", err);
             // Revert on error
             setCart(previousCart);
-            showNotification('فشل في تحديث الكمية / Échec de la mise à jour de la quantité', 'error');
+
+            // Extract error message
+            let errorMsg = 'فشل في تحديث الكمية / Échec de la mise à jour de la quantité';
+            if (err.response && err.response.data && err.response.data.message) {
+                errorMsg = err.response.data.message;
+            }
+
+            showNotification(errorMsg, 'error');
         }
 
         setTimeout(() => setUpdatingItem(null), 300);
