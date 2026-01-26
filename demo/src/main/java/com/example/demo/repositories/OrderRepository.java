@@ -40,6 +40,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Map<String, Object>> countByCouponUsageByDayForCoupon(@Param("couponId") Long couponId);
 
     long countByUser_Id(Long userId);
+
+    long countByUser_IdAndStatus(Long userId, com.example.demo.model.Order.OrderStatus status); // Add this
     // --- NEW METHOD END ---
 
     // Custom query for export with eager loading of relationships

@@ -177,12 +177,7 @@ public class OrderService {
         OrderDTO orderDTO = orderMapper.toDTO(savedOrder);
 
         // Generate Next Purchase Coupon if eligible
-        // Generate Next Purchase Coupon if eligible
-        Coupon nextCoupon = generateNextPurchaseCoupon(savedOrder);
-        if (nextCoupon != null) {
-            orderDTO.setNextPurchaseCouponCode(nextCoupon.getCode());
-            orderDTO.setNextPurchaseCouponPercent(nextCoupon.getDiscountValue());
-        }
+        // REMOVED: Now happens on Delivery due to COD model
 
         return orderDTO;
     }
@@ -417,12 +412,7 @@ public class OrderService {
         OrderDTO orderDTO = orderMapper.toDTO(savedOrder);
 
         // Generate Next Purchase Coupon if eligible
-        // Generate Next Purchase Coupon if eligible
-        Coupon nextCoupon = generateNextPurchaseCoupon(savedOrder);
-        if (nextCoupon != null) {
-            orderDTO.setNextPurchaseCouponCode(nextCoupon.getCode());
-            orderDTO.setNextPurchaseCouponPercent(nextCoupon.getDiscountValue());
-        }
+        // REMOVED: Now happens on Delivery due to COD model
 
         return orderDTO;
     }
@@ -628,8 +618,30 @@ public class OrderService {
     public OrderDTO updateOrderStatus(Long orderId, Order.OrderStatus status) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+        Order.OrderStatus oldStatus = order.getStatus();
         order.setStatus(status);
         Order updatedOrder = orderRepository.save(order);
+
+        // Check if status changed to DELIVERED
+        if (oldStatus != Order.OrderStatus.DELIVERED && status == Order.OrderStatus.DELIVERED) {
+            // Generate coupon if eligible
+            Coupon nextCoupon = generateNextPurchaseCoupon(updatedOrder);
+            if (nextCoupon != null) {
+                // Send email with coupon
+                try {
+                    // Since we don't have a specific "Reward Email" method yet, we can hack it or
+                    // add one.
+                    // For now, let's just log it. Ideally add emailService.sendRewardEmail(user,
+                    // coupon);
+                    logger.info("Generated Reward Coupon {} for Order {}", nextCoupon.getCode(), order.getId());
+                    // TODO: Send email to user
+                } catch (Exception e) {
+                    logger.error("Failed to send reward email", e);
+                }
+            }
+        }
+
         return orderMapper.toDTO(updatedOrder);
     }
 
@@ -727,16 +739,21 @@ public class OrderService {
      * threshold.
      * Rule: If Total > 500, Generate 10% OFF coupon.
      */
-    /**
-     * Generates a coupon for the next purchase depending on loyalty or order value.
-     */
     private Coupon generateNextPurchaseCoupon(Order order) {
+        // --- 0. REGISTERED USER CHECK ---
+        // Only generate for users who have an account (password is not null)
+        if (order.getUser().getPassword() == null) {
+            return null;
+        }
+
         // --- 1. LOYALTY PROGRAM CHECK ---
         // Get configured loyalty count (default 3)
         int loyaltyCount = settingService.getIntSetting(com.example.demo.constant.SettingKeys.LOYALTY_ORDER_COUNT, 3);
 
-        // Count previous orders for this user (including this one)
-        long orderCount = orderRepository.countByUser_Id(order.getUser().getId());
+        // Count previous DELIVERED orders for this user
+        long orderCount = orderRepository.countByUser_IdAndStatus(order.getUser().getId(), Order.OrderStatus.DELIVERED);
+        // Note: The current order is just now DELIVERED, so it is included in the
+        // count.
 
         if (orderCount > 0 && orderCount % loyaltyCount == 0) {
             // Generate Loyalty Coupon
@@ -747,6 +764,8 @@ public class OrderService {
         }
 
         // --- 2. HIGH VALUE ORDER CHECK ---
+        // Only if it's a paid/delivered order (which it is, since we are in DELIVERED
+        // hook)
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItem item : order.getItems()) {
             BigDecimal price = item.getPrice();
