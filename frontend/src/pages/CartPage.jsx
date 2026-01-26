@@ -102,13 +102,8 @@ const CartPage = () => {
         return cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
     };
 
-    const calculateShipping = () => {
-        const subtotal = calculateSubtotal();
-        return subtotal > 100 ? 0 : 10; // Free shipping over $100
-    };
-
     const calculateTotal = () => {
-        return calculateSubtotal() + calculateShipping();
+        return calculateSubtotal();
     };
 
     const handleProceedToCheckout = () => {
@@ -310,10 +305,7 @@ const CartPage = () => {
                                         <span>Total products</span>
                                         <span className="font-bold text-gray-900">{formatPrice(calculateSubtotal())}</span>
                                     </div>
-                                    <div className="flex justify-between text-xs lg:text-sm text-gray-600">
-                                        <span>Livraison</span>
-                                        <span className="font-bold text-green-600">{calculateShipping() === 0 ? 'GRATUIT' : formatPrice(calculateShipping())}</span>
-                                    </div>
+
                                     <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-2"></div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm lg:text-lg font-bold text-gray-900">Total</span>
