@@ -169,4 +169,11 @@ public class CouponService {
         return result;
     }
     // --- NEW METHOD END ---
+
+    @Transactional(readOnly = true)
+    public List<CouponDTO> getActiveCouponsForUser(Long userId) {
+        return couponRepository.findActiveCouponsForUser(userId).stream()
+                .map(couponMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

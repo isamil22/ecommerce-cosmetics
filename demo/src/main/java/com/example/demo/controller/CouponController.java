@@ -96,4 +96,16 @@ public class CouponController {
         }
     }
     // --- NEW ENDPOINT END ---
+    // --- NEW ENDPOINT END ---
+
+    @GetMapping("/my-active-rewards")
+    @PreAuthorize("hasAuthority('ROLE_USER')") // Only logged in users (or admin acting as user?)
+    public ResponseEntity<List<CouponDTO>> getMyActiveRewards(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.example.demo.model.User user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        List<CouponDTO> coupons = couponService.getActiveCouponsForUser(user.getId());
+        return ResponseEntity.ok(coupons);
+    }
 }

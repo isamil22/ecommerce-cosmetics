@@ -22,7 +22,9 @@ import AdminProductForm from './pages/admin/AdminProductForm.jsx';
 import AdminOrdersPage from './pages/admin/AdminOrdersPage.jsx';
 import AdminUsersPage from './pages/admin/AdminUsersPage.jsx';
 import AdminReviewsPage from './pages/admin/AdminReviewsPage.jsx';
-import { getCart, getUserProfile } from './api/apiService.js';
+import AdminReviewsPage from './pages/admin/AdminReviewsPage.jsx';
+import { getCart, getUserProfile, getMyActiveRewards } from './api/apiService.js';
+import RewardPopup from './components/RewardPopup.jsx';
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx';
 import ResetPasswordPage from './pages/ResetPasswordPage.jsx';
 import EmailConfirmationPage from './pages/EmailConfirmationPage.jsx';
@@ -74,6 +76,7 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userRole, setUserRole] = useState(null);
     const [cartCount, setCartCount] = useState(0);
+    const [activeCoupons, setActiveCoupons] = useState([]);
 
     const fetchCartCount = async () => {
         const token = localStorage.getItem('token');
@@ -91,6 +94,18 @@ function App() {
             const guestCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
             const totalItems = guestCart.items.reduce((sum, item) => sum + item.quantity, 0);
             setCartCount(totalItems);
+        }
+    };
+
+    const fetchActiveCoupons = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const response = await getMyActiveRewards();
+                setActiveCoupons(response.data || []);
+            } catch (error) {
+                console.error("Failed to fetch active coupons:", error);
+            }
         }
     };
 
@@ -115,7 +130,9 @@ function App() {
         };
 
         checkAuthAndFetchRole();
+        checkAuthAndFetchRole();
         fetchCartCount();
+        fetchActiveCoupons();
 
         // Listen for global cart update events (triggered by apiService)
         const handleCartUpdate = () => {
@@ -153,6 +170,7 @@ function App() {
                     <GoogleAnalytics />
                     <AnalyticsTracker />
                     <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={handleSetIsAuthenticated} userRole={userRole} cartCount={cartCount} />
+                    <RewardPopup coupons={activeCoupons} />
                     <ToastContainer
                         position="bottom-right"
                         autoClose={5000}

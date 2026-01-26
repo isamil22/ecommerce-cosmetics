@@ -819,6 +819,7 @@ public class OrderService {
         coupon.setDiscountValue(percent);
         coupon.setExpiryDate(LocalDateTime.now().plusDays(30));
         coupon.setType(Coupon.CouponType.USER);
+        coupon.setUser(order.getUser());
         coupon.setUsageLimit(1);
         coupon.setTimesUsed(0);
         coupon.setFirstTimeOnly(false);

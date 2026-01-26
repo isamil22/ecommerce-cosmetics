@@ -53,21 +53,16 @@ public class Coupon {
     private boolean firstTimeOnly = false; // New: For first-time customer offers
 
     @ManyToMany
-    @JoinTable(
-            name = "coupon_products",
-            joinColumns = @JoinColumn(name = "coupon_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
+    @JoinTable(name = "coupon_products", joinColumns = @JoinColumn(name = "coupon_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> applicableProducts;
 
     @ManyToMany // New: For category-specific coupons
-    @JoinTable(
-            name = "coupon_categories",
-            joinColumns = @JoinColumn(name = "coupon_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
+    @JoinTable(name = "coupon_categories", joinColumns = @JoinColumn(name = "coupon_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> applicableCategories; // New: For category-specific coupons
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user; // Link to specific user (owner of the reward)
 
     public enum CouponType {
         INFLUENCER,
