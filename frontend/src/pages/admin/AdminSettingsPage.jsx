@@ -48,7 +48,7 @@ const AdminSettingsPage = () => {
     };
 
     return (
-        <AdminLayout>
+        <div className="p-6">
             <div className="admin-page-header">
                 <h2>System Settings</h2>
             </div>
@@ -153,7 +153,7 @@ const AdminSettingsPage = () => {
                     </button>
                 </form>
             </div>
-        </AdminLayout>
+        </div>
     );
 };
 
