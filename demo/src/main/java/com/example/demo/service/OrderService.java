@@ -717,8 +717,6 @@ public class OrderService {
         return sw.toString();
     }
 
-    }
-
     /**
      * Generates a coupon for the next purchase if the order total exceeds a
      * threshold.
