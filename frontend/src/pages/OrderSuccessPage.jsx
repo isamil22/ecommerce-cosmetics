@@ -208,10 +208,10 @@ const OrderSuccessPage = () => {
                     marginBottom: '30px',
                 }}>
                     <h4 style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '10px', color: '#856404' }}>
-                        📧 ما التالي؟ / Quelle est la prochaine étape ?
+                        📞 ماذا بعد؟ / Quelle est la prochaine étape ?
                     </h4>
                     <p style={{ color: '#856404', lineHeight: '1.6', margin: 0 }}>
-                        ستصلك رسالة تأكيد على بريدك الإلكتروني قريباً. / Vous recevrez bientôt un e-mail de confirmation.
+                        سيقوم فريقنا بالاتصال بك قريباً لتأكيد طلبك. / Notre équipe vous contactera bientôt pour confirmer votre commande.
                     </p>
                 </div>
 
