@@ -607,7 +607,9 @@ public class OrderService {
     public OrderDTO getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
-        return orderMapper.toDTO(order);
+        OrderDTO dto = orderMapper.toDTO(order);
+        populateCouponInfo(dto);
+        return dto;
     }
 
     public List<OrderDTO> getUserOrders(Long userId) {
@@ -630,19 +632,38 @@ public class OrderService {
             if (nextCoupon != null) {
                 // Send email with coupon
                 try {
-                    // Since we don't have a specific "Reward Email" method yet, we can hack it or
-                    // add one.
-                    // For now, let's just log it. Ideally add emailService.sendRewardEmail(user,
-                    // coupon);
                     logger.info("Generated Reward Coupon {} for Order {}", nextCoupon.getCode(), order.getId());
-                    // TODO: Send email to user
                 } catch (Exception e) {
                     logger.error("Failed to send reward email", e);
                 }
             }
         }
 
-        return orderMapper.toDTO(updatedOrder);
+        OrderDTO dto = orderMapper.toDTO(updatedOrder);
+        populateCouponInfo(dto);
+        return dto;
+    }
+
+    private void populateCouponInfo(OrderDTO dto) {
+        if (dto == null || dto.getId() == null)
+            return;
+
+        // Search for coupons generated for this order
+        // Prefix is NEXT-{orderId}- or LOYALTY-{orderId}-
+        String nextPrefix = "NEXT-" + dto.getId() + "-";
+        String loyaltyPrefix = "LOYALTY-" + dto.getId() + "-";
+
+        List<Coupon> coupons = couponRepository.findByCodeStartingWith(nextPrefix);
+        if (coupons.isEmpty()) {
+            coupons = couponRepository.findByCodeStartingWith(loyaltyPrefix);
+        }
+
+        if (!coupons.isEmpty()) {
+            // Pick the first one (most recent?)
+            Coupon coupon = coupons.get(0);
+            dto.setNextPurchaseCouponCode(coupon.getCode());
+            dto.setNextPurchaseCouponPercent(coupon.getDiscountValue());
+        }
     }
 
     public void softDeleteOrder(Long orderId) {
