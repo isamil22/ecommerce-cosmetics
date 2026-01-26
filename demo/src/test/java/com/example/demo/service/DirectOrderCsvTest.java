@@ -44,6 +44,9 @@ class DirectOrderCsvTest {
     @Mock
     private com.example.demo.repositories.CouponRepository couponRepository; // Required for constructor
 
+    @Mock
+    private SettingService settingService; // Required for constructor
+
     private OrderService orderService;
 
     @BeforeEach
@@ -57,7 +60,8 @@ class DirectOrderCsvTest {
                 emailService,
                 orderMapper,
                 cartMapper,
-                couponRepository);
+                couponRepository,
+                settingService);
     }
 
     @Test

@@ -55,6 +55,9 @@ class OrderServiceVariantTest {
     @Mock
     private CartMapper cartMapper;
 
+    @Mock
+    private SettingService settingService;
+
     private OrderService orderService;
 
     @BeforeEach
@@ -68,7 +71,8 @@ class OrderServiceVariantTest {
                 emailService,
                 orderMapper,
                 cartMapper,
-                couponRepository);
+                couponRepository,
+                settingService);
     }
 
     @Test
