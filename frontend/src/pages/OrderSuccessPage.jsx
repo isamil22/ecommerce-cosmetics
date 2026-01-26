@@ -215,6 +215,48 @@ const OrderSuccessPage = () => {
                     </p>
                 </div>
 
+                {/* Next Purchase Coupon Reward */}
+                {order && order.nextPurchaseCouponCode && (
+                    <div style={{
+                        background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
+                        color: 'white',
+                        padding: '25px',
+                        borderRadius: '16px',
+                        marginBottom: '30px',
+                        boxShadow: '0 10px 20px rgba(255, 107, 107, 0.3)',
+                        animation: 'bounceIn 1s ease'
+                    }}>
+                        <div style={{ fontSize: '1.5rem', marginBottom: '10px' }}>🎁</div>
+                        <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', marginBottom: '10px' }}>
+                            مبروك! لقد ربحت كود خصم لطلبك القادم!
+                            <br />
+                            Félicitations! Vous avez gagné un code promo!
+                        </h3>
+                        <div style={{
+                            background: 'rgba(255,255,255,0.2)',
+                            padding: '15px',
+                            borderRadius: '8px',
+                            border: '2px dashed white',
+                            fontSize: '1.8rem',
+                            fontWeight: '900',
+                            letterSpacing: '2px',
+                            margin: '15px 0',
+                            cursor: 'pointer'
+                        }}
+                            onClick={() => {
+                                navigator.clipboard.writeText(order.nextPurchaseCouponCode);
+                                alert("تم نسخ الكود! / Code copié!");
+                            }}>
+                            {order.nextPurchaseCouponCode}
+                        </div>
+                        <p style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                            استخدم هذا الكود في طلبك القادم للحصول على خصم 10%!
+                            <br />
+                            Utilisez ce code lors de votre prochaine commande pour obtenir 10% de réduction!
+                        </p>
+                    </div>
+                )}
+
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <button

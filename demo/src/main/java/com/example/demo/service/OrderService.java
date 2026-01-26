@@ -172,7 +172,16 @@ public class OrderService {
         } catch (MailException e) {
             logger.error("Failed to send order confirmation email", e);
         }
-        return orderMapper.toDTO(savedOrder);
+
+        OrderDTO orderDTO = orderMapper.toDTO(savedOrder);
+
+        // Generate Next Purchase Coupon if eligible
+        String nextCoupon = generateNextPurchaseCoupon(savedOrder);
+        if (nextCoupon != null) {
+            orderDTO.setNextPurchaseCouponCode(nextCoupon);
+        }
+
+        return orderDTO;
     }
 
     @Transactional
@@ -401,7 +410,16 @@ public class OrderService {
         } catch (MailException e) {
             logger.error("Failed to send order confirmation email for order ID " + savedOrder.getId(), e);
         }
-        return orderMapper.toDTO(savedOrder);
+
+        OrderDTO orderDTO = orderMapper.toDTO(savedOrder);
+
+        // Generate Next Purchase Coupon if eligible
+        String nextCoupon = generateNextPurchaseCoupon(savedOrder);
+        if (nextCoupon != null) {
+            orderDTO.setNextPurchaseCouponCode(nextCoupon);
+        }
+
+        return orderDTO;
     }
 
     private List<OrderItem> createOrderItems(Cart cart, Order order) {
@@ -697,5 +715,49 @@ public class OrderService {
                     finalTotal.toString()));
         }
         return sw.toString();
+    }
+
+    }
+
+    /**
+     * Generates a coupon for the next purchase if the order total exceeds a
+     * threshold.
+     * Rule: If Total > 500, Generate 10% OFF coupon.
+     */
+    private String generateNextPurchaseCoupon(Order order) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        // Calculate total from items
+        for (OrderItem item : order.getItems()) {
+            BigDecimal price = item.getPrice();
+            total = total.add(price.multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+
+        // Subtract discount
+        if (order.getDiscountAmount() != null) {
+            total = total.subtract(order.getDiscountAmount());
+        }
+
+        // Threshold: 500 MAD (Can be configured)
+        if (total.compareTo(new BigDecimal("500")) > 0) {
+            Coupon coupon = new Coupon();
+            String code = "NEXT-" + order.getId() + "-"
+                    + java.util.UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+            coupon.setCode(code);
+            coupon.setName("Thank you reward for Order #" + order.getId());
+            coupon.setDiscountType(Coupon.DiscountType.PERCENTAGE);
+            coupon.setDiscountValue(new BigDecimal("10")); // 10% OFF
+            coupon.setExpiryDate(LocalDateTime.now().plusDays(30)); // Valid for 30 days
+            coupon.setType(Coupon.CouponType.USER);
+            coupon.setUsageLimit(1);
+            coupon.setTimesUsed(0);
+            coupon.setFirstTimeOnly(false);
+            coupon.setMinPurchaseAmount(BigDecimal.ZERO);
+
+            couponRepository.save(coupon);
+            return code;
+        }
+
+        return null;
     }
 }
