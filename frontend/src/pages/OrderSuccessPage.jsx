@@ -215,28 +215,71 @@ const OrderSuccessPage = () => {
                     </p>
                 </div>
 
-                {/* Pending Reward Info (Since it is COD) */}
-                <div style={{
-                    background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
-                    color: '#333',
-                    padding: '25px',
-                    borderRadius: '16px',
-                    marginBottom: '30px',
-                    boxShadow: '0 10px 20px rgba(142, 197, 252, 0.3)',
-                    animation: 'bounceIn 1s ease'
-                }}>
-                    <div style={{ fontSize: '1.5rem', marginBottom: '10px' }}>🎁</div>
-                    <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', marginBottom: '10px' }}>
-                        أكمل استلام طلبك لفتح المكافأة!
-                        <br />
-                        Complétez votre livraison pour débloquer votre récompense !
-                    </h3>
-                    <p style={{ fontSize: '1rem', opacity: 0.9 }}>
-                        عند استلام طلبك بنجاح، ستصلك مكافأة خاصة عبر البريد الإلكتروني.
-                        <br />
-                        Une fois votre commande livrée avec succès, vous recevrez une récompense spéciale par email.
-                    </p>
-                </div>
+                {/* Reward Section: Show Coupon if available, otherwise show Pending Info */}
+                {order && order.nextPurchaseCouponCode ? (
+                    /* Coupon Won Display */
+                    <div style={{
+                        background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
+                        color: 'white',
+                        padding: '25px',
+                        borderRadius: '16px',
+                        marginBottom: '30px',
+                        boxShadow: '0 10px 20px rgba(255, 107, 107, 0.3)',
+                        animation: 'bounceIn 1s ease'
+                    }}>
+                        <div style={{ fontSize: '1.5rem', marginBottom: '10px' }}>🎁</div>
+                        <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', marginBottom: '10px' }}>
+                            مبروك! لقد ربحت كود خصم لطلبك القادم!
+                            <br />
+                            Félicitations! Vous avez gagné un code promo!
+                        </h3>
+                        <div style={{
+                            background: 'rgba(255,255,255,0.2)',
+                            padding: '15px',
+                            borderRadius: '8px',
+                            border: '2px dashed white',
+                            fontSize: '1.8rem',
+                            fontWeight: '900',
+                            letterSpacing: '2px',
+                            margin: '15px 0',
+                            cursor: 'pointer'
+                        }}
+                            onClick={() => {
+                                navigator.clipboard.writeText(order.nextPurchaseCouponCode);
+                                alert("تم نسخ الكود! / Code copié!");
+                            }}>
+                            {order.nextPurchaseCouponCode}
+                        </div>
+                        <p style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                            استخدم هذا الكود في طلبك القادم للحصول على خصم {order.nextPurchaseCouponPercent ? order.nextPurchaseCouponPercent : '10'}%!
+                            <br />
+                            Utilisez ce code lors de votre prochaine commande pour obtenir {order.nextPurchaseCouponPercent ? order.nextPurchaseCouponPercent : '10'}% de réduction!
+                        </p>
+                    </div>
+                ) : (
+                    /* Pending Reward Info (Since it is COD/Preparing) */
+                    <div style={{
+                        background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
+                        color: '#333',
+                        padding: '25px',
+                        borderRadius: '16px',
+                        marginBottom: '30px',
+                        boxShadow: '0 10px 20px rgba(142, 197, 252, 0.3)',
+                        animation: 'bounceIn 1s ease'
+                    }}>
+                        <div style={{ fontSize: '1.5rem', marginBottom: '10px' }}>🎁</div>
+                        <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', marginBottom: '10px' }}>
+                            أكمل استلام طلبك لفتح المكافأة!
+                            <br />
+                            Complétez votre livraison pour débloquer votre récompense !
+                        </h3>
+                        <p style={{ fontSize: '1rem', opacity: 0.9 }}>
+                            عند استلام طلبك بنجاح، ستصلك مكافأة خاصة عبر البريد الإلكتروني.
+                            <br />
+                            Une fois votre commande livrée avec succès, vous recevrez une récompense spéciale par email.
+                        </p>
+                    </div>
+                )}
 
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
