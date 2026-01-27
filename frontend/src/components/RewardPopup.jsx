@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';
 
 const RewardPopup = ({ coupons }) => {
     const [isVisible, setIsVisible] = useState(false);
@@ -76,11 +77,21 @@ const RewardPopup = ({ coupons }) => {
             }
 
             // Show success alert
-            alert('تم نسخ الكود! / Code copié!');
+            toast.success('تم نسخ الكود! / Code copié!', {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
         } catch (err) {
             console.error('Failed to copy (all methods): ', err);
-            // Even if copy fails, show the code so they can manual copy
-            prompt("Copy this code / Copiez ce code:", currentCoupon.code);
+            toast.error("Veuillez copier le code manuellement / Please copy manually", {
+                position: "top-center"
+            });
         }
     };
 
