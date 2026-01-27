@@ -6,6 +6,7 @@ const RewardPopup = ({ coupons }) => {
     const [currentCoupon, setCurrentCoupon] = useState(null);
 
     useEffect(() => {
+        console.log("RewardPopup coupons prop:", coupons);
         // Show popup if there are coupons and it hasn't been dismissed manually this session
         if (coupons && coupons.length > 0) {
             // Pick the first one or the one with highest value
@@ -15,10 +16,16 @@ const RewardPopup = ({ coupons }) => {
 
             // Check session storage to avoid annoyance
             const seenKey = `seen_coupon_${targetCoupon.code}`;
-            if (!sessionStorage.getItem(seenKey)) {
+            const hasSeen = sessionStorage.getItem(seenKey);
+            console.log(`Checking coupon ${targetCoupon.code}, seen status: ${hasSeen}`);
+
+            if (!hasSeen) {
                 setCurrentCoupon(targetCoupon);
                 // Delay slightly for effect
-                setTimeout(() => setIsVisible(true), 2000);
+                setTimeout(() => {
+                    console.log("Setting popup visible");
+                    setIsVisible(true);
+                }, 2000);
             }
         }
     }, [coupons]);

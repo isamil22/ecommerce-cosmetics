@@ -797,7 +797,7 @@ public class OrderService {
         }
 
         BigDecimal highValueThreshold = settingService
-                .getBigDecimalSetting(com.example.demo.constant.SettingKeys.HIGH_VALUE_THRESHOLD, "500");
+                .getBigDecimalSetting(com.example.demo.constant.SettingKeys.HIGH_VALUE_THRESHOLD, "1");
 
         if (total.compareTo(highValueThreshold) > 0) {
             BigDecimal discountPercent = settingService

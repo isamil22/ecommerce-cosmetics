@@ -101,6 +101,7 @@ function App() {
         if (token) {
             try {
                 const response = await getMyActiveRewards();
+                console.log("Active coupons response:", response.data);
                 setActiveCoupons(response.data || []);
             } catch (error) {
                 console.error("Failed to fetch active coupons:", error);
