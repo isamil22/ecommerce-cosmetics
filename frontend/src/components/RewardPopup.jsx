@@ -11,15 +11,23 @@ const RewardPopup = ({ coupons }) => {
         if (coupons && coupons.length > 0) {
             // Pick the first one or the one with highest value
             // Prioritize % discounts
-            const sortedCoupons = [...coupons].sort((a, b) => b.discountValue - a.discountValue);
-            const targetCoupon = sortedCoupons[0];
+            // Sort by value (highest first), then by code/id to be deterministic
+            const sortedCoupons = [...coupons]
+                .sort((a, b) => b.discountValue - a.discountValue || b.id - a.id);
 
-            // Check session storage to avoid annoyance
-            const seenKey = `seen_coupon_${targetCoupon.code}`;
-            const hasSeen = sessionStorage.getItem(seenKey);
-            console.log(`Checking coupon ${targetCoupon.code}, seen status: ${hasSeen}`);
+            // Find the first coupon that HAS NOT been seen yet
+            let targetCoupon = null;
+            for (const coupon of sortedCoupons) {
+                const seenKey = `seen_coupon_${coupon.code}`;
+                if (!sessionStorage.getItem(seenKey)) {
+                    targetCoupon = coupon;
+                    break;
+                }
+            }
 
-            if (!hasSeen) {
+            console.log("Selected target coupon:", targetCoupon);
+
+            if (targetCoupon) {
                 setCurrentCoupon(targetCoupon);
                 // Delay slightly for effect
                 setTimeout(() => {
