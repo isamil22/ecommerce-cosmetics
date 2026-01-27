@@ -45,10 +45,42 @@ const RewardPopup = ({ coupons }) => {
         }
     };
 
-    const handleCopy = () => {
-        if (currentCoupon) {
-            navigator.clipboard.writeText(currentCoupon.code);
+    const handleCopy = async () => {
+        if (!currentCoupon) return;
+
+        try {
+            // Try modern API first (requires HTTPS)
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(currentCoupon.code);
+            } else {
+                // Fallback for HTTP / non-secure contexts
+                const textArea = document.createElement("textarea");
+                textArea.value = currentCoupon.code;
+
+                // Ensure it's not visible but part of the DOM
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                }
+
+                document.body.removeChild(textArea);
+            }
+
+            // Show success alert
             alert('تم نسخ الكود! / Code copié!');
+        } catch (err) {
+            console.error('Failed to copy (all methods): ', err);
+            // Even if copy fails, show the code so they can manual copy
+            prompt("Copy this code / Copiez ce code:", currentCoupon.code);
         }
     };
 
