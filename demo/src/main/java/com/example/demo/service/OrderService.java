@@ -118,7 +118,9 @@ public class OrderService {
         order.setPhoneNumber(request.getPhoneNumber());
         order.setStatus(Order.OrderStatus.PREPARING);
         order.setCreatedAt(LocalDateTime.now());
-        order.setShippingCost(new BigDecimal("10.00"));
+        // Calculate Shipping
+        int totalQuantity = request.getCartItems().stream().mapToInt(CartItemDTO::getQuantity).sum();
+        order.setShippingCost(calculateShippingCost(request.getCity(), totalQuantity));
 
         List<OrderItem> orderItems = createOrderItemsFromDTO(request.getCartItems(), order);
         order.setItems(orderItems);
@@ -217,7 +219,9 @@ public class OrderService {
         order.setStatus(Order.OrderStatus.PREPARING);
         order.setCreatedAt(LocalDateTime.now());
         // Set a default shipping cost
-        order.setShippingCost(new BigDecimal("10.00"));
+        // Calculate Shipping
+        int totalQuantity = request.getCartItems().stream().mapToInt(CartItemDTO::getQuantity).sum();
+        order.setShippingCost(calculateShippingCost(request.getCity(), totalQuantity));
 
         // Create OrderItems using helper
         List<OrderItem> orderItems = createOrderItemsFromDTO(request.getCartItems(), order);
@@ -334,7 +338,9 @@ public class OrderService {
         order.setStatus(Order.OrderStatus.PREPARING);
         order.setCreatedAt(LocalDateTime.now());
         // Set a default shipping cost
-        order.setShippingCost(new BigDecimal("10.00"));
+        // Calculate Shipping
+        int totalQuantity = cart.getItems().stream().mapToInt(CartItem::getQuantity).sum();
+        order.setShippingCost(calculateShippingCost(city, totalQuantity));
 
         BigDecimal subtotal = calculateSubtotal(cart.getItems());
 
@@ -643,6 +649,47 @@ public class OrderService {
         OrderDTO dto = orderMapper.toDTO(updatedOrder);
         populateCouponInfo(dto);
         return dto;
+    }
+
+    // ==========================================
+    // SHIPPING COST CALCULATION (SMART LOGIC)
+    // ==========================================
+    private BigDecimal calculateShippingCost(String city, int totalQuantity) {
+        if (totalQuantity <= 0)
+            return BigDecimal.ZERO;
+
+        // 1. Identify Zone (Remote vs Standard)
+        boolean isRemote = isRemoteCity(city);
+
+        // Define Rates
+        BigDecimal basePrice = isRemote ? new BigDecimal("50.00") : new BigDecimal("35.00");
+        BigDecimal extraItemCost = new BigDecimal("5.00");
+        BigDecimal maxShipping = new BigDecimal("50.00"); // Cap defined by user
+
+        // Logic: Base + ((Qty - 1) * 5)
+        BigDecimal quantityFactor = new BigDecimal(Math.max(0, totalQuantity - 1));
+        BigDecimal calculatedCost = basePrice.add(quantityFactor.multiply(extraItemCost));
+
+        // Apply Cap (Shipping never exceeds 50 DH)
+        // Note: For Remote cities (Base 50), this means it will always simply be 50.
+        if (calculatedCost.compareTo(maxShipping) > 0) {
+            return maxShipping;
+        }
+        return calculatedCost;
+    }
+
+    private boolean isRemoteCity(String city) {
+        if (city == null)
+            return false;
+        String normalizedCity = city.trim().toLowerCase();
+        // Common southern/remote cities in Morocco
+        return normalizedCity.contains("laayoune") ||
+                normalizedCity.contains("dakhla") ||
+                normalizedCity.contains("boujdour") ||
+                normalizedCity.contains("smara") ||
+                normalizedCity.contains("guerguerat") ||
+                normalizedCity.contains("aousserd") ||
+                normalizedCity.contains("bir gandouz");
     }
 
     private void populateCouponInfo(OrderDTO dto) {

@@ -154,8 +154,52 @@ const OrderPage = () => {
         setApplyingCoupon(false);
     };
 
+    const [shippingCost, setShippingCost] = useState(0);
+
     const subtotal = calculateSubtotal();
-    const total = (subtotal - discount) > 0 ? (subtotal - discount) : 0;
+
+    // Shipping Calculation Effect
+    useEffect(() => {
+        if (!cart || !cart.items || cart.items.length === 0) {
+            setShippingCost(0);
+            return;
+        }
+
+        const cityLower = formData.city ? formData.city.toLowerCase().trim() : '';
+        const remoteCities = ["laayoune", "dakhla", "boujdour", "smara", "guerguerat", "aousserd", "bir gandouz", "tarfaya", "tan-tan", "sidi ifni", "guelmim", "assa-zag", "es-semara"];
+
+        let isRemote = false;
+        // Check if city is in remote list
+        for (const remote of remoteCities) {
+            if (cityLower.includes(remote)) {
+                isRemote = true;
+                break;
+            }
+        }
+
+        const basePrice = isRemote ? 50 : 35;
+        const extraItemCost = 5;
+        const maxShipping = 50;
+
+        const totalQuantity = cart.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+        // Logic: Base + ((Qty - 1) * 5)
+        const quantityFactor = Math.max(0, totalQuantity - 1);
+        let calculated = basePrice + (quantityFactor * extraItemCost);
+
+        if (calculated > maxShipping) calculated = maxShipping;
+
+        // Force free shipping if coupon says so
+        if (appliedCoupon && discount === 0 && appliedCoupon.includes("FREE_SHIPPING")) { // Simplified check, ideally check type
+            // If we had the full coupon object here with type FREE_SHIPPING, we'd zero it. 
+            // But valid logic relies on 'discount' variable usually handling estimates.
+            // For now let's rely on standard calc.
+        }
+
+        setShippingCost(calculated);
+    }, [cart, formData.city]);
+
+    const total = (subtotal - discount + shippingCost) > 0 ? (subtotal - discount + shippingCost) : 0;
 
     // Handle Delete Confirmation
     const handleConfirmDelete = async () => {
@@ -553,6 +597,10 @@ const OrderPage = () => {
                                                     <span className="font-medium">-{formatPrice(discount)}</span>
                                                 </div>
                                             )}
+                                            <div className="flex justify-between text-gray-600">
+                                                <span>الشحن / Livraison</span>
+                                                <span className="font-medium">{shippingCost > 0 ? formatPrice(shippingCost) : 'مجاني / Gratuite'}</span>
+                                            </div>
                                             <div className="border-t border-gray-200 pt-3">
                                                 <div className="flex justify-between items-center">
                                                     <span className="text-xl font-semibold text-gray-900">الإجمالي / Total</span>
