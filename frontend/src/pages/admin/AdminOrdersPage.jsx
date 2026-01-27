@@ -1118,9 +1118,21 @@ const AdminOrdersPage = () => {
                                                                     <span className="font-medium text-green-600">-{formatCurrency(selectedOrder.discountAmount)}</span>
                                                                 </div>
                                                             )}
+                                                            <div className="flex justify-between items-center text-sm">
+                                                                <span className="text-gray-600">Shipping:</span>
+                                                                <span className="font-medium text-gray-700">
+                                                                    {selectedOrder.shippingCost > 0 ? formatCurrency(selectedOrder.shippingCost) : <span className="text-green-600">Free</span>}
+                                                                </span>
+                                                            </div>
                                                             <div className="flex justify-between items-center text-xl font-bold pt-2 border-t">
                                                                 <span className="text-gray-900">Total:</span>
-                                                                <span className="text-blue-600">{formatCurrency(selectedOrder.orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) - (selectedOrder.discountAmount || 0))}</span>
+                                                                <span className="text-blue-600">
+                                                                    {formatCurrency(
+                                                                        selectedOrder.orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                                                                        - (selectedOrder.discountAmount || 0)
+                                                                        + (selectedOrder.shippingCost || 0)
+                                                                    )}
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
