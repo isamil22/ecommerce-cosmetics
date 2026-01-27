@@ -118,16 +118,13 @@ public class OrderService {
         order.setPhoneNumber(request.getPhoneNumber());
         order.setStatus(Order.OrderStatus.PREPARING);
         order.setCreatedAt(LocalDateTime.now());
-        // Calculate Shipping
-        int totalQuantity = request.getCartItems().stream().mapToInt(CartItemDTO::getQuantity).sum();
-        order.setShippingCost(calculateShippingCost(request.getCity(), totalQuantity));
-
-        List<OrderItem> orderItems = createOrderItemsFromDTO(request.getCartItems(), order);
-        order.setItems(orderItems);
-
         // Apply coupon logic (shared or duplicated - here duplicating for
         // simplicity/safety as previous session)
         BigDecimal subtotal = calculateSubtotalForGuestOrder(request.getCartItems());
+
+        // Calculate Shipping
+        int totalQuantity = request.getCartItems().stream().mapToInt(CartItemDTO::getQuantity).sum();
+        order.setShippingCost(calculateShippingCost(request.getCity(), totalQuantity, subtotal));
         if (request.getCouponCode() != null && !request.getCouponCode().trim().isEmpty()) {
             Coupon coupon = couponRepository.findByCode(request.getCouponCode())
                     .orElseThrow(() -> new ResourceNotFoundException("Coupon not found: " + request.getCouponCode()));
@@ -218,18 +215,13 @@ public class OrderService {
         order.setPhoneNumber(request.getPhoneNumber());
         order.setStatus(Order.OrderStatus.PREPARING);
         order.setCreatedAt(LocalDateTime.now());
+        // === COUPON PROCESSING LOGIC (same as createOrder method) ===
+        BigDecimal subtotal = calculateSubtotalForGuestOrder(request.getCartItems());
+
         // Set a default shipping cost
         // Calculate Shipping
         int totalQuantity = request.getCartItems().stream().mapToInt(CartItemDTO::getQuantity).sum();
-        order.setShippingCost(calculateShippingCost(request.getCity(), totalQuantity));
-
-        // Create OrderItems using helper
-        List<OrderItem> orderItems = createOrderItemsFromDTO(request.getCartItems(), order);
-
-        order.setItems(orderItems);
-
-        // === COUPON PROCESSING LOGIC (same as createOrder method) ===
-        BigDecimal subtotal = calculateSubtotalForGuestOrder(request.getCartItems());
+        order.setShippingCost(calculateShippingCost(request.getCity(), totalQuantity, subtotal));
 
         if (request.getCouponCode() != null && !request.getCouponCode().trim().isEmpty()) {
             Coupon coupon = couponRepository.findByCode(request.getCouponCode())
@@ -338,11 +330,11 @@ public class OrderService {
         order.setStatus(Order.OrderStatus.PREPARING);
         order.setCreatedAt(LocalDateTime.now());
         // Set a default shipping cost
+        BigDecimal subtotal = calculateSubtotal(cart.getItems());
+
         // Calculate Shipping
         int totalQuantity = cart.getItems().stream().mapToInt(CartItem::getQuantity).sum();
-        order.setShippingCost(calculateShippingCost(city, totalQuantity));
-
-        BigDecimal subtotal = calculateSubtotal(cart.getItems());
+        order.setShippingCost(calculateShippingCost(city, totalQuantity, subtotal));
 
         if (couponCode != null && !couponCode.trim().isEmpty()) {
             Coupon coupon = couponRepository.findByCode(couponCode)
@@ -654,9 +646,15 @@ public class OrderService {
     // ==========================================
     // SHIPPING COST CALCULATION (SMART LOGIC)
     // ==========================================
-    private BigDecimal calculateShippingCost(String city, int totalQuantity) {
+    private BigDecimal calculateShippingCost(String city, int totalQuantity, BigDecimal subtotal) {
         if (totalQuantity <= 0)
             return BigDecimal.ZERO;
+
+        // FREE SHIPPING THRESHOLD: 500 DH
+        BigDecimal freeShippingThreshold = new BigDecimal("500.00");
+        if (subtotal != null && subtotal.compareTo(freeShippingThreshold) >= 0) {
+            return BigDecimal.ZERO;
+        }
 
         // 1. Identify Zone (Remote vs Standard)
         boolean isRemote = isRemoteCity(city);

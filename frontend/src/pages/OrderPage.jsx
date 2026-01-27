@@ -183,11 +183,19 @@ const OrderPage = () => {
 
         const totalQuantity = cart.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
+        // FREE SHIPPING THRESHOLD: 500 DH
+        const freeShippingThreshold = 500;
+
         // Logic: Base + ((Qty - 1) * 5)
         const quantityFactor = Math.max(0, totalQuantity - 1);
         let calculated = basePrice + (quantityFactor * extraItemCost);
 
         if (calculated > maxShipping) calculated = maxShipping;
+
+        // Apply Free Shipping Threshold
+        if (subtotal >= freeShippingThreshold) {
+            calculated = 0;
+        }
 
         // Force free shipping if coupon says so
         if (appliedCoupon && discount === 0 && appliedCoupon.includes("FREE_SHIPPING")) { // Simplified check, ideally check type
