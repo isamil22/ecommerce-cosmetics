@@ -623,7 +623,8 @@ public class OrderService {
 
         Order.OrderStatus oldStatus = order.getStatus();
         order.setStatus(status);
-        Order updatedOrder = orderRepository.save(order);
+        // FORCE FLUSH to ensure the countByUser query sees this order as DELIVERED
+        Order updatedOrder = orderRepository.saveAndFlush(order);
 
         // Check if status changed to DELIVERED
         if (oldStatus != Order.OrderStatus.DELIVERED && status == Order.OrderStatus.DELIVERED) {
@@ -797,7 +798,7 @@ public class OrderService {
         }
 
         BigDecimal highValueThreshold = settingService
-                .getBigDecimalSetting(com.example.demo.constant.SettingKeys.HIGH_VALUE_THRESHOLD, "1");
+                .getBigDecimalSetting(com.example.demo.constant.SettingKeys.HIGH_VALUE_THRESHOLD, "500");
 
         if (total.compareTo(highValueThreshold) > 0) {
             BigDecimal discountPercent = settingService
