@@ -735,4 +735,8 @@ export const updateDiscountSettings = (settings) => {
     return apiService.post('/admin/settings/discounts', settings);
 };
 
+export const getMyActiveRewards = () => {
+    return apiService.get('/coupons/my-active-rewards');
+};
+
 export default apiService;
