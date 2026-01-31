@@ -13,6 +13,7 @@ public class CustomPackDTO {
     private String description;
     private int minItems;
     private int maxItems;
+    private String imageUrl;
     private CustomPack.PricingType pricingType;
     private BigDecimal fixedPrice;
     private BigDecimal discountRate;

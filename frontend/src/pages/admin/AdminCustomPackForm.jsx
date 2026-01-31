@@ -3,15 +3,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { createCustomPack, getCustomPackById, updateCustomPack, getPackableProducts } from '../../api/apiService';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader';
-import { 
-    FiPackage, 
-    FiEdit3, 
-    FiSave, 
-    FiSearch, 
-    FiFilter, 
-    FiCheck, 
-    FiX, 
-    FiPlus, 
+import {
+    FiPackage,
+    FiEdit3,
+    FiSave,
+    FiSearch,
+    FiFilter,
+    FiCheck,
+    FiX,
+    FiPlus,
     FiMinus,
     FiDollarSign,
     FiPercent,
@@ -46,7 +46,16 @@ const AdminCustomPackForm = () => {
         pricingType: 'FIXED',
         fixedPrice: '',
         discountRate: '',
-        allowedProductIds: []
+        name: '',
+        description: '',
+        minItems: '',
+        maxItems: '',
+        pricingType: 'FIXED',
+        fixedPrice: '',
+        discountRate: '',
+        allowedProductIds: [],
+        image: null,
+        imageUrl: ''
     });
     const [loading, setLoading] = useState(false);
     const [packableProducts, setPackableProducts] = useState([]);
@@ -91,9 +100,21 @@ const AdminCustomPackForm = () => {
         validateField(name, value);
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFormData(prev => ({
+                ...prev,
+                image: file,
+                imageUrl: URL.createObjectURL(file)
+            }));
+            setIsDirty(true);
+        }
+    };
+
     const validateField = (name, value) => {
         const newErrors = { ...errors };
-        
+
         switch (name) {
             case 'name':
                 if (!value.trim()) {
@@ -135,7 +156,7 @@ const AdminCustomPackForm = () => {
             default:
                 break;
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -145,7 +166,7 @@ const AdminCustomPackForm = () => {
             const newSelected = prev.includes(productId)
                 ? prev.filter(id => id !== productId)
                 : [...prev, productId];
-            
+
             setFormData(prevForm => ({ ...prevForm, allowedProductIds: newSelected }));
             setIsDirty(true);
             return newSelected;
@@ -176,48 +197,68 @@ const AdminCustomPackForm = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!formData.name.trim()) {
             newErrors.name = 'Pack name is required';
         }
-        
+
         if (!formData.minItems || parseInt(formData.minItems) < 1) {
             newErrors.minItems = 'Minimum items must be at least 1';
         }
-        
+
         if (!formData.maxItems || parseInt(formData.maxItems) < parseInt(formData.minItems || 1)) {
             newErrors.maxItems = 'Maximum items must be greater than minimum items';
         }
-        
+
         if (formData.pricingType === 'FIXED' && (!formData.fixedPrice || parseFloat(formData.fixedPrice) <= 0)) {
             newErrors.fixedPrice = 'Fixed price must be greater than 0';
         }
-        
+
         if (formData.pricingType === 'DYNAMIC' && (!formData.discountRate || parseFloat(formData.discountRate) <= 0 || parseFloat(formData.discountRate) >= 1)) {
             newErrors.discountRate = 'Discount rate must be between 0 and 1';
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             toast.error('Please fix the validation errors before submitting');
             return;
         }
-        
+
         setIsSubmitting(true);
         try {
-            const submitData = { ...formData, allowedProductIds: selectedProducts };
-            
+            const formDataToSend = new FormData();
+            formDataToSend.append('name', formData.name);
+            formDataToSend.append('description', formData.description);
+            formDataToSend.append('minItems', formData.minItems);
+            formDataToSend.append('maxItems', formData.maxItems);
+            formDataToSend.append('pricingType', formData.pricingType);
+
+            if (formData.pricingType === 'FIXED') {
+                formDataToSend.append('fixedPrice', formData.fixedPrice);
+            } else {
+                formDataToSend.append('discountRate', formData.discountRate);
+            }
+
+            // Append allowed product IDs
+            selectedProducts.forEach(id => {
+                formDataToSend.append('allowedProductIds', id);
+            });
+
+            if (formData.image) {
+                formDataToSend.append('image', formData.image);
+            }
+
             if (isEditing) {
-                await updateCustomPack(id, submitData);
+                await updateCustomPack(id, formDataToSend);
                 toast.success('Custom pack updated successfully!');
             } else {
-                await createCustomPack(submitData);
+                await createCustomPack(formDataToSend);
                 toast.success('Custom pack created successfully!');
             }
             navigate('/admin/custom-packs');
@@ -248,7 +289,7 @@ const AdminCustomPackForm = () => {
                                 <span className="font-medium">Back to Custom Packs</span>
                             </button>
                         </div>
-                        
+
                         <div className="flex items-center space-x-3">
                             {isDirty && (
                                 <div className="flex items-center space-x-2 text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">
@@ -256,7 +297,7 @@ const AdminCustomPackForm = () => {
                                     <span className="text-sm font-medium">Unsaved changes</span>
                                 </div>
                             )}
-                            
+
                             <button
                                 type="button"
                                 onClick={() => setShowPreview(!showPreview)}
@@ -267,7 +308,7 @@ const AdminCustomPackForm = () => {
                             </button>
                         </div>
                     </div>
-                    
+
                     <div className="mt-6 flex items-center space-x-4">
                         <div className="relative">
                             <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -277,7 +318,7 @@ const AdminCustomPackForm = () => {
                                 <FiCheckCircle className="w-3 h-3 text-white" />
                             </div>
                         </div>
-                        
+
                         <div>
                             <h1 className="text-3xl font-bold text-gray-800 flex items-center space-x-3">
                                 <span>{isEditing ? 'Edit Custom Pack' : 'Create Custom Pack'}</span>
@@ -304,22 +345,21 @@ const AdminCustomPackForm = () => {
                                     </div>
                                     <h2 className="text-xl font-bold text-gray-800">Basic Information</h2>
                                 </div>
-                                
+
                                 <div className="space-y-6">
                                     <div>
                                         <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                                             Pack Name <span className="text-red-500">*</span>
                                         </label>
-                                        <input 
-                                            type="text" 
-                                            name="name" 
-                                            id="name" 
-                                            value={formData.name} 
-                                            onChange={handleChange} 
-                                            required 
-                                            className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${
-                                                errors.name ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
-                                            }`}
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            id="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            required
+                                            className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${errors.name ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
+                                                }`}
                                             placeholder="Enter pack name..."
                                         />
                                         {errors.name && (
@@ -329,18 +369,71 @@ const AdminCustomPackForm = () => {
                                             </div>
                                         )}
                                     </div>
-                                    
+
+
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                            Pack Image
+                                        </label>
+                                        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-pink-500 transition-colors duration-200">
+                                            <div className="space-y-1 text-center">
+                                                {formData.imageUrl ? (
+                                                    <div className="relative inline-block">
+                                                        <img
+                                                            src={formData.imageUrl}
+                                                            alt="Pack preview"
+                                                            className="h-48 object-cover rounded-lg"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setFormData(prev => ({ ...prev, image: null, imageUrl: '' }))}
+                                                            className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                                                        >
+                                                            <FiX className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <div className="w-12 h-12 bg-pink-50 text-pink-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                                            <FiImage className="w-6 h-6" />
+                                                        </div>
+                                                        <div className="flex text-sm text-gray-600 justify-center">
+                                                            <label
+                                                                htmlFor="image-upload"
+                                                                className="relative cursor-pointer bg-white rounded-md font-medium text-pink-600 hover:text-pink-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-pink-500"
+                                                            >
+                                                                <span>Upload a file</span>
+                                                                <input
+                                                                    id="image-upload"
+                                                                    name="image"
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    className="sr-only"
+                                                                    onChange={handleImageChange}
+                                                                />
+                                                            </label>
+                                                            <p className="pl-1">or drag and drop</p>
+                                                        </div>
+                                                        <p className="text-xs text-gray-500">
+                                                            PNG, JPG, GIF up to 10MB
+                                                        </p>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div>
                                         <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
                                             Description <span className="text-red-500">*</span>
                                         </label>
-                                        <textarea 
-                                            name="description" 
-                                            id="description" 
-                                            value={formData.description} 
-                                            onChange={handleChange} 
-                                            rows="4" 
-                                            required 
+                                        <textarea
+                                            name="description"
+                                            id="description"
+                                            value={formData.description}
+                                            onChange={handleChange}
+                                            rows="4"
+                                            required
                                             className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-100 transition-all duration-200"
                                             placeholder="Describe your custom pack..."
                                         />
@@ -356,24 +449,23 @@ const AdminCustomPackForm = () => {
                                     </div>
                                     <h2 className="text-xl font-bold text-gray-800">Pack Configuration</h2>
                                 </div>
-                                
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label htmlFor="minItems" className="block text-sm font-semibold text-gray-700 mb-2">
                                             Minimum Items <span className="text-red-500">*</span>
                                         </label>
                                         <div className="relative">
-                                            <input 
-                                                type="number" 
-                                                name="minItems" 
-                                                id="minItems" 
-                                                value={formData.minItems} 
-                                                onChange={handleChange} 
-                                                required 
+                                            <input
+                                                type="number"
+                                                name="minItems"
+                                                id="minItems"
+                                                value={formData.minItems}
+                                                onChange={handleChange}
+                                                required
                                                 min="1"
-                                                className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${
-                                                    errors.minItems ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
-                                                }`}
+                                                className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${errors.minItems ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
+                                                    }`}
                                                 placeholder="1"
                                             />
                                             <FiMinus className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -385,23 +477,22 @@ const AdminCustomPackForm = () => {
                                             </div>
                                         )}
                                     </div>
-                                    
+
                                     <div>
                                         <label htmlFor="maxItems" className="block text-sm font-semibold text-gray-700 mb-2">
                                             Maximum Items <span className="text-red-500">*</span>
                                         </label>
                                         <div className="relative">
-                                            <input 
-                                                type="number" 
-                                                name="maxItems" 
-                                                id="maxItems" 
-                                                value={formData.maxItems} 
-                                                onChange={handleChange} 
-                                                required 
+                                            <input
+                                                type="number"
+                                                name="maxItems"
+                                                id="maxItems"
+                                                value={formData.maxItems}
+                                                onChange={handleChange}
+                                                required
                                                 min="1"
-                                                className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${
-                                                    errors.maxItems ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
-                                                }`}
+                                                className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${errors.maxItems ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
+                                                    }`}
                                                 placeholder="10"
                                             />
                                             <FiPlus className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -424,22 +515,21 @@ const AdminCustomPackForm = () => {
                                     </div>
                                     <h2 className="text-xl font-bold text-gray-800">Pricing Configuration</h2>
                                 </div>
-                                
+
                                 <div className="space-y-6">
                                     <div>
                                         <label htmlFor="pricingType" className="block text-sm font-semibold text-gray-700 mb-2">
                                             Pricing Type <span className="text-red-500">*</span>
                                         </label>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${
-                                                formData.pricingType === 'FIXED' 
-                                                    ? 'border-pink-500 bg-pink-50 shadow-md' 
+                                            <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${formData.pricingType === 'FIXED'
+                                                    ? 'border-pink-500 bg-pink-50 shadow-md'
                                                     : 'border-gray-200 hover:border-gray-300'
-                                            }`}>
-                                                <input 
-                                                    type="radio" 
-                                                    name="pricingType" 
-                                                    value="FIXED" 
+                                                }`}>
+                                                <input
+                                                    type="radio"
+                                                    name="pricingType"
+                                                    value="FIXED"
                                                     checked={formData.pricingType === 'FIXED'}
                                                     onChange={handleChange}
                                                     className="sr-only"
@@ -452,16 +542,15 @@ const AdminCustomPackForm = () => {
                                                     </div>
                                                 </div>
                                             </label>
-                                            
-                                            <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${
-                                                formData.pricingType === 'DYNAMIC' 
-                                                    ? 'border-pink-500 bg-pink-50 shadow-md' 
+
+                                            <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${formData.pricingType === 'DYNAMIC'
+                                                    ? 'border-pink-500 bg-pink-50 shadow-md'
                                                     : 'border-gray-200 hover:border-gray-300'
-                                            }`}>
-                                                <input 
-                                                    type="radio" 
-                                                    name="pricingType" 
-                                                    value="DYNAMIC" 
+                                                }`}>
+                                                <input
+                                                    type="radio"
+                                                    name="pricingType"
+                                                    value="DYNAMIC"
                                                     checked={formData.pricingType === 'DYNAMIC'}
                                                     onChange={handleChange}
                                                     className="sr-only"
@@ -476,25 +565,24 @@ const AdminCustomPackForm = () => {
                                             </label>
                                         </div>
                                     </div>
-                                    
+
                                     {formData.pricingType === 'FIXED' ? (
                                         <div>
                                             <label htmlFor="fixedPrice" className="block text-sm font-semibold text-gray-700 mb-2">
                                                 Fixed Price <span className="text-red-500">*</span>
                                             </label>
                                             <div className="relative">
-                                                <input 
-                                                    type="number" 
-                                                    step="0.01" 
-                                                    name="fixedPrice" 
-                                                    id="fixedPrice" 
-                                                    value={formData.fixedPrice} 
-                                                    onChange={handleChange} 
-                                                    required 
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    name="fixedPrice"
+                                                    id="fixedPrice"
+                                                    value={formData.fixedPrice}
+                                                    onChange={handleChange}
+                                                    required
                                                     min="0"
-                                                    className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${
-                                                        errors.fixedPrice ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
-                                                    }`}
+                                                    className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${errors.fixedPrice ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
+                                                        }`}
                                                     placeholder="0.00"
                                                 />
                                                 <FiDollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -512,19 +600,18 @@ const AdminCustomPackForm = () => {
                                                 Discount Rate <span className="text-red-500">*</span>
                                             </label>
                                             <div className="relative">
-                                                <input 
-                                                    type="number" 
-                                                    step="0.01" 
-                                                    name="discountRate" 
-                                                    id="discountRate" 
-                                                    value={formData.discountRate} 
-                                                    onChange={handleChange} 
-                                                    required 
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    name="discountRate"
+                                                    id="discountRate"
+                                                    value={formData.discountRate}
+                                                    onChange={handleChange}
+                                                    required
                                                     min="0"
                                                     max="1"
-                                                    className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${
-                                                        errors.discountRate ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
-                                                    }`}
+                                                    className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${errors.discountRate ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
+                                                        }`}
                                                     placeholder="0.20 (for 20% discount)"
                                                 />
                                                 <FiPercent className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -549,38 +636,36 @@ const AdminCustomPackForm = () => {
                                         </div>
                                         <h2 className="text-xl font-bold text-gray-800">Product Selection</h2>
                                     </div>
-                                    
+
                                     <div className="flex items-center space-x-2">
                                         <button
                                             type="button"
                                             onClick={() => setViewMode('grid')}
-                                            className={`p-2 rounded-lg transition-all duration-200 ${
-                                                viewMode === 'grid' 
-                                                    ? 'bg-pink-100 text-pink-600' 
+                                            className={`p-2 rounded-lg transition-all duration-200 ${viewMode === 'grid'
+                                                    ? 'bg-pink-100 text-pink-600'
                                                     : 'text-gray-400 hover:text-gray-600'
-                                            }`}
+                                                }`}
                                         >
                                             <FiGrid className="w-5 h-5" />
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setViewMode('list')}
-                                            className={`p-2 rounded-lg transition-all duration-200 ${
-                                                viewMode === 'list' 
-                                                    ? 'bg-pink-100 text-pink-600' 
+                                            className={`p-2 rounded-lg transition-all duration-200 ${viewMode === 'list'
+                                                    ? 'bg-pink-100 text-pink-600'
                                                     : 'text-gray-400 hover:text-gray-600'
-                                            }`}
+                                                }`}
                                         >
                                             <FiList className="w-5 h-5" />
                                         </button>
                                     </div>
                                 </div>
-                                
+
                                 <div className="mb-6">
                                     <p className="text-gray-600 mb-4">
                                         Select products for this pack (leave empty to allow all packable products)
                                     </p>
-                                    
+
                                     {/* Search Bar */}
                                     <div className="relative">
                                         <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -593,28 +678,25 @@ const AdminCustomPackForm = () => {
                                         />
                                     </div>
                                 </div>
-                                
+
                                 {/* Product Grid/List */}
                                 <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-xl p-4 bg-gray-50">
                                     {filteredProducts.length > 0 ? (
-                                        <div className={`grid gap-4 ${
-                                            viewMode === 'grid' 
-                                                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+                                        <div className={`grid gap-4 ${viewMode === 'grid'
+                                                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                                                 : 'grid-cols-1'
-                                        }`}>
+                                            }`}>
                                             {filteredProducts.map(product => (
                                                 <div
                                                     key={product.id}
                                                     onClick={() => handleProductToggle(product.id)}
-                                                    className={`border-2 p-4 rounded-xl cursor-pointer transition-all duration-200 group ${
-                                                        selectedProducts.includes(product.id)
+                                                    className={`border-2 p-4 rounded-xl cursor-pointer transition-all duration-200 group ${selectedProducts.includes(product.id)
                                                             ? 'border-pink-500 bg-pink-50 shadow-lg transform scale-105'
                                                             : 'border-gray-200 hover:border-pink-300 hover:shadow-md hover:bg-white'
-                                                    }`}
+                                                        }`}
                                                 >
-                                                    <div className={`flex items-center space-x-4 ${
-                                                        viewMode === 'list' ? 'flex-row' : 'flex-col text-center'
-                                                    }`}>
+                                                    <div className={`flex items-center space-x-4 ${viewMode === 'list' ? 'flex-row' : 'flex-col text-center'
+                                                        }`}>
                                                         <div className="relative">
                                                             <input
                                                                 type="checkbox"
@@ -626,17 +708,16 @@ const AdminCustomPackForm = () => {
                                                                 <FiCheck className="absolute -top-1 -right-1 w-3 h-3 text-pink-600 bg-white rounded-full" />
                                                             )}
                                                         </div>
-                                                        
+
                                                         <div className="flex-1">
                                                             {product.images && product.images.length > 0 && (
                                                                 <img
                                                                     src={product.images[0]}
                                                                     alt={product.name}
-                                                                    className={`object-cover rounded-lg mb-3 ${
-                                                                        viewMode === 'list' 
-                                                                            ? 'w-16 h-16' 
+                                                                    className={`object-cover rounded-lg mb-3 ${viewMode === 'list'
+                                                                            ? 'w-16 h-16'
                                                                             : 'w-20 h-20 mx-auto'
-                                                                    }`}
+                                                                        }`}
                                                                 />
                                                             )}
                                                             <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-pink-600 transition-colors duration-200">
@@ -659,14 +740,14 @@ const AdminCustomPackForm = () => {
                                         </div>
                                     )}
                                 </div>
-                                
+
                                 {/* Selection Summary */}
                                 <div className="mt-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                                         <FiCheckCircle className="w-4 h-4 text-green-500" />
                                         <span>Selected: <strong>{selectedProducts.length}</strong> products</span>
                                     </div>
-                                    
+
                                     {selectedProducts.length > 0 && (
                                         <div className="flex items-center space-x-2 text-sm text-gray-600">
                                             <FiDollarSign className="w-4 h-4 text-green-500" />
@@ -678,8 +759,8 @@ const AdminCustomPackForm = () => {
 
                             {/* Submit Button */}
                             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     disabled={isSubmitting || Object.keys(errors).length > 0}
                                     className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-4 px-8 rounded-xl font-semibold text-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-3 group"
                                 >
@@ -709,7 +790,7 @@ const AdminCustomPackForm = () => {
                                         <FiEye className="w-5 h-5 text-blue-600" />
                                         <h3 className="text-lg font-bold text-gray-800">Pack Preview</h3>
                                     </div>
-                                    
+
                                     <div className="space-y-4">
                                         <div className="text-center">
                                             <div className="w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
@@ -718,7 +799,7 @@ const AdminCustomPackForm = () => {
                                             <h4 className="font-bold text-gray-800 text-lg">{formData.name || 'Pack Name'}</h4>
                                             <p className="text-gray-600 text-sm">{formData.description || 'Pack description...'}</p>
                                         </div>
-                                        
+
                                         <div className="border-t border-gray-200 pt-4">
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="text-sm text-gray-600">Items Range:</span>
@@ -727,8 +808,8 @@ const AdminCustomPackForm = () => {
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="text-sm text-gray-600">Pricing:</span>
                                                 <span className="font-semibold">
-                                                    {formData.pricingType === 'FIXED' 
-                                                        ? `$${formData.fixedPrice || '0.00'}` 
+                                                    {formData.pricingType === 'FIXED'
+                                                        ? `$${formData.fixedPrice || '0.00'}`
                                                         : `${(parseFloat(formData.discountRate || 0) * 100).toFixed(1)}% off`
                                                     }
                                                 </span>
@@ -748,7 +829,7 @@ const AdminCustomPackForm = () => {
                                     <FiTrendingUp className="w-5 h-5 text-green-600" />
                                     <h3 className="text-lg font-bold text-gray-800">Pack Statistics</h3>
                                 </div>
-                                
+
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center space-x-2">
@@ -757,7 +838,7 @@ const AdminCustomPackForm = () => {
                                         </div>
                                         <span className="font-bold text-gray-800">{packableProducts.length}</span>
                                     </div>
-                                    
+
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center space-x-2">
                                             <FiCheckCircle className="w-4 h-4 text-green-600" />
@@ -765,7 +846,7 @@ const AdminCustomPackForm = () => {
                                         </div>
                                         <span className="font-bold text-gray-800">{selectedProducts.length}</span>
                                     </div>
-                                    
+
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center space-x-2">
                                             <FiDollarSign className="w-4 h-4 text-green-600" />
@@ -773,7 +854,7 @@ const AdminCustomPackForm = () => {
                                         </div>
                                         <span className="font-bold text-gray-800">${calculatePackValue().toFixed(2)}</span>
                                     </div>
-                                    
+
                                     {selectedProducts.length > 0 && formData.pricingType && (
                                         <div className="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
                                             <div className="flex items-center space-x-2">
@@ -792,7 +873,7 @@ const AdminCustomPackForm = () => {
                                     <FiZap className="w-5 h-5 text-yellow-600" />
                                     <h3 className="text-lg font-bold text-gray-800">Quick Actions</h3>
                                 </div>
-                                
+
                                 <div className="space-y-3">
                                     <button
                                         type="button"
@@ -802,7 +883,7 @@ const AdminCustomPackForm = () => {
                                         <FiCheck className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
                                         <span className="text-sm font-medium text-blue-800">Select All Products</span>
                                     </button>
-                                    
+
                                     <button
                                         type="button"
                                         onClick={() => setSelectedProducts([])}
@@ -811,7 +892,7 @@ const AdminCustomPackForm = () => {
                                         <FiX className="w-4 h-4 text-gray-600 group-hover:scale-110 transition-transform duration-200" />
                                         <span className="text-sm font-medium text-gray-800">Clear Selection</span>
                                     </button>
-                                    
+
                                     <button
                                         type="button"
                                         onClick={() => setSearchTerm('')}

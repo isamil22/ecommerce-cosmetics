@@ -19,6 +19,7 @@ public class CustomPack {
     private String description;
     private int minItems;
     private int maxItems;
+    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     private PricingType pricingType;
