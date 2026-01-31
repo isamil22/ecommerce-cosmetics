@@ -145,7 +145,7 @@ const PackCard = ({ pack, index, onQuickView }) => {
                         )}
 
                         {/* Description */}
-                        <p className="hidden md:block text-gray-600 text-sm line-clamp-3 leading-relaxed">
+                        <p className="hidden md:line-clamp-2 text-gray-600 text-sm leading-relaxed">
                             {pack.description?.replace(/<[^>]*>/g, '') || 'Découvrez ce pack incroyable de produits de beauté premium.'}
                         </p>
                     </div>
