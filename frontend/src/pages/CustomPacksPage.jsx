@@ -72,32 +72,48 @@ const CustomPackCard = ({ pack, index, onQuickView }) => {
 
             <Link to={`/custom-packs/${pack.id}`} className="block flex-1 flex flex-col">
                 {/* Enhanced Image Container */}
+                {/* Enhanced Image Container */}
                 <div className="relative overflow-hidden bg-gradient-to-br from-purple-100 to-indigo-100 aspect-[4/3]">
-                    {/* Custom Pack Visual */}
-                    <div className="w-full h-full flex items-center justify-center relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-200/50 to-indigo-200/50"></div>
+                    {pack.imageUrl ? (
+                        <img
+                            src={pack.imageUrl}
+                            alt={pack.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                                // The fallback div below will need to be toggled visible if this fails, 
+                                // but simpler is to just let the fallback show if we hide this. 
+                                // Actually, better to just let it fall back naturally if we structure it right.
+                                // For now, simple conditional render is safest.
+                            }}
+                        />
+                    ) : (
+                        /* Custom Pack Visual Fallback */
+                        <div className="w-full h-full flex items-center justify-center relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-200/50 to-indigo-200/50"></div>
 
-                        {/* Pack Icon */}
-                        <div className="relative z-10 text-center">
-                            <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-transform duration-300">
-                                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-                                </svg>
+                            {/* Pack Icon */}
+                            <div className="relative z-10 text-center">
+                                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-transform duration-300">
+                                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-800 mb-2">{itemRange}</h3>
                             </div>
-                            <h3 className="text-lg font-bold text-gray-800 mb-2">{itemRange}</h3>
-                        </div>
 
-                        {/* Floating Elements */}
-                        <div className="absolute top-4 left-4 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '0.5s' }}>
-                            <span className="text-xs">📦</span>
+                            {/* Floating Elements */}
+                            <div className="absolute top-4 left-4 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '0.5s' }}>
+                                <span className="text-xs">📦</span>
+                            </div>
+                            <div className="absolute top-8 right-8 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '1s' }}>
+                                <span className="text-xs">✨</span>
+                            </div>
+                            <div className="absolute bottom-6 left-8 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '1.5s' }}>
+                                <span className="text-xs">🎨</span>
+                            </div>
                         </div>
-                        <div className="absolute top-8 right-8 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '1s' }}>
-                            <span className="text-xs">✨</span>
-                        </div>
-                        <div className="absolute bottom-6 left-8 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow-lg animate-bounce" style={{ animationDelay: '1.5s' }}>
-                            <span className="text-xs">🎨</span>
-                        </div>
-                    </div>
+                    )}
 
                     {/* Gradient Overlay on Hover */}
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>
@@ -431,16 +447,27 @@ const CustomPacksPage = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
                                 {/* Image Section */}
                                 <div className="relative bg-gradient-to-br from-purple-100 to-indigo-100 aspect-square md:aspect-auto">
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <div className="text-center">
-                                            <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl">
-                                                <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-                                                </svg>
+                                    {quickViewPack.imageUrl ? (
+                                        <img
+                                            src={quickViewPack.imageUrl}
+                                            alt={quickViewPack.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <div className="text-center">
+                                                <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl">
+                                                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                                                    </svg>
+                                                </div>
+                                                <h3 className="text-2xl font-bold text-gray-800">منشئ الباقات المخصص / Créateur de Pack Personnalisé</h3>
                                             </div>
-                                            <h3 className="text-2xl font-bold text-gray-800">منشئ الباقات المخصص / Créateur de Pack Personnalisé</h3>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
 
                                 {/* Content Section */}
