@@ -15,9 +15,20 @@ export const LanguageProvider = ({ children }) => {
         localStorage.setItem('language', language);
     }, [language]);
 
-    // Translation function
+    // Translation function with support for nested keys (e.g., 'brandSettings.title')
     const t = (key) => {
-        return translations[language]?.[key] || key;
+        const keys = key.split('.');
+        let value = translations[language];
+
+        for (const k of keys) {
+            if (value && typeof value === 'object') {
+                value = value[k];
+            } else {
+                return key; // Return key if path not found
+            }
+        }
+
+        return value || key;
     };
 
     const value = {
