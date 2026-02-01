@@ -1,5 +1,6 @@
 // frontend/src/App.jsx
 import { SiteSettingsProvider } from './context/SiteSettingsContext.jsx';
+import { LanguageProvider } from './contexts/LanguageContext.jsx';
 
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -155,123 +156,124 @@ function App() {
     };
 
     return (
-
-        <BrowserRouter>
-            <ScrollToTop />
-            <SiteSettingsProvider>
-                {/* AnnouncementBar */}
-                <AnnouncementBar />
-
-
-                <div
-                    className="flex flex-col min-h-screen overflow-x-hidden w-full relative"
-                    style={{ paddingTop: 'var(--announcement-bar-height, 0px)', transition: 'padding-top 0.3s ease' }}
-                >
-                    <FacebookPixel />
-                    <GoogleAnalytics />
-                    <AnalyticsTracker />
-                    <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={handleSetIsAuthenticated} userRole={userRole} cartCount={cartCount} />
-                    <RewardPopup coupons={activeCoupons} />
-                    <ToastContainer
-                        position="bottom-right"
-                        autoClose={5000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                    />
-                    <main className="flex-grow">
-                        <Routes>
-                            {/* Public Routes */}
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/products" element={<ProductsPage />} />
-                            <Route path="/packs" element={<PacksPage />} />
-                            <Route path="/packs/:id" element={<PackDetailPage isAuthenticated={isAuthenticated} fetchCartCount={fetchCartCount} />} />
-                            <Route path="/custom-packs" element={<CustomPacksPage />} />
-                            <Route path="/custom-packs/:id" element={<CustomPackCreationPage />} />
-                            <Route path="/products/:id" element={<ProductDetailPage fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />} />
-                            <Route path="/hello" element={<HelloPage />} />
-                            <Route path="/auth" element={<AuthPage setIsAuthenticated={handleSetIsAuthenticated} />} />
-                            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-                            <Route path="/confirm-email/:email" element={<EmailConfirmationPage />} />
-                            <Route path="/contact" element={<ContactPage />} />
-                            <Route path="/faq" element={<FaqPage />} />
-                            <Route path="/shipping" element={<ShippingPage />} />
-
-                            {/* Public Landing Pages */}
-                            <Route path="/landing/:slug" element={<PublicLandingPage fetchCartCount={fetchCartCount} cartCount={cartCount} />} />
-
-                            {/* Authenticated User Routes */}
-                            {userRole !== 'ADMIN' && <Route path="/profile" element={<ProfilePage />} />}
-                            {userRole !== 'ADMIN' && <Route path="/orders" element={<UserOrdersPage />} />}
-                            <Route path="/cart" element={<CartPage fetchCartCount={fetchCartCount} />} />
-                            <Route path="/order" element={<OrderPage />} />
-                            <Route path="/order-success" element={<OrderSuccessPage />} />
-
-                            {/* Admin-Only Routes */}
-                            <Route path="/admin" element={<AdminLayout />}>
-                                <Route path="dashboard" element={<AdminDashboard />} />
-                                <Route path="hero" element={<AdminHeroPage />} />
-                                <Route path="products" element={<AdminProductsPage />} />
-                                <Route path="products/new" element={<AdminProductForm />} />
-                                <Route path="products/edit/:id" element={<AdminProductForm />} />
-                                <Route path="products/:productId/comments" element={<AdminProductCommentsPage />} />
-                                <Route path="orders" element={<AdminOrdersPage />} />
-                                <Route path="users" element={<AdminUsersPage />} />
-                                <Route path="reviews" element={<AdminReviewsPage />} />
-                                <Route path="categories" element={<AdminCategoriesPage />} />
-                                <Route path="categories/new" element={<AdminCategoryForm />} />
-                                <Route path="categories/edit/:id" element={<AdminCategoryForm />} />
-                                <Route path="packs" element={<AdminPacksPage />} />
-                                <Route path="packs/new" element={<AdminPackForm />} />
-                                <Route path="packs/edit/:id" element={<AdminPackEditPage />} />
-                                <Route path="packs/:packId/comments" element={<AdminPackCommentsPage />} />
-                                <Route path="packs/:packId/recommendations" element={<AdminPackRecommendationsPage />} />
-                                <Route path="custom-packs" element={<AdminCustomPacksPage />} />
-                                <Route path="custom-packs/new" element={<AdminCustomPackForm />} />
-                                <Route path="custom-packs/edit/:id" element={<AdminCustomPackForm />} />
-                                <Route path="coupons" element={<AdminCouponsPage />} />
-                                <Route path="announcement" element={<AdminAnnouncementPage />} />
-                                <Route path="countdown" element={<AdminCountdownPage />} />
-                                <Route path="enhanced-visitor-counter" element={<EnhancedVisitorCounterSettingsPage />} />
-                                <Route path="review-form-settings" element={<ReviewFormSettingsPage />} />
-                                <Route path="analytics" element={<AdminAnalyticsPage />} />
-                                <Route path="analytics" element={<AdminAnalyticsPage />} />
-                                <Route path="analytics" element={<AdminAnalyticsPage />} />
-                                {/* <Route path="settings" element={<SettingsPage />} /> */}
-                                <Route path="settings" element={<AdminSettingsPage />} />
-                                <Route path="settings/brand" element={<AdminBrandSettingsPage />} />
-                                <Route path="settings/integrations" element={<AdminIntegrationsPage />} />
-                                <Route path="roles" element={<AdminRolesPage />} />
-                                <Route path="permissions" element={<AdminPermissionsPage />} />
-                                <Route path="landing-pages" element={<AdminLandingPagesPage />} />
-                                <Route path="landing-pages/create" element={<AdminLandingPageBuilder />} />
-                                <Route path="landing-pages/:id/edit" element={<AdminLandingPageBuilder />} />
-                            </Route>
+        <LanguageProvider>
+            <BrowserRouter>
+                <ScrollToTop />
+                <SiteSettingsProvider>
+                    {/* AnnouncementBar */}
+                    <AnnouncementBar />
 
 
-                            {/* Redirect admin users from profile and orders to dashboard */}
-                            {userRole === 'ADMIN' && <Route path="/profile" element={<Navigate to="/admin/dashboard" replace />} />}
-                            {userRole === 'ADMIN' && <Route path="/orders" element={<Navigate to="/admin/dashboard" replace />} />}
+                    <div
+                        className="flex flex-col min-h-screen overflow-x-hidden w-full relative"
+                        style={{ paddingTop: 'var(--announcement-bar-height, 0px)', transition: 'padding-top 0.3s ease' }}
+                    >
+                        <FacebookPixel />
+                        <GoogleAnalytics />
+                        <AnalyticsTracker />
+                        <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={handleSetIsAuthenticated} userRole={userRole} cartCount={cartCount} />
+                        <RewardPopup coupons={activeCoupons} />
+                        <ToastContainer
+                            position="bottom-right"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                        />
+                        <main className="flex-grow">
+                            <Routes>
+                                {/* Public Routes */}
+                                <Route path="/" element={<HomePage />} />
+                                <Route path="/products" element={<ProductsPage />} />
+                                <Route path="/packs" element={<PacksPage />} />
+                                <Route path="/packs/:id" element={<PackDetailPage isAuthenticated={isAuthenticated} fetchCartCount={fetchCartCount} />} />
+                                <Route path="/custom-packs" element={<CustomPacksPage />} />
+                                <Route path="/custom-packs/:id" element={<CustomPackCreationPage />} />
+                                <Route path="/products/:id" element={<ProductDetailPage fetchCartCount={fetchCartCount} isAuthenticated={isAuthenticated} />} />
+                                <Route path="/hello" element={<HelloPage />} />
+                                <Route path="/auth" element={<AuthPage setIsAuthenticated={handleSetIsAuthenticated} />} />
+                                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                                <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+                                <Route path="/confirm-email/:email" element={<EmailConfirmationPage />} />
+                                <Route path="/contact" element={<ContactPage />} />
+                                <Route path="/faq" element={<FaqPage />} />
+                                <Route path="/shipping" element={<ShippingPage />} />
 
-                            {/* 404 Route */}
-                            <Route path="*" element={<NotFoundPage />} />
-                        </Routes>
-                    </main>
-                    <Footer />
+                                {/* Public Landing Pages */}
+                                <Route path="/landing/:slug" element={<PublicLandingPage fetchCartCount={fetchCartCount} cartCount={cartCount} />} />
 
-                    {/* Floating Action Button - Disabled for minimal design */}
-                    {/* <FloatingActionButton cartCount={cartCount} /> */}
+                                {/* Authenticated User Routes */}
+                                {userRole !== 'ADMIN' && <Route path="/profile" element={<ProfilePage />} />}
+                                {userRole !== 'ADMIN' && <Route path="/orders" element={<UserOrdersPage />} />}
+                                <Route path="/cart" element={<CartPage fetchCartCount={fetchCartCount} />} />
+                                <Route path="/order" element={<OrderPage />} />
+                                <Route path="/order-success" element={<OrderSuccessPage />} />
 
-                    {/* Sticky Cart Button - Replaces FloatingActionButton */}
-                    <StickyCartButton cartCount={cartCount} />
-                </div>
-            </SiteSettingsProvider>
-        </BrowserRouter>
+                                {/* Admin-Only Routes */}
+                                <Route path="/admin" element={<AdminLayout />}>
+                                    <Route path="dashboard" element={<AdminDashboard />} />
+                                    <Route path="hero" element={<AdminHeroPage />} />
+                                    <Route path="products" element={<AdminProductsPage />} />
+                                    <Route path="products/new" element={<AdminProductForm />} />
+                                    <Route path="products/edit/:id" element={<AdminProductForm />} />
+                                    <Route path="products/:productId/comments" element={<AdminProductCommentsPage />} />
+                                    <Route path="orders" element={<AdminOrdersPage />} />
+                                    <Route path="users" element={<AdminUsersPage />} />
+                                    <Route path="reviews" element={<AdminReviewsPage />} />
+                                    <Route path="categories" element={<AdminCategoriesPage />} />
+                                    <Route path="categories/new" element={<AdminCategoryForm />} />
+                                    <Route path="categories/edit/:id" element={<AdminCategoryForm />} />
+                                    <Route path="packs" element={<AdminPacksPage />} />
+                                    <Route path="packs/new" element={<AdminPackForm />} />
+                                    <Route path="packs/edit/:id" element={<AdminPackEditPage />} />
+                                    <Route path="packs/:packId/comments" element={<AdminPackCommentsPage />} />
+                                    <Route path="packs/:packId/recommendations" element={<AdminPackRecommendationsPage />} />
+                                    <Route path="custom-packs" element={<AdminCustomPacksPage />} />
+                                    <Route path="custom-packs/new" element={<AdminCustomPackForm />} />
+                                    <Route path="custom-packs/edit/:id" element={<AdminCustomPackForm />} />
+                                    <Route path="coupons" element={<AdminCouponsPage />} />
+                                    <Route path="announcement" element={<AdminAnnouncementPage />} />
+                                    <Route path="countdown" element={<AdminCountdownPage />} />
+                                    <Route path="enhanced-visitor-counter" element={<EnhancedVisitorCounterSettingsPage />} />
+                                    <Route path="review-form-settings" element={<ReviewFormSettingsPage />} />
+                                    <Route path="analytics" element={<AdminAnalyticsPage />} />
+                                    <Route path="analytics" element={<AdminAnalyticsPage />} />
+                                    <Route path="analytics" element={<AdminAnalyticsPage />} />
+                                    {/* <Route path="settings" element={<SettingsPage />} /> */}
+                                    <Route path="settings" element={<AdminSettingsPage />} />
+                                    <Route path="settings/brand" element={<AdminBrandSettingsPage />} />
+                                    <Route path="settings/integrations" element={<AdminIntegrationsPage />} />
+                                    <Route path="roles" element={<AdminRolesPage />} />
+                                    <Route path="permissions" element={<AdminPermissionsPage />} />
+                                    <Route path="landing-pages" element={<AdminLandingPagesPage />} />
+                                    <Route path="landing-pages/create" element={<AdminLandingPageBuilder />} />
+                                    <Route path="landing-pages/:id/edit" element={<AdminLandingPageBuilder />} />
+                                </Route>
+
+
+                                {/* Redirect admin users from profile and orders to dashboard */}
+                                {userRole === 'ADMIN' && <Route path="/profile" element={<Navigate to="/admin/dashboard" replace />} />}
+                                {userRole === 'ADMIN' && <Route path="/orders" element={<Navigate to="/admin/dashboard" replace />} />}
+
+                                {/* 404 Route */}
+                                <Route path="*" element={<NotFoundPage />} />
+                            </Routes>
+                        </main>
+                        <Footer />
+
+                        {/* Floating Action Button - Disabled for minimal design */}
+                        {/* <FloatingActionButton cartCount={cartCount} /> */}
+
+                        {/* Sticky Cart Button - Replaces FloatingActionButton */}
+                        <StickyCartButton cartCount={cartCount} />
+                    </div>
+                </SiteSettingsProvider>
+            </BrowserRouter>
+        </LanguageProvider>
     );
 }
 
