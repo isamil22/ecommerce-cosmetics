@@ -3,9 +3,11 @@ import { getSettings, uploadLogo, saveSettings } from '../../api/settingsService
 import { toast } from 'react-toastify';
 import { FiImage, FiUpload, FiCheckCircle } from 'react-icons/fi';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminBrandSettingsPage = () => {
     const { settings: globalSettings, updateSettingsState } = useSiteSettings();
+    const { t } = useLanguage();
 
     // Logo State
     const [logoFile, setLogoFile] = useState(null);
@@ -21,12 +23,12 @@ const AdminBrandSettingsPage = () => {
     const [isSavingDetails, setIsSavingDetails] = useState(false);
 
     const fontOptions = [
-        { value: 'sans-serif', label: 'Default (Sans Serif)' },
-        { value: "'Dancing Script', cursive", label: 'Dancing Script (Cursive)' },
-        { value: "'Playfair Display', serif", label: 'Playfair Display (Serif)' },
-        { value: "'Great Vibes', cursive", label: 'Great Vibes (Calligraphic)' },
-        { value: "'Cinzel', serif", label: 'Cinzel (Luxury)' },
-        { value: "'Montserrat', sans-serif", label: 'Montserrat (Modern)' },
+        { value: 'sans-serif', label: t('brandSettings.fontOptions.default') },
+        { value: "'Dancing Script', cursive", label: t('brandSettings.fontOptions.dancingScript') },
+        { value: "'Playfair Display', serif", label: t('brandSettings.fontOptions.playfairDisplay') },
+        { value: "'Great Vibes', cursive", label: t('brandSettings.fontOptions.greatVibes') },
+        { value: "'Cinzel', serif", label: t('brandSettings.fontOptions.cinzel') },
+        { value: "'Montserrat', sans-serif", label: t('brandSettings.fontOptions.montserrat') },
     ];
 
     useEffect(() => {
@@ -40,7 +42,7 @@ const AdminBrandSettingsPage = () => {
                 setSiteSubtitle(settings.site_subtitle || '');
                 setSiteTitleFont(settings.site_title_font || 'sans-serif');
             } catch (err) {
-                toast.error('Failed to load settings.');
+                toast.error(t('brandSettings.errors.loadSettings'));
             } finally {
                 setIsLoading(false);
             }
@@ -73,9 +75,9 @@ const AdminBrandSettingsPage = () => {
             };
             await saveSettings(settingsToSave);
             updateSettingsState(settingsToSave);
-            toast.success('Brand details saved successfully!');
+            toast.success(t('brandSettings.success.detailsSaved'));
         } catch (err) {
-            toast.error('Failed to save details.');
+            toast.error(t('brandSettings.errors.saveDetails'));
             console.error(err);
         } finally {
             setIsSavingDetails(false);
@@ -88,13 +90,13 @@ const AdminBrandSettingsPage = () => {
         try {
             const response = await uploadLogo(logoFile);
             const newUrl = response.url;
-            toast.success('Logo uploaded successfully!');
+            toast.success(t('brandSettings.success.logoUploaded'));
 
             // Update Context to reflect change in Navbar immediately
             updateSettingsState({ site_logo_url: newUrl });
             setLogoFile(null); // Reset file input
         } catch (err) {
-            toast.error('Failed to upload logo.');
+            toast.error(t('brandSettings.errors.uploadLogo'));
             console.error(err);
         } finally {
             setIsUploading(false);
@@ -113,14 +115,14 @@ const AdminBrandSettingsPage = () => {
         <div className="p-6">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800">Logo Settings</h1>
-                    <p className="text-gray-600 mt-2">Manage your website's visual identity</p>
+                    <h1 className="text-3xl font-bold text-gray-800">{t('brandSettings.title')}</h1>
+                    <p className="text-gray-600 mt-2">{t('brandSettings.subtitle')}</p>
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                     <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
                         <FiImage className="mr-3 text-pink-600" />
-                        Logo Configuration
+                        {t('brandSettings.logoConfiguration')}
                     </h2>
 
                     <div className="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-center">
@@ -151,7 +153,7 @@ const AdminBrandSettingsPage = () => {
                                 htmlFor="logo-upload"
                                 className="block w-full px-4 py-3 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors text-gray-700 font-medium shadow-sm"
                             >
-                                {logoFile ? logoFile.name : 'Select New Logo'}
+                                {logoFile ? logoFile.name : t('brandSettings.selectNewLogo')}
                                 <input
                                     id="logo-upload"
                                     type="file"
@@ -170,12 +172,12 @@ const AdminBrandSettingsPage = () => {
                                     {isUploading ? (
                                         <>
                                             <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                                            Uploading...
+                                            {t('brandSettings.uploading')}
                                         </>
                                     ) : (
                                         <>
                                             <FiCheckCircle />
-                                            Save Logo
+                                            {t('brandSettings.saveLogo')}
                                         </>
                                     )}
                                 </button>
@@ -183,19 +185,19 @@ const AdminBrandSettingsPage = () => {
                         </div>
 
                         <p className="mt-6 text-sm text-gray-500">
-                            Recommended size: 512x512px (Square). PNG or JPG format.
+                            {t('brandSettings.recommendedSize')}
                         </p>
                     </div>
                 </div>
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mt-8">
                     <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
                         <FiImage className="mr-3 text-pink-600" />
-                        Brand Details
+                        {t('brandSettings.brandDetails')}
                     </h2>
                     <div className="space-y-6 max-w-lg">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Site Title
+                                {t('brandSettings.siteTitle')}
                             </label>
                             <input
                                 type="text"
@@ -207,7 +209,7 @@ const AdminBrandSettingsPage = () => {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Site Subtitle
+                                {t('brandSettings.siteSubtitle')}
                             </label>
                             <input
                                 type="text"
@@ -219,7 +221,7 @@ const AdminBrandSettingsPage = () => {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Title Font
+                                {t('brandSettings.titleFont')}
                             </label>
                             <select
                                 value={siteTitleFont}
@@ -233,7 +235,7 @@ const AdminBrandSettingsPage = () => {
                                 ))}
                             </select>
                             <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
-                                <p className="text-sm text-gray-500 mb-1">Preview:</p>
+                                <p className="text-sm text-gray-500 mb-1">{t('brandSettings.preview')}</p>
                                 <h3 className="text-2xl" style={{ fontFamily: siteTitleFont }}>
                                     {siteTitle || 'BeautyCosmetics'}
                                 </h3>
@@ -247,12 +249,12 @@ const AdminBrandSettingsPage = () => {
                             {isSavingDetails ? (
                                 <>
                                     <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                                    Saving...
+                                    {t('brandSettings.saving')}
                                 </>
                             ) : (
                                 <>
                                     <FiCheckCircle />
-                                    Save Details
+                                    {t('brandSettings.saveDetails')}
                                 </>
                             )}
                         </button>
