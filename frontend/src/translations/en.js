@@ -232,6 +232,118 @@ export const en = {
             connectionFailed: 'Connection test failed',
             invalidCredentials: 'Invalid credentials'
         }
+    },
+
+    // ===== BATCH 2: PRODUCTS PAGE =====
+    products: {
+        title: 'Product Management',
+        subtitle: 'Manage your product catalog with advanced tools and insights',
+
+        // Header Actions
+        refresh: 'Refresh',
+        exportCSV: 'Export CSV',
+        addNewProduct: 'Add New Product',
+
+        // Keyboard Shortcuts
+        shortcuts: {
+            newProduct: 'New Product',
+            search: 'Search',
+            closeModal: 'Close Modal'
+        },
+
+        // Analytics Cards
+        analytics: {
+            totalProducts: 'Total Products',
+            inStock: 'In Stock',
+            lowStock: 'Low Stock',
+            outOfStock: 'Out of Stock',
+            totalValue: 'Total Value',
+            avgPrice: 'Avg Price'
+        },
+
+        // Search and Filters
+        searchPlaceholder: 'Search products...',
+        allCategories: 'All Categories',
+        allStock: 'All Stock',
+        inStockFilter: 'In Stock',
+        lowStockFilter: 'Low Stock',
+        outOfStockFilter: 'Out of Stock',
+        allStatus: 'All Status',
+        activeStatus: 'Active',
+        disabledStatus: 'Disabled',
+        featuredStatus: 'Featured',
+        newArrivalsStatus: 'New Arrivals',
+
+        // Sort Options
+        sortByName: 'Sort by Name',
+        sortByPrice: 'Sort by Price',
+        sortByStock: 'Sort by Stock',
+        sortByDate: 'Sort by Date',
+
+        // View Modes
+        gridView: 'Grid View',
+        listView: 'List View',
+
+        // Bulk Actions
+        selectAll: 'Select All',
+        clearSelection: 'Clear Selection',
+        bulkDelete: 'Delete Selected',
+        selectedCount: 'selected',
+        clearFilters: 'Clear Filters',
+
+        // Product Card
+        edit: 'Edit',
+        delete: 'Delete',
+        quickEdit: 'Quick Edit',
+        view: 'View',
+        category: 'Category',
+        brand: 'Brand',
+        price: 'Price',
+        stock: 'Stock',
+        status: 'Status',
+
+        // Stock Status
+        stockStatus: {
+            inStock: 'In Stock',
+            lowStock: 'Low Stock',
+            outOfStock: 'Out of Stock'
+        },
+
+        // Product Badges
+        bestseller: 'Bestseller',
+        newArrival: 'New Arrival',
+        featured: 'Featured',
+        disabled: 'Disabled',
+
+        // Messages
+        noProducts: 'No products found',
+        noProductsDesc: 'Get started by adding your first product',
+        loadingProducts: 'Loading products...',
+
+        // Confirmations
+        deleteConfirm: 'Are you sure you want to delete this product?',
+        bulkDeleteConfirm: 'Are you sure you want to delete {count} product(s)? This action cannot be undone.',
+
+        // Success Messages
+        success: {
+            deleted: 'Product deleted successfully!',
+            bulkDeleted: '{count} product(s) deleted successfully!',
+            updated: 'Product updated successfully!',
+            exported: 'Products exported successfully!'
+        },
+
+        // Error Messages
+        errors: {
+            fetchFailed: 'Failed to fetch products.',
+            deleteFailed: 'Failed to delete product.',
+            updateFailed: 'Failed to update product.',
+            exportFailed: 'Failed to export products.',
+            noSelection: 'No products selected for deletion'
+        },
+
+        // Warnings
+        warnings: {
+            partialDelete: '{success} product(s) deleted, {failed} failed'
+        }
     }
 };
-

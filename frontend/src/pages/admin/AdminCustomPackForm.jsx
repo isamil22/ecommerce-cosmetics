@@ -46,13 +46,6 @@ const AdminCustomPackForm = () => {
         pricingType: 'FIXED',
         fixedPrice: '',
         discountRate: '',
-        name: '',
-        description: '',
-        minItems: '',
-        maxItems: '',
-        pricingType: 'FIXED',
-        fixedPrice: '',
-        discountRate: '',
         allowedProductIds: [],
         image: null,
         imageUrl: ''
@@ -523,8 +516,8 @@ const AdminCustomPackForm = () => {
                                         </label>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${formData.pricingType === 'FIXED'
-                                                    ? 'border-pink-500 bg-pink-50 shadow-md'
-                                                    : 'border-gray-200 hover:border-gray-300'
+                                                ? 'border-pink-500 bg-pink-50 shadow-md'
+                                                : 'border-gray-200 hover:border-gray-300'
                                                 }`}>
                                                 <input
                                                     type="radio"
@@ -544,8 +537,8 @@ const AdminCustomPackForm = () => {
                                             </label>
 
                                             <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${formData.pricingType === 'DYNAMIC'
-                                                    ? 'border-pink-500 bg-pink-50 shadow-md'
-                                                    : 'border-gray-200 hover:border-gray-300'
+                                                ? 'border-pink-500 bg-pink-50 shadow-md'
+                                                : 'border-gray-200 hover:border-gray-300'
                                                 }`}>
                                                 <input
                                                     type="radio"
@@ -642,8 +635,8 @@ const AdminCustomPackForm = () => {
                                             type="button"
                                             onClick={() => setViewMode('grid')}
                                             className={`p-2 rounded-lg transition-all duration-200 ${viewMode === 'grid'
-                                                    ? 'bg-pink-100 text-pink-600'
-                                                    : 'text-gray-400 hover:text-gray-600'
+                                                ? 'bg-pink-100 text-pink-600'
+                                                : 'text-gray-400 hover:text-gray-600'
                                                 }`}
                                         >
                                             <FiGrid className="w-5 h-5" />
@@ -652,8 +645,8 @@ const AdminCustomPackForm = () => {
                                             type="button"
                                             onClick={() => setViewMode('list')}
                                             className={`p-2 rounded-lg transition-all duration-200 ${viewMode === 'list'
-                                                    ? 'bg-pink-100 text-pink-600'
-                                                    : 'text-gray-400 hover:text-gray-600'
+                                                ? 'bg-pink-100 text-pink-600'
+                                                : 'text-gray-400 hover:text-gray-600'
                                                 }`}
                                         >
                                             <FiList className="w-5 h-5" />
@@ -683,16 +676,16 @@ const AdminCustomPackForm = () => {
                                 <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-xl p-4 bg-gray-50">
                                     {filteredProducts.length > 0 ? (
                                         <div className={`grid gap-4 ${viewMode === 'grid'
-                                                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                                                : 'grid-cols-1'
+                                            ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                                            : 'grid-cols-1'
                                             }`}>
                                             {filteredProducts.map(product => (
                                                 <div
                                                     key={product.id}
                                                     onClick={() => handleProductToggle(product.id)}
                                                     className={`border-2 p-4 rounded-xl cursor-pointer transition-all duration-200 group ${selectedProducts.includes(product.id)
-                                                            ? 'border-pink-500 bg-pink-50 shadow-lg transform scale-105'
-                                                            : 'border-gray-200 hover:border-pink-300 hover:shadow-md hover:bg-white'
+                                                        ? 'border-pink-500 bg-pink-50 shadow-lg transform scale-105'
+                                                        : 'border-gray-200 hover:border-pink-300 hover:shadow-md hover:bg-white'
                                                         }`}
                                                 >
                                                     <div className={`flex items-center space-x-4 ${viewMode === 'list' ? 'flex-row' : 'flex-col text-center'
@@ -715,8 +708,8 @@ const AdminCustomPackForm = () => {
                                                                     src={product.images[0]}
                                                                     alt={product.name}
                                                                     className={`object-cover rounded-lg mb-3 ${viewMode === 'list'
-                                                                            ? 'w-16 h-16'
-                                                                            : 'w-20 h-20 mx-auto'
+                                                                        ? 'w-16 h-16'
+                                                                        : 'w-20 h-20 mx-auto'
                                                                         }`}
                                                                 />
                                                             )}
