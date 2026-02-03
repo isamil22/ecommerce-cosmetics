@@ -766,5 +766,56 @@ export const en = {
             saveFailed: 'Failed to save settings',
             loadFailed: 'Failed to fetch settings'
         }
+    },
+
+    // Analytics Page
+    analyticsPage: {
+        title: 'Analytics Dashboard',
+        subtitle: 'Comprehensive insights into your coupon performance and business metrics',
+        loading: 'Loading Analytics Dashboard...',
+        lastUpdated: 'Last updated:',
+        actions: {
+            refresh: 'Refresh Data',
+            viewCoupons: 'View Coupons',
+            manageCoupons: 'Manage Coupons',
+            viewOrders: 'View Orders',
+            dashboard: 'Dashboard'
+        },
+        stats: {
+            totalCoupons: 'Total Coupons',
+            activeCoupons: 'Active Coupons',
+            totalUses: 'Total Uses',
+            totalSavings: 'Total Savings'
+        },
+        usage: {
+            title: 'Usage Analytics',
+            dailyTrend: 'Daily Usage Trend',
+            totalDaily: 'Total Daily Uses',
+            recentActivity: 'Recent Activity',
+            uses: 'uses',
+            noDataTitle: 'No Usage Data Available',
+            noDataDesc: 'Usage statistics will appear here once customers start using coupons.'
+        },
+        performance: {
+            title: 'Coupon Performance',
+            detailTitle: 'Detailed Analytics Available',
+            detailDesc: 'Click on any coupon in the Coupons page to view detailed usage analytics, performance metrics, and AI-powered insights.'
+        },
+        features: {
+            title: 'Analytics Features',
+            chartsTitle: '10+ Chart Types',
+            chartsDesc: 'Dual-axis, radar, funnel, heatmap, and more',
+            aiTitle: 'AI-Powered Insights',
+            aiDesc: 'Smart recommendations and performance analysis',
+            realTimeTitle: 'Real-Time Analytics',
+            realTimeDesc: 'Live updates and performance monitoring'
+        },
+        quickActions: {
+            title: 'Quick Actions'
+        },
+        messages: {
+            refreshSuccess: 'Analytics data refreshed successfully!',
+            refreshError: 'Failed to refresh analytics data'
+        }
     }
 };

@@ -768,5 +768,56 @@ export const fr = {
             saveFailed: 'Échec de l\'enregistrement des paramètres',
             loadFailed: 'Échec du chargement des paramètres'
         }
+    },
+
+    // Analytics Page
+    analyticsPage: {
+        title: 'Tableau de bord analytique',
+        subtitle: 'Aperçu complet des performances de vos coupons et métriques commerciales',
+        loading: 'Chargement du tableau de bord...',
+        lastUpdated: 'Dernière mise à jour :',
+        actions: {
+            refresh: 'Actualiser les données',
+            viewCoupons: 'Voir les coupons',
+            manageCoupons: 'Gérer les coupons',
+            viewOrders: 'Voir les commandes',
+            dashboard: 'Tableau de bord'
+        },
+        stats: {
+            totalCoupons: 'Total des coupons',
+            activeCoupons: 'Coupons actifs',
+            totalUses: 'Utilisations totales',
+            totalSavings: 'Économies totales'
+        },
+        usage: {
+            title: 'Analytique d\'utilisation',
+            dailyTrend: 'Tendance quotidienne',
+            totalDaily: 'Total utilisations jour',
+            recentActivity: 'Activité récente',
+            uses: 'utilisations',
+            noDataTitle: 'Aucune donnée disponible',
+            noDataDesc: 'Les statistiques apparaîtront ici une fois les coupons utilisés.'
+        },
+        performance: {
+            title: 'Performance des coupons',
+            detailTitle: 'Analytique détaillée disponible',
+            detailDesc: 'Cliquez sur un coupon dans la page Coupons pour voir les statistiques détaillées et les insights IA.'
+        },
+        features: {
+            title: 'Fonctionnalités analytiques',
+            chartsTitle: '10+ Types de graphiques',
+            chartsDesc: 'Double axe, radar, entonnoir, carte thermique, et plus',
+            aiTitle: 'Insights IA',
+            aiDesc: 'Recommandations intelligentes et analyse de performance',
+            realTimeTitle: 'Analytique en temps réel',
+            realTimeDesc: 'Mises à jour en direct et surveillance des performances'
+        },
+        quickActions: {
+            title: 'Actions rapides'
+        },
+        messages: {
+            refreshSuccess: 'Données analytiques actualisées avec succès !',
+            refreshError: 'Échec de l\'actualisation des données'
+        }
     }
 };

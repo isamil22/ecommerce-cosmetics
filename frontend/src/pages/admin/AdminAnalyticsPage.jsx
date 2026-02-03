@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Statistic, Typography, Spin, Alert, Button, Space, Divider, message } from 'antd';
-import { 
-    BarChartOutlined, 
-    LineChartOutlined, 
+import {
+    BarChartOutlined,
+    LineChartOutlined,
     PieChartOutlined,
     TrophyOutlined,
     ArrowUpOutlined,
@@ -11,11 +11,13 @@ import {
     ShoppingCartOutlined,
     ReloadOutlined
 } from '@ant-design/icons';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { getAllCoupons, getCouponUsageStatistics } from '../../api/apiService';
 
 const { Title, Text } = Typography;
 
 const AdminAnalyticsPage = () => {
+    const { t } = useLanguage();
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(null);
@@ -35,30 +37,30 @@ const AdminAnalyticsPage = () => {
             console.log('🔄 Fetching analytics data...');
             const response = await getAllCoupons();
             const couponsData = response.data || [];
-            
+
             console.log('📊 Raw coupons data:', couponsData);
             setCoupons(couponsData);
-            
+
             // Calculate analytics
             const totalUses = couponsData.reduce((sum, coupon) => sum + (coupon.timesUsed || 0), 0);
             const totalSavings = couponsData.reduce((sum, coupon) => {
-                const discountValue = coupon.discountType === 'PERCENTAGE' 
-                    ? (coupon.discountValue || 0) 
+                const discountValue = coupon.discountType === 'PERCENTAGE'
+                    ? (coupon.discountValue || 0)
                     : (coupon.discountValue || 0);
                 return sum + (discountValue * (coupon.timesUsed || 0));
             }, 0);
-            
+
             const calculatedAnalytics = {
                 totalCoupons: couponsData.length,
                 activeCoupons: couponsData.filter(c => c.timesUsed > 0).length,
                 totalUses,
                 totalSavings
             };
-            
+
             console.log('📈 Calculated analytics:', calculatedAnalytics);
             setAnalytics(calculatedAnalytics);
             setLastUpdated(new Date());
-            
+
             // Fetch usage statistics
             await fetchUsageStatistics();
         } catch (error) {
@@ -74,9 +76,9 @@ const AdminAnalyticsPage = () => {
             console.log('🔄 Fetching usage statistics...');
             const response = await getCouponUsageStatistics();
             const data = response.data || [];
-            
+
             console.log('📊 Usage statistics response:', data);
-            
+
             // Process and transform the data
             let processedData = [];
             if (Array.isArray(data)) {
@@ -90,7 +92,7 @@ const AdminAnalyticsPage = () => {
                     count: data.count || data.usage_count || data.times_used || 0
                 }];
             }
-            
+
             console.log('📊 Processed usage statistics:', processedData);
             setUsageStatistics(processedData);
         } catch (error) {
@@ -103,25 +105,25 @@ const AdminAnalyticsPage = () => {
 
     useEffect(() => {
         fetchAnalytics();
-        
+
         // Auto-refresh every 30 seconds
         const interval = setInterval(() => {
             fetchAnalytics();
         }, 30000);
-        
+
         return () => clearInterval(interval);
     }, []);
 
     const handleRefresh = async () => {
         if (refreshing) return;
-        
+
         setRefreshing(true);
         try {
             await fetchAnalytics();
-            message.success('Analytics data refreshed successfully!');
+            message.success(t('analyticsPage.messages.refreshSuccess'));
         } catch (error) {
             console.error('Refresh failed:', error);
-            message.error('Failed to refresh analytics data');
+            message.error(t('analyticsPage.messages.refreshError'));
         } finally {
             setRefreshing(false);
         }
@@ -131,7 +133,7 @@ const AdminAnalyticsPage = () => {
         return (
             <div style={{ textAlign: 'center', padding: '50px' }}>
                 <Spin size="large" />
-                <p style={{ marginTop: '20px' }}>Loading Analytics Dashboard...</p>
+                <p style={{ marginTop: '20px' }}>{t('analyticsPage.loading')}</p>
             </div>
         );
     }
@@ -141,37 +143,37 @@ const AdminAnalyticsPage = () => {
             <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
                     <Title level={2} style={{ margin: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        📊 Analytics Dashboard
+                        📊 {t('analyticsPage.title')}
                     </Title>
                     <Text type="secondary" style={{ fontSize: '16px' }}>
-                        Comprehensive insights into your coupon performance and business metrics
+                        {t('analyticsPage.subtitle')}
                     </Text>
                     {lastUpdated && (
                         <Text type="secondary" style={{ fontSize: '12px', display: 'block', marginTop: '4px' }}>
-                            Last updated: {lastUpdated.toLocaleTimeString()}
+                            {t('analyticsPage.lastUpdated')} {lastUpdated.toLocaleTimeString()}
                         </Text>
                     )}
                 </div>
-                <Button 
-                    type="primary" 
+                <Button
+                    type="primary"
                     icon={<ReloadOutlined />}
                     loading={refreshing}
                     onClick={handleRefresh}
-                    style={{ 
+                    style={{
                         borderRadius: '8px',
                         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         border: 'none'
                     }}
                 >
-                    Refresh Data
+                    {t('analyticsPage.actions.refresh')}
                 </Button>
             </div>
 
             {/* Key Metrics */}
             <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
                 <Col xs={24} sm={12} lg={6}>
-                    <Card 
-                        style={{ 
+                    <Card
+                        style={{
                             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                             color: 'white',
                             borderRadius: '16px',
@@ -179,7 +181,7 @@ const AdminAnalyticsPage = () => {
                         }}
                     >
                         <Statistic
-                            title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>Total Coupons</span>}
+                            title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>{t('analyticsPage.stats.totalCoupons')}</span>}
                             value={analytics.totalCoupons}
                             prefix={<TrophyOutlined />}
                             valueStyle={{ color: 'white', fontSize: '32px', fontWeight: 'bold' }}
@@ -187,8 +189,8 @@ const AdminAnalyticsPage = () => {
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <Card 
-                        style={{ 
+                    <Card
+                        style={{
                             background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
                             color: 'white',
                             borderRadius: '16px',
@@ -196,7 +198,7 @@ const AdminAnalyticsPage = () => {
                         }}
                     >
                         <Statistic
-                            title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>Active Coupons</span>}
+                            title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>{t('analyticsPage.stats.activeCoupons')}</span>}
                             value={analytics.activeCoupons}
                             prefix={<ArrowUpOutlined />}
                             valueStyle={{ color: 'white', fontSize: '32px', fontWeight: 'bold' }}
@@ -204,8 +206,8 @@ const AdminAnalyticsPage = () => {
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <Card 
-                        style={{ 
+                    <Card
+                        style={{
                             background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
                             color: 'white',
                             borderRadius: '16px',
@@ -213,7 +215,7 @@ const AdminAnalyticsPage = () => {
                         }}
                     >
                         <Statistic
-                            title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>Total Uses</span>}
+                            title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>{t('analyticsPage.stats.totalUses')}</span>}
                             value={analytics.totalUses}
                             prefix={<UserOutlined />}
                             valueStyle={{ color: 'white', fontSize: '32px', fontWeight: 'bold' }}
@@ -221,8 +223,8 @@ const AdminAnalyticsPage = () => {
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <Card 
-                        style={{ 
+                    <Card
+                        style={{
                             background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
                             color: 'white',
                             borderRadius: '16px',
@@ -230,7 +232,7 @@ const AdminAnalyticsPage = () => {
                         }}
                     >
                         <Statistic
-                            title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>Total Savings</span>}
+                            title={<span style={{ color: 'rgba(255,255,255,0.8)' }}>{t('analyticsPage.stats.totalSavings')}</span>}
                             value={analytics.totalSavings}
                             prefix={<DollarOutlined />}
                             valueStyle={{ color: 'white', fontSize: '32px', fontWeight: 'bold' }}
@@ -242,11 +244,11 @@ const AdminAnalyticsPage = () => {
             {/* Usage Statistics Section */}
             <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
                 <Col xs={24}>
-                    <Card 
+                    <Card
                         title={
                             <Space>
                                 <BarChartOutlined style={{ color: '#667eea' }} />
-                                <span>Usage Analytics</span>
+                                <span>{t('analyticsPage.usage.title')}</span>
                             </Space>
                         }
                         style={{ borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
@@ -258,7 +260,7 @@ const AdminAnalyticsPage = () => {
                                     <Col xs={24} md={12}>
                                         <div style={{ textAlign: 'center', padding: '20px' }}>
                                             <Title level={4} style={{ color: '#667eea', marginBottom: '16px' }}>
-                                                Daily Usage Trend
+                                                {t('analyticsPage.usage.dailyTrend')}
                                             </Title>
                                             <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 <div>
@@ -266,7 +268,7 @@ const AdminAnalyticsPage = () => {
                                                         {usageStatistics.reduce((sum, item) => sum + item.count, 0)}
                                                     </Text>
                                                     <br />
-                                                    <Text type="secondary">Total Daily Uses</Text>
+                                                    <Text type="secondary">{t('analyticsPage.usage.totalDaily')}</Text>
                                                 </div>
                                             </div>
                                         </div>
@@ -274,19 +276,19 @@ const AdminAnalyticsPage = () => {
                                     <Col xs={24} md={12}>
                                         <div style={{ textAlign: 'center', padding: '20px' }}>
                                             <Title level={4} style={{ color: '#f093fb', marginBottom: '16px' }}>
-                                                Recent Activity
+                                                {t('analyticsPage.usage.recentActivity')}
                                             </Title>
                                             <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
                                                 {usageStatistics.slice(-5).map((item, index) => (
-                                                    <div key={index} style={{ 
-                                                        display: 'flex', 
-                                                        justifyContent: 'space-between', 
+                                                    <div key={index} style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
                                                         alignItems: 'center',
                                                         padding: '8px 0',
                                                         borderBottom: index < 4 ? '1px solid #f0f0f0' : 'none'
                                                     }}>
                                                         <Text>{new Date(item.date).toLocaleDateString()}</Text>
-                                                        <Text strong style={{ color: '#667eea' }}>{item.count} uses</Text>
+                                                        <Text strong style={{ color: '#667eea' }}>{item.count} {t('analyticsPage.usage.uses')}</Text>
                                                     </div>
                                                 ))}
                                             </div>
@@ -297,9 +299,9 @@ const AdminAnalyticsPage = () => {
                         ) : (
                             <div style={{ textAlign: 'center', padding: '40px 20px' }}>
                                 <ShoppingCartOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
-                                <Title level={4} style={{ color: '#d9d9d9' }}>No Usage Data Available</Title>
+                                <Title level={4} style={{ color: '#d9d9d9' }}>{t('analyticsPage.usage.noDataTitle')}</Title>
                                 <Text type="secondary">
-                                    Usage statistics will appear here once customers start using coupons.
+                                    {t('analyticsPage.usage.noDataDesc')}
                                 </Text>
                             </div>
                         )}
@@ -310,45 +312,44 @@ const AdminAnalyticsPage = () => {
             {/* Analytics Features */}
             <Row gutter={[24, 24]}>
                 <Col xs={24} lg={12}>
-                    <Card 
+                    <Card
                         title={
                             <Space>
                                 <BarChartOutlined style={{ color: '#667eea' }} />
-                                <span>Coupon Performance</span>
+                                <span>{t('analyticsPage.performance.title')}</span>
                             </Space>
                         }
                         style={{ borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
                     >
                         <div style={{ textAlign: 'center', padding: '40px 20px' }}>
                             <ShoppingCartOutlined style={{ fontSize: '48px', color: '#667eea', marginBottom: '16px' }} />
-                            <Title level={4} style={{ color: '#667eea' }}>Detailed Analytics Available</Title>
+                            <Title level={4} style={{ color: '#667eea' }}>{t('analyticsPage.performance.detailTitle')}</Title>
                             <Text type="secondary">
-                                Click on any coupon in the Coupons page to view detailed usage analytics, 
-                                performance metrics, and AI-powered insights.
+                                {t('analyticsPage.performance.detailDesc')}
                             </Text>
                             <div style={{ marginTop: '24px' }}>
-                                <Button 
-                                    type="primary" 
+                                <Button
+                                    type="primary"
                                     size="large"
-                                    style={{ 
+                                    style={{
                                         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                                         border: 'none',
                                         borderRadius: '8px'
                                     }}
                                     onClick={() => window.location.href = '/admin/coupons'}
                                 >
-                                    View Coupons
+                                    {t('analyticsPage.actions.viewCoupons')}
                                 </Button>
                             </div>
                         </div>
                     </Card>
                 </Col>
                 <Col xs={24} lg={12}>
-                    <Card 
+                    <Card
                         title={
                             <Space>
                                 <LineChartOutlined style={{ color: '#f093fb' }} />
-                                <span>Analytics Features</span>
+                                <span>{t('analyticsPage.features.title')}</span>
                             </Space>
                         }
                         style={{ borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
@@ -358,27 +359,27 @@ const AdminAnalyticsPage = () => {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <BarChartOutlined style={{ color: '#667eea', fontSize: '20px' }} />
                                     <div>
-                                        <Text strong>10+ Chart Types</Text>
+                                        <Text strong>{t('analyticsPage.features.chartsTitle')}</Text>
                                         <br />
-                                        <Text type="secondary">Dual-axis, radar, funnel, heatmap, and more</Text>
+                                        <Text type="secondary">{t('analyticsPage.features.chartsDesc')}</Text>
                                     </div>
                                 </div>
                                 <Divider style={{ margin: '8px 0' }} />
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <PieChartOutlined style={{ color: '#f093fb', fontSize: '20px' }} />
                                     <div>
-                                        <Text strong>AI-Powered Insights</Text>
+                                        <Text strong>{t('analyticsPage.features.aiTitle')}</Text>
                                         <br />
-                                        <Text type="secondary">Smart recommendations and performance analysis</Text>
+                                        <Text type="secondary">{t('analyticsPage.features.aiDesc')}</Text>
                                     </div>
                                 </div>
                                 <Divider style={{ margin: '8px 0' }} />
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <ArrowUpOutlined style={{ color: '#4facfe', fontSize: '20px' }} />
                                     <div>
-                                        <Text strong>Real-Time Analytics</Text>
+                                        <Text strong>{t('analyticsPage.features.realTimeTitle')}</Text>
                                         <br />
-                                        <Text type="secondary">Live updates and performance monitoring</Text>
+                                        <Text type="secondary">{t('analyticsPage.features.realTimeDesc')}</Text>
                                     </div>
                                 </div>
                             </Space>
@@ -388,16 +389,16 @@ const AdminAnalyticsPage = () => {
             </Row>
 
             {/* Quick Actions */}
-            <Card 
-                title="Quick Actions"
+            <Card
+                title={t('analyticsPage.quickActions.title')}
                 style={{ marginTop: '24px', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
             >
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={8}>
-                        <Button 
-                            block 
+                        <Button
+                            block
                             size="large"
-                            style={{ 
+                            style={{
                                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                                 border: 'none',
                                 borderRadius: '8px',
@@ -405,14 +406,14 @@ const AdminAnalyticsPage = () => {
                             }}
                             onClick={() => window.location.href = '/admin/coupons'}
                         >
-                            Manage Coupons
+                            {t('analyticsPage.actions.manageCoupons')}
                         </Button>
                     </Col>
                     <Col xs={24} sm={8}>
-                        <Button 
-                            block 
+                        <Button
+                            block
                             size="large"
-                            style={{ 
+                            style={{
                                 background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
                                 border: 'none',
                                 borderRadius: '8px',
@@ -420,14 +421,14 @@ const AdminAnalyticsPage = () => {
                             }}
                             onClick={() => window.location.href = '/admin/orders'}
                         >
-                            View Orders
+                            {t('analyticsPage.actions.viewOrders')}
                         </Button>
                     </Col>
                     <Col xs={24} sm={8}>
-                        <Button 
-                            block 
+                        <Button
+                            block
                             size="large"
-                            style={{ 
+                            style={{
                                 background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
                                 border: 'none',
                                 borderRadius: '8px',
@@ -435,7 +436,7 @@ const AdminAnalyticsPage = () => {
                             }}
                             onClick={() => window.location.href = '/admin/dashboard'}
                         >
-                            Dashboard
+                            {t('analyticsPage.actions.dashboard')}
                         </Button>
                     </Col>
                 </Row>
