@@ -345,5 +345,140 @@ export const fr = {
         warnings: {
             partialDelete: '{success} produit(s) supprimé(s), {failed} échec(s)'
         }
+    },
+
+    // Admin Product Form
+    productForm: {
+        // Page Header
+        title: {
+            create: 'Créer un nouveau produit',
+            edit: 'Modifier le produit'
+        },
+        subtitle: {
+            create: 'Ajouter un nouveau produit à votre catalogue',
+            edit: 'Mettre à jour les informations de votre produit'
+        },
+        loading: 'Chargement du produit...',
+
+        // Actions
+        actions: {
+            save: 'Enregistrer',
+            saving: 'Enregistrement...',
+            savingProduct: 'Enregistrement du produit...',
+            create: 'Créer le produit',
+            update: 'Mettre à jour le produit',
+            backToProducts: 'Retour aux produits'
+        },
+
+        // Basic Information Section
+        basicInfo: {
+            title: 'Informations de base',
+            productName: 'Nom du produit',
+            productNamePlaceholder: 'Entrez le nom du produit',
+            brand: 'Marque',
+            brandPlaceholder: 'Entrez le nom de la marque',
+            price: 'Prix ($)',
+            pricePlaceholder: '0.00',
+            stockQuantity: 'Quantité en stock',
+            stockPlaceholder: '0',
+            category: 'Catégorie',
+            categoryPlaceholder: '-- Sélectionnez une catégorie --',
+            type: 'Type',
+            typeMen: 'Hommes',
+            typeWomen: 'Femmes',
+            typeBoth: 'Les deux',
+
+            // Checkboxes
+            bestseller: 'Meilleure vente',
+            newArrival: 'Nouvelle arrivée',
+            hasVariants: 'A des variantes',
+            isPackable: 'Disponible pour les packs personnalisés'
+        },
+
+        // Description Section
+        description: {
+            title: 'Description du produit',
+            label: 'Description'
+        },
+
+        // Images Section
+        images: {
+            title: 'Images du produit',
+            upload: 'Télécharger des images',
+            existingImages: 'Images existantes:',
+            newImages: 'Nouvelles images à ajouter:',
+            removeImage: "Supprimer l'image"
+        },
+
+        // Variant Types Section
+        variantTypes: {
+            title: 'Types de variantes',
+            typeName: 'Nom du type',
+            typeNamePlaceholder: 'ex: Taille, Couleur',
+            options: 'Options',
+            optionValue: 'Valeur (ex: Rouge)',
+            color: 'Couleur',
+            image: 'Image',
+            addOption: '+ Ajouter une option',
+            remove: 'Supprimer',
+            removeOption: "Supprimer l'option",
+            addVariantType: 'Ajouter un type de variante'
+        },
+
+        // Product Variants Section
+        variants: {
+            title: 'Variantes du produit',
+            select: 'Sélectionner {name}',
+            price: 'Prix',
+            stock: 'Stock',
+            variantImage: 'Image de la variante',
+            removeImage: "Supprimer l'image",
+            removeVariant: 'Supprimer la variante'
+        },
+
+        // Display Settings Section
+        displaySettings: {
+            title: "Paramètres d'affichage",
+            purchaseNotifications: {
+                title: '🛍️ Afficher les notifications d\'achat',
+                description: 'Afficher les notifications lorsque les clients achètent ce produit',
+                enabled: 'Activé',
+                disabled: 'Désactivé'
+            },
+            countdownTimer: {
+                title: '⏱️ Afficher le compte à rebours',
+                description: 'Afficher le compte à rebours des ventes flash pour créer l\'urgence',
+                enabled: 'Activé',
+                disabled: 'Désactivé'
+            }
+        },
+
+        // Frequently Bought Together Section
+        frequentlyBought: {
+            title: 'Fréquemment achetés ensemble',
+            label: 'Sélectionnez les produits fréquemment achetés avec ce produit',
+            placeholder: 'Rechercher et sélectionner des produits...'
+        },
+
+        // Validation Messages
+        validation: {
+            nameRequired: 'Le nom du produit est requis.',
+            priceRequired: 'Un prix valide est requis.',
+            categoryRequired: 'La catégorie est requise.',
+            variantPricesRequired: 'Toutes les variantes doivent avoir des prix valides.'
+        },
+
+        // Success Messages
+        success: {
+            created: 'Produit créé avec succès!',
+            updated: 'Produit mis à jour avec succès!'
+        },
+
+        // Error Messages
+        errors: {
+            saveFailed: 'Échec de l\'enregistrement du produit.',
+            loadFailed: 'Échec du chargement du produit.',
+            categoriesFailed: 'Échec du chargement des catégories de produits. Veuillez réessayer.'
+        }
     }
 };

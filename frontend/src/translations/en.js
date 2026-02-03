@@ -345,5 +345,140 @@ export const en = {
         warnings: {
             partialDelete: '{success} product(s) deleted, {failed} failed'
         }
+    },
+
+    // Admin Product Form
+    productForm: {
+        // Page Header
+        title: {
+            create: 'Create New Product',
+            edit: 'Edit Product'
+        },
+        subtitle: {
+            create: 'Add a new product to your catalog',
+            edit: 'Update your product information'
+        },
+        loading: 'Loading product...',
+
+        // Actions
+        actions: {
+            save: 'Save',
+            saving: 'Saving...',
+            savingProduct: 'Saving Product...',
+            create: 'Create Product',
+            update: 'Update Product',
+            backToProducts: 'Back to Products'
+        },
+
+        // Basic Information Section
+        basicInfo: {
+            title: 'Basic Information',
+            productName: 'Product Name',
+            productNamePlaceholder: 'Enter product name',
+            brand: 'Brand',
+            brandPlaceholder: 'Enter brand name',
+            price: 'Price ($)',
+            pricePlaceholder: '0.00',
+            stockQuantity: 'Stock Quantity',
+            stockPlaceholder: '0',
+            category: 'Category',
+            categoryPlaceholder: '-- Select a Category --',
+            type: 'Type',
+            typeMen: 'Men',
+            typeWomen: 'Women',
+            typeBoth: 'Both',
+
+            // Checkboxes
+            bestseller: 'Bestseller',
+            newArrival: 'New Arrival',
+            hasVariants: 'Has Variants',
+            isPackable: 'Available for Custom Packs'
+        },
+
+        // Description Section
+        description: {
+            title: 'Product Description',
+            label: 'Description'
+        },
+
+        // Images Section
+        images: {
+            title: 'Product Images',
+            upload: 'Upload Images',
+            existingImages: 'Existing Images:',
+            newImages: 'New Images to Append:',
+            removeImage: 'Remove Image'
+        },
+
+        // Variant Types Section
+        variantTypes: {
+            title: 'Variant Types',
+            typeName: 'Type Name',
+            typeNamePlaceholder: 'e.g., Size, Color',
+            options: 'Options',
+            optionValue: 'Value (e.g. Red)',
+            color: 'Color',
+            image: 'Image',
+            addOption: '+ Add Option',
+            remove: 'Remove',
+            removeOption: 'Remove Option',
+            addVariantType: 'Add Variant Type'
+        },
+
+        // Product Variants Section
+        variants: {
+            title: 'Product Variants',
+            select: 'Select {name}',
+            price: 'Price',
+            stock: 'Stock',
+            variantImage: 'Variant Image',
+            removeImage: 'Remove Image',
+            removeVariant: 'Remove Variant'
+        },
+
+        // Display Settings Section
+        displaySettings: {
+            title: 'Display Settings',
+            purchaseNotifications: {
+                title: '🛍️ Show Purchase Notifications',
+                description: 'Display notifications when customers buy this product',
+                enabled: 'Enabled',
+                disabled: 'Disabled'
+            },
+            countdownTimer: {
+                title: '⏱️ Show Countdown Timer',
+                description: 'Display flash sale countdown timer for urgency',
+                enabled: 'Enabled',
+                disabled: 'Disabled'
+            }
+        },
+
+        // Frequently Bought Together Section
+        frequentlyBought: {
+            title: 'Frequently Bought Together',
+            label: 'Select products that are frequently bought together with this product',
+            placeholder: 'Search and select products...'
+        },
+
+        // Validation Messages
+        validation: {
+            nameRequired: 'Product name is required.',
+            priceRequired: 'Valid price is required.',
+            categoryRequired: 'Category is required.',
+            variantPricesRequired: 'All variants must have valid prices.'
+        },
+
+        // Success Messages
+        success: {
+            created: 'Product created successfully!',
+            updated: 'Product updated successfully!'
+        },
+
+        // Error Messages
+        errors: {
+            saveFailed: 'Failed to save product.',
+            loadFailed: 'Failed to load product.',
+            categoriesFailed: 'Failed to load product categories. Please try again.'
+        }
     }
 };

@@ -10,8 +10,10 @@ import {
     FiSave, FiX, FiUpload, FiImage, FiPackage, FiDollarSign,
     FiStar, FiTrendingUp, FiArrowLeft, FiEye
 } from 'react-icons/fi';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminProductForm = () => {
+    const { t } = useLanguage();
     const [product, setProduct] = useState({
         name: '',
         description: '',
@@ -49,7 +51,7 @@ const AdminProductForm = () => {
                 setCategories(data);
             } catch (err) {
                 console.error("Failed to fetch categories", err);
-                setError("Failed to load product categories. Please try again.");
+                setError(t('productForm.errors.categoriesFailed'));
             }
         };
 
@@ -101,7 +103,7 @@ const AdminProductForm = () => {
                         setVariantImagePreviews(previews);
                     }
                 } catch (err) {
-                    setError(err.response?.data?.message || err.message);
+                    setError(err.response?.data?.message || t('productForm.errors.loadFailed'));
                 } finally {
                     setLoading(false);
                 }
@@ -277,17 +279,17 @@ const AdminProductForm = () => {
 
         // Basic validation
         if (!product.name.trim()) {
-            setError('Product name is required.');
+            setError(t('productForm.validation.nameRequired'));
             setLoading(false);
             return;
         }
         if (!product.price || parseFloat(product.price) <= 0) {
-            setError('Valid price is required.');
+            setError(t('productForm.validation.priceRequired'));
             setLoading(false);
             return;
         }
         if (!product.categoryId) {
-            setError('Category is required.');
+            setError(t('productForm.validation.categoryRequired'));
             setLoading(false);
             return;
         }
@@ -318,7 +320,7 @@ const AdminProductForm = () => {
                     !variant.price || isNaN(parseFloat(variant.price)) || parseFloat(variant.price) < 0
                 );
                 if (invalidVariants.length > 0) {
-                    setError('All variants must have valid prices.');
+                    setError(t('productForm.validation.variantPricesRequired'));
                     setLoading(false);
                     return;
                 }
@@ -373,11 +375,11 @@ const AdminProductForm = () => {
                 // Don't fail the entire operation for this
             }
 
-            toast.success(`Product ${isEditing ? 'updated' : 'created'} successfully!`);
+            toast.success(isEditing ? t('productForm.success.updated') : t('productForm.success.created'));
             navigate('/admin/products');
 
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'Failed to save product.';
+            const errorMessage = error.response?.data?.message || t('productForm.errors.saveFailed');
             setError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -391,7 +393,7 @@ const AdminProductForm = () => {
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 flex items-center justify-center">
                 <div className="text-center">
                     <Loader />
-                    <p className="text-gray-600 mt-4">Loading product...</p>
+                    <p className="text-gray-600 mt-4">{t('productForm.loading')}</p>
                 </div>
             </div>
         );
@@ -411,10 +413,10 @@ const AdminProductForm = () => {
                         </button>
                         <div>
                             <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-                                {isEditing ? 'Edit Product' : 'Create New Product'}
+                                {isEditing ? t('productForm.title.edit') : t('productForm.title.create')}
                             </h1>
                             <p className="text-gray-600 mt-1">
-                                {isEditing ? 'Update your product information' : 'Add a new product to your catalog'}
+                                {isEditing ? t('productForm.subtitle.edit') : t('productForm.subtitle.create')}
                             </p>
                         </div>
                     </div>
@@ -428,7 +430,7 @@ const AdminProductForm = () => {
                             {loading ? (
                                 <>
                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                    Saving...
+                                    {t('productForm.actions.saving')}
                                 </>
                             ) : (
                                 <>
@@ -455,14 +457,14 @@ const AdminProductForm = () => {
                         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                             <div className="flex items-center mb-6">
                                 <FiPackage className="w-6 h-6 text-blue-500 mr-3" />
-                                <h2 className="text-2xl font-bold text-gray-900">Basic Information</h2>
+                                <h2 className="text-2xl font-bold text-gray-900">{t('productForm.basicInfo.title')}</h2>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Name */}
                                 <div>
                                     <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Product Name *
+                                        {t('productForm.basicInfo.productName')} *
                                     </label>
                                     <input
                                         type="text"
@@ -472,14 +474,14 @@ const AdminProductForm = () => {
                                         onChange={handleInputChange}
                                         required
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
-                                        placeholder="Enter product name"
+                                        placeholder={t('productForm.basicInfo.productNamePlaceholder')}
                                     />
                                 </div>
 
                                 {/* Brand */}
                                 <div>
                                     <label htmlFor="brand" className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Brand *
+                                        {t('productForm.basicInfo.brand')} *
                                     </label>
                                     <input
                                         type="text"
@@ -489,14 +491,14 @@ const AdminProductForm = () => {
                                         onChange={handleInputChange}
                                         required
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
-                                        placeholder="Enter brand name"
+                                        placeholder={t('productForm.basicInfo.brandPlaceholder')}
                                     />
                                 </div>
 
                                 {/* Price */}
                                 <div>
                                     <label htmlFor="price" className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Price ($) *
+                                        {t('productForm.basicInfo.price')} *
                                     </label>
                                     <div className="relative">
                                         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
@@ -509,7 +511,7 @@ const AdminProductForm = () => {
                                             onChange={handleInputChange}
                                             required
                                             className="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
-                                            placeholder="0.00"
+                                            placeholder={t('productForm.basicInfo.pricePlaceholder')}
                                         />
                                     </div>
                                 </div>
@@ -517,7 +519,7 @@ const AdminProductForm = () => {
                                 {/* Stock Quantity */}
                                 <div>
                                     <label htmlFor="quantity" className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Stock Quantity *
+                                        {t('productForm.basicInfo.stockQuantity')} *
                                     </label>
                                     <input
                                         type="number"
@@ -527,14 +529,14 @@ const AdminProductForm = () => {
                                         onChange={handleInputChange}
                                         required
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
-                                        placeholder="0"
+                                        placeholder={t('productForm.basicInfo.stockPlaceholder')}
                                     />
                                 </div>
 
                                 {/* Category */}
                                 <div>
                                     <label htmlFor="categoryId" className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Category *
+                                        {t('productForm.basicInfo.category')} *
                                     </label>
                                     <select
                                         id="categoryId"
@@ -544,7 +546,7 @@ const AdminProductForm = () => {
                                         required
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
                                     >
-                                        <option value="">-- Select a Category --</option>
+                                        <option value="">{t('productForm.basicInfo.categoryPlaceholder')}</option>
                                         {categories.map(category => (
                                             <option key={category.id} value={category.id}>
                                                 {category.name}
@@ -556,7 +558,7 @@ const AdminProductForm = () => {
                                 {/* Type */}
                                 <div>
                                     <label htmlFor="type" className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Type
+                                        {t('productForm.basicInfo.type')}
                                     </label>
                                     <select
                                         id="type"
@@ -565,9 +567,9 @@ const AdminProductForm = () => {
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
                                     >
-                                        <option value="MEN">Men</option>
-                                        <option value="WOMEN">Women</option>
-                                        <option value="BOTH">Both</option>
+                                        <option value="MEN">{t('productForm.basicInfo.typeMen')}</option>
+                                        <option value="WOMEN">{t('productForm.basicInfo.typeWomen')}</option>
+                                        <option value="BOTH">{t('productForm.basicInfo.typeBoth')}</option>
                                     </select>
                                 </div>
                             </div>
@@ -584,7 +586,7 @@ const AdminProductForm = () => {
                                         className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                                     />
                                     <label htmlFor="bestseller" className="ml-2 block text-sm text-gray-900">
-                                        Bestseller
+                                        {t('productForm.basicInfo.bestseller')}
                                     </label>
                                 </div>
                                 <div className="flex items-center">
@@ -597,7 +599,7 @@ const AdminProductForm = () => {
                                         className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                                     />
                                     <label htmlFor="newArrival" className="ml-2 block text-sm text-gray-900">
-                                        New Arrival
+                                        {t('productForm.basicInfo.newArrival')}
                                     </label>
                                 </div>
                                 <div className="flex items-center">
@@ -610,7 +612,7 @@ const AdminProductForm = () => {
                                         className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                                     />
                                     <label htmlFor="hasVariants" className="ml-2 block text-sm text-gray-900">
-                                        Has Variants
+                                        {t('productForm.basicInfo.hasVariants')}
                                     </label>
                                 </div>
                                 <div className="flex items-center">
@@ -623,7 +625,7 @@ const AdminProductForm = () => {
                                         className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                                     />
                                     <label htmlFor="isPackable" className="ml-2 block text-sm text-gray-900">
-                                        Available for Custom Packs
+                                        {t('productForm.basicInfo.isPackable')}
                                     </label>
                                 </div>
                             </div>
@@ -633,12 +635,12 @@ const AdminProductForm = () => {
                         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                             <div className="flex items-center mb-6">
                                 <FiImage className="w-6 h-6 text-purple-500 mr-3" />
-                                <h2 className="text-2xl font-bold text-gray-900">Product Description</h2>
+                                <h2 className="text-2xl font-bold text-gray-900">{t('productForm.description.title')}</h2>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Description
+                                    {t('productForm.description.label')}
                                 </label>
                                 <ReactQuill
                                     theme="snow"
@@ -663,12 +665,12 @@ const AdminProductForm = () => {
                         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                             <div className="flex items-center mb-6">
                                 <FiUpload className="w-6 h-6 text-green-500 mr-3" />
-                                <h2 className="text-2xl font-bold text-gray-900">Product Images</h2>
+                                <h2 className="text-2xl font-bold text-gray-900">{t('productForm.images.title')}</h2>
                             </div>
 
                             <div>
                                 <label htmlFor="images" className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Upload Images
+                                    {t('productForm.images.upload')}
                                 </label>
                                 <input
                                     type="file"
@@ -683,7 +685,7 @@ const AdminProductForm = () => {
                                     {/* Existing Images */}
                                     {existingImages.length > 0 && (
                                         <div>
-                                            <p className="text-sm font-medium text-gray-700 mb-2">Existing Images:</p>
+                                            <p className="text-sm font-medium text-gray-700 mb-2">{t('productForm.images.existingImages')}</p>
                                             <div className="flex flex-wrap gap-4">
                                                 {existingImages.map((preview, index) => (
                                                     <div key={`existing-${index}`} className="relative group">
@@ -705,7 +707,7 @@ const AdminProductForm = () => {
                                     {/* New Images */}
                                     {newImagePreviews.length > 0 && (
                                         <div>
-                                            <p className="text-sm font-medium text-gray-700 mb-2">New Images to Append:</p>
+                                            <p className="text-sm font-medium text-gray-700 mb-2">{t('productForm.images.newImages')}</p>
                                             <div className="flex flex-wrap gap-4">
                                                 {newImagePreviews.map((preview, index) => (
                                                     <div key={`new-${index}`} className="relative group">
@@ -732,16 +734,16 @@ const AdminProductForm = () => {
                             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                                 <div className="flex items-center mb-6">
                                     <FiPackage className="w-6 h-6 text-blue-500 mr-3" />
-                                    <h2 className="text-2xl font-bold text-gray-900">Variant Types</h2>
+                                    <h2 className="text-2xl font-bold text-gray-900">{t('productForm.variantTypes.title')}</h2>
                                 </div>
 
                                 {product.variantTypes.map((vt, index) => (
                                     <div key={index} className="flex items-end gap-4 p-4 bg-gray-50 rounded-lg mb-4">
                                         <div className="flex-grow">
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">Type Name *</label>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('productForm.variantTypes.typeName')} *</label>
                                             <input
                                                 type="text"
-                                                placeholder="e.g., Size, Color"
+                                                placeholder={t('productForm.variantTypes.typeNamePlaceholder')}
                                                 value={vt.name}
                                                 onChange={(e) => handleVariantTypeChange(index, 'name', e.target.value)}
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
@@ -749,20 +751,20 @@ const AdminProductForm = () => {
                                             />
                                         </div>
                                         <div className="flex-grow">
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">Options</label>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('productForm.variantTypes.options')}</label>
                                             <div className="space-y-3">
                                                 {vt.options.map((opt, optIndex) => (
                                                     <div key={optIndex} className="flex gap-2 items-center bg-white p-2 border rounded-md">
                                                         <input
                                                             type="text"
-                                                            placeholder="Value (e.g. Red)"
+                                                            placeholder={t('productForm.variantTypes.optionValue')}
                                                             value={opt.value}
                                                             onChange={(e) => handleOptionChange(index, optIndex, 'value', e.target.value)}
                                                             className="flex-grow px-2 py-1 border rounded"
                                                         />
                                                         {/* Optional Color Picker */}
                                                         <div className="flex flex-col items-center">
-                                                            <label className="text-xs text-gray-500">Color</label>
+                                                            <label className="text-xs text-gray-500">{t('productForm.variantTypes.color')}</label>
                                                             <input
                                                                 type="color"
                                                                 value={opt.colorCode || '#000000'}
@@ -773,7 +775,7 @@ const AdminProductForm = () => {
                                                         </div>
                                                         {/* Optional Image Upload */}
                                                         <div className="flex flex-col items-center">
-                                                            <label className="text-xs text-gray-500">Image</label>
+                                                            <label className="text-xs text-gray-500">{t('productForm.variantTypes.image')}</label>
                                                             <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 p-1 rounded transition-colors">
                                                                 <FiImage className="w-5 h-5 text-gray-600" />
                                                                 <input
@@ -794,7 +796,7 @@ const AdminProductForm = () => {
                                                             type="button"
                                                             onClick={() => handleRemoveOption(index, optIndex)}
                                                             className="text-red-500 hover:bg-red-50 p-1 rounded"
-                                                            title="Remove Option"
+                                                            title={t('productForm.variantTypes.removeOption')}
                                                         >
                                                             <FiX />
                                                         </button>
@@ -805,7 +807,7 @@ const AdminProductForm = () => {
                                                     onClick={() => handleAddOption(index)}
                                                     className="text-sm text-blue-600 hover:underline flex items-center gap-1"
                                                 >
-                                                    + Add Option
+                                                    {t('productForm.variantTypes.addOption')}
                                                 </button>
                                             </div>
                                         </div>
@@ -823,7 +825,7 @@ const AdminProductForm = () => {
                                     onClick={addVariantType}
                                     className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
                                 >
-                                    Add Variant Type
+                                    {t('productForm.variantTypes.addVariantType')}
                                 </button>
                             </div>
                         )}
@@ -833,7 +835,7 @@ const AdminProductForm = () => {
                             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                                 <div className="flex items-center mb-6">
                                     <FiPackage className="w-6 h-6 text-purple-500 mr-3" />
-                                    <h2 className="text-2xl font-bold text-gray-900">Product Variants</h2>
+                                    <h2 className="text-2xl font-bold text-gray-900">{t('productForm.variants.title')}</h2>
                                 </div>
 
                                 {product.variants.map((variant, index) => (
@@ -856,7 +858,7 @@ const AdminProductForm = () => {
                                                 </div>
                                             ))}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('productForm.variants.price')} *</label>
                                                 <input
                                                     type="number"
                                                     step="0.01"
@@ -870,7 +872,7 @@ const AdminProductForm = () => {
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Stock *</label>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('productForm.variants.stock')} *</label>
                                                 <input
                                                     type="number"
                                                     value={variant.stock}
@@ -881,7 +883,7 @@ const AdminProductForm = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Variant Image</label>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('productForm.variants.variantImage')}</label>
                                                 <input
                                                     type="file"
                                                     accept="image/*"
@@ -902,7 +904,7 @@ const AdminProductForm = () => {
                                                     onClick={() => removeVariantImage(index)}
                                                     className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition-colors"
                                                 >
-                                                    Remove Image
+                                                    {t('productForm.variants.removeImage')}
                                                 </button>
                                             </div>
                                         )}
@@ -912,7 +914,7 @@ const AdminProductForm = () => {
                                                 onClick={() => removeVariant(index)}
                                                 className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
                                             >
-                                                Remove Variant
+                                                {t('productForm.variants.removeVariant')}
                                             </button>
                                         </div>
                                     </div>
@@ -924,7 +926,7 @@ const AdminProductForm = () => {
                         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                             <div className="flex items-center mb-6">
                                 <FiEye className="w-6 h-6 text-pink-500 mr-3" />
-                                <h2 className="text-2xl font-bold text-gray-900">Display Settings</h2>
+                                <h2 className="text-2xl font-bold text-gray-900">{t('productForm.displaySettings.title')}</h2>
                             </div>
 
                             <div className="space-y-4">
@@ -939,11 +941,11 @@ const AdminProductForm = () => {
                                         className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
                                     />
                                     <span className="ml-3 flex-1">
-                                        <span className="block font-semibold text-gray-800">🛍️ Show Purchase Notifications</span>
-                                        <span className="text-sm text-gray-600">Display notifications when customers buy this product</span>
+                                        <span className="block font-semibold text-gray-800">{t('productForm.displaySettings.purchaseNotifications.title')}</span>
+                                        <span className="text-sm text-gray-600">{t('productForm.displaySettings.purchaseNotifications.description')}</span>
                                     </span>
                                     <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${product.showPurchaseNotifications ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                                        {product.showPurchaseNotifications ? 'Enabled' : 'Disabled'}
+                                        {product.showPurchaseNotifications ? t('productForm.displaySettings.purchaseNotifications.enabled') : t('productForm.displaySettings.purchaseNotifications.disabled')}
                                     </span>
                                 </label>
 
@@ -958,11 +960,11 @@ const AdminProductForm = () => {
                                         className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
                                     />
                                     <span className="ml-3 flex-1">
-                                        <span className="block font-semibold text-gray-800">⏱️ Show Countdown Timer</span>
-                                        <span className="text-sm text-gray-600">Display flash sale countdown timer for urgency</span>
+                                        <span className="block font-semibold text-gray-800">{t('productForm.displaySettings.countdownTimer.title')}</span>
+                                        <span className="text-sm text-gray-600">{t('productForm.displaySettings.countdownTimer.description')}</span>
                                     </span>
                                     <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${product.showCountdownTimer ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                                        {product.showCountdownTimer ? 'Enabled' : 'Disabled'}
+                                        {product.showCountdownTimer ? t('productForm.displaySettings.countdownTimer.enabled') : t('productForm.displaySettings.countdownTimer.disabled')}
                                     </span>
                                 </label>
                             </div>
@@ -972,12 +974,12 @@ const AdminProductForm = () => {
                         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                             <div className="flex items-center mb-6">
                                 <FiStar className="w-6 h-6 text-yellow-500 mr-3" />
-                                <h2 className="text-2xl font-bold text-gray-900">Frequently Bought Together</h2>
+                                <h2 className="text-2xl font-bold text-gray-900">{t('productForm.frequentlyBought.title')}</h2>
                             </div>
 
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Select products that are frequently bought together with this product
+                                    {t('productForm.frequentlyBought.label')}
                                 </label>
                                 <Select
                                     isMulti
@@ -987,7 +989,7 @@ const AdminProductForm = () => {
                                     classNamePrefix="select"
                                     value={selectedFbt}
                                     onChange={setSelectedFbt}
-                                    placeholder="Search and select products..."
+                                    placeholder={t('productForm.frequentlyBought.placeholder')}
                                     menuPortalTarget={document.body}
                                     styles={{
                                         menuPortal: (base) => ({ ...base, zIndex: 9999 }),
@@ -1008,12 +1010,12 @@ const AdminProductForm = () => {
                                 {loading ? (
                                     <>
                                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                                        Saving Product...
+                                        {t('productForm.actions.savingProduct')}
                                     </>
                                 ) : (
                                     <>
                                         <FiSave className="w-5 h-5 mr-2" />
-                                        {isEditing ? 'Update Product' : 'Create Product'}
+                                        {isEditing ? t('productForm.actions.update') : t('productForm.actions.create')}
                                     </>
                                 )}
                             </button>
