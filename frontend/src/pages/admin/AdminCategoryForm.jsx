@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { createCategory, updateCategory, getAllCategories } from '../../api/apiService';
 import { toast } from 'react-toastify';
@@ -8,8 +8,10 @@ import {
     FiZap, FiHeart, FiShield, FiSettings, FiPlus, FiEdit3, FiCamera,
     FiAlertTriangle, FiInfo, FiCheck, FiClock, FiStar, FiTarget
 } from 'react-icons/fi';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminCategoryForm = () => {
+    const { t } = useLanguage();
     const { id } = useParams();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
@@ -39,12 +41,12 @@ const AdminCategoryForm = () => {
                             setImagePreview(categoryToEdit.imageUrl);
                         }
                     } else {
-                        setError('Category not found.');
-                        toast.error('Category not found.');
+                        setError(t('categoryForm.messages.notFound'));
+                        toast.error(t('categoryForm.messages.notFound'));
                     }
                 } catch (err) {
-                    setError('Failed to load category data.');
-                    toast.error('Failed to load category data.');
+                    setError(t('categoryForm.messages.loadFailed'));
+                    toast.error(t('categoryForm.messages.loadFailed'));
                 } finally {
                     setLoading(false);
                 }
@@ -138,7 +140,7 @@ const AdminCategoryForm = () => {
             if (file.type.startsWith('image/')) {
                 handleImageChange(file);
             } else {
-                toast.error('Please select a valid image file.');
+                toast.error(t('categoryForm.validation.invalidImage'));
             }
         }
     };
@@ -156,13 +158,13 @@ const AdminCategoryForm = () => {
         const newErrors = {};
         
         if (!category.name.trim()) {
-            newErrors.name = 'Category name is required';
+            newErrors.name = t('categoryForm.validation.nameRequired');
         } else if (category.name.trim().length < 2) {
-            newErrors.name = 'Category name must be at least 2 characters';
+            newErrors.name = t('categoryForm.validation.nameMinLength');
         }
         
         if (category.description && category.description.trim().length > 500) {
-            newErrors.description = 'Description must be less than 500 characters';
+            newErrors.description = t('categoryForm.validation.descriptionMaxLength');
         }
         
         setErrors(newErrors);
@@ -173,7 +175,7 @@ const AdminCategoryForm = () => {
         e.preventDefault();
         
         if (!validateForm()) {
-            toast.error('Please fix the errors before submitting.');
+            toast.error(t('categoryForm.validation.fixErrors'));
             return;
         }
         
@@ -191,17 +193,17 @@ const AdminCategoryForm = () => {
         try {
             if (isEditing) {
                 await updateCategory(id, formData);
-                setSuccess('Category updated successfully!');
-                toast.success('Category updated successfully!');
+                setSuccess(t('categoryForm.messages.updateSuccess'));
+                toast.success(t('categoryForm.messages.updateSuccess'));
             } else {
                 await createCategory(formData);
-                setSuccess('Category created successfully!');
-                toast.success('Category created successfully!');
+                setSuccess(t('categoryForm.messages.createSuccess'));
+                toast.success(t('categoryForm.messages.createSuccess'));
             }
             setIsDirty(false);
             setTimeout(() => navigate('/admin/categories'), 1500);
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Operation failed. Please try again.';
+            const errorMessage = err.response?.data?.message || t('categoryForm.messages.operationFailed');
             setError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -262,12 +264,12 @@ const AdminCategoryForm = () => {
                         </div>
                         <div>
                             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-purple-600 to-blue-600 bg-clip-text text-transparent flex items-center space-x-3">
-                                <span>{isEditing ? 'Edit Category' : 'Create Category'}</span>
+                                <span>{isEditing ? t('categoryForm.title.edit') : t('categoryForm.title.create')}</span>
                                 <FiZap className="w-8 h-8 text-yellow-500 animate-pulse" />
                             </h1>
                             <p className="text-gray-600 mt-2 flex items-center space-x-2">
                                 <FiHeart className="w-4 h-4 text-pink-500" />
-                                <span>{isEditing ? 'Update your category information' : 'Add a new category to organize your products'}</span>
+                                <span>{isEditing ? t('categoryForm.subtitle.edit') : t('categoryForm.subtitle.create')}</span>
                             </p>
                             <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
                                 <span className="flex items-center">
@@ -322,10 +324,10 @@ const AdminCategoryForm = () => {
                             </div>
                             <div>
                                 <h2 className="text-xl font-bold text-gray-900">
-                                    {isEditing ? 'Edit Category Details' : 'Category Information'}
+                                    {isEditing ? t('categoryForm.sectionTitle.edit') : t('categoryForm.sectionTitle.create')}
                                 </h2>
                                 <p className="text-gray-600">
-                                    {isEditing ? 'Update your category information and settings' : 'Fill in the details to create a new category'}
+                                    {isEditing ? t('categoryForm.sectionSubtitle.edit') : t('categoryForm.sectionSubtitle.create')}
                                 </p>
                             </div>
                         </div>
@@ -352,7 +354,7 @@ const AdminCategoryForm = () => {
                                         className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
                                             errors.name ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-purple-300'
                                         }`}
-                                        placeholder="Enter category name (e.g., Electronics, Fashion, Books)"
+                                        placeholder={t('categoryForm.fields.categoryNamePlaceholder')}
                                     />
                                     {errors.name && (
                                         <p className="mt-2 text-sm text-red-600 flex items-center">
@@ -377,7 +379,7 @@ const AdminCategoryForm = () => {
                                         className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
                                             errors.description ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-blue-300'
                                         }`}
-                                        placeholder="Describe this category (optional)"
+                                        placeholder={t('categoryForm.fields.descriptionPlaceholder')}
                                     />
                                     {errors.description && (
                                         <p className="mt-2 text-sm text-red-600 flex items-center">
@@ -386,7 +388,7 @@ const AdminCategoryForm = () => {
                                         </p>
                                     )}
                                     <p className="mt-2 text-sm text-gray-500">
-                                        {category.description.length}/500 characters
+                                        {category.description.length}/500 {t('categoryForm.fields.charactersCount')}
                                     </p>
                                 </div>
                             </div>
@@ -426,7 +428,7 @@ const AdminCategoryForm = () => {
                                             <div className="relative">
                                                 <img 
                                                     src={imagePreview} 
-                                                    alt="Category preview" 
+                                                    alt={t('categoryForm.imageUpload.preview')}
                                                     className="mx-auto max-h-48 rounded-lg shadow-lg"
                                                 />
                                                 <button
@@ -494,12 +496,12 @@ const AdminCategoryForm = () => {
                                     {isSubmitting ? (
                                         <>
                                             <FiRefreshCw className="w-5 h-5 animate-spin" />
-                                            <span>{isEditing ? 'Updating...' : 'Creating...'}</span>
+                                            <span>{isEditing ? t('categoryForm.actions.updating') : t('categoryForm.actions.creating')}</span>
                                         </>
                                     ) : (
                                         <>
                                             <FiSave className="w-5 h-5" />
-                                            <span>{isEditing ? 'Update Category' : 'Create Category'}</span>
+                                            <span>{isEditing ? t('categoryForm.actions.update') : t('categoryForm.title.create')}</span>
                                         </>
                                     )}
                                 </button>

@@ -1,0 +1,111 @@
+﻿    },
+
+    // Categories Management
+    categoriesPage: {
+        title: 'Gestion des catégories',
+        subtitle: 'Organisez votre catalogue de produits avec de belles catégories',
+        shortcuts: {
+            newCategory: 'Nouvelle catégorie',
+            search: 'Rechercher',
+            clearSearch: 'Effacer la recherche'
+        },
+        actions: {
+            refresh: 'Actualiser',
+            addNew: 'Ajouter une nouvelle catégorie'
+        },
+        analytics: {
+            totalCategories: 'Total des catégories',
+            withProducts: 'Avec produits',
+            emptyCategories: 'Catégories vides',
+            totalProducts: 'Total des produits'
+        },
+        search: {
+            placeholder: 'Rechercher des catégories...'
+        },
+        sort: {
+            name: 'Nom',
+            products: 'Produits'
+        },
+        viewMode: {
+            grid: 'Grille',
+            list: 'Liste'
+        },
+        card: {
+            products: 'produits',
+            edit: 'Modifier',
+            delete: 'Supprimer'
+        },
+        confirmDelete: 'Êtes-vous sûr de vouloir supprimer cette catégorie?',
+        messages: {
+            fetchFailed: 'Échec de la récupération des catégories.',
+            deleteSuccess: 'Catégorie supprimée avec succès!',
+            deleteFailed: 'Échec de la suppression de la catégorie. Elle pourrait être utilisée par certains produits.'
+        },
+        noCategories: 'Aucune catégorie trouvée',
+        noResults: 'Aucune catégorie ne correspond à votre recherche'
+    },
+
+    // Category Form
+    categoryForm: {
+        title: {
+            create: 'Créer une catégorie',
+            edit: 'Modifier la catégorie'
+        },
+        subtitle: {
+            create: 'Ajouter une nouvelle catégorie pour organiser vos produits',
+            edit: 'Mettre à jour les informations de votre catégorie'
+        },
+        shortcuts: {
+            save: 'Enregistrer',
+            back: 'Retour'
+        },
+        unsavedChanges: 'Modifications non enregistrées',
+        backToCategories: 'Retour aux catégories',
+        sectionTitle: {
+            create: 'Informations sur la catégorie',
+            edit: 'Modifier les détails de la catégorie'
+        },
+        sectionSubtitle: {
+            create: 'Remplissez les détails pour créer une nouvelle catégorie',
+            edit: 'Mettez à jour les informations et les paramètres de votre catégorie'
+        },
+        fields: {
+            categoryName: 'Nom de la catégorie',
+            categoryNamePlaceholder: 'Entrez le nom de la catégorie (ex: Électronique, Mode, Livres)',
+            description: 'Description',
+            descriptionOptional: '(Optionnel)',
+            descriptionPlaceholder: 'Décrivez cette catégorie (optionnel)',
+            categoryImage: 'Image de la catégorie',
+            imageOptional: '(Optionnel)',
+            charactersCount: 'caractères'
+        },
+        imageUpload: {
+            dropHere: 'Déposez votre image ici',
+            orClick: 'ou cliquez pour parcourir',
+            chooseFile: 'Choisir un fichier',
+            supportedFormats: 'Formats supportés: JPG, PNG, GIF. Taille max: 5MB',
+            preview: 'Aperçu de la catégorie'
+        },
+        validation: {
+            nameRequired: 'Le nom de la catégorie est requis',
+            nameMinLength: 'Le nom de la catégorie doit contenir au moins 2 caractères',
+            descriptionMaxLength: 'La description doit contenir moins de 500 caractères',
+            invalidImage: 'Veuillez sélectionner un fichier image valide.',
+            fixErrors: 'Veuillez corriger les erreurs avant de soumettre.'
+        },
+        actions: {
+            cancel: 'Annuler',
+            creating: 'Création...',
+            updating: 'Mise à jour...',
+            create: 'Créer une catégorie',
+            update: 'Mettre à jour la catégorie'
+        },
+        messages: {
+            notFound: 'Catégorie introuvable.',
+            loadFailed: 'Échec du chargement des données de la catégorie.',
+            createSuccess: 'Catégorie créée avec succès!',
+            updateSuccess: 'Catégorie mise à jour avec succès!',
+            operationFailed: 'Opération échouée. Veuillez réessayer.'
+        }
+    }
+};

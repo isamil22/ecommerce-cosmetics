@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllCategories, deleteCategory, getAllProducts } from '../../api/apiService';
 import { toast } from 'react-toastify';
@@ -10,8 +10,10 @@ import {
     FiBarChart, FiUsers, FiDollarSign, FiClock, FiTarget,
     FiShield, FiActivity, FiGlobe, FiLayers, FiTag
 } from 'react-icons/fi';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminCategoriesPage = () => {
+    const { t } = useLanguage();
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -31,8 +33,8 @@ const AdminCategoriesPage = () => {
             const response = await getAllCategories();
             setCategories(response.data);
         } catch (err) {
-            setError('Failed to fetch categories.');
-            toast.error('Failed to fetch categories.');
+            setError(t('categoriesPage.messages.fetchFailed'));
+            toast.error(t('categoriesPage.messages.fetchFailed'));
         } finally {
             setLoading(false);
         }
@@ -63,7 +65,7 @@ const AdminCategoriesPage = () => {
             // Ctrl/Cmd + F for focus search
             if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
                 e.preventDefault();
-                document.querySelector('input[placeholder="Search categories..."]')?.focus();
+                document.querySelector('input[type="text"]')?.focus();
             }
             // Escape to clear search
             if (e.key === 'Escape' && searchTerm) {
@@ -82,14 +84,14 @@ const AdminCategoriesPage = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this category?')) {
+        if (window.confirm(t('categoriesPage.confirmDelete'))) {
             try {
                 setDeletingCategoryId(id);
                 await deleteCategory(id);
-                toast.success('Category deleted successfully!');
+                toast.success(t('categoriesPage.messages.deleteSuccess'));
                 fetchCategories(); // Refresh list
             } catch (err) {
-                const errorMessage = err.response?.data?.message || 'Failed to delete category. It might be in use by some products.';
+                const errorMessage = err.response?.data?.message || t('categoriesPage.messages.deleteFailed');
                 setError(errorMessage);
                 toast.error(errorMessage);
             } finally {
@@ -124,7 +126,7 @@ const AdminCategoriesPage = () => {
                     aValue = a.name?.toLowerCase() || '';
                     bValue = b.name?.toLowerCase() || '';
                     break;
-                case 'products':
+                case t('categoriesPage.card.products'):
                     aValue = products.filter(p => p.categoryId === a.id).length;
                     bValue = products.filter(p => p.categoryId === b.id).length;
                     break;
@@ -334,7 +336,7 @@ const AdminCategoriesPage = () => {
                                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                                 <input
                                     type="text"
-                                    placeholder="Search categories..."
+                                    placeholder={t('categoriesPage.search.placeholder')}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -433,7 +435,7 @@ const AdminCategoriesPage = () => {
                                     className="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-blue-700 transition-all duration-200 flex items-center mx-auto w-fit"
                                 >
                                     <FiPlus className="w-5 h-5 mr-2" />
-                                    {searchTerm ? 'Clear Search' : 'Create Your First Category'}
+                                    {searchTerm ? t('categoriesPage.shortcuts.clearSearch') : 'Create Your First Category'}
                                 </Link>
                             </div>
                         ) : (
@@ -563,7 +565,7 @@ const AdminCategoriesPage = () => {
                                                                 <span>ID: {category.id}</span>
                                                                 {category.description && (
                                                                     <>
-                                                                        <span>•</span>
+                                                                        <span>â€¢</span>
                                                                         <span className="truncate">{category.description}</span>
                                                                     </>
                                                                 )}

@@ -1,4 +1,4 @@
-// English translations
+﻿// English translations
 export const en = {
     // Admin Dashboard
     adminDashboard: 'Admin Dashboard',
@@ -440,13 +440,13 @@ export const en = {
         displaySettings: {
             title: 'Display Settings',
             purchaseNotifications: {
-                title: '🛍️ Show Purchase Notifications',
+                title: 'ðŸ›ï¸ Show Purchase Notifications',
                 description: 'Display notifications when customers buy this product',
                 enabled: 'Enabled',
                 disabled: 'Disabled'
             },
             countdownTimer: {
-                title: '⏱️ Show Countdown Timer',
+                title: 'â±ï¸ Show Countdown Timer',
                 description: 'Display flash sale countdown timer for urgency',
                 enabled: 'Enabled',
                 disabled: 'Disabled'
@@ -479,6 +479,116 @@ export const en = {
             saveFailed: 'Failed to save product.',
             loadFailed: 'Failed to load product.',
             categoriesFailed: 'Failed to load product categories. Please try again.'
+        }
+    }
+,
+
+    // Categories Management
+    categoriesPage: {
+        title: 'Category Management',
+        subtitle: 'Organize your product catalog with beautiful categories',
+        shortcuts: {
+            newCategory: 'New Category',
+            search: 'Search',
+            clearSearch: 'Clear Search'
+        },
+        actions: {
+            refresh: 'Refresh',
+            addNew: 'Add New Category'
+        },
+        analytics: {
+            totalCategories: 'Total Categories',
+            withProducts: 'With Products',
+            emptyCategories: 'Empty Categories',
+            totalProducts: 'Total Products'
+        },
+        search: {
+            placeholder: 'Search categories...'
+        },
+        sort: {
+            name: 'Name',
+            products: 'Products'
+        },
+        viewMode: {
+            grid: 'Grid',
+            list: 'List'
+        },
+        card: {
+            products: 'products',
+            edit: 'Edit',
+            delete: 'Delete'
+        },
+        confirmDelete: 'Are you sure you want to delete this category?',
+        messages: {
+            fetchFailed: 'Failed to fetch categories.',
+            deleteSuccess: 'Category deleted successfully!',
+            deleteFailed: 'Failed to delete category. It might be in use by some products.'
+        },
+        noCategories: 'No categories found',
+        noResults: 'No categories match your search'
+    },
+
+    // Category Form
+    categoryForm: {
+        title: {
+            create: 'Create Category',
+            edit: 'Edit Category'
+        },
+        subtitle: {
+            create: 'Add a new category to organize your products',
+            edit: 'Update your category information'
+        },
+        shortcuts: {
+            save: 'Save',
+            back: 'Back'
+        },
+        unsavedChanges: 'Unsaved changes',
+        backToCategories: 'Back to Categories',
+        sectionTitle: {
+            create: 'Category Information',
+            edit: 'Edit Category Details'
+        },
+        sectionSubtitle: {
+            create: 'Fill in the details to create a new category',
+            edit: 'Update your category information and settings'
+        },
+        fields: {
+            categoryName: 'Category Name',
+            categoryNamePlaceholder: 'Enter category name (e.g., Electronics, Fashion, Books)',
+            description: 'Description',
+            descriptionOptional: '(Optional)',
+            descriptionPlaceholder: 'Describe this category (optional)',
+            categoryImage: 'Category Image',
+            imageOptional: '(Optional)',
+            charactersCount: 'characters'
+        },
+        imageUpload: {
+            dropHere: 'Drop your image here',
+            orClick: 'or click to browse',
+            chooseFile: 'Choose File',
+            supportedFormats: 'Supported formats: JPG, PNG, GIF. Max size: 5MB',
+            preview: 'Category preview'
+        },
+        validation: {
+            nameRequired: 'Category name is required',
+            nameMinLength: 'Category name must be at least 2 characters',
+            descriptionMaxLength: 'Description must be less than 500 characters',
+            invalidImage: 'Please select a valid image file.',
+            fixErrors: 'Please fix the errors before submitting.'
+        },
+        actions: {
+            cancel: 'Cancel',
+            creating: 'Creating...',
+            updating: 'Updating...',
+            create: 'Create Category',
+            update: 'Update Category'
+        },
+        messages: {
+            notFound: 'Category not found.',
+            loadFailed: 'Failed to load category data.',
+            createSuccess: 'Category created successfully!',
+            updateSuccess: 'Category updated successfully!',
+            operationFailed: 'Operation failed. Please try again.'
         }
     }
 };
