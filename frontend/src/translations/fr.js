@@ -701,5 +701,44 @@ export const fr = {
         timeline_transit: 'En transit',
         timeline_delivered: 'Livrée',
         errorExport: 'Échec de l\'exportation des commandes.'
+    },
+
+    // Integrations Page
+    integrationsPage: {
+        title: 'Intégrations',
+        subtitle: 'Connectez des services et outils externes',
+        facebookPixel: {
+            title: 'Facebook Pixel',
+            activeTitle: 'Facebook Pixel Actif',
+            activeDesc: 'Votre pixel est configuré et suit les événements',
+            inactiveTitle: 'Facebook Pixel Non Configuré',
+            inactiveDesc: 'Ajoutez votre ID Pixel pour commencer le suivi',
+            configTitle: 'Configuration du Pixel',
+            label: 'ID Pixel Facebook',
+            placeholder: 'Entrez votre ID Pixel Facebook (15-16 chiffres)',
+            helpText: 'Cet ID sera utilisé pour suivre l\'activité des utilisateurs à des fins de marketing et d\'optimisation des conversions.'
+        },
+        googleAnalytics: {
+            title: 'Google Analytics',
+            activeTitle: 'Google Analytics Actif',
+            activeDesc: 'Vos analyses sont configurées et actives.',
+            inactiveTitle: 'Google Analytics Non Configuré',
+            inactiveDesc: 'Ajoutez votre ID de mesure pour commencer le suivi.',
+            configTitle: 'Configuration Google Analytics',
+            label: 'ID de mesure (G-XXXXXXXXXX)',
+            placeholder: 'Entrez votre ID de mesure (ex: G-T78R8VV7E4)',
+            helpText: 'Cet ID connecte votre site à Google Analytics 4 (GA4).'
+        },
+        actions: {
+            clear: 'Effacer',
+            save: 'Enregistrer la configuration',
+            saving: 'Enregistrement...'
+        },
+        messages: {
+            pixelSaved: 'Paramètres Facebook Pixel enregistrés avec succès !',
+            gaSaved: 'Paramètres Google Analytics enregistrés avec succès !',
+            saveFailed: 'Échec de l\'enregistrement. Vous devez être administrateur.',
+            loadFailed: 'Échec du chargement des paramètres.'
+        }
     }
 };

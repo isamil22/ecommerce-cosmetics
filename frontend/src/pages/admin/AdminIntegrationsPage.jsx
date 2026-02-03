@@ -3,9 +3,11 @@ import { getSettings, saveSettings } from '../../api/settingsService';
 import { toast } from 'react-toastify';
 import { FiFacebook, FiCheckCircle, FiAlertCircle, FiInfo, FiLayers, FiActivity } from 'react-icons/fi';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminIntegrationsPage = () => {
     const { updateSettingsState } = useSiteSettings();
+    const { t } = useLanguage();
 
     // Pixel State
     const [pixelId, setPixelId] = useState('');
@@ -26,7 +28,7 @@ const AdminIntegrationsPage = () => {
                     setGoogleAnalyticsId(settings.googleAnalyticsId);
                 }
             } catch (err) {
-                toast.error('Failed to load settings.');
+                toast.error(t('integrationsPage.messages.loadFailed'));
             } finally {
                 setIsLoading(false);
             }
@@ -38,10 +40,10 @@ const AdminIntegrationsPage = () => {
         setIsSaving(true);
         try {
             await saveSettings({ facebookPixelId: pixelId });
-            toast.success('Facebook Pixel settings saved successfully!');
+            toast.success(t('integrationsPage.messages.pixelSaved'));
             updateSettingsState({ facebookPixelId: pixelId });
         } catch (err) {
-            toast.error('Failed to save settings. You must be an admin.');
+            toast.error(t('integrationsPage.messages.saveFailed'));
         } finally {
             setIsSaving(false);
         }
@@ -51,10 +53,10 @@ const AdminIntegrationsPage = () => {
         setIsSaving(true);
         try {
             await saveSettings({ googleAnalyticsId: googleAnalyticsId });
-            toast.success('Google Analytics settings saved successfully!');
+            toast.success(t('integrationsPage.messages.gaSaved'));
             updateSettingsState({ googleAnalyticsId: googleAnalyticsId });
         } catch (err) {
-            toast.error('Failed to save settings. You must be an admin.');
+            toast.error(t('integrationsPage.messages.saveFailed'));
         } finally {
             setIsSaving(false);
         }
@@ -80,8 +82,8 @@ const AdminIntegrationsPage = () => {
         <div className="p-6">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800">Facebook Pixel</h1>
-                    <p className="text-gray-600 mt-2">Connect external services and tools</p>
+                    <h1 className="text-3xl font-bold text-gray-800">{t('integrationsPage.title')}</h1>
+                    <p className="text-gray-600 mt-2">{t('integrationsPage.subtitle')}</p>
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -92,16 +94,16 @@ const AdminIntegrationsPage = () => {
                                 <>
                                     <FiCheckCircle className="w-5 h-5 text-green-600 mr-3" />
                                     <div>
-                                        <h3 className="text-green-800 font-semibold">Facebook Pixel Active</h3>
-                                        <p className="text-green-600 text-sm">Your pixel is configured and tracking events</p>
+                                        <h3 className="text-green-800 font-semibold">{t('integrationsPage.facebookPixel.activeTitle')}</h3>
+                                        <p className="text-green-600 text-sm">{t('integrationsPage.facebookPixel.activeDesc')}</p>
                                     </div>
                                 </>
                             ) : (
                                 <>
                                     <FiAlertCircle className="w-5 h-5 text-yellow-600 mr-3" />
                                     <div>
-                                        <h3 className="text-yellow-800 font-semibold">Facebook Pixel Not Configured</h3>
-                                        <p className="text-yellow-600 text-sm">Add your Pixel ID to start tracking user behavior</p>
+                                        <h3 className="text-yellow-800 font-semibold">{t('integrationsPage.facebookPixel.inactiveTitle')}</h3>
+                                        <p className="text-yellow-600 text-sm">{t('integrationsPage.facebookPixel.inactiveDesc')}</p>
                                     </div>
                                 </>
                             )}
@@ -112,12 +114,12 @@ const AdminIntegrationsPage = () => {
                         <div className="mb-8">
                             <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
                                 <FiFacebook className="mr-3 text-blue-600" />
-                                Pixel Configuration
+                                {t('integrationsPage.facebookPixel.configTitle')}
                             </h2>
 
                             <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                 <label htmlFor="pixelId" className="block text-sm font-bold text-gray-700 mb-3">
-                                    Facebook Pixel ID
+                                    {t('integrationsPage.facebookPixel.label')}
                                 </label>
                                 <div className="relative">
                                     <input
@@ -131,7 +133,7 @@ const AdminIntegrationsPage = () => {
                                                 ? 'border-red-400 bg-red-50 focus:ring-red-500'
                                                 : 'border-gray-300 bg-white focus:ring-blue-500 focus:border-blue-500'
                                             }`}
-                                        placeholder="Enter your 15-16 digit Facebook Pixel ID"
+                                        placeholder={t('integrationsPage.facebookPixel.placeholder')}
                                     />
                                     {pixelId && (
                                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -149,7 +151,7 @@ const AdminIntegrationsPage = () => {
                                     <div className="flex items-start">
                                         <FiInfo className="w-4 h-4 text-blue-500 mr-2 mt-1 flex-shrink-0" />
                                         <p className="text-sm text-gray-600">
-                                            This ID will be used to track user activity for marketing purposes and conversion optimization.
+                                            {t('integrationsPage.facebookPixel.helpText')}
                                         </p>
                                     </div>
                                 </div>
@@ -172,7 +174,7 @@ const AdminIntegrationsPage = () => {
                                     : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:ring-blue-500 shadow-lg hover:shadow-xl transform hover:scale-105'
                                     }`}
                             >
-                                {isSaving ? 'Saving...' : 'Save Configuration'}
+                                {isSaving ? t('integrationsPage.actions.saving') : t('integrationsPage.actions.save')}
                             </button>
                         </div>
                     </div>
@@ -186,16 +188,16 @@ const AdminIntegrationsPage = () => {
                                 <>
                                     <FiCheckCircle className="w-5 h-5 text-green-600 mr-3" />
                                     <div>
-                                        <h3 className="text-green-800 font-semibold">Google Analytics Active</h3>
-                                        <p className="text-green-600 text-sm">Your analytics are configured and tracking.</p>
+                                        <h3 className="text-green-800 font-semibold">{t('integrationsPage.googleAnalytics.activeTitle')}</h3>
+                                        <p className="text-green-600 text-sm">{t('integrationsPage.googleAnalytics.activeDesc')}</p>
                                     </div>
                                 </>
                             ) : (
                                 <>
                                     <FiAlertCircle className="w-5 h-5 text-yellow-600 mr-3" />
                                     <div>
-                                        <h3 className="text-yellow-800 font-semibold">Google Analytics Not Configured</h3>
-                                        <p className="text-yellow-600 text-sm">Add your Measurement ID to start tracking.</p>
+                                        <h3 className="text-yellow-800 font-semibold">{t('integrationsPage.googleAnalytics.inactiveTitle')}</h3>
+                                        <p className="text-yellow-600 text-sm">{t('integrationsPage.googleAnalytics.inactiveDesc')}</p>
                                     </div>
                                 </>
                             )}
@@ -206,12 +208,12 @@ const AdminIntegrationsPage = () => {
                         <div className="mb-8">
                             <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
                                 <FiActivity className="mr-3 text-orange-600" />
-                                Google Analytics Configuration
+                                {t('integrationsPage.googleAnalytics.configTitle')}
                             </h2>
 
                             <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                 <label htmlFor="googleAnalyticsId" className="block text-sm font-bold text-gray-700 mb-3">
-                                    Measurement ID (G-XXXXXXXXXX)
+                                    {t('integrationsPage.googleAnalytics.label')}
                                 </label>
                                 <div className="relative">
                                     <input
@@ -225,7 +227,7 @@ const AdminIntegrationsPage = () => {
                                                 ? 'border-red-400 bg-red-50 focus:ring-red-500'
                                                 : 'border-gray-300 bg-white focus:ring-blue-500 focus:border-blue-500'
                                             }`}
-                                        placeholder="Enter your Measurement ID (e.g., G-T78R8VV7E4)"
+                                        placeholder={t('integrationsPage.googleAnalytics.placeholder')}
                                     />
                                     {googleAnalyticsId && (
                                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -243,7 +245,7 @@ const AdminIntegrationsPage = () => {
                                     <div className="flex items-start">
                                         <FiInfo className="w-4 h-4 text-blue-500 mr-2 mt-1 flex-shrink-0" />
                                         <p className="text-sm text-gray-600">
-                                            This Measurement ID connects your site to Google Analytics 4 (GA4).
+                                            {t('integrationsPage.googleAnalytics.helpText')}
                                         </p>
                                     </div>
                                 </div>
@@ -256,7 +258,7 @@ const AdminIntegrationsPage = () => {
                                 onClick={() => setGoogleAnalyticsId('')}
                                 className="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-300"
                             >
-                                Clear
+                                {t('integrationsPage.actions.clear')}
                             </button>
                             <button
                                 onClick={handleSaveGA}
@@ -266,7 +268,7 @@ const AdminIntegrationsPage = () => {
                                     : 'bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 focus:ring-orange-500 shadow-lg hover:shadow-xl transform hover:scale-105'
                                     }`}
                             >
-                                {isSaving ? 'Saving...' : 'Save Configuration'}
+                                {isSaving ? t('integrationsPage.actions.saving') : t('integrationsPage.actions.save')}
                             </button>
                         </div>
                     </div>

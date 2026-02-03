@@ -481,7 +481,7 @@ export const en = {
             categoriesFailed: 'Failed to load product categories. Please try again.'
         }
     }
-,
+    ,
 
     // Categories Management
     categoriesPage: {
@@ -591,7 +591,7 @@ export const en = {
             operationFailed: 'Operation failed. Please try again.'
         }
     }
-,
+    ,
 
     // Admin Dashboard
     dashboard: {
@@ -602,14 +602,14 @@ export const en = {
         liveStatus: 'Live',
         lastUpdated: 'Last updated',
         error: 'Error',
-        
+
         // Metrics
         totalRevenue: 'Total Revenue',
         totalOrders: 'Total Orders',
         totalUsers: 'Total Users',
         totalProducts: 'Total Products',
         fromLastMonth: 'from last month',
-        
+
         // Secondary Metrics
         packsAvailable: 'Packs Available',
         customPacks: 'Custom Packs',
@@ -618,13 +618,13 @@ export const en = {
         active: 'Active',
         disabled: 'Disabled',
         range: 'Range',
-        
+
         // Links
         managePacks: 'Manage Packs',
         manageCustomPacks: 'Manage Custom Packs',
         manageCategories: 'Manage Categories',
         configureSettings: 'Configure Settings',
-        
+
         // Sections
         recentProducts: 'Recent Products',
         addNew: 'Add New',
@@ -633,7 +633,7 @@ export const en = {
         viewAllOrders: 'View All Orders',
         pendingReviews: 'Pending Reviews',
         manageReviews: 'Manage Reviews',
-        
+
         // Quick Actions
         quickActions: 'Quick Actions',
         addNewProduct: 'Add New Product',
@@ -642,7 +642,7 @@ export const en = {
         addCategory: 'Add Category',
         reviewFormSettings: 'Review Form Settings'
     }
-,
+    ,
     // Orders Page
     ordersPage: {
         title: 'Orders Management',
@@ -653,26 +653,26 @@ export const en = {
         filterStatus: 'Filter by Status',
         filterDate: 'Filter by Date',
         sortBy: 'Sort by',
-        
+
         status_ALL: 'All Statuses',
         status_PENDING: 'Pending',
         status_PREPARING: 'Preparing',
         status_DELIVERING: 'Delivering',
         status_DELIVERED: 'Delivered',
         status_CANCELLED: 'Cancelled',
-        
+
         date_ALL: 'All Dates',
         date_TODAY: 'Today',
         date_THIS_WEEK: 'This Week',
         date_THIS_MONTH: 'This Month',
-        
+
         orderBy: 'Ordered By',
         items: 'Items',
         total: 'Total',
         status: 'Status',
         date: 'Date',
         actions: 'Actions',
-        
+
         totalRevenue: 'Total Revenue',
         averageOrder: 'Average Order',
         uniqueCustomers: 'Unique Customers',
@@ -682,7 +682,7 @@ export const en = {
         timeline_delivered: 'Delivered',
         errorExport: 'Failed to export orders.',
         revenueToday: 'Today\'s Revenue',
-        
+
         viewDetails: 'View Details',
         delete: 'Delete',
         restore: 'Restore',
@@ -699,5 +699,44 @@ export const en = {
         selected: 'selected',
         orderId: 'Order ID',
         customer: 'Customer'
+    },
+
+    // Integrations Page
+    integrationsPage: {
+        title: 'Integrations',
+        subtitle: 'Connect external services and tools',
+        facebookPixel: {
+            title: 'Facebook Pixel',
+            activeTitle: 'Facebook Pixel Active',
+            activeDesc: 'Your pixel is configured and tracking events',
+            inactiveTitle: 'Facebook Pixel Not Configured',
+            inactiveDesc: 'Add your Pixel ID to start tracking user behavior',
+            configTitle: 'Pixel Configuration',
+            label: 'Facebook Pixel ID',
+            placeholder: 'Enter your Facebook Pixel ID (15-16 digits)',
+            helpText: 'This ID will be used to track user activity for marketing purposes and conversion optimization.'
+        },
+        googleAnalytics: {
+            title: 'Google Analytics',
+            activeTitle: 'Google Analytics Active',
+            activeDesc: 'Your analytics are configured and tracking.',
+            inactiveTitle: 'Google Analytics Not Configured',
+            inactiveDesc: 'Add your Measurement ID to start tracking.',
+            configTitle: 'Google Analytics Configuration',
+            label: 'Measurement ID (G-XXXXXXXXXX)',
+            placeholder: 'Enter your Measurement ID (e.g., G-T78R8VV7E4)',
+            helpText: 'This Measurement ID connects your site to Google Analytics 4 (GA4).'
+        },
+        actions: {
+            clear: 'Clear',
+            save: 'Save Configuration',
+            saving: 'Saving...'
+        },
+        messages: {
+            pixelSaved: 'Facebook Pixel settings saved successfully!',
+            gaSaved: 'Google Analytics settings saved successfully!',
+            saveFailed: 'Failed to save settings. You must be an admin.',
+            loadFailed: 'Failed to load settings.'
+        }
     }
 };
