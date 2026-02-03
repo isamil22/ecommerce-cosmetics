@@ -897,4 +897,105 @@ export const fr = {
             updateError: 'Échec de la mise à jour de l\'annonce'
         }
     }
+},
+
+    // Countdown Page
+    countdownPage: {
+        title: 'Tableau de commande du compte à rebours',
+        messages: {
+            saveSuccess: 'Paramètres enregistrés avec succès !',
+            saveError: 'Erreur lors de l\'enregistrement des paramètres.'
+        },
+        sections: {
+            themes: {
+                title: 'THÈMES DE DESIGN COMPATIBLES',
+                label: 'Choisir un thème :',
+                description: 'Ceci définira toutes les couleurs, textes, animations et mises en page pour correspondre au style de votre site.',
+                applyButton: 'Appliquer le thème',
+                selectedPreview: 'Aperçu du thème sélectionné :',
+                presets: {
+                    darkPremium: {
+                        name: 'Dark Premium',
+                        description: 'Thème sombre luxueux avec accents dorés',
+                        preview: 'Fond bleu-violet sombre profond avec chiffres dorés et bordures corail. Parfait pour les marques de luxe.'
+                    },
+                    lightProfessional: {
+                        name: 'Light Professional',
+                        description: 'Thème blanc épuré pour sites professionnels',
+                        preview: 'Fond blanc propre avec accents bleus professionnels. Parfait pour les sites d\'entreprise.'
+                    },
+                    modernGradient: {
+                        name: 'Modern Gradient',
+                        description: 'Design dégradé contemporain',
+                        preview: 'Dégradé bleu-violet avec accents roses. Parfait pour les sites modernes et tendances.'
+                    },
+                    elegantMinimal: {
+                        name: 'Elegant Minimal',
+                        description: 'Design épuré et simple',
+                        preview: 'Fond gris clair avec accents subtils. Parfait pour les designs minimalistes.'
+                    },
+                    vibrantEnergy: {
+                        name: 'Vibrant Energy',
+                        description: 'Design coloré haute énergie',
+                        preview: 'Fond corail vif avec accents dorés. Parfait pour les marques énergiques et les ventes flash.'
+                    }
+                }
+            },
+            basic: {
+                title: 'Paramètres de base',
+                fields: {
+                    title: { label: 'Titre', placeholder: 'Ex: Offre Limitée !' },
+                    endDate: { label: 'Date et heure de fin' },
+                    subtitle: { label: 'Sous-titre', placeholder: 'Ex: Économisez maintenant' },
+                    packName: { label: 'Nom du pack/produit', placeholder: 'Ex: Offres Spéciales' },
+                    urgentMessage: { label: 'Message urgent', placeholder: 'Ex: Vite ! Le temps presse' },
+                    expiredMessage: { label: 'Message expiré', placeholder: 'Ex: Offre terminée' },
+                    enabled: { label: 'Activer le compte à rebours' }
+                }
+            },
+            colors: {
+                title: 'Paramètres de couleur',
+                fields: {
+                    background: 'Arrière-plan',
+                    text: 'Texte',
+                    border: 'Bordure',
+                    timerBox: 'Boîte du minuteur',
+                    timerText: 'Texte du minuteur',
+                    urgentBg: 'Fond urgent',
+                    urgentText: 'Texte urgent'
+                }
+            },
+            display: {
+                title: 'Paramètres d\'affichage',
+                fields: {
+                    showDays: 'Afficher Jours',
+                    showHours: 'Afficher Heures',
+                    showMinutes: 'Afficher Minutes',
+                    showSeconds: 'Afficher Secondes',
+                    showPackName: 'Afficher Nom du Pack',
+                    showSubtitle: 'Afficher Sous-titre'
+                }
+            },
+            animation: {
+                title: 'Paramètres d\'animation',
+                fields: {
+                    pulse: 'Activer animation pulsation',
+                    bounce: 'Activer animation rebond',
+                    threshold: 'Seuil d\'urgence (secondes)'
+                }
+            },
+            layout: {
+                title: 'Paramètres de mise en page',
+                fields: {
+                    borderRadius: 'Rayon de bordure (px)',
+                    padding: 'Marge interne (px)',
+                    fontSize: 'Taille de police (px)',
+                    timerFontSize: 'Taille police minuteur (px)'
+                }
+            }
+        },
+        buttons: {
+            save: 'Enregistrer tous les paramètres'
+        }
+    }
 };

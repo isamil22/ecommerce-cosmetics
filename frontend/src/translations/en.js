@@ -895,4 +895,105 @@ export const en = {
             updateError: 'Failed to update announcement'
         }
     }
+},
+
+    // Countdown Page
+    countdownPage: {
+        title: 'Countdown Control Panel',
+        messages: {
+            saveSuccess: 'Settings saved successfully!',
+            saveError: 'Error saving settings.'
+        },
+        sections: {
+            themes: {
+                title: 'WEBSITE-COMPATIBLE DESIGN THEMES',
+                label: 'Choose a Design Theme:',
+                description: 'This will set all colors, text, animations, and layout to match your website\'s style and branding.',
+                applyButton: 'Apply Theme',
+                selectedPreview: 'Selected Theme Preview:',
+                presets: {
+                    darkPremium: {
+                        name: 'Dark Premium',
+                        description: 'Luxury dark theme with gold accents',
+                        preview: 'Deep dark blue-purple background with gold timer numbers and coral borders. Perfect for luxury brands.'
+                    },
+                    lightProfessional: {
+                        name: 'Light Professional',
+                        description: 'Clean white theme for business sites',
+                        preview: 'Clean white background with professional blue accents. Perfect for corporate brands.'
+                    },
+                    modernGradient: {
+                        name: 'Modern Gradient',
+                        description: 'Contemporary gradient design',
+                        preview: 'Blue-purple gradient with pink accents. Perfect for modern, trendy websites.'
+                    },
+                    elegantMinimal: {
+                        name: 'Elegant Minimal',
+                        description: 'Clean and simple design',
+                        preview: 'Light gray background with subtle accents. Perfect for minimalist and clean designs.'
+                    },
+                    vibrantEnergy: {
+                        name: 'Vibrant Energy',
+                        description: 'High-energy colorful design',
+                        preview: 'Bright coral background with gold accents. Perfect for energetic brands and flash sales.'
+                    }
+                }
+            },
+            basic: {
+                title: 'Basic Settings',
+                fields: {
+                    title: { label: 'Title', placeholder: 'e.g. Limited Offer!' },
+                    endDate: { label: 'End Date & Time' },
+                    subtitle: { label: 'Subtitle', placeholder: 'e.g. Save now before offer ends' },
+                    packName: { label: 'Pack/Product Name', placeholder: 'e.g. Special Offers' },
+                    urgentMessage: { label: 'Urgent Message', placeholder: 'e.g. Hurry! Time running out' },
+                    expiredMessage: { label: 'Expired Message', placeholder: 'e.g. Limited Time Expired!' },
+                    enabled: { label: 'Enable Countdown' }
+                }
+            },
+            colors: {
+                title: 'Color Settings',
+                fields: {
+                    background: 'Background',
+                    text: 'Text Color',
+                    border: 'Border Color',
+                    timerBox: 'Timer Box',
+                    timerText: 'Timer Text',
+                    urgentBg: 'Urgent Background',
+                    urgentText: 'Urgent Text'
+                }
+            },
+            display: {
+                title: 'Display Settings',
+                fields: {
+                    showDays: 'Show Days',
+                    showHours: 'Show Hours',
+                    showMinutes: 'Show Minutes',
+                    showSeconds: 'Show Seconds',
+                    showPackName: 'Show Pack Name',
+                    showSubtitle: 'Show Subtitle'
+                }
+            },
+            animation: {
+                title: 'Animation Settings',
+                fields: {
+                    pulse: 'Enable Pulse Animation',
+                    bounce: 'Enable Bounce Animation',
+                    threshold: 'Urgent Threshold (seconds)'
+                }
+            },
+            layout: {
+                title: 'Layout Settings',
+                fields: {
+                    borderRadius: 'Border Radius (px)',
+                    padding: 'Padding (px)',
+                    fontSize: 'Font Size (px)',
+                    timerFontSize: 'Timer Font Size (px)'
+                }
+            }
+        },
+        buttons: {
+            save: 'Save All Settings'
+        }
+    }
 };
