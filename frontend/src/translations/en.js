@@ -817,5 +817,82 @@ export const en = {
             refreshSuccess: 'Analytics data refreshed successfully!',
             refreshError: 'Failed to refresh analytics data'
         }
+    },
+
+    // Announcement Page
+    announcementPage: {
+        title: 'Announcement Management',
+        subtitle: 'Manage your site\'s announcement bar settings',
+        loading: 'Loading announcement settings...',
+        hidePreview: 'Hide Preview',
+        showPreview: 'Show Preview',
+        refresh: 'Refresh',
+        settingsTitle: 'Announcement Settings',
+        livePreviewTitle: 'Live Preview',
+        enable: {
+            title: 'Enable Announcement',
+            description: 'Show or hide the announcement bar'
+        },
+        text: {
+            label: 'Announcement Text',
+            placeholder: 'Enter your announcement text...',
+            help: 'Supports both Arabic and English text'
+        },
+        background: {
+            label: 'Background Style',
+            gradient: 'Gradient (Pink to Purple to Blue)',
+            red: 'Red',
+            blue: 'Blue',
+            green: 'Green',
+            yellow: 'Yellow',
+            purple: 'Purple',
+            pink: 'Pink'
+        },
+        textColor: {
+            label: 'Text Color'
+        },
+        animation: {
+            label: 'Animation Type',
+            none: 'No Animation',
+            pulse: 'Pulse',
+            bounce: 'Bounce'
+        },
+        onlineCounter: {
+            title: 'Show Online Counter',
+            description: 'Display "X users online now"',
+            demoText: '25 Online now',
+            status: {
+                shown: 'Shown',
+                hidden: 'Hidden'
+            }
+        },
+        sticky: {
+            title: 'Sticky Position',
+            description: 'Keep announcement bar at top when scrolling',
+            preview: {
+                yes: 'Yes',
+                no: 'No'
+            }
+        },
+        buttons: {
+            save: 'Save Changes',
+            saving: 'Saving...'
+        },
+        preview: {
+            title: 'Preview Settings:',
+            status: 'Status:',
+            enabled: 'Enabled',
+            disabled: 'Disabled',
+            background: 'Background:',
+            animation: 'Animation:',
+            onlineCounter: 'Online Counter:',
+            sticky: 'Sticky:',
+            clickToPreview: 'Click "Show Preview" to see how your announcement will look'
+        },
+        messages: {
+            loadError: 'Failed to load announcement settings',
+            updateSuccess: 'Announcement updated successfully!',
+            updateError: 'Failed to update announcement'
+        }
     }
 };

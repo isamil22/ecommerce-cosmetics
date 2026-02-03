@@ -819,5 +819,82 @@ export const fr = {
             refreshSuccess: 'Données analytiques actualisées avec succès !',
             refreshError: 'Échec de l\'actualisation des données'
         }
+    },
+
+    // Announcement Page
+    announcementPage: {
+        title: 'Gestion des annonces',
+        subtitle: 'Gérez la barre d\'annonce de votre site',
+        loading: 'Chargement des paramètres d\'annonce...',
+        hidePreview: 'Masquer l\'aperçu',
+        showPreview: 'Afficher l\'aperçu',
+        refresh: 'Actualiser',
+        settingsTitle: 'Paramètres d\'annonce',
+        livePreviewTitle: 'Aperçu en direct',
+        enable: {
+            title: 'Activer l\'annonce',
+            description: 'Afficher ou masquer la barre d\'annonce'
+        },
+        text: {
+            label: 'Texte de l\'annonce',
+            placeholder: 'Entrez le texte de votre annonce...',
+            help: 'Prend en charge le texte en arabe et en anglais'
+        },
+        background: {
+            label: 'Style d\'arrière-plan',
+            gradient: 'Dégradé (Rose vers Violet vers Bleu)',
+            red: 'Rouge',
+            blue: 'Bleu',
+            green: 'Vert',
+            yellow: 'Jaune',
+            purple: 'Violet',
+            pink: 'Rose'
+        },
+        textColor: {
+            label: 'Couleur du texte'
+        },
+        animation: {
+            label: 'Type d\'animation',
+            none: 'Aucune animation',
+            pulse: 'Pulsation',
+            bounce: 'Rebond'
+        },
+        onlineCounter: {
+            title: 'Afficher le compteur en ligne',
+            description: 'Afficher "X utilisateurs en ligne"',
+            demoText: '25 utilisateurs en ligne maintenant',
+            status: {
+                shown: 'Affiché',
+                hidden: 'Masqué'
+            }
+        },
+        sticky: {
+            title: 'Position fixe',
+            description: 'Garder la barre d\'annonce en haut lors du défilement',
+            preview: {
+                yes: 'Oui',
+                no: 'Non'
+            }
+        },
+        buttons: {
+            save: 'Enregistrer les modifications',
+            saving: 'Enregistrement...'
+        },
+        preview: {
+            title: 'Paramètres d\'aperçu :',
+            status: 'Statut :',
+            enabled: 'Activé',
+            disabled: 'Désactivé',
+            background: 'Arrière-plan :',
+            animation: 'Animation :',
+            onlineCounter: 'Compteur en ligne :',
+            sticky: 'Fixe :',
+            clickToPreview: 'Cliquez sur "Afficher l\'aperçu" pour voir à quoi ressemblera votre annonce'
+        },
+        messages: {
+            loadError: 'Échec du chargement des paramètres d\'annonce',
+            updateSuccess: 'Annonce mise à jour avec succès !',
+            updateError: 'Échec de la mise à jour de l\'annonce'
+        }
     }
 };
