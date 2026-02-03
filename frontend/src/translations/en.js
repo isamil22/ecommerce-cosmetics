@@ -738,5 +738,33 @@ export const en = {
             saveFailed: 'Failed to save settings. You must be an admin.',
             loadFailed: 'Failed to load settings.'
         }
+    },
+
+    // Review Form Settings
+    reviewFormSettings: {
+        title: 'Review Form Settings',
+        subtitle: 'Control the visibility of the review form on product detail pages',
+        configTitle: 'Review Form Configuration',
+        showReviewForm: 'Show Review Form',
+        showReviewFormDesc: 'Display the "Write Your Review" section on product detail pages',
+        preview: 'Preview',
+        visibleMsg: 'Review form will be visible to customers on product detail pages',
+        hiddenMsg: 'Review form will be hidden from customers on product detail pages',
+        quickInfo: 'Quick Info',
+        quickInfo1: 'This setting controls the visibility of the review form on all product detail pages.',
+        quickInfo2: 'When disabled, customers won\'t be able to submit new reviews.',
+        quickInfo3: 'Existing reviews will still be visible regardless of this setting.',
+        currentStatus: 'Current Status',
+        enabled: 'Review Form Enabled',
+        disabled: 'Review Form Disabled',
+        reset: 'Reset',
+        save: 'Save Settings',
+        saving: 'Saving...',
+        unsavedChanges: 'You have unsaved changes',
+        messages: {
+            saved: 'Review Form settings saved successfully!',
+            saveFailed: 'Failed to save settings',
+            loadFailed: 'Failed to fetch settings'
+        }
     }
 };

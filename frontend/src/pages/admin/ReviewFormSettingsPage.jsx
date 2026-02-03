@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { getSettings, saveSettings } from '../../api/apiService';
 import { toast } from 'react-toastify';
-import { 
+import {
     FiSettings, FiSave, FiRefreshCw, FiEye, FiEyeOff,
     FiMessageSquare, FiToggleRight, FiCheck
 } from 'react-icons/fi';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const ReviewFormSettingsPage = () => {
+    const { t } = useLanguage();
     const [settings, setSettings] = useState({
         reviewFormEnabled: true
     });
@@ -27,7 +29,7 @@ const ReviewFormSettingsPage = () => {
             });
         } catch (error) {
             console.error('Error fetching settings:', error);
-            toast.error('Failed to fetch settings');
+            toast.error(t('reviewFormSettings.messages.loadFailed'));
         } finally {
             setIsLoading(false);
         }
@@ -50,10 +52,10 @@ const ReviewFormSettingsPage = () => {
                 reviewFormEnabled: settings.reviewFormEnabled.toString()
             });
             setHasChanges(false);
-            toast.success('Review form settings saved successfully!');
+            toast.success(t('reviewFormSettings.messages.saved'));
         } catch (error) {
             console.error('Error saving settings:', error);
-            toast.error('Failed to save settings');
+            toast.error(t('reviewFormSettings.messages.saveFailed'));
         } finally {
             setIsSaving(false);
         }
@@ -85,8 +87,8 @@ const ReviewFormSettingsPage = () => {
                             <FiMessageSquare className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Review Form Settings</h1>
-                            <p className="text-gray-600">Control the visibility of the review form on product detail pages</p>
+                            <h1 className="text-3xl font-bold text-gray-900">{t('reviewFormSettings.title')}</h1>
+                            <p className="text-gray-600">{t('reviewFormSettings.subtitle')}</p>
                         </div>
                     </div>
                 </div>
@@ -99,9 +101,9 @@ const ReviewFormSettingsPage = () => {
                             <div className="bg-white rounded-2xl shadow-xl p-6">
                                 <div className="flex items-center space-x-2 mb-6">
                                     <FiSettings className="w-6 h-6 text-gray-500" />
-                                    <h2 className="text-2xl font-bold text-gray-900">Review Form Configuration</h2>
+                                    <h2 className="text-2xl font-bold text-gray-900">{t('reviewFormSettings.configTitle')}</h2>
                                 </div>
-                                
+
                                 <div className="space-y-6">
                                     {/* Enable/Disable Review Form */}
                                     <div className="flex items-center justify-between p-6 bg-gray-50 rounded-xl">
@@ -114,10 +116,10 @@ const ReviewFormSettingsPage = () => {
                                                 )}
                                                 <div>
                                                     <label htmlFor="reviewFormEnabled" className="text-lg font-medium text-gray-900">
-                                                        Show Review Form
+                                                        {t('reviewFormSettings.showReviewForm')}
                                                     </label>
                                                     <p className="text-sm text-gray-600">
-                                                        Display the "Write Your Review" section on product detail pages
+                                                        {t('reviewFormSettings.showReviewFormDesc')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -139,18 +141,18 @@ const ReviewFormSettingsPage = () => {
                                     <div className="p-6 bg-blue-50 rounded-xl border border-blue-200">
                                         <h3 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
                                             <FiEye className="w-5 h-5 mr-2" />
-                                            Preview
+                                            {t('reviewFormSettings.preview')}
                                         </h3>
                                         <div className="text-sm text-blue-800">
                                             {settings.reviewFormEnabled ? (
                                                 <div className="flex items-center text-green-700">
                                                     <FiCheck className="w-4 h-4 mr-2" />
-                                                    Review form will be visible to customers on product detail pages
+                                                    {t('reviewFormSettings.visibleMsg')}
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center text-red-700">
                                                     <FiEyeOff className="w-4 h-4 mr-2" />
-                                                    Review form will be hidden from customers on product detail pages
+                                                    {t('reviewFormSettings.hiddenMsg')}
                                                 </div>
                                             )}
                                         </div>
@@ -168,14 +170,14 @@ const ReviewFormSettingsPage = () => {
                                         className="flex items-center space-x-2 px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
                                         <FiRefreshCw className="w-4 h-4" />
-                                        <span>Reset</span>
+                                        <span>{t('reviewFormSettings.reset')}</span>
                                     </button>
                                 </div>
-                                
+
                                 <div className="flex items-center space-x-4">
                                     {hasChanges && (
                                         <span className="text-sm text-orange-600 font-medium">
-                                            You have unsaved changes
+                                            {t('reviewFormSettings.unsavedChanges')}
                                         </span>
                                     )}
                                     <button
@@ -188,7 +190,7 @@ const ReviewFormSettingsPage = () => {
                                         ) : (
                                             <FiSave className="w-4 h-4" />
                                         )}
-                                        <span>{isSaving ? 'Saving...' : 'Save Settings'}</span>
+                                        <span>{isSaving ? t('reviewFormSettings.saving') : t('reviewFormSettings.save')}</span>
                                     </button>
                                 </div>
                             </div>
@@ -201,20 +203,20 @@ const ReviewFormSettingsPage = () => {
                         <div className="bg-white rounded-2xl shadow-lg p-6">
                             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                 <FiSettings className="w-5 h-5 mr-2 text-pink-500" />
-                                Quick Info
+                                {t('reviewFormSettings.quickInfo')}
                             </h3>
                             <div className="space-y-3 text-sm text-gray-600">
                                 <div className="flex items-start space-x-2">
                                     <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 flex-shrink-0"></div>
-                                    <p>This setting controls the visibility of the review form on all product detail pages.</p>
+                                    <p>{t('reviewFormSettings.quickInfo1')}</p>
                                 </div>
                                 <div className="flex items-start space-x-2">
                                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                                    <p>When disabled, customers won't be able to submit new reviews.</p>
+                                    <p>{t('reviewFormSettings.quickInfo2')}</p>
                                 </div>
                                 <div className="flex items-start space-x-2">
                                     <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                                    <p>Existing reviews will still be visible regardless of this setting.</p>
+                                    <p>{t('reviewFormSettings.quickInfo3')}</p>
                                 </div>
                             </div>
                         </div>
@@ -223,18 +225,18 @@ const ReviewFormSettingsPage = () => {
                         <div className="bg-white rounded-2xl shadow-lg p-6">
                             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                 <FiToggleRight className="w-5 h-5 mr-2 text-green-500" />
-                                Current Status
+                                {t('reviewFormSettings.currentStatus')}
                             </h3>
                             <div className="flex items-center space-x-3">
                                 {settings.reviewFormEnabled ? (
                                     <>
                                         <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                        <span className="text-green-700 font-medium">Review Form Enabled</span>
+                                        <span className="text-green-700 font-medium">{t('reviewFormSettings.enabled')}</span>
                                     </>
                                 ) : (
                                     <>
                                         <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                                        <span className="text-red-700 font-medium">Review Form Disabled</span>
+                                        <span className="text-red-700 font-medium">{t('reviewFormSettings.disabled')}</span>
                                     </>
                                 )}
                             </div>

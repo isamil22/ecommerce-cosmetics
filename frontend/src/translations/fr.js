@@ -740,5 +740,33 @@ export const fr = {
             saveFailed: 'Échec de l\'enregistrement. Vous devez être administrateur.',
             loadFailed: 'Échec du chargement des paramètres.'
         }
+    },
+
+    // Review Form Settings
+    reviewFormSettings: {
+        title: 'Paramètres du formulaire d\'avis',
+        subtitle: 'Contrôlez la visibilité du formulaire d\'avis sur s produits',
+        configTitle: 'Configuration du formulaire',
+        showReviewForm: 'Afficher le formulaire',
+        showReviewFormDesc: 'Afficher la section "Rédiger un avis" sur les pages produits',
+        preview: 'Aperçu',
+        visibleMsg: 'Le formulaire sera visible par les clients',
+        hiddenMsg: 'Le formulaire sera masqué pour les clients',
+        quickInfo: 'Infos rapides',
+        quickInfo1: 'Ce paramètre contrôle la visibilité sur toutes les pages produits.',
+        quickInfo2: 'Si désactivé, les clients ne pourront pas soumettre de nouveaux avis.',
+        quickInfo3: 'Les avis existants resteront visibles.',
+        currentStatus: 'État actuel',
+        enabled: 'Formulaire activé',
+        disabled: 'Formulaire désactivé',
+        reset: 'Réinitialiser',
+        save: 'Enregistrer',
+        saving: 'Enregistrement...',
+        unsavedChanges: 'Vous avez des modifications non enregistrées',
+        messages: {
+            saved: 'Paramètres enregistrés avec succès !',
+            saveFailed: 'Échec de l\'enregistrement des paramètres',
+            loadFailed: 'Échec du chargement des paramètres'
+        }
     }
 };
