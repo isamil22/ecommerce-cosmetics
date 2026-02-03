@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import {
     getAllOrders,
     deleteOrder,
@@ -10,6 +10,7 @@ import {
 import OrderFeedbackSection from '../../components/OrderFeedbackSection';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 // Advanced Chart Components
 const MiniChart = ({ data, type = 'line', color = 'blue' }) => {
@@ -55,10 +56,11 @@ const StatusBadge = ({ status, count, percentage }) => (
 );
 
 const OrderTimeline = ({ order }) => {
+    const { t } = useLanguage();
     const timeline = [
-        { status: 'PREPARING', label: 'Order Placed', time: order.createdAt, completed: true },
-        { status: 'DELIVERING', label: 'In Transit', time: order.status === 'DELIVERING' || order.status === 'DELIVERED' ? order.updatedAt : null, completed: order.status === 'DELIVERING' || order.status === 'DELIVERED' },
-        { status: 'DELIVERED', label: 'Delivered', time: order.status === 'DELIVERED' ? order.updatedAt : null, completed: order.status === 'DELIVERED' }
+        { status: 'PREPARING', label: t('ordersPage.timeline_placed'), time: order.createdAt, completed: true },
+        { status: 'DELIVERING', label: t('ordersPage.timeline_transit'), time: order.status === 'DELIVERING' || order.status === 'DELIVERED' ? order.updatedAt : null, completed: order.status === 'DELIVERING' || order.status === 'DELIVERED' },
+        { status: 'DELIVERED', label: t('ordersPage.timeline_delivered'), time: order.status === 'DELIVERED' ? order.updatedAt : null, completed: order.status === 'DELIVERED' }
     ];
 
     return (
@@ -88,6 +90,7 @@ const OrderTimeline = ({ order }) => {
 };
 
 const AdminOrdersPage = () => {
+    const { t } = useLanguage();
     const [orders, setOrders] = useState([]);
     const [deletedOrders, setDeletedOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -413,7 +416,7 @@ const AdminOrdersPage = () => {
             link.parentNode.removeChild(link);
             toast.success('Orders exported successfully!');
         } catch (err) {
-            toast.error('Failed to export orders.');
+            toast.error(t('ordersPage.errorExport'));
             console.error(err);
         }
     };
@@ -451,7 +454,7 @@ const AdminOrdersPage = () => {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading orders...</p>
+                    <p className="text-gray-600">{t('ordersPage.loading')}</p>
                 </div>
             </div>
         );
@@ -461,7 +464,7 @@ const AdminOrdersPage = () => {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                    <div className="text-red-500 text-6xl mb-4">âš ï¸</div>
                     <p className="text-red-600 text-lg">{error}</p>
                     <button
                         onClick={fetchAllOrders}
@@ -482,7 +485,7 @@ const AdminOrdersPage = () => {
                     <div className="flex justify-between items-center py-6">
                         <div>
                             <h1 className="text-3xl font-bold text-gray-900">Order Management</h1>
-                            <p className="text-gray-600 mt-1">Manage and track customer orders</p>
+                            <p className="text-gray-600 mt-1">{t('ordersPage.subtitle')}</p>
                         </div>
                         <div className="flex space-x-3">
                             <button
@@ -492,7 +495,7 @@ const AdminOrdersPage = () => {
                                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                Export Orders
+                                {t('ordersPage.export')}
                             </button>
                         </div>
                     </div>
@@ -507,7 +510,7 @@ const AdminOrdersPage = () => {
                         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-blue-100 text-sm font-medium">Total Orders</p>
+                                    <p className="text-blue-100 text-sm font-medium">{t('ordersPage.totalOrders')}</p>
                                     <p className="text-3xl font-bold">{stats.totalOrders}</p>
                                     <div className="flex items-center mt-2">
                                         <svg className={`w-4 h-4 mr-1 ${stats.orderGrowth >= 0 ? 'text-green-300' : 'text-red-300'}`} fill="currentColor" viewBox="0 0 20 20">
@@ -530,7 +533,7 @@ const AdminOrdersPage = () => {
                         <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-green-100 text-sm font-medium">Total Revenue</p>
+                                    <p className="text-green-100 text-sm font-medium">{t('ordersPage.totalRevenue')}</p>
                                     <p className="text-3xl font-bold">{formatCurrency(stats.totalRevenue)}</p>
                                     <div className="flex items-center mt-2">
                                         <svg className={`w-4 h-4 mr-1 ${stats.revenueGrowth >= 0 ? 'text-green-300' : 'text-red-300'}`} fill="currentColor" viewBox="0 0 20 20">
@@ -554,9 +557,9 @@ const AdminOrdersPage = () => {
                         <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-purple-100 text-sm font-medium">Avg Order Value</p>
+                                    <p className="text-purple-100 text-sm font-medium">{t('ordersPage.averageOrder')}</p>
                                     <p className="text-3xl font-bold">{formatCurrency(stats.averageOrderValue)}</p>
-                                    <p className="text-purple-200 text-sm mt-2">{stats.uniqueCustomers} unique customers</p>
+                                    <p className="text-purple-200 text-sm mt-2">{stats.uniqueCustomers} {t('ordersPage.uniqueCustomers')}</p>
                                 </div>
                                 <div className="w-16 h-16 bg-purple-400 bg-opacity-30 rounded-full flex items-center justify-center">
                                     <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -569,7 +572,7 @@ const AdminOrdersPage = () => {
 
                     {/* Status Breakdown */}
                     <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Status</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('ordersPage.status')}</h3>
                         <div className="space-y-3">
                             <StatusBadge
                                 status="PREPARING"
@@ -599,19 +602,19 @@ const AdminOrdersPage = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div className="bg-white rounded-lg shadow p-4 text-center">
                         <div className="text-2xl font-bold text-blue-600">{stats.todayOrders}</div>
-                        <div className="text-sm text-gray-600">Today's Orders</div>
+                        <div className="text-sm text-gray-600">{t('ordersPage.todaysOrders')}</div>
                     </div>
                     <div className="bg-white rounded-lg shadow p-4 text-center">
                         <div className="text-2xl font-bold text-green-600">{formatCurrency(stats.revenueToday)}</div>
-                        <div className="text-sm text-gray-600">Today's Revenue</div>
+                        <div className="text-sm text-gray-600">{t('ordersPage.revenueToday')}</div>
                     </div>
                     <div className="bg-white rounded-lg shadow p-4 text-center">
                         <div className="text-2xl font-bold text-purple-600">{stats.weekOrders}</div>
-                        <div className="text-sm text-gray-600">This Week</div>
+                        <div className="text-sm text-gray-600">{t('ordersPage.date_THIS_WEEK')}</div>
                     </div>
                     <div className="bg-white rounded-lg shadow p-4 text-center">
                         <div className="text-2xl font-bold text-orange-600">{stats.monthOrders}</div>
-                        <div className="text-sm text-gray-600">This Month</div>
+                        <div className="text-sm text-gray-600">{t('ordersPage.date_THIS_MONTH')}</div>
                     </div>
                 </div>
 
@@ -624,7 +627,7 @@ const AdminOrdersPage = () => {
                                 <div className="relative">
                                     <input
                                         type="text"
-                                        placeholder="Search orders..."
+                                        placeholder={t('ordersPage.searchPlaceholder')}
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -641,11 +644,11 @@ const AdminOrdersPage = () => {
                                 onChange={(e) => setStatusFilter(e.target.value)}
                                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             >
-                                <option value="ALL">All Statuses</option>
-                                <option value="PREPARING">Preparing</option>
-                                <option value="DELIVERING">Delivering</option>
-                                <option value="DELIVERED">Delivered</option>
-                                <option value="CANCELED">Canceled</option>
+                                <option value="ALL">{t('ordersPage.status_ALL')}</option>
+                                <option value="PREPARING">{t('ordersPage.status_PREPARING')}</option>
+                                <option value="DELIVERING">{t('ordersPage.status_DELIVERING')}</option>
+                                <option value="DELIVERED">{t('ordersPage.status_DELIVERED')}</option>
+                                <option value="CANCELED">{t('ordersPage.status_CANCELLED')}</option>
                             </select>
 
                             {/* Date Filter */}
@@ -654,10 +657,10 @@ const AdminOrdersPage = () => {
                                 onChange={(e) => setDateFilter(e.target.value)}
                                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             >
-                                <option value="ALL">All Time</option>
-                                <option value="TODAY">Today</option>
-                                <option value="THIS_WEEK">This Week</option>
-                                <option value="THIS_MONTH">This Month</option>
+                                <option value="ALL">{t('ordersPage.date_ALL')}</option>
+                                <option value="TODAY">{t('ordersPage.date_TODAY')}</option>
+                                <option value="THIS_WEEK">{t('ordersPage.date_THIS_WEEK')}</option>
+                                <option value="THIS_MONTH">{t('ordersPage.date_THIS_MONTH')}</option>
                             </select>
 
                             {/* Toggle Deleted Orders */}
@@ -668,15 +671,15 @@ const AdminOrdersPage = () => {
                                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                     }`}
                             >
-                                {showDeleted ? 'Show Active' : 'Show Deleted'}
+                                {showDeleted ? t('ordersPage.showActive') : t('ordersPage.showDeleted')}
                             </button>
 
-                            {/* Reset Filters */}
+                            {/* {t('ordersPage.resetFilters')} */}
                             <button
                                 onClick={resetFilters}
                                 className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
                             >
-                                Reset Filters
+                                {t('ordersPage.resetFilters')}
                             </button>
                         </div>
 
@@ -684,18 +687,18 @@ const AdminOrdersPage = () => {
                         {selectedOrders.length > 0 && (
                             <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
                                 <span className="text-sm text-blue-800">
-                                    {selectedOrders.length} order(s) selected
+                                    {selectedOrders.length} {t('ordersPage.selected')}
                                 </span>
                                 <div className="flex gap-2">
                                     <select
                                         onChange={(e) => handleBulkStatusUpdate(e.target.value)}
                                         className="px-3 py-1 text-sm border border-blue-300 rounded focus:ring-1 focus:ring-blue-500"
                                     >
-                                        <option value="">Update Status</option>
-                                        <option value="PREPARING">Preparing</option>
-                                        <option value="DELIVERING">Delivering</option>
-                                        <option value="DELIVERED">Delivered</option>
-                                        <option value="CANCELED">Canceled</option>
+                                        <option value="">{t('ordersPage.updateStatus')}</option>
+                                        <option value="PREPARING">{t('ordersPage.status_PREPARING')}</option>
+                                        <option value="DELIVERING">{t('ordersPage.status_DELIVERING')}</option>
+                                        <option value="DELIVERED">{t('ordersPage.status_DELIVERED')}</option>
+                                        <option value="CANCELED">{t('ordersPage.status_CANCELLED')}</option>
                                     </select>
                                     {!showDeleted && (
                                         <button
@@ -730,7 +733,7 @@ const AdminOrdersPage = () => {
                                         onClick={() => handleSort('id')}
                                     >
                                         <div className="flex items-center">
-                                            Order ID
+                                            {t('ordersPage.orderId')}
                                             {sortBy === 'id' && (
                                                 <svg className={`w-4 h-4 ml-1 ${sortOrder === 'asc' ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
@@ -743,7 +746,7 @@ const AdminOrdersPage = () => {
                                         onClick={() => handleSort('clientFullName')}
                                     >
                                         <div className="flex items-center">
-                                            Customer
+                                            {t('ordersPage.customer')}
                                             {sortBy === 'clientFullName' && (
                                                 <svg className={`w-4 h-4 ml-1 ${sortOrder === 'asc' ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
@@ -829,10 +832,10 @@ const AdminOrdersPage = () => {
                                                         onChange={(e) => handleStatusChange(order.id, e.target.value)}
                                                         className={`px-3 py-1 rounded-full text-xs font-medium border-0 ${getStatusColor(order.status)}`}
                                                     >
-                                                        <option value="PREPARING">Preparing</option>
-                                                        <option value="DELIVERING">Delivering</option>
-                                                        <option value="DELIVERED">Delivered</option>
-                                                        <option value="CANCELED">Canceled</option>
+                                                        <option value="PREPARING">{t('ordersPage.status_PREPARING')}</option>
+                                                        <option value="DELIVERING">{t('ordersPage.status_DELIVERING')}</option>
+                                                        <option value="DELIVERED">{t('ordersPage.status_DELIVERED')}</option>
+                                                        <option value="CANCELED">{t('ordersPage.status_CANCELLED')}</option>
                                                     </select>
                                                 ) : (
                                                     <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
@@ -994,7 +997,7 @@ const AdminOrdersPage = () => {
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    {/* Customer & Order Info */}
+                                    {/* {t('ordersPage.customer')} & Order Info */}
                                     <div className="lg:col-span-2 space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
@@ -1002,7 +1005,7 @@ const AdminOrdersPage = () => {
                                                     <svg className="w-5 h-5 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                                     </svg>
-                                                    Customer Information
+                                                    {t('ordersPage.customer')} Information
                                                 </h4>
                                                 <div className="space-y-2 text-sm">
                                                     <p><span className="font-medium text-gray-600">Name:</span> <span className="text-gray-900">{selectedOrder.clientFullName}</span></p>
@@ -1020,7 +1023,7 @@ const AdminOrdersPage = () => {
                                                     Order Information
                                                 </h4>
                                                 <div className="space-y-2 text-sm">
-                                                    <p><span className="font-medium text-gray-600">Order ID:</span> <span className="text-gray-900">#{selectedOrder.id}</span></p>
+                                                    <p><span className="font-medium text-gray-600">{t('ordersPage.orderId')}:</span> <span className="text-gray-900">#{selectedOrder.id}</span></p>
                                                     <p><span className="font-medium text-gray-600">Status:</span>
                                                         <span className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedOrder.status)}`}>
                                                             {selectedOrder.status}
@@ -1097,7 +1100,7 @@ const AdminOrdersPage = () => {
                                                                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                                                                         Qty: {item.quantity}
                                                                     </span>
-                                                                    <span className="text-sm text-gray-600">× {formatCurrency(item.price)}</span>
+                                                                    <span className="text-sm text-gray-600">Ã— {formatCurrency(item.price)}</span>
                                                                 </div>
                                                             </div>
                                                             <p className="text-lg font-bold text-gray-900">{formatCurrency(item.price * item.quantity)}</p>
@@ -1167,7 +1170,7 @@ const AdminOrdersPage = () => {
                                                         onClick={() => handleStatusUpdate(selectedOrder.id, 'DELIVERING')}
                                                         className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium"
                                                     >
-                                                        🚚 Mark as Delivering
+                                                        ðŸšš Mark as Delivering
                                                     </button>
                                                 )}
                                                 {selectedOrder.status === 'DELIVERING' && (
@@ -1175,7 +1178,7 @@ const AdminOrdersPage = () => {
                                                         onClick={() => handleStatusUpdate(selectedOrder.id, 'DELIVERED')}
                                                         className="w-full px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-all duration-200 font-medium"
                                                     >
-                                                        ✅ Mark as Delivered
+                                                        âœ… Mark as Delivered
                                                     </button>
                                                 )}
                                                 {selectedOrder.status !== 'CANCELED' && (
@@ -1183,7 +1186,7 @@ const AdminOrdersPage = () => {
                                                         onClick={() => handleStatusUpdate(selectedOrder.id, 'CANCELED')}
                                                         className="w-full px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-all duration-200 font-medium"
                                                     >
-                                                        ❌ Cancel Order
+                                                        âŒ Cancel Order
                                                     </button>
                                                 )}
                                                 {showDeleted && (
@@ -1191,13 +1194,13 @@ const AdminOrdersPage = () => {
                                                         onClick={() => handleRestore(selectedOrder.id)}
                                                         className="w-full px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 transition-all duration-200 font-medium"
                                                     >
-                                                        🔄 Restore Order
+                                                        ðŸ”„ Restore Order
                                                     </button>
                                                 )}
                                             </div>
                                         </div>
 
-                                        {/* Customer Feedback Section */}
+                                        {/* {t('ordersPage.customer')} Feedback Section */}
                                         <OrderFeedbackSection orderId={selectedOrder.id} />
                                     </div>
                                 </div>

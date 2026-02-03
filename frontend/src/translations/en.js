@@ -642,4 +642,62 @@ export const en = {
         addCategory: 'Add Category',
         reviewFormSettings: 'Review Form Settings'
     }
+,
+    // Orders Page
+    ordersPage: {
+        title: 'Orders Management',
+        subtitle: 'Manage and track customer orders',
+        deletedOrders: 'Deleted Orders',
+        activeOrders: 'Active Orders',
+        searchPlaceholder: 'Search by ID or customer...',
+        filterStatus: 'Filter by Status',
+        filterDate: 'Filter by Date',
+        sortBy: 'Sort by',
+        
+        status_ALL: 'All Statuses',
+        status_PENDING: 'Pending',
+        status_PREPARING: 'Preparing',
+        status_DELIVERING: 'Delivering',
+        status_DELIVERED: 'Delivered',
+        status_CANCELLED: 'Cancelled',
+        
+        date_ALL: 'All Dates',
+        date_TODAY: 'Today',
+        date_THIS_WEEK: 'This Week',
+        date_THIS_MONTH: 'This Month',
+        
+        orderBy: 'Ordered By',
+        items: 'Items',
+        total: 'Total',
+        status: 'Status',
+        date: 'Date',
+        actions: 'Actions',
+        
+        totalRevenue: 'Total Revenue',
+        averageOrder: 'Average Order',
+        uniqueCustomers: 'Unique Customers',
+        todaysOrders: 'Today\'s Orders',
+        timeline_placed: 'Order Placed',
+        timeline_transit: 'In Transit',
+        timeline_delivered: 'Delivered',
+        errorExport: 'Failed to export orders.',
+        revenueToday: 'Today\'s Revenue',
+        
+        viewDetails: 'View Details',
+        delete: 'Delete',
+        restore: 'Restore',
+        deletePermanently: 'Delete Permanently',
+        changeStatus: 'Change Status',
+        export: 'Export CSV',
+        loading: 'Loading orders...',
+        retry: 'Retry',
+        resetFilters: 'Reset Filters',
+        showActive: 'Show Active',
+        showDeleted: 'Show Deleted',
+        updateStatus: 'Update Status',
+        deleteSelected: 'Delete Selected',
+        selected: 'selected',
+        orderId: 'Order ID',
+        customer: 'Customer'
+    }
 };

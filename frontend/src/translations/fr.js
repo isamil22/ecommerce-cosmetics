@@ -481,7 +481,7 @@ export const fr = {
             categoriesFailed: 'Ã‰chec du chargement des catÃ©gories de produits. Veuillez rÃ©essayer.'
         }
     }
-,
+    ,
 
     // Categories Management
     categoriesPage: {
@@ -591,7 +591,7 @@ export const fr = {
             operationFailed: 'Opération échouée. Veuillez réessayer.'
         }
     }
-,
+    ,
 
     // Admin Dashboard
     dashboard: {
@@ -602,14 +602,14 @@ export const fr = {
         liveStatus: 'En direct',
         lastUpdated: 'Dernière mise à jour',
         error: 'Erreur',
-        
+
         // Metrics
         totalRevenue: 'Revenu total',
         totalOrders: 'Total des commandes',
         totalUsers: 'Total des utilisateurs',
         totalProducts: 'Total des produits',
         fromLastMonth: 'par rapport au mois dernier',
-        
+
         // Secondary Metrics
         packsAvailable: 'Packs disponibles',
         customPacks: 'Packs personnalisés',
@@ -618,13 +618,13 @@ export const fr = {
         active: 'Actif',
         disabled: 'Désactivé',
         range: 'Plage',
-        
+
         // Links
         managePacks: 'Gérer les packs',
         manageCustomPacks: 'Gérer les packs personnalisés',
         manageCategories: 'Gérer les catégories',
         configureSettings: 'Configurer les paramètres',
-        
+
         // Sections
         recentProducts: 'Produits récents',
         addNew: 'Ajouter',
@@ -633,7 +633,7 @@ export const fr = {
         viewAllOrders: 'Voir toutes les commandes',
         pendingReviews: 'Avis en attente',
         manageReviews: 'Gérer les avis',
-        
+
         // Quick Actions
         quickActions: 'Actions rapides',
         addNewProduct: 'Ajouter un nouveau produit',
@@ -641,5 +641,65 @@ export const fr = {
         newCustomPack: 'Nouveau pack personnalisé',
         addCategory: 'Ajouter une catégorie',
         reviewFormSettings: 'Paramètres du formulaire d\'avis'
+    },
+
+    // Orders Page
+    ordersPage: {
+        title: 'Gestion des commandes',
+        subtitle: 'Gérez et suivez les commandes des clients',
+        deletedOrders: 'Commandes supprimées',
+        activeOrders: 'Commandes actives',
+        searchPlaceholder: 'Rechercher par ID ou client...',
+        filterStatus: 'Filtrer par statut',
+        filterDate: 'Filtrer par date',
+        sortBy: 'Trier par',
+
+        status_ALL: 'Tous les statuts',
+        status_PENDING: 'En attente',
+        status_PREPARING: 'En préparation',
+        status_DELIVERING: 'En livraison',
+        status_DELIVERED: 'Livré',
+        status_CANCELLED: 'Annulé',
+
+        date_ALL: 'Toutes les dates',
+        date_TODAY: 'Aujourd\'hui',
+        date_THIS_WEEK: 'Cette semaine',
+        date_THIS_MONTH: 'Ce mois-ci',
+
+        orderBy: 'Commandé par',
+        items: 'Articles',
+        total: 'Total',
+        status: 'Statut',
+        date: 'Date',
+        actions: 'Actions',
+
+        totalRevenue: 'Revenu total',
+        averageOrder: 'Panier moyen',
+        uniqueCustomers: 'Clients uniques',
+        todaysOrders: 'Commandes d\'aujourd\'hui',
+        revenueToday: 'Revenu d\'aujourd\'hui',
+
+        viewDetails: 'Voir détails',
+        delete: 'Supprimer',
+        restore: 'Restaurer',
+        deletePermanently: 'Supprimer définitivement',
+        changeStatus: 'Changer le statut',
+        export: 'Exporter CSV',
+
+        loading: 'Chargement des commandes...',
+        retry: 'Réessayer',
+        resetFilters: 'Réinitialiser les filtres',
+        showActive: 'Afficher actifs',
+        showDeleted: 'Afficher supprimés',
+        updateStatus: 'Mettre à jour le statut',
+        deleteSelected: 'Supprimer la sélection',
+        selected: 'sélectionné(s)',
+        orderId: 'ID commande',
+        customer: 'Client',
+
+        timeline_placed: 'Commande passée',
+        timeline_transit: 'En transit',
+        timeline_delivered: 'Livrée',
+        errorExport: 'Échec de l\'exportation des commandes.'
     }
 };
