@@ -591,4 +591,55 @@ export const fr = {
             operationFailed: 'Opération échouée. Veuillez réessayer.'
         }
     }
+,
+
+    // Admin Dashboard
+    dashboard: {
+        loadingDashboard: 'Chargement du tableau de bord...',
+        adminDashboard: 'Tableau de bord administrateur',
+        welcomeMessage: 'Bienvenue dans votre panneau d\'administration',
+        refresh: 'Actualiser',
+        liveStatus: 'En direct',
+        lastUpdated: 'Dernière mise à jour',
+        error: 'Erreur',
+        
+        // Metrics
+        totalRevenue: 'Revenu total',
+        totalOrders: 'Total des commandes',
+        totalUsers: 'Total des utilisateurs',
+        totalProducts: 'Total des produits',
+        fromLastMonth: 'par rapport au mois dernier',
+        
+        // Secondary Metrics
+        packsAvailable: 'Packs disponibles',
+        customPacks: 'Packs personnalisés',
+        categories: 'Catégories',
+        visitorCounter: 'Compteur de visiteurs',
+        active: 'Actif',
+        disabled: 'Désactivé',
+        range: 'Plage',
+        
+        // Links
+        managePacks: 'Gérer les packs',
+        manageCustomPacks: 'Gérer les packs personnalisés',
+        manageCategories: 'Gérer les catégories',
+        configureSettings: 'Configurer les paramètres',
+        
+        // Sections
+        recentProducts: 'Produits récents',
+        addNew: 'Ajouter',
+        viewAllProducts: 'Voir tous les produits',
+        recentOrders: 'Commandes récentes',
+        viewAllOrders: 'Voir toutes les commandes',
+        pendingReviews: 'Avis en attente',
+        manageReviews: 'Gérer les avis',
+        
+        // Quick Actions
+        quickActions: 'Actions rapides',
+        addNewProduct: 'Ajouter un nouveau produit',
+        createNewPack: 'Créer un nouveau pack',
+        newCustomPack: 'Nouveau pack personnalisé',
+        addCategory: 'Ajouter une catégorie',
+        reviewFormSettings: 'Paramètres du formulaire d\'avis'
+    }
 };

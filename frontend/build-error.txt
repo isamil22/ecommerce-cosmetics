@@ -4,59 +4,41 @@
 
 [36mvite v5.4.20 [32mbuilding for production...[36m[39m
 transforming...
-[32mΓ£ô[39m 18 modules transformed.
-node.exe : [31mx[39m Build failed in 568ms
+[32mΓ£ô[39m 138 modules transformed.
+node.exe : [31mx[39m Build failed in 4.53s
 At C:\Program Files\nodejs\npm.ps1:29 char:3
 +   & $NODE_EXE $NPM_CLI_JS $args
 +   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: ([31mx[39m 
-    Build failed in 568ms:String) [], RemoteException
+    + CategoryInfo          : NotSpecified: ([31mx[39m Build failed in 4.53s:Str 
+   ing) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
 [31merror during build:
-[31m[vite:esbuild] Transform failed with 1 error:
-C:/Users/Hi/Downloads/Project Cosmetics 
-Ayoub/ecommerce-basic - Copy/frontend/src/pages/admin/Adm
-inCategoryForm.jsx:383:37: ERROR: Unexpected ">"[31m
-file: [36mC:/Users/Hi/Downloads/Project Cosmetics 
-Ayoub/ecommerce-basic - Copy/frontend/src/pages/admin/Adm
-inCategoryForm.jsx:383:37[31m
+[31m[vite:build-import-analysis] [plugin vite:build-import-analysis] 
+src/translations/fr.js (600:74): Failed to parse source for import analysis 
+because the content contains invalid JS syntax. If you are using JSX, make sure to 
+name the file with the .jsx or .tsx extension.[31m
+file: [36mC:/Users/Hi/Downloads/Project Cosmetics Ayoub/ecommerce-basic - 
+Copy/frontend/src/translations/fr.js:600:74[31m
 [33m
-[33mUnexpected ">"[33m
-381|                                          }`}
-382|                                          placeholder
-={t('categoryForm.fields.descriptionPlaceholder')
-383|                                      />
-   |                                       ^
-384|                                      
-{errors.description && (
-385|                                          <p 
-className="mt-2 text-sm text-red-600 flex items-center">
+598:         loadingDashboard: 'Chargement du tableau de bord...',
+599:         adminDashboard: 'Tableau de bord administrateur',
+600:         welcomeMessage: 'Bienvenue dans votre panneau d\\'administration',
+                                                                               ^
+601:         refresh: 'Actualiser',
+602:         liveStatus: 'En direct',
 [31m
-    at failureErrorWithLog 
-(C:\Users\Hi\Downloads\Project Cosmetics 
-Ayoub\ecommerce-basic - 
-Copy\frontend\node_modules\esbuild\lib\main.js:1472:15)
-    at C:\Users\Hi\Downloads\Project Cosmetics 
-Ayoub\ecommerce-basic - 
-Copy\frontend\node_modules\esbuild\lib\main.js:755:50
-    at responseCallbacks.<computed> 
-(C:\Users\Hi\Downloads\Project Cosmetics 
-Ayoub\ecommerce-basic - 
-Copy\frontend\node_modules\esbuild\lib\main.js:622:9)
-    at handleIncomingPacket 
-(C:\Users\Hi\Downloads\Project Cosmetics 
-Ayoub\ecommerce-basic - 
-Copy\frontend\node_modules\esbuild\lib\main.js:677:12)
-    at Socket.readFromStdout 
-(C:\Users\Hi\Downloads\Project Cosmetics 
-Ayoub\ecommerce-basic - 
-Copy\frontend\node_modules\esbuild\lib\main.js:600:7)
-    at Socket.emit (node:events:518:28)
-    at addChunk (node:internal/streams/readable:561:12)
-    at readableAddChunkPushByteMode 
-(node:internal/streams/readable:512:3)
-    at Readable.push 
-(node:internal/streams/readable:392:5)
-    at Pipe.onStreamRead 
-(node:internal/stream_base_commons:189:23)[39m
+    at getRollupError (file:///C:/Users/Hi/Downloads/Project%20Cosmetics%20Ayoub/ec
+ommerce-basic%20-%20Copy/frontend/node_modules/rollup/dist/es/shared/parseAst.js:40
+1:41)
+    at error (file:///C:/Users/Hi/Downloads/Project%20Cosmetics%20Ayoub/ecommerce-b
+asic%20-%20Copy/frontend/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Object.error (file:///C:/Users/Hi/Downloads/Project%20Cosmetics%20Ayoub/ecom
+merce-basic%20-%20Copy/frontend/node_modules/rollup/dist/es/shared/node-entry.js:22
+078:20)
+    at Object.error (file:///C:/Users/Hi/Downloads/Project%20Cosmetics%20Ayoub/ecom
+merce-basic%20-%20Copy/frontend/node_modules/rollup/dist/es/shared/node-entry.js:21
+136:42)
+    at Object.transform (file:///C:/Users/Hi/Downloads/Project%20Cosmetics%20Ayoub/
+ecommerce-basic%20-%20Copy/frontend/node_modules/vite/dist/node/chunks/dep-D_zLpgQd
+.js:64912:14)[39m

@@ -591,4 +591,55 @@ export const en = {
             operationFailed: 'Operation failed. Please try again.'
         }
     }
+,
+
+    // Admin Dashboard
+    dashboard: {
+        loadingDashboard: 'Loading dashboard...',
+        adminDashboard: 'Admin Dashboard',
+        welcomeMessage: 'Welcome to your administration panel',
+        refresh: 'Refresh',
+        liveStatus: 'Live',
+        lastUpdated: 'Last updated',
+        error: 'Error',
+        
+        // Metrics
+        totalRevenue: 'Total Revenue',
+        totalOrders: 'Total Orders',
+        totalUsers: 'Total Users',
+        totalProducts: 'Total Products',
+        fromLastMonth: 'from last month',
+        
+        // Secondary Metrics
+        packsAvailable: 'Packs Available',
+        customPacks: 'Custom Packs',
+        categories: 'Categories',
+        visitorCounter: 'Visitor Counter',
+        active: 'Active',
+        disabled: 'Disabled',
+        range: 'Range',
+        
+        // Links
+        managePacks: 'Manage Packs',
+        manageCustomPacks: 'Manage Custom Packs',
+        manageCategories: 'Manage Categories',
+        configureSettings: 'Configure Settings',
+        
+        // Sections
+        recentProducts: 'Recent Products',
+        addNew: 'Add New',
+        viewAllProducts: 'View All Products',
+        recentOrders: 'Recent Orders',
+        viewAllOrders: 'View All Orders',
+        pendingReviews: 'Pending Reviews',
+        manageReviews: 'Manage Reviews',
+        
+        // Quick Actions
+        quickActions: 'Quick Actions',
+        addNewProduct: 'Add New Product',
+        createNewPack: 'Create New Pack',
+        newCustomPack: 'New Custom Pack',
+        addCategory: 'Add Category',
+        reviewFormSettings: 'Review Form Settings'
+    }
 };
