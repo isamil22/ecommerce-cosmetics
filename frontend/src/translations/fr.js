@@ -896,8 +896,7 @@ export const fr = {
             updateSuccess: 'Annonce mise à jour avec succès !',
             updateError: 'Échec de la mise à jour de l\'annonce'
         }
-    }
-},
+    },
 
     // Countdown Page
     countdownPage: {

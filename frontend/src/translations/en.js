@@ -894,8 +894,7 @@ export const en = {
             updateSuccess: 'Announcement updated successfully!',
             updateError: 'Failed to update announcement'
         }
-    }
-},
+    },
 
     // Countdown Page
     countdownPage: {
