@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { getAllCustomPacks, deleteCustomPack } from '../../api/apiService';
 import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
@@ -18,6 +18,7 @@ import {
 } from 'react-icons/fi';
 
 const AdminCustomPacksPage = () => {
+    const { t } = useLanguage();
     const [customPacks, setCustomPacks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -29,7 +30,7 @@ const AdminCustomPacksPage = () => {
             const response = await getAllCustomPacks();
             setCustomPacks(response.data || []);
         } catch (err) {
-            setError('Failed to fetch custom packs.');
+            setError(t('customPacks.fetchFailed'));
             console.error("Fetch Custom Packs Error:", err);
         } finally {
             setLoading(false);
@@ -41,15 +42,15 @@ const AdminCustomPacksPage = () => {
     }, []);
 
     const handleDelete = async (packId) => {
-        if (window.confirm('Are you sure you want to delete this custom pack?')) {
+        if (window.confirm(t('customPacks.deleteConfirm'))) {
             setDeletingPackId(packId);
             try {
                 await deleteCustomPack(packId);
-                toast.success('Custom pack deleted successfully!');
+                toast.success(t('customPacks.deleteSuccess'));
                 fetchCustomPacks(); // Refresh the list
             } catch (err) {
-                setError('Failed to delete custom pack.');
-                toast.error('Failed to delete custom pack.');
+                setError(t('customPacks.deleteFailed'));
+                toast.error(t('customPacks.deleteFailed'));
             } finally {
                 setDeletingPackId(null);
             }
@@ -84,28 +85,26 @@ const AdminCustomPacksPage = () => {
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold text-gray-800 flex items-center space-x-2">
-                            <span>Manage Custom Packs</span>
+                            <span>{t('customPacks.manageTitle')}</span>
                             <FiTrendingUp className="w-6 h-6 text-green-500 animate-pulse" />
                         </h1>
-                        <p className="text-gray-600 mt-1">Create and manage custom product bundles</p>
+                        <p className="text-gray-600 mt-1">{t('customPacks.manageSubtitle')}</p>
                     </div>
                 </div>
                 
                 <div className="flex items-center space-x-3">
-                    <button
-                        onClick={handleRefresh}
-                        className="flex items-center space-x-2 bg-white text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-pink-300 transition-all duration-300 group"
                     >
                         <FiRefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-transform duration-500 ${loading ? 'animate-spin' : ''}`} />
-                        <span>Refresh</span>
+                        <span>{t('customPacks.refresh')}</span>
                     </button>
                     
                     <Link 
                         to="/admin/custom-packs/new" 
                         className="flex items-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group"
                     >
+                    >
                         <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-                        <span className="font-medium">Add New Custom Pack</span>
+                        <span className="font-medium">{t('customPacks.addNew')}</span>
                     </Link>
                 </div>
             </div>
@@ -143,21 +142,21 @@ const AdminCustomPacksPage = () => {
                                                 <div className="flex items-center space-x-2">
                                                     <FiDollarSign className="w-4 h-4 text-green-600" />
                                                     <span className="text-lg font-semibold text-gray-700">
-                                                        {pack.pricingType === 'FIXED' ? `$${pack.fixedPrice}` : `${pack.discountRate * 100}% Discount`}
+                                                        {pack.pricingType === 'FIXED' ? `$${pack.fixedPrice}` : `${pack.discountRate * 100}% ${t('customPacks.table.discount')}`}
                                                     </span>
                                                 </div>
                                                 
                                                 <div className="flex items-center space-x-2">
                                                     <FiTrendingUp className="w-4 h-4 text-blue-600" />
                                                     <span className="text-sm text-gray-600">
-                                                        {pack.pricingType === 'FIXED' ? 'Fixed Price' : 'Percentage Discount'}
+                                                        {pack.pricingType === 'FIXED' ? t('customPacks.table.fixedPrice') : t('customPacks.table.percentageDiscount')}
                                                     </span>
                                                 </div>
                                             </div>
                                             
                                             <div className="flex items-center space-x-2 text-sm text-gray-500">
                                                 <FiEye className="w-4 h-4" />
-                                                <span>ID: {pack.id}</span>
+                                                <span>{t('customPacks.table.id')}: {pack.id}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -168,7 +167,7 @@ const AdminCustomPacksPage = () => {
                                             className="flex items-center space-x-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition-all duration-300 group/edit"
                                         >
                                             <FiEdit3 className="w-4 h-4 group-hover/edit:rotate-12 transition-transform duration-300" />
-                                            <span className="font-medium">Edit</span>
+                                            <span className="font-medium">{t('customPacks.table.edit')}</span>
                                         </Link>
                                         
                                         <button
@@ -182,7 +181,7 @@ const AdminCustomPacksPage = () => {
                                                 <FiTrash2 className="w-4 h-4 group-hover/delete:scale-110 transition-transform duration-300" />
                                             )}
                                             <span className="font-medium">
-                                                {deletingPackId === pack.id ? 'Deleting...' : 'Delete'}
+                                                {deletingPackId === pack.id ? t('customPacks.table.deleting') : t('customPacks.table.delete')}
                                             </span>
                                         </button>
                                     </div>
@@ -201,14 +200,14 @@ const AdminCustomPacksPage = () => {
                             <FiPackage className="w-10 h-10 text-gray-400" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Custom Packs Found</h3>
-                            <p className="text-gray-500 mb-6">Create your first custom pack to get started</p>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-2">{t('customPacks.noPacks')}</h3>
+                            <p className="text-gray-500 mb-6">{t('customPacks.noPacksDesc')}</p>
                             <Link 
                                 to="/admin/custom-packs/new" 
                                 className="inline-flex items-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group"
                             >
                                 <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-                                <span className="font-medium">Create First Pack</span>
+                                <span className="font-medium">{t('customPacks.createFirst')}</span>
                             </Link>
                         </div>
                     </div>

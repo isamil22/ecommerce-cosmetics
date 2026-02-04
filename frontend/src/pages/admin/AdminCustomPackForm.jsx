@@ -34,10 +34,14 @@ import {
     FiShield,
     FiZap
 } from 'react-icons/fi';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminCustomPackForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const isEditing = Boolean(id);
+    const { t } = useLanguage();
+
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -59,7 +63,6 @@ const AdminCustomPackForm = () => {
     const [isDirty, setIsDirty] = useState(false);
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const isEditing = Boolean(id);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -249,10 +252,10 @@ const AdminCustomPackForm = () => {
 
             if (isEditing) {
                 await updateCustomPack(id, formDataToSend);
-                toast.success('Custom pack updated successfully!');
+                toast.success(t('customPacks.form.success.updated'));
             } else {
                 await createCustomPack(formDataToSend);
-                toast.success('Custom pack created successfully!');
+                toast.success(t('customPacks.form.success.created'));
             }
             navigate('/admin/custom-packs');
         } catch (error) {
@@ -268,21 +271,58 @@ const AdminCustomPackForm = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50">
-            {/* Enhanced Header */}
-            <div className="bg-white shadow-sm border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="min-h-screen bg-gray-50 pb-20 font-sans">
+            {/* Navigation Bar */}
+            <div className="bg-white sticky top-0 z-30 shadow-sm border-b border-gray-100">
+                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                    <button
+                        onClick={() => navigate('/admin/custom-packs')}
+                        className="flex items-center text-gray-500 hover:text-gray-800 transition-colors group"
+                    >
+                        <FiArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+                        <span className="font-medium">{t('customPacks.manageTitle')}</span>
+                    </button>
+                    
+                    <div className="flex items-center space-x-3">
+                        <button
+                            type="button"
+                            className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm flex items-center"
+                        >
+                            <FiEye className="w-4 h-4 mr-2" />
+                            <span>{t('customPacks.form.quickActions')}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Header Section */}
+            <div className="bg-white border-b border-gray-200 pb-10 pt-8 px-6">
+                <div className="max-w-5xl mx-auto">
+                    <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+                        <span className="text-gray-400">Custom Packs</span>
+                        <span className="text-gray-300">/</span>
+                        <span className="font-medium text-pink-600">{isEditing ? t('customPacks.form.editTitle') : t('customPacks.form.createTitle')}</span>
+                    </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
-                            <button
-                                onClick={() => navigate('/admin/custom-packs')}
-                                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 group"
-                            >
-                                <FiArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-                                <span className="font-medium">Back to Custom Packs</span>
-                            </button>
+                            <div className="relative">
+                                <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                    <FiPackage className="w-8 h-8 text-white" />
+                                </div>
+                                <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                                    <FiCheckCircle className="w-3 h-3 text-white" />
+                                </div>
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold text-gray-800 flex items-center space-x-3">
+                                    <span>{isEditing ? t('customPacks.form.editTitle') : t('customPacks.form.createTitle')}</span>
+                                    <FiZap className="w-8 h-8 text-pink-500 animate-pulse" />
+                                </h1>
+                                <p className="text-gray-600 mt-1 text-lg">
+                                    {isEditing ? t('customPacks.form.editSubtitle') : t('customPacks.form.createSubtitle')}
+                                </p>
+                            </div>
                         </div>
-
                         <div className="flex items-center space-x-3">
                             {isDirty && (
                                 <div className="flex items-center space-x-2 text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">
@@ -290,7 +330,6 @@ const AdminCustomPackForm = () => {
                                     <span className="text-sm font-medium">Unsaved changes</span>
                                 </div>
                             )}
-
                             <button
                                 type="button"
                                 onClick={() => setShowPreview(!showPreview)}
@@ -301,8 +340,6 @@ const AdminCustomPackForm = () => {
                             </button>
                         </div>
                     </div>
-
-                    <div className="mt-6 flex items-center space-x-4">
                         <div className="relative">
                             <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
                                 <FiPackage className="w-8 h-8 text-white" />
@@ -314,11 +351,11 @@ const AdminCustomPackForm = () => {
 
                         <div>
                             <h1 className="text-3xl font-bold text-gray-800 flex items-center space-x-3">
-                                <span>{isEditing ? 'Edit Custom Pack' : 'Create Custom Pack'}</span>
+                                <span>{isEditing ? t('customPacks.form.editTitle') : t('customPacks.form.createTitle')}</span>
                                 <FiZap className="w-8 h-8 text-pink-500 animate-pulse" />
                             </h1>
                             <p className="text-gray-600 mt-1 text-lg">
-                                {isEditing ? 'Update your custom product bundle' : 'Build a flexible product bundle with custom pricing'}
+                                {isEditing ? t('customPacks.form.editSubtitle') : t('customPacks.form.createSubtitle')}
                             </p>
                         </div>
                     </div>
@@ -336,13 +373,13 @@ const AdminCustomPackForm = () => {
                                     <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl flex items-center justify-center">
                                         <FiPackage className="w-5 h-5 text-white" />
                                     </div>
-                                    <h2 className="text-xl font-bold text-gray-800">Basic Information</h2>
+                                    <h2 className="text-xl font-bold text-gray-800">{t('customPacks.form.basicInfo')}</h2>
                                 </div>
 
                                 <div className="space-y-6">
                                     <div>
                                         <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Pack Name <span className="text-red-500">*</span>
+                                            {t('customPacks.form.packName')} <span className="text-red-500">*</span>
                                         </label>
                                         <input
                                             type="text"
@@ -353,7 +390,7 @@ const AdminCustomPackForm = () => {
                                             required
                                             className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${errors.name ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
                                                 }`}
-                                            placeholder="Enter pack name..."
+                                            placeholder={t('customPacks.form.packNamePlaceholder')}
                                         />
                                         {errors.name && (
                                             <div className="flex items-center space-x-2 mt-2 text-red-600">
@@ -366,7 +403,7 @@ const AdminCustomPackForm = () => {
 
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Pack Image
+                                            {t('customPacks.form.packImage')}
                                         </label>
                                         <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-pink-500 transition-colors duration-200">
                                             <div className="space-y-1 text-center">
@@ -395,7 +432,7 @@ const AdminCustomPackForm = () => {
                                                                 htmlFor="image-upload"
                                                                 className="relative cursor-pointer bg-white rounded-md font-medium text-pink-600 hover:text-pink-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-pink-500"
                                                             >
-                                                                <span>Upload a file</span>
+                                                                <span>{t('customPacks.form.uploadFile')}</span>
                                                                 <input
                                                                     id="image-upload"
                                                                     name="image"
@@ -405,10 +442,10 @@ const AdminCustomPackForm = () => {
                                                                     onChange={handleImageChange}
                                                                 />
                                                             </label>
-                                                            <p className="pl-1">or drag and drop</p>
+                                                            <p className="pl-1">{t('customPacks.form.dragDrop')}</p>
                                                         </div>
                                                         <p className="text-xs text-gray-500">
-                                                            PNG, JPG, GIF up to 10MB
+                                                            {t('customPacks.form.imageConstraints')}
                                                         </p>
                                                     </>
                                                 )}
@@ -418,7 +455,7 @@ const AdminCustomPackForm = () => {
 
                                     <div>
                                         <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Description <span className="text-red-500">*</span>
+                                            {t('customPacks.form.description')} <span className="text-red-500">*</span>
                                         </label>
                                         <textarea
                                             name="description"
@@ -428,7 +465,7 @@ const AdminCustomPackForm = () => {
                                             rows="4"
                                             required
                                             className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-100 transition-all duration-200"
-                                            placeholder="Describe your custom pack..."
+                                            placeholder={t('customPacks.form.descriptionPlaceholder')}
                                         />
                                     </div>
                                 </div>
@@ -440,13 +477,13 @@ const AdminCustomPackForm = () => {
                                     <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center">
                                         <FiSettings className="w-5 h-5 text-white" />
                                     </div>
-                                    <h2 className="text-xl font-bold text-gray-800">Pack Configuration</h2>
+                                    <h2 className="text-xl font-bold text-gray-800">{t('customPacks.form.configuration')}</h2>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label htmlFor="minItems" className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Minimum Items <span className="text-red-500">*</span>
+                                            {t('customPacks.form.minItems')} <span className="text-red-500">*</span>
                                         </label>
                                         <div className="relative">
                                             <input
@@ -473,7 +510,7 @@ const AdminCustomPackForm = () => {
 
                                     <div>
                                         <label htmlFor="maxItems" className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Maximum Items <span className="text-red-500">*</span>
+                                            {t('customPacks.form.maxItems')} <span className="text-red-500">*</span>
                                         </label>
                                         <div className="relative">
                                             <input
@@ -506,13 +543,13 @@ const AdminCustomPackForm = () => {
                                     <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
                                         <FiDollarSign className="w-5 h-5 text-white" />
                                     </div>
-                                    <h2 className="text-xl font-bold text-gray-800">Pricing Configuration</h2>
+                                    <h2 className="text-xl font-bold text-gray-800">{t('customPacks.form.pricingConfig')}</h2>
                                 </div>
 
                                 <div className="space-y-6">
                                     <div>
                                         <label htmlFor="pricingType" className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Pricing Type <span className="text-red-500">*</span>
+                                            {t('customPacks.form.pricingType')} <span className="text-red-500">*</span>
                                         </label>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${formData.pricingType === 'FIXED'
@@ -530,8 +567,8 @@ const AdminCustomPackForm = () => {
                                                 <div className="flex items-center space-x-3">
                                                     <FiDollarSign className="w-5 h-5 text-pink-600" />
                                                     <div>
-                                                        <div className="font-semibold text-gray-800">Fixed Price</div>
-                                                        <div className="text-sm text-gray-600">Set a fixed price for the pack</div>
+                                                        <div className="font-semibold text-gray-800">{t('customPacks.form.fixedPrice')}</div>
+                                                        <div className="text-sm text-gray-600">{t('customPacks.form.fixedPriceDesc')}</div>
                                                     </div>
                                                 </div>
                                             </label>
@@ -551,8 +588,8 @@ const AdminCustomPackForm = () => {
                                                 <div className="flex items-center space-x-3">
                                                     <FiPercent className="w-5 h-5 text-pink-600" />
                                                     <div>
-                                                        <div className="font-semibold text-gray-800">Dynamic Discount</div>
-                                                        <div className="text-sm text-gray-600">Apply percentage discount</div>
+                                                        <div className="font-semibold text-gray-800">{t('customPacks.form.dynamicDiscount')}</div>
+                                                        <div className="text-sm text-gray-600">{t('customPacks.form.dynamicDiscountDesc')}</div>
                                                     </div>
                                                 </div>
                                             </label>
@@ -562,7 +599,7 @@ const AdminCustomPackForm = () => {
                                     {formData.pricingType === 'FIXED' ? (
                                         <div>
                                             <label htmlFor="fixedPrice" className="block text-sm font-semibold text-gray-700 mb-2">
-                                                Fixed Price <span className="text-red-500">*</span>
+                                                {t('customPacks.form.fixedPrice')} <span className="text-red-500">*</span>
                                             </label>
                                             <div className="relative">
                                                 <input
@@ -590,7 +627,7 @@ const AdminCustomPackForm = () => {
                                     ) : (
                                         <div>
                                             <label htmlFor="discountRate" className="block text-sm font-semibold text-gray-700 mb-2">
-                                                Discount Rate <span className="text-red-500">*</span>
+                                                {t('customPacks.form.discountRate')} (%) <span className="text-red-500">*</span>
                                             </label>
                                             <div className="relative">
                                                 <input
@@ -627,7 +664,7 @@ const AdminCustomPackForm = () => {
                                         <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
                                             <FiShoppingCart className="w-5 h-5 text-white" />
                                         </div>
-                                        <h2 className="text-xl font-bold text-gray-800">Product Selection</h2>
+                                        <h2 className="text-xl font-bold text-gray-800">{t('customPacks.form.productSelection')}</h2>
                                     </div>
 
                                     <div className="flex items-center space-x-2">
@@ -664,7 +701,7 @@ const AdminCustomPackForm = () => {
                                         <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                                         <input
                                             type="text"
-                                            placeholder="Search products..."
+                                            placeholder={t('customPacks.form.searchPlaceholder')}
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
                                             className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-100 transition-all duration-200"
@@ -738,13 +775,13 @@ const AdminCustomPackForm = () => {
                                 <div className="mt-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                                         <FiCheckCircle className="w-4 h-4 text-green-500" />
-                                        <span>Selected: <strong>{selectedProducts.length}</strong> products</span>
+                                        <span>{t('customPacks.form.selected')}: <strong>{selectedProducts.length}</strong></span>
                                     </div>
 
                                     {selectedProducts.length > 0 && (
                                         <div className="flex items-center space-x-2 text-sm text-gray-600">
                                             <FiDollarSign className="w-4 h-4 text-green-500" />
-                                            <span>Total Value: <strong>${calculatePackValue().toFixed(2)}</strong></span>
+                                            <span>{t('customPacks.form.totalValue')}: <strong>${calculatePackValue().toFixed(2)}</strong></span>
                                         </div>
                                     )}
                                 </div>
@@ -760,12 +797,12 @@ const AdminCustomPackForm = () => {
                                     {isSubmitting ? (
                                         <>
                                             <FiRefreshCw className="w-5 h-5 animate-spin" />
-                                            <span>Creating Pack...</span>
+                                            <span>{isEditing ? t('customPacks.form.updating') : t('customPacks.form.creating')}</span>
                                         </>
                                     ) : (
                                         <>
                                             <FiSave className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                                            <span>{isEditing ? 'Update Pack' : 'Create Pack'}</span>
+                                            <span>{isEditing ? t('customPacks.form.update') : t('customPacks.form.create')}</span>
                                         </>
                                     )}
                                 </button>
@@ -820,14 +857,14 @@ const AdminCustomPackForm = () => {
                             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
                                 <div className="flex items-center space-x-3 mb-4">
                                     <FiTrendingUp className="w-5 h-5 text-green-600" />
-                                    <h3 className="text-lg font-bold text-gray-800">Pack Statistics</h3>
+                                    <h3 className="text-lg font-bold text-gray-800">{t('customPacks.form.statistics')}</h3>
                                 </div>
 
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center space-x-2">
                                             <FiShoppingCart className="w-4 h-4 text-blue-600" />
-                                            <span className="text-sm text-gray-600">Total Products</span>
+                                            <span className="text-sm text-gray-600">{t('customPacks.form.totalProducts')}</span>
                                         </div>
                                         <span className="font-bold text-gray-800">{packableProducts.length}</span>
                                     </div>
@@ -835,7 +872,7 @@ const AdminCustomPackForm = () => {
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center space-x-2">
                                             <FiCheckCircle className="w-4 h-4 text-green-600" />
-                                            <span className="text-sm text-gray-600">Selected</span>
+                                            <span className="text-sm text-gray-600">{t('customPacks.form.selected')}</span>
                                         </div>
                                         <span className="font-bold text-gray-800">{selectedProducts.length}</span>
                                     </div>
@@ -843,7 +880,7 @@ const AdminCustomPackForm = () => {
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center space-x-2">
                                             <FiDollarSign className="w-4 h-4 text-green-600" />
-                                            <span className="text-sm text-gray-600">Total Value</span>
+                                            <span className="text-sm text-gray-600">{t('customPacks.form.totalValue')}</span>
                                         </div>
                                         <span className="font-bold text-gray-800">${calculatePackValue().toFixed(2)}</span>
                                     </div>
@@ -852,7 +889,7 @@ const AdminCustomPackForm = () => {
                                         <div className="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
                                             <div className="flex items-center space-x-2">
                                                 <FiPercent className="w-4 h-4 text-pink-600" />
-                                                <span className="text-sm text-gray-600">Savings</span>
+                                                <span className="text-sm text-gray-600">{t('customPacks.form.savings')}</span>
                                             </div>
                                             <span className="font-bold text-pink-600">{calculateDiscount()}%</span>
                                         </div>

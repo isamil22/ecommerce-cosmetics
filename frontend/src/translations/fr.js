@@ -1096,5 +1096,86 @@ export const fr = {
         buttons: {
             save: 'Enregistrer tous les paramètres'
         }
+    },
+    // Custom Packs
+    customPacks: {
+        manageTitle: 'Gérer les Packs Personnalisés',
+        manageSubtitle: 'Créer et gérer des packs de produits personnalisés',
+        refresh: 'Actualiser',
+        addNew: 'Ajouter un Nouveau Pack',
+        noPacks: 'Aucun pack personnalisé trouvé',
+        noPacksDesc: 'Créez votre premier pack personnalisé pour commencer',
+        createFirst: 'Créer le Premier Pack',
+        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce pack personnalisé ?',
+        deleteSuccess: 'Pack personnalisé supprimé avec succès !',
+        deleteFailed: 'Échec de la suppression du pack personnalisé.',
+        fetchFailed: 'Échec de la récupération des packs personnalisés.',
+        table: {
+            id: 'ID',
+            edit: 'Modifier',
+            delete: 'Supprimer',
+            deleting: 'Suppression...',
+            fixedPrice: 'Prix Fixe',
+            percentageDiscount: 'Remise en Pourcentage',
+            discount: 'Remise'
+        },
+        form: {
+            createTitle: 'Créer un Pack Personnalisé',
+            editTitle: 'Modifier le Pack Personnalisé',
+            createSubtitle: 'Créez un ensemble de produits flexible avec une tarification personnalisée',
+            editSubtitle: 'Mettez à jour votre ensemble de produits personnalisé',
+            basicInfo: 'Informations de Base',
+            packName: 'Nom du Pack',
+            packNamePlaceholder: 'Entrez le nom du pack...',
+            packImage: 'Image du Pack',
+            uploadFile: 'Télécharger un fichier',
+            dragDrop: 'ou glisser-déposer',
+            imageConstraints: 'PNG, JPG, GIF jusqu\'à 10MB',
+            description: 'Description',
+            descriptionPlaceholder: 'Décrivez votre pack personnalisé...',
+            configuration: 'Configuration du Pack',
+            minItems: 'Articles Minimum',
+            maxItems: 'Articles Maximum',
+            pricingConfig: 'Configuration des Prix',
+            pricingType: 'Type de Tarification',
+            fixedPrice: 'Prix Fixe',
+            fixedPriceDesc: 'Définir un prix fixe pour le pack',
+            dynamicDiscount: 'Remise Dynamique',
+            dynamicDiscountDesc: 'Appliquer un pourcentage de remise',
+            discountRate: 'Taux de Remise',
+            allowStacking: 'Autoriser les Remises Cumulables',
+            stackingDesc: 'Autoriser d\'autres remises à s\'appliquer sur ce pack',
+            productSelection: 'Sélection de Produits',
+            searchPlaceholder: 'Rechercher des produits...',
+            selectAll: 'Tout Sélectionner',
+            clearSelection: 'Effacer la Sélection',
+            clearSearch: 'Effacer la Recherche',
+            statistics: 'Statistiques du Pack',
+            totalProducts: 'Total Produits',
+            selected: 'Sélectionné',
+            totalValue: 'Valeur Totale',
+            savings: 'Économies',
+            quickActions: 'Actions Rapides',
+            readyToSave: 'Prêt à enregistrer ?',
+            reviewSettings: 'Vérifiez les paramètres et enregistrez les modifications',
+            cancel: 'Annuler',
+            create: 'Créer Pack',
+            update: 'Mettre à Jour',
+            creating: 'Création...',
+            updating: 'Mise à jour...',
+            validation: {
+                nameRequired: 'Le nom du pack est requis',
+                minItemsRequired: 'Le nombre minimum d\'articles est requis',
+                maxItemsRequired: 'Le nombre maximum d\'articles est requis',
+                fixedPriceRequired: 'Le prix fixe est requis',
+                discountRateRequired: 'Le taux de remise est requis',
+                minProducts: 'Sélectionnez au moins {count} produits',
+                maxItemsError: 'Le nombre maximum d\'articles ne peut pas être inférieur au minimum'
+            },
+            success: {
+                created: 'Pack personnalisé créé avec succès',
+                updated: 'Pack personnalisé mis à jour avec succès'
+            }
+        }
     }
 };

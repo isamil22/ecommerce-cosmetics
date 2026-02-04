@@ -1094,5 +1094,86 @@ export const en = {
         buttons: {
             save: 'Save All Settings'
         }
+    },
+    // Custom Packs
+    customPacks: {
+        manageTitle: 'Manage Custom Packs',
+        manageSubtitle: 'Create and manage custom product bundles',
+        refresh: 'Refresh',
+        addNew: 'Add New Custom Pack',
+        noPacks: 'No Custom Packs Found',
+        noPacksDesc: 'Create your first custom pack to get started',
+        createFirst: 'Create First Pack',
+        deleteConfirm: 'Are you sure you want to delete this custom pack?',
+        deleteSuccess: 'Custom pack deleted successfully!',
+        deleteFailed: 'Failed to delete custom pack.',
+        fetchFailed: 'Failed to fetch custom packs.',
+        table: {
+            id: 'ID',
+            edit: 'Edit',
+            delete: 'Delete',
+            deleting: 'Deleting...',
+            fixedPrice: 'Fixed Price',
+            percentageDiscount: 'Percentage Discount',
+            discount: 'Discount'
+        },
+        form: {
+            createTitle: 'Create Custom Pack',
+            editTitle: 'Edit Custom Pack',
+            createSubtitle: 'Build a flexible product bundle with custom pricing',
+            editSubtitle: 'Update your custom product bundle',
+            basicInfo: 'Basic Information',
+            packName: 'Pack Name',
+            packNamePlaceholder: 'Enter pack name...',
+            packImage: 'Pack Image',
+            uploadFile: 'Upload a file',
+            dragDrop: 'or drag and drop',
+            imageConstraints: 'PNG, JPG, GIF up to 10MB',
+            description: 'Description',
+            descriptionPlaceholder: 'Describe your custom pack...',
+            configuration: 'Pack Configuration',
+            minItems: 'Minimum Items',
+            maxItems: 'Maximum Items',
+            pricingConfig: 'Pricing Configuration',
+            pricingType: 'Pricing Type',
+            fixedPrice: 'Fixed Price',
+            fixedPriceDesc: 'Set a fixed price for the pack',
+            dynamicDiscount: 'Dynamic Discount',
+            dynamicDiscountDesc: 'Apply percentage discount',
+            discountRate: 'Discount Rate',
+            allowStacking: 'Allow Stacking Discounts',
+            stackingDesc: 'Allow other discounts to apply on top of this pack',
+            productSelection: 'Product Selection',
+            searchPlaceholder: 'Search products...',
+            selectAll: 'Select All Products',
+            clearSelection: 'Clear Selection',
+            clearSearch: 'Clear Search',
+            statistics: 'Pack Statistics',
+            totalProducts: 'Total Products',
+            selected: 'Selected',
+            totalValue: 'Total Value',
+            savings: 'Savings',
+            quickActions: 'Quick Actions',
+            readyToSave: 'Ready to save?',
+            reviewSettings: 'Review settings and save changes',
+            cancel: 'Cancel',
+            create: 'Create Custom Pack',
+            update: 'Update Custom Pack',
+            creating: 'Creating...',
+            updating: 'Updating...',
+            validation: {
+                nameRequired: 'Pack name is required',
+                minItemsRequired: 'Minimum items is required',
+                maxItemsRequired: 'Maximum items is required',
+                fixedPriceRequired: 'Fixed price is required',
+                discountRateRequired: 'Discount rate is required',
+                minProducts: 'Select at least {count} products',
+                maxItemsError: 'Maximum items cannot be less than minimum items'
+            },
+            success: {
+                created: 'Custom pack created successfully',
+                updated: 'Custom pack updated successfully'
+            }
+        }
     }
 };
