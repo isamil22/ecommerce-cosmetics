@@ -741,7 +741,7 @@ export const en = {
     },
 
     // Review Form Settings
-    reviewFormSettings: {
+    reviewFormSettingsPage: {
         title: 'Review Form Settings',
         subtitle: 'Control the visibility of the review form on product detail pages',
         configTitle: 'Review Form Configuration',

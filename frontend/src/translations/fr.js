@@ -743,7 +743,7 @@ export const fr = {
     },
 
     // Review Form Settings
-    reviewFormSettings: {
+    reviewFormSettingsPage: {
         title: 'Paramètres du formulaire d\'avis',
         subtitle: 'Contrôlez la visibilité du formulaire d\'avis sur s produits',
         configTitle: 'Configuration du formulaire',
