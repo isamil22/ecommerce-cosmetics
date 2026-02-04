@@ -28,6 +28,11 @@ export const LanguageProvider = ({ children }) => {
             }
         }
 
+        if (value && typeof value === 'object') {
+            console.warn(`Translation key '${key}' returned an object. Expected string.`, value);
+            return key;
+        }
+
         return value || key;
     };
 
