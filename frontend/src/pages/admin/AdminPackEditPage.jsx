@@ -22,8 +22,10 @@ import {
     FiTrash2,
     FiChevronDown
 } from 'react-icons/fi';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminPackEditPage = () => {
+    const { t } = useLanguage();
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -95,16 +97,16 @@ const AdminPackEditPage = () => {
         switch (name) {
             case 'name':
                 if (!value.trim()) {
-                    newErrors.name = 'Pack name is required';
+                    newErrors.name = t('packForm.validation.nameRequired');
                 } else if (value.trim().length < 3) {
-                    newErrors.name = 'Pack name must be at least 3 characters';
+                    newErrors.name = 'Pack name must be at least 3 characters'; // Keeping this specific check if no translation key matches perfectly, or use general
                 } else {
                     delete newErrors.name;
                 }
                 break;
             case 'price':
                 if (!value || parseFloat(value) <= 0) {
-                    newErrors.price = 'Valid price is required';
+                    newErrors.price = t('packForm.validation.priceRequired');
                 } else {
                     delete newErrors.price;
                 }
@@ -219,7 +221,7 @@ const AdminPackEditPage = () => {
         // Validation to ensure a default product is selected for each item
         for (const item of packData.items) {
             if (!item.defaultProductId) {
-                setError('Each pack item must have a default product selected.');
+                setError(t('packForm.validation.itemDefaultRequired'));
                 return;
             }
         }
@@ -240,7 +242,7 @@ const AdminPackEditPage = () => {
         setLoading(true);
         try {
             await updatePack(id, formData);
-            toast.success('Pack updated successfully!');
+            toast.success(t('packForm.success.updated'));
             navigate('/admin/packs');
         } catch (err) {
             const errorMessage = err.response?.data?.message || 'Failed to update pack. Please check the form fields.';
@@ -253,10 +255,10 @@ const AdminPackEditPage = () => {
     };
 
     const steps = [
-        { id: 1, name: 'Basic Info', icon: FiPackage },
-        { id: 2, name: 'Pack Items', icon: FiPlus },
-        { id: 3, name: 'Recommendations', icon: FiFilter },
-        { id: 4, name: 'Review', icon: FiEye }
+        { id: 1, name: t('packForm.steps.basicInfo'), icon: FiPackage },
+        { id: 2, name: t('packForm.steps.packItems'), icon: FiPlus },
+        { id: 3, name: t('packForm.steps.recommendations'), icon: FiFilter },
+        { id: 4, name: t('packForm.steps.review'), icon: FiEye }
     ];
 
     // Custom Product Select Component with Images
@@ -417,15 +419,15 @@ const AdminPackEditPage = () => {
                             <FiPackage className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-800">Edit Pack</h2>
-                            <p className="text-gray-600">Update your product bundle with multiple items</p>
+                            <h2 className="text-2xl font-bold text-gray-800">{t('packForm.editTitle')}</h2>
+                            <p className="text-gray-600">{t('packForm.editSubtitle')}</p>
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
                         {isDirty && (
                             <span className="flex items-center text-sm text-orange-600">
                                 <FiSave className="w-4 h-4 mr-1" />
-                                Unsaved changes
+                                {t('packForm.unsavedChanges')}
                             </span>
                         )}
                     </div>
@@ -477,14 +479,14 @@ const AdminPackEditPage = () => {
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center mb-4">
                         <FiPackage className="w-5 h-5 text-pink-500 mr-2" />
-                        <h3 className="text-lg font-semibold text-gray-800">Basic Information</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">{t('packForm.basicInfo.title')}</h3>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Pack Name */}
                         <div className="lg:col-span-2">
                             <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                                Pack Name *
+                                {t('packForm.basicInfo.name')} *
                             </label>
                             <input
                                 type="text"
@@ -494,7 +496,7 @@ const AdminPackEditPage = () => {
                                 onChange={handleInputChange}
                                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors ${errors.name ? 'border-red-500' : 'border-gray-200'
                                     }`}
-                                placeholder="Enter pack name"
+                                placeholder={t('packForm.basicInfo.namePlaceholder')}
                                 required
                             />
                             {errors.name && (
@@ -508,7 +510,7 @@ const AdminPackEditPage = () => {
                         {/* Price */}
                         <div>
                             <label htmlFor="price" className="block text-sm font-semibold text-gray-700 mb-2">
-                                Pack Price *
+                                {t('packForm.basicInfo.price')} *
                             </label>
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
@@ -536,7 +538,7 @@ const AdminPackEditPage = () => {
                         {/* Image Upload */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Pack Image
+                                {t('packForm.basicInfo.image')}
                             </label>
                             <div
                                 className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${imagePreview ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-pink-400'
@@ -603,10 +605,10 @@ const AdminPackEditPage = () => {
                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
                                 <div>
                                     <label htmlFor="hideCommentForm" className="block text-sm font-semibold text-gray-700 mb-1">
-                                        Hide Comment Form
+                                        {t('packForm.basicInfo.hideComments')}
                                     </label>
                                     <p className="text-sm text-gray-600">
-                                        When enabled, users won't be able to leave comments on this pack. Existing comments will still be visible.
+                                        {t('packForm.basicInfo.hideCommentsDesc')}
                                     </p>
                                 </div>
                                 <div className="flex items-center">
@@ -632,7 +634,7 @@ const AdminPackEditPage = () => {
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center">
                             <FiPlus className="w-5 h-5 text-pink-500 mr-2" />
-                            <h3 className="text-lg font-semibold text-gray-800">Pack Items</h3>
+                            <h3 className="text-lg font-semibold text-gray-800">{t('packForm.items.title')}</h3>
                         </div>
                         <button
                             type="button"
@@ -640,7 +642,7 @@ const AdminPackEditPage = () => {
                             className="flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
                         >
                             <FiPlus className="w-4 h-4 mr-2" />
-                            Add Item
+                            {t('packForm.items.addItem')}
                         </button>
                     </div>
 
@@ -649,9 +651,9 @@ const AdminPackEditPage = () => {
                         <div className="flex items-center">
                             <FiPackage className="w-5 h-5 text-blue-500 mr-2" />
                             <div>
-                                <h4 className="text-sm font-semibold text-blue-800">Enhanced Product Selection</h4>
+                                <h4 className="text-sm font-semibold text-blue-800">{t('packForm.items.enhancedSelection')}</h4>
                                 <p className="text-xs text-blue-600 mt-1">
-                                    Each dropdown now shows product images for easy identification. Search functionality is built into each selector.
+                                    {t('packForm.items.enhancedDesc')}
                                 </p>
                             </div>
                         </div>
@@ -661,7 +663,7 @@ const AdminPackEditPage = () => {
                         {packData.items.map((item, index) => (
                             <div key={index} className="border border-gray-200 rounded-lg p-6 bg-gray-50 relative">
                                 <div className="flex items-center justify-between mb-4">
-                                    <h4 className="text-md font-semibold text-gray-800">Item {index + 1}</h4>
+                                    <h4 className="text-md font-semibold text-gray-800">{t('packForm.items.itemTitle', { index: index + 1 })}</h4>
                                     {packData.items.length > 1 && (
                                         <button
                                             type="button"
@@ -677,12 +679,12 @@ const AdminPackEditPage = () => {
                                     {/* Default Product */}
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Default Product *
+                                            {t('packForm.items.defaultProduct')} *
                                         </label>
                                         <ProductSelect
                                             value={item.defaultProductId}
                                             onChange={(value) => handleItemChange(index, 'defaultProductId', value)}
-                                            placeholder="-- Select Default Product --"
+                                            placeholder={t('packForm.items.defaultPlaceholder')}
                                             isMultiple={false}
                                             size="normal"
                                             itemIndex={index}
@@ -698,12 +700,12 @@ const AdminPackEditPage = () => {
                                     {/* Variation Products */}
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                            Variation Products (Optional)
+                                            {t('packForm.items.variations')}
                                         </label>
                                         <ProductSelect
                                             value={item.variationProductIds || []}
                                             onChange={(value) => handleItemChange(index, 'variationProductIds', value)}
-                                            placeholder="-- Select Variation Products --"
+                                            placeholder={t('packForm.items.variationsPlaceholder')}
                                             isMultiple={true}
                                             size="normal"
                                             itemIndex={index}
@@ -720,7 +722,7 @@ const AdminPackEditPage = () => {
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center mb-4">
                         <FiEye className="w-5 h-5 text-pink-500 mr-2" />
-                        <h3 className="text-lg font-semibold text-gray-800">Display Settings</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">{t('packForm.settings.title')}</h3>
                     </div>
 
                     <div className="space-y-4">
@@ -736,11 +738,11 @@ const AdminPackEditPage = () => {
                                 className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
                             />
                             <span className="ml-3 flex-1">
-                                <span className="block font-semibold text-gray-800">🛍️ Show Purchase Notifications</span>
-                                <span className="text-sm text-gray-600">Display notifications when customers buy this pack</span>
+                                <span className="block font-semibold text-gray-800">🛍️ {t('packForm.settings.purchaseNotif')}</span>
+                                <span className="text-sm text-gray-600">{t('packForm.settings.purchaseNotifDesc')}</span>
                             </span>
                             <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${packData.showPurchaseNotifications ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                                {packData.showPurchaseNotifications ? 'Enabled' : 'Disabled'}
+                                {packData.showPurchaseNotifications ? t('packForm.settings.enabled') : t('packForm.settings.disabled')}
                             </span>
                         </label>
 
@@ -756,11 +758,11 @@ const AdminPackEditPage = () => {
                                 className="w-5 h-5 text-pink-600 rounded focus:ring-pink-500 cursor-pointer"
                             />
                             <span className="ml-3 flex-1">
-                                <span className="block font-semibold text-gray-800">⏱️ Show Countdown Timer</span>
-                                <span className="text-sm text-gray-600">Display flash sale countdown timer for urgency</span>
+                                <span className="block font-semibold text-gray-800">⏱️ {t('packForm.settings.countdown')}</span>
+                                <span className="text-sm text-gray-600">{t('packForm.settings.countdownDesc')}</span>
                             </span>
                             <span className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${packData.showCountdownTimer ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                                {packData.showCountdownTimer ? 'Enabled' : 'Disabled'}
+                                {packData.showCountdownTimer ? t('packForm.settings.enabled') : t('packForm.settings.disabled')}
                             </span>
                         </label>
                     </div>
@@ -770,12 +772,12 @@ const AdminPackEditPage = () => {
                 <div className="bg-white rounded-lg shadow-md p-6 opacity-90">
                     <div className="flex items-center mb-4">
                         <FiEye className="w-5 h-5 text-gray-500 mr-2" />
-                        <h3 className="text-lg font-semibold text-gray-700">Pack Description</h3>
+                        <h3 className="text-lg font-semibold text-gray-700">{t('packForm.description.title')}</h3>
                         <span className="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Secondary</span>
                     </div>
                     <div>
                         <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
-                            Description
+                            {t('packForm.description.label')}
                         </label>
                         <ReactQuill
                             theme="snow"
@@ -800,7 +802,7 @@ const AdminPackEditPage = () => {
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center mb-6">
                         <FiFilter className="w-5 h-5 text-pink-500 mr-2" />
-                        <h3 className="text-lg font-semibold text-gray-800">Pack Recommendations</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">{t('packForm.recommendations.title')}</h3>
                     </div>
 
                     {/* Info Box */}
@@ -808,9 +810,9 @@ const AdminPackEditPage = () => {
                         <div className="flex items-center">
                             <FiPackage className="w-5 h-5 text-blue-500 mr-2" />
                             <div>
-                                <h4 className="text-sm font-semibold text-blue-800">Recommendation System</h4>
+                                <h4 className="text-sm font-semibold text-blue-800">{t('packForm.recommendations.systemTitle')}</h4>
                                 <p className="text-xs text-blue-600 mt-1">
-                                    Select products and other packs to recommend to customers when they view this pack. This helps increase sales through cross-selling.
+                                    {t('packForm.recommendations.systemDesc')}
                                 </p>
                             </div>
                         </div>
@@ -820,7 +822,7 @@ const AdminPackEditPage = () => {
                         {/* Product Recommendations */}
                         <div>
                             <h4 className="text-md font-semibold text-gray-700 mb-4">
-                                Recommended Products ({Array.isArray(packData.recommendedProductIds) ? packData.recommendedProductIds.length : 0})
+                                {t('packForm.recommendations.products')} ({Array.isArray(packData.recommendedProductIds) ? packData.recommendedProductIds.length : 0})
                             </h4>
                             <div className="max-h-80 overflow-y-auto border border-gray-200 rounded-lg">
                                 {(Array.isArray(products) ? products : []).length > 0 ? (
@@ -854,7 +856,7 @@ const AdminPackEditPage = () => {
                         {/* Pack Recommendations */}
                         <div>
                             <h4 className="text-md font-semibold text-gray-700 mb-4">
-                                Recommended Packs ({Array.isArray(packData.recommendedPackIds) ? packData.recommendedPackIds.length : 0})
+                                {t('packForm.recommendations.packs')} ({Array.isArray(packData.recommendedPackIds) ? packData.recommendedPackIds.length : 0})
                             </h4>
                             <div className="max-h-80 overflow-y-auto border border-gray-200 rounded-lg">
                                 {(Array.isArray(allPacks) ? allPacks : []).length > 0 ? (
@@ -879,7 +881,7 @@ const AdminPackEditPage = () => {
                                     ))
                                 ) : (
                                     <div className="p-4 text-center text-gray-500 text-sm">
-                                        No other packs available
+                                        {t('packForm.recommendations.noPacks')}
                                     </div>
                                 )}
                             </div>
@@ -888,11 +890,11 @@ const AdminPackEditPage = () => {
 
                     {/* Selection Summary */}
                     <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                        <h5 className="text-sm font-semibold text-gray-700 mb-2">Selection Summary</h5>
+                        <h5 className="text-sm font-semibold text-gray-700 mb-2">{t('packForm.recommendations.summary')}</h5>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                             <div>
                                 <p className="text-gray-600">
-                                    <strong>Products:</strong> {Array.isArray(packData.recommendedProductIds) ? packData.recommendedProductIds.length : 0} selected
+                                    <strong>{t('packForm.recommendations.selectedProducts')}:</strong> {Array.isArray(packData.recommendedProductIds) ? packData.recommendedProductIds.length : 0} selected
                                 </p>
                                 {Array.isArray(packData.recommendedProductIds) && packData.recommendedProductIds.length > 0 && (
                                     <p className="text-gray-500 mt-1">
@@ -902,7 +904,7 @@ const AdminPackEditPage = () => {
                             </div>
                             <div>
                                 <p className="text-gray-600">
-                                    <strong>Packs:</strong> {Array.isArray(packData.recommendedPackIds) ? packData.recommendedPackIds.length : 0} selected
+                                    <strong>{t('packForm.recommendations.selectedPacks')}:</strong> {Array.isArray(packData.recommendedPackIds) ? packData.recommendedPackIds.length : 0} selected
                                 </p>
                                 {Array.isArray(packData.recommendedPackIds) && packData.recommendedPackIds.length > 0 && (
                                     <p className="text-gray-500 mt-1">
@@ -918,8 +920,8 @@ const AdminPackEditPage = () => {
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-800">Ready to Update Pack?</h3>
-                            <p className="text-gray-600">Review your pack details and save the changes</p>
+                            <h3 className="text-lg font-semibold text-gray-800">{t('packForm.review.updateTitle')}</h3>
+                            <p className="text-gray-600">{t('packForm.review.updateSubtitle')}</p>
                         </div>
                         <div className="flex space-x-3">
                             <button
@@ -927,7 +929,7 @@ const AdminPackEditPage = () => {
                                 onClick={() => navigate('/admin/packs')}
                                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                             >
-                                Cancel
+                                {t('packForm.review.cancel')}
                             </button>
                             <button
                                 type="submit"
@@ -937,12 +939,12 @@ const AdminPackEditPage = () => {
                                 {loading ? (
                                     <>
                                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                                        Updating...
+                                        {t('packForm.review.updating')}
                                     </>
                                 ) : (
                                     <>
                                         <FiPackage className="w-5 h-5 mr-2" />
-                                        Update Pack
+                                        {t('packForm.review.update')}
                                     </>
                                 )}
                             </button>

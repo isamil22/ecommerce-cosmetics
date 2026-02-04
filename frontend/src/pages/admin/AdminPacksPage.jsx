@@ -15,8 +15,10 @@ import {
     FiRefreshCw
 } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminPacksPage = () => {
+    const { t } = useLanguage();
     const [packs, setPacks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -47,15 +49,15 @@ const AdminPacksPage = () => {
     }, []);
 
     const handleDelete = async (packId) => {
-        if (window.confirm('Are you sure you want to delete this pack?')) {
+        if (window.confirm(t('managePacks.deleteConfirm'))) {
             setDeletingPackId(packId);
             try {
                 await deletePack(packId);
-                toast.success('Pack deleted successfully!');
+                toast.success(t('managePacks.deleteSuccess'));
                 fetchPacks(); // Refresh the list
             } catch (err) {
-                setError('Failed to delete pack.');
-                toast.error('Failed to delete pack. Please try again.');
+                setError(t('managePacks.deleteFailed'));
+                toast.error(t('managePacks.deleteFailed') + ' Please try again.');
             } finally {
                 setDeletingPackId(null);
             }
@@ -86,8 +88,8 @@ const AdminPacksPage = () => {
                             <FiPackage className="w-7 h-7 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-800">Manage Packs</h1>
-                            <p className="text-gray-600 mt-1">Create and manage product bundles</p>
+                            <h1 className="text-3xl font-bold text-gray-800">{t('managePacks.title')}</h1>
+                            <p className="text-gray-600 mt-1">{t('managePacks.subtitle')}</p>
                         </div>
                     </div>
                     <div className="flex items-center space-x-3">
@@ -96,14 +98,14 @@ const AdminPacksPage = () => {
                             className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-200"
                         >
                             <FiRefreshCw className="w-4 h-4" />
-                            <span>Refresh</span>
+                            <span>{t('adminDashboard.refresh')}</span>
                         </button>
                         <Link 
                             to="/admin/packs/new" 
                             className="flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                         >
                             <FiPlus className="w-5 h-5" />
-                            <span className="font-semibold">Add New Pack</span>
+                            <span className="font-semibold">{t('managePacks.addNew')}</span>
                         </Link>
                     </div>
                 </div>
@@ -143,7 +145,7 @@ const AdminPacksPage = () => {
                                             className="group flex items-center space-x-2 px-4 py-2 text-blue-600 hover:text-white hover:bg-blue-600 rounded-lg transition-all duration-200 transform hover:scale-105"
                                         >
                                             <FiEdit3 className="w-4 h-4 group-hover:animate-pulse" />
-                                            <span className="font-medium">Edit</span>
+                                            <span className="font-medium">{t('managePacks.actions.edit')}</span>
                                         </Link>
                                         
                                         <Link
@@ -151,7 +153,7 @@ const AdminPacksPage = () => {
                                             className="group flex items-center space-x-2 px-4 py-2 text-purple-600 hover:text-white hover:bg-purple-600 rounded-lg transition-all duration-200 transform hover:scale-105"
                                         >
                                             <FiThumbsUp className="w-4 h-4 group-hover:animate-bounce" />
-                                            <span className="font-medium">Recommendations</span>
+                                            <span className="font-medium">{t('managePacks.actions.recommendations')}</span>
                                         </Link>
                                         
                                         <Link
@@ -159,7 +161,7 @@ const AdminPacksPage = () => {
                                             className="group flex items-center space-x-2 px-4 py-2 text-green-600 hover:text-white hover:bg-green-600 rounded-lg transition-all duration-200 transform hover:scale-105"
                                         >
                                             <FiMessageSquare className="w-4 h-4 group-hover:animate-pulse" />
-                                            <span className="font-medium">Comments</span>
+                                            <span className="font-medium">{t('managePacks.actions.comments')}</span>
                                         </Link>
                                         
                                         <button
@@ -173,7 +175,7 @@ const AdminPacksPage = () => {
                                                 <FiTrash2 className="w-4 h-4 group-hover:animate-pulse" />
                                             )}
                                             <span className="font-medium">
-                                                {deletingPackId === pack.id ? 'Deleting...' : 'Delete'}
+                                                {deletingPackId === pack.id ? t('managePacks.actions.deleting') : t('managePacks.actions.delete')}
                                             </span>
                                         </button>
                                     </div>
@@ -197,14 +199,14 @@ const AdminPacksPage = () => {
                     <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <FiPackage className="w-12 h-12 text-gray-400" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-600 mb-2">No packs found</h3>
-                    <p className="text-gray-500 mb-6">Get started by creating your first product pack</p>
+                    <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('managePacks.noPacks')}</h3>
+                    <p className="text-gray-500 mb-6">{t('managePacks.noPacksDesc')}</p>
                     <Link 
                         to="/admin/packs/new" 
                         className="inline-flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                     >
                         <FiPlus className="w-5 h-5" />
-                        <span className="font-semibold">Create Your First Pack</span>
+                        <span className="font-semibold">{t('managePacks.createFirst')}</span>
                     </Link>
                 </div>
             )}

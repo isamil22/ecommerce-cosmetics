@@ -742,6 +742,106 @@ export const fr = {
         }
     },
 
+    // ===== BATCH 3: PACK MANAGEMENT =====
+    managePacks: {
+        title: 'Gérer les packs',
+        subtitle: 'Créez et gérez des lots de produits',
+        addNew: 'Ajouter un nouveau pack',
+        noPacks: 'Aucun pack trouvé',
+        noPacksDesc: 'Commencez par créer votre premier pack de produits',
+        createFirst: 'Créer votre premier pack',
+        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce pack ?',
+        deleteSuccess: 'Pack supprimé avec succès !',
+        deleteFailed: 'Échec de la suppression du pack.',
+        actions: {
+            edit: 'Modifier',
+            recommendations: 'Recommandations',
+            comments: 'Commentaires',
+            delete: 'Supprimer',
+            deleting: 'Suppression...'
+        }
+    },
+
+    packForm: {
+        createTitle: 'Créer un nouveau pack',
+        editTitle: 'Modifier le pack',
+        createSubtitle: 'Créez un lot de produits avec plusieurs articles',
+        editSubtitle: 'Mettez à jour votre lot de produits avec plusieurs articles',
+        clearDraft: 'Effacer le brouillon',
+        unsavedChanges: 'Modifications non enregistrées',
+        steps: {
+            basicInfo: 'Infos de base',
+            packItems: 'Articles du pack',
+            displaySettings: 'Paramètres d\'affichage',
+            recommendations: 'Recommandations',
+            review: 'Révision'
+        },
+        basicInfo: {
+            title: 'Informations de base',
+            name: 'Nom du pack',
+            namePlaceholder: 'Entrez le nom du pack',
+            price: 'Prix du pack',
+            image: 'Image du pack',
+            hideComments: 'Masquer le formulaire de commentaires',
+            hideCommentsDesc: "Lorsqu'il est activé, les utilisateurs ne pourront pas laisser de commentaires sur ce pack. Les commentaires existants resteront visibles."
+        },
+        items: {
+            title: 'Articles du pack',
+            addItem: 'Ajouter un article',
+            itemTitle: 'Article {index}',
+            defaultProduct: 'Produit par défaut',
+            defaultPlaceholder: '-- Sélectionner le produit par défaut --',
+            variations: 'Produits variantes (Optionnel)',
+            variationsPlaceholder: '-- Sélectionner les produits variantes --',
+            enhancedSelection: 'Sélection de produits améliorée',
+            enhancedDesc: 'Chaque menu déroulant affiche désormais les images des produits pour une identification facile. La fonctionnalité de recherche est intégrée à chaque sélecteur.'
+        },
+        settings: {
+            title: 'Paramètres d\'affichage',
+            purchaseNotif: 'Afficher les notifications d\'achat',
+            purchaseNotifDesc: 'Afficher les notifications lorsque les clients achètent ce pack',
+            countdown: 'Afficher le compte à rebours',
+            countdownDesc: 'Afficher le compte à rebours de vente flash pour l\'urgence',
+            enabled: 'Activé',
+            disabled: 'Désactivé'
+        },
+        recommendations: {
+            title: 'Recommandations de pack',
+            systemTitle: 'Système de recommandation',
+            systemDesc: 'Sélectionnez des produits et d\'autres packs à recommander aux clients lorsqu\'ils consultent ce pack. Cela aide à augmenter les ventes grâce aux ventes croisées.',
+            products: 'Produits recommandés',
+            packs: 'Packs recommandés',
+            noProducts: 'Aucun produit disponible',
+            noPacks: 'Aucun autre pack disponible',
+            summary: 'Résumé de la sélection',
+            selectedProducts: 'Produits',
+            selectedPacks: 'Packs'
+        },
+        review: {
+            title: 'Prêt à créer le pack ?',
+            subtitle: 'Passez en revue les détails de votre pack et créez le lot',
+            cancel: 'Annuler',
+            create: 'Créer le pack',
+            update: 'Mettre à jour le pack',
+            creating: 'Création...',
+            updating: 'Mise à jour...'
+        },
+        validation: {
+            nameRequired: 'Le nom du pack est requis',
+            nameLength: 'Le nom du pack doit contenir au moins 3 caractères',
+            priceRequired: 'Un prix valide est requis',
+            imageRequired: 'Veuillez sélectionner un fichier image valide',
+            imageSize: 'La taille de l\'image doit être inférieure à 5 Mo',
+            itemDefaultRequired: 'Le produit par défaut est requis pour chaque article',
+            minItems: 'Au moins un article de pack est requis'
+        },
+        success: {
+            created: 'Pack créé avec succès !',
+            updated: 'Pack mis à jour avec succès !',
+            draftCleared: 'Brouillon effacé'
+        }
+    },
+
     // Review Form Settings
     reviewFormSettingsPage: {
         title: 'Paramètres du formulaire d\'avis',

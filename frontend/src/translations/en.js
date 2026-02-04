@@ -740,6 +740,106 @@ export const en = {
         }
     },
 
+    // ===== BATCH 3: PACK MANAGEMENT =====
+    managePacks: {
+        title: 'Manage Packs',
+        subtitle: 'Create and manage product bundles',
+        addNew: 'Add New Pack',
+        noPacks: 'No packs found',
+        noPacksDesc: 'Get started by creating your first product pack',
+        createFirst: 'Create Your First Pack',
+        deleteConfirm: 'Are you sure you want to delete this pack?',
+        deleteSuccess: 'Pack deleted successfully!',
+        deleteFailed: 'Failed to delete pack.',
+        actions: {
+            edit: 'Edit',
+            recommendations: 'Recommendations',
+            comments: 'Comments',
+            delete: 'Delete',
+            deleting: 'Deleting...'
+        }
+    },
+
+    packForm: {
+        createTitle: 'Create New Pack',
+        editTitle: 'Edit Pack',
+        createSubtitle: 'Build a product bundle with multiple items',
+        editSubtitle: 'Update your product bundle with multiple items',
+        clearDraft: 'Clear Draft',
+        unsavedChanges: 'Unsaved changes',
+        steps: {
+            basicInfo: 'Basic Info',
+            packItems: 'Pack Items',
+            displaySettings: 'Display Settings',
+            recommendations: 'Recommendations',
+            review: 'Review'
+        },
+        basicInfo: {
+            title: 'Basic Information',
+            name: 'Pack Name',
+            namePlaceholder: 'Enter pack name',
+            price: 'Pack Price',
+            image: 'Pack Image',
+            hideComments: 'Hide Comment Form',
+            hideCommentsDesc: "When enabled, users won't be able to leave comments on this pack. Existing comments will still be visible."
+        },
+        items: {
+            title: 'Pack Items',
+            addItem: 'Add Item',
+            itemTitle: 'Item {index}',
+            defaultProduct: 'Default Product',
+            defaultPlaceholder: '-- Select Default Product --',
+            variations: 'Variation Products (Optional)',
+            variationsPlaceholder: '-- Select Variation Products --',
+            enhancedSelection: 'Enhanced Product Selection',
+            enhancedDesc: 'Each dropdown now shows product images for easy identification. Search functionality is built into each selector.'
+        },
+        settings: {
+            title: 'Display Settings',
+            purchaseNotif: 'Show Purchase Notifications',
+            purchaseNotifDesc: 'Display notifications when customers buy this pack',
+            countdown: 'Show Countdown Timer',
+            countdownDesc: 'Display flash sale countdown timer for urgency',
+            enabled: 'Enabled',
+            disabled: 'Disabled'
+        },
+        recommendations: {
+            title: 'Pack Recommendations',
+            systemTitle: 'Recommendation System',
+            systemDesc: 'Select products and other packs to recommend to customers when they view this pack. This helps increase sales through cross-selling.',
+            products: 'Recommended Products',
+            packs: 'Recommended Packs',
+            noProducts: 'No products available',
+            noPacks: 'No other packs available',
+            summary: 'Selection Summary',
+            selectedProducts: 'Products',
+            selectedPacks: 'Packs'
+        },
+        review: {
+            title: 'Ready to Create Pack?',
+            subtitle: 'Review your pack details and create the bundle',
+            cancel: 'Cancel',
+            create: 'Create Pack',
+            update: 'Update Pack',
+            creating: 'Creating...',
+            updating: 'Updating...'
+        },
+        validation: {
+            nameRequired: 'Pack name is required',
+            nameLength: 'Pack name must be at least 3 characters',
+            priceRequired: 'Valid price is required',
+            imageRequired: 'Please select a valid image file',
+            imageSize: 'Image size must be less than 5MB',
+            itemDefaultRequired: 'Default product is required for each item',
+            minItems: 'At least one pack item is required'
+        },
+        success: {
+            created: 'Pack created successfully!',
+            updated: 'Pack updated successfully!',
+            draftCleared: 'Draft cleared'
+        }
+    },
+
     // Review Form Settings
     reviewFormSettingsPage: {
         title: 'Review Form Settings',
