@@ -704,6 +704,10 @@ export const fr = {
         modal: {
             title: 'Détails de la commande',
             clientInfo: 'Informations client',
+            name: 'Nom :',
+            phone: 'Téléphone :',
+            city: 'Ville :',
+            address: 'Adresse :',
             orderInfo: 'Informations commande',
             orderItems: 'Articles de la commande',
             packContents: 'Contenu du pack :',

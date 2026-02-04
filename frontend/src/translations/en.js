@@ -702,6 +702,10 @@ export const en = {
         modal: {
             title: 'Order Details',
             clientInfo: 'Client Information',
+            name: 'Name:',
+            phone: 'Phone:',
+            city: 'City:',
+            address: 'Address:',
             orderInfo: 'Order Information',
             orderItems: 'Order Items',
             packContents: 'Pack Contents:',
