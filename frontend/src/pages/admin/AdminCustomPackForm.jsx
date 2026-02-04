@@ -340,24 +340,6 @@ const AdminCustomPackForm = () => {
                             </button>
                         </div>
                     </div>
-                        <div className="relative">
-                            <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                                <FiPackage className="w-8 h-8 text-white" />
-                            </div>
-                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
-                                <FiCheckCircle className="w-3 h-3 text-white" />
-                            </div>
-                        </div>
-
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-800 flex items-center space-x-3">
-                                <span>{isEditing ? t('customPacks.form.editTitle') : t('customPacks.form.createTitle')}</span>
-                                <FiZap className="w-8 h-8 text-pink-500 animate-pulse" />
-                            </h1>
-                            <p className="text-gray-600 mt-1 text-lg">
-                                {isEditing ? t('customPacks.form.editSubtitle') : t('customPacks.form.createSubtitle')}
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
