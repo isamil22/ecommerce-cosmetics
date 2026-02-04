@@ -93,6 +93,9 @@ const AdminCustomPacksPage = () => {
                 </div>
                 
                 <div className="flex items-center space-x-3">
+                    <button
+                        onClick={handleRefresh}
+                        className="flex items-center space-x-2 bg-white text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-pink-300 transition-all duration-300 group"
                     >
                         <FiRefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-transform duration-500 ${loading ? 'animate-spin' : ''}`} />
                         <span>{t('customPacks.refresh')}</span>
@@ -101,7 +104,6 @@ const AdminCustomPacksPage = () => {
                     <Link 
                         to="/admin/custom-packs/new" 
                         className="flex items-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group"
-                    >
                     >
                         <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                         <span className="font-medium">{t('customPacks.addNew')}</span>
