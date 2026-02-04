@@ -342,7 +342,6 @@ const AdminCustomPackForm = () => {
                     </div>
                     </div>
                 </div>
-            </div>
 
             <div className="max-w-7xl mx-auto px-6 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
