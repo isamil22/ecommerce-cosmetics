@@ -719,7 +719,6 @@ export const fr = {
             markDelivered: 'Marquer comme livré',
             cancelOrder: 'Annuler',
             restoreOrder: 'Restaurer',
-            restoreOrder: 'Restaurer',
             close: 'Fermer',
             noItems: 'Aucun article dans cette commande.',
             coupon: 'Code promo :',

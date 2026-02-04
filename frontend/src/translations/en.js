@@ -717,7 +717,6 @@ export const en = {
             markDelivered: 'Mark as Delivered',
             cancelOrder: 'Cancel Order',
             restoreOrder: 'Restore Order',
-            restoreOrder: 'Restore Order',
             close: 'Close',
             noItems: 'No items in this order.',
             coupon: 'Coupon:',
