@@ -698,7 +698,31 @@ export const en = {
         deleteSelected: 'Delete Selected',
         selected: 'selected',
         orderId: 'Order ID',
-        customer: 'Customer'
+        customer: 'Customer',
+        modal: {
+            title: 'Order Details',
+            clientInfo: 'Client Information',
+            orderInfo: 'Order Information',
+            orderItems: 'Order Items',
+            packContents: 'Pack Contents:',
+            variant: 'Variant:',
+            qty: 'Qty:',
+            subtotal: 'Subtotal:',
+            discount: 'Discount:',
+            shipping: 'Shipping:',
+            total: 'Total:',
+            timeline: 'Order Timeline',
+            quickActions: 'Quick Actions',
+            markDelivering: 'Mark as Delivering',
+            markDelivered: 'Mark as Delivered',
+            cancelOrder: 'Cancel Order',
+            restoreOrder: 'Restore Order',
+            restoreOrder: 'Restore Order',
+            close: 'Close',
+            noItems: 'No items in this order.',
+            coupon: 'Coupon:',
+            free: 'Free'
+        }
     },
 
     // Integrations Page

@@ -700,7 +700,31 @@ export const fr = {
         timeline_placed: 'Commande passée',
         timeline_transit: 'En transit',
         timeline_delivered: 'Livrée',
-        errorExport: 'Échec de l\'exportation des commandes.'
+        errorExport: 'Échec de l\'exportation des commandes.',
+        modal: {
+            title: 'Détails de la commande',
+            clientInfo: 'Informations client',
+            orderInfo: 'Informations commande',
+            orderItems: 'Articles de la commande',
+            packContents: 'Contenu du pack :',
+            variant: 'Variante :',
+            qty: 'Qté :',
+            subtotal: 'Sous-total :',
+            discount: 'Réduction :',
+            shipping: 'Livraison :',
+            total: 'Total :',
+            timeline: 'Chronologie de la commande',
+            quickActions: 'Actions rapides',
+            markDelivering: 'Marquer en livraison',
+            markDelivered: 'Marquer comme livré',
+            cancelOrder: 'Annuler',
+            restoreOrder: 'Restaurer',
+            restoreOrder: 'Restaurer',
+            close: 'Fermer',
+            noItems: 'Aucun article dans cette commande.',
+            coupon: 'Code promo :',
+            free: 'Gratuit'
+        }
     },
 
     // Integrations Page

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
     getAllOrders,
     deleteOrder,
@@ -38,7 +38,9 @@ const MiniChart = ({ data, type = 'line', color = 'blue' }) => {
     );
 };
 
-const StatusBadge = ({ status, count, percentage }) => (
+const StatusBadge = ({ status, count, percentage }) => {
+    const { t } = useLanguage();
+    return (
     <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border">
         <div className="flex items-center">
             <div className={`w-3 h-3 rounded-full mr-3 ${status === 'PREPARING' ? 'bg-yellow-400' :
@@ -46,14 +48,15 @@ const StatusBadge = ({ status, count, percentage }) => (
                     status === 'DELIVERED' ? 'bg-green-400' :
                         'bg-red-400'
                 }`}></div>
-            <span className="text-sm font-medium text-gray-700">{status}</span>
+            <span className="text-sm font-medium text-gray-700">{t(`ordersPage.status_${status}`)}</span>
         </div>
         <div className="text-right">
             <div className="text-lg font-bold text-gray-900">{count}</div>
             <div className="text-xs text-gray-500">{percentage}%</div>
         </div>
     </div>
-);
+    );
+};
 
 const OrderTimeline = ({ order }) => {
     const { t } = useLanguage();
@@ -464,7 +467,7 @@ const AdminOrdersPage = () => {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="text-red-500 text-6xl mb-4">âš ï¸</div>
+                    <div className="text-red-500 text-6xl mb-4">⚠️</div>
                     <p className="text-red-600 text-lg">{error}</p>
                     <button
                         onClick={fetchAllOrders}
@@ -1005,13 +1008,13 @@ const AdminOrdersPage = () => {
                                                     <svg className="w-5 h-5 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                                     </svg>
-                                                    {t('ordersPage.customer')} Information
+                                                    {t('ordersPage.modal.clientInfo')}
                                                 </h4>
                                                 <div className="space-y-2 text-sm">
-                                                    <p><span className="font-medium text-gray-600">Name:</span> <span className="text-gray-900">{selectedOrder.clientFullName}</span></p>
-                                                    <p><span className="font-medium text-gray-600">Phone:</span> <span className="text-gray-900">{selectedOrder.phoneNumber}</span></p>
-                                                    <p><span className="font-medium text-gray-600">City:</span> <span className="text-gray-900">{selectedOrder.city}</span></p>
-                                                    <p><span className="font-medium text-gray-600">Address:</span> <span className="text-gray-900">{selectedOrder.address}</span></p>
+                                                    <p><span className="font-medium text-gray-600">{t('ordersPage.modal.name')}</span> <span className="text-gray-900">{selectedOrder.clientFullName}</span></p>
+                                                    <p><span className="font-medium text-gray-600">{t('ordersPage.modal.phone')}</span> <span className="text-gray-900">{selectedOrder.phoneNumber}</span></p>
+                                                    <p><span className="font-medium text-gray-600">{t('ordersPage.modal.city')}</span> <span className="text-gray-900">{selectedOrder.city}</span></p>
+                                                    <p><span className="font-medium text-gray-600">{t('ordersPage.modal.address')}</span> <span className="text-gray-900">{selectedOrder.address}</span></p>
                                                 </div>
                                             </div>
 
@@ -1020,7 +1023,7 @@ const AdminOrdersPage = () => {
                                                     <svg className="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                                     </svg>
-                                                    Order Information
+                                                    {t('ordersPage.modal.orderInfo')}
                                                 </h4>
                                                 <div className="space-y-2 text-sm">
                                                     <p><span className="font-medium text-gray-600">{t('ordersPage.orderId')}:</span> <span className="text-gray-900">#{selectedOrder.id}</span></p>
@@ -1031,7 +1034,7 @@ const AdminOrdersPage = () => {
                                                     </p>
                                                     <p><span className="font-medium text-gray-600">Created:</span> <span className="text-gray-900">{formatDate(selectedOrder.createdAt)}</span></p>
                                                     {selectedOrder.couponCode && (
-                                                        <p><span className="font-medium text-gray-600">Coupon:</span> <span className="text-gray-900 bg-yellow-100 px-2 py-1 rounded text-xs">{selectedOrder.couponCode}</span></p>
+                                                        <p><span className="font-medium text-gray-600">{t('ordersPage.modal.coupon')}</span> <span className="text-gray-900 bg-yellow-100 px-2 py-1 rounded text-xs">{selectedOrder.couponCode}</span></p>
                                                     )}
                                                 </div>
                                             </div>
@@ -1044,7 +1047,7 @@ const AdminOrdersPage = () => {
                                                     <svg className="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                                                     </svg>
-                                                    Order Items
+                                                    {t('ordersPage.modal.orderItems')}
                                                 </h4>
                                             </div>
                                             <div className="p-4">
@@ -1067,7 +1070,7 @@ const AdminOrdersPage = () => {
                                                                                     // It's a Pack layout
                                                                                     return (
                                                                                         <>
-                                                                                            <p className="text-xs font-medium text-gray-500 mb-1">Pack Contents:</p>
+                                                                                            <p className="text-xs font-medium text-gray-500 mb-1">{t('ordersPage.modal.packContents')}</p>
                                                                                             <div className="flex -space-x-2 overflow-hidden">
                                                                                                 {parsed.map((subItem, subIndex) => (
                                                                                                     <img
@@ -1090,7 +1093,7 @@ const AdminOrdersPage = () => {
                                                                             // Default String Render
                                                                             return (
                                                                                 <p className="text-xs text-gray-500">
-                                                                                    <span className="font-medium">Variant:</span> {item.variantName}
+                                                                                    <span className="font-medium">{t('ordersPage.modal.variant')}</span> {item.variantName}
                                                                                 </p>
                                                                             );
                                                                         })()}
@@ -1098,37 +1101,37 @@ const AdminOrdersPage = () => {
                                                                 )}
                                                                 <div className="flex items-center space-x-4 mt-1">
                                                                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                                                                        Qty: {item.quantity}
+                                                                        {t('ordersPage.modal.qty')} {item.quantity}
                                                                     </span>
-                                                                    <span className="text-sm text-gray-600">Ã— {formatCurrency(item.price)}</span>
+                                                                    <span className="text-sm text-gray-600">× {formatCurrency(item.price)}</span>
                                                                 </div>
                                                             </div>
                                                             <p className="text-lg font-bold text-gray-900">{formatCurrency(item.price * item.quantity)}</p>
                                                         </div>
-                                                    )) || <p className="text-sm text-gray-500 text-center py-4">No items in this order.</p>}
+                                                    )) || <p className="text-sm text-gray-500 text-center py-4">{t('ordersPage.modal.noItems')}</p>}
                                                 </div>
 
                                                 {selectedOrder.orderItems && selectedOrder.orderItems.length > 0 && (
                                                     <div className="mt-6 pt-4 border-t-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4">
                                                         <div className="space-y-2">
                                                             <div className="flex justify-between items-center text-sm">
-                                                                <span className="text-gray-600">Subtotal:</span>
+                                                                <span className="text-gray-600">{t('ordersPage.modal.subtotal')}</span>
                                                                 <span className="font-medium">{formatCurrency(selectedOrder.orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0))}</span>
                                                             </div>
                                                             {selectedOrder.discountAmount > 0 && (
                                                                 <div className="flex justify-between items-center text-sm">
-                                                                    <span className="text-gray-600">Discount:</span>
+                                                                    <span className="text-gray-600">{t('ordersPage.modal.discount')}</span>
                                                                     <span className="font-medium text-green-600">-{formatCurrency(selectedOrder.discountAmount)}</span>
                                                                 </div>
                                                             )}
                                                             <div className="flex justify-between items-center text-sm">
                                                                 <span className="text-gray-600">Shipping:</span>
                                                                 <span className="font-medium text-gray-700">
-                                                                    {selectedOrder.shippingCost > 0 ? formatCurrency(selectedOrder.shippingCost) : <span className="text-green-600">Free</span>}
+                                                                    {selectedOrder.shippingCost > 0 ? formatCurrency(selectedOrder.shippingCost) : <span className="text-green-600">{t('ordersPage.modal.free')}</span>}
                                                                 </span>
                                                             </div>
                                                             <div className="flex justify-between items-center text-xl font-bold pt-2 border-t">
-                                                                <span className="text-gray-900">Total:</span>
+                                                                <span className="text-gray-900">{t('ordersPage.modal.total')}</span>
                                                                 <span className="text-blue-600">
                                                                     {formatCurrency(
                                                                         selectedOrder.orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
@@ -1151,7 +1154,7 @@ const AdminOrdersPage = () => {
                                                 <svg className="w-5 h-5 mr-2 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                                                 </svg>
-                                                Order Timeline
+                                                {t('ordersPage.modal.timeline')}
                                             </h4>
                                             <OrderTimeline order={selectedOrder} />
                                         </div>
@@ -1162,7 +1165,7 @@ const AdminOrdersPage = () => {
                                                 <svg className="w-5 h-5 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
                                                 </svg>
-                                                Quick Actions
+                                                {t('ordersPage.modal.quickActions')}
                                             </h5>
                                             <div className="space-y-2">
                                                 {selectedOrder.status === 'PREPARING' && (
@@ -1170,7 +1173,7 @@ const AdminOrdersPage = () => {
                                                         onClick={() => handleStatusUpdate(selectedOrder.id, 'DELIVERING')}
                                                         className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium"
                                                     >
-                                                        ðŸšš Mark as Delivering
+                                                        🚚 {t('ordersPage.modal.markDelivering')}
                                                     </button>
                                                 )}
                                                 {selectedOrder.status === 'DELIVERING' && (
@@ -1178,7 +1181,7 @@ const AdminOrdersPage = () => {
                                                         onClick={() => handleStatusUpdate(selectedOrder.id, 'DELIVERED')}
                                                         className="w-full px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-all duration-200 font-medium"
                                                     >
-                                                        âœ… Mark as Delivered
+                                                        ✅ {t('ordersPage.modal.markDelivered')}
                                                     </button>
                                                 )}
                                                 {selectedOrder.status !== 'CANCELED' && (
@@ -1186,7 +1189,7 @@ const AdminOrdersPage = () => {
                                                         onClick={() => handleStatusUpdate(selectedOrder.id, 'CANCELED')}
                                                         className="w-full px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-all duration-200 font-medium"
                                                     >
-                                                        âŒ Cancel Order
+                                                        ❌ {t('ordersPage.modal.cancelOrder')}
                                                     </button>
                                                 )}
                                                 {showDeleted && (
@@ -1194,7 +1197,7 @@ const AdminOrdersPage = () => {
                                                         onClick={() => handleRestore(selectedOrder.id)}
                                                         className="w-full px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 transition-all duration-200 font-medium"
                                                     >
-                                                        ðŸ”„ Restore Order
+                                                        🔄 {t('ordersPage.modal.restoreOrder')}
                                                     </button>
                                                 )}
                                             </div>
@@ -1210,7 +1213,7 @@ const AdminOrdersPage = () => {
                                         onClick={() => setShowOrderModal(false)}
                                         className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200"
                                     >
-                                        Close
+                                        {t('ordersPage.modal.close')}
                                     </button>
                                 </div>
                             </div>
