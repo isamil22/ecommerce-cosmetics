@@ -2498,6 +2498,7 @@ export const fr = {
         }
     },
     // Admin Product Form
+    // Admin Product Form (Consolidated)
     productForm: {
         title: {
             create: 'Créer un Nouveau Produit',
@@ -2511,7 +2512,9 @@ export const fr = {
         actions: {
             saving: 'Enregistrement...',
             create: 'Créer le Produit',
-            update: 'Mettre à jour le Produit'
+            update: 'Mettre à jour le Produit',
+            save: 'Enregistrer',
+            backToProducts: 'Retour aux produits'
         },
         basicInfo: {
             title: 'Informations de Base',
@@ -2544,34 +2547,54 @@ export const fr = {
             existingImages: 'Images Existantes',
             newImages: 'Nouvelles Images',
             preview: 'Aperçu',
-            existing: 'Existante'
+            existing: 'Existante',
+            removeImage: "Supprimer l'image"
         },
         variantTypes: {
             title: 'Types de Variantes',
             typeName: 'Nom du Type',
             typeNamePlaceholder: 'ex: Couleur, Taille',
             options: 'Options',
-            optionValue: 'Valeur de l\'Option',
+            optionValue: 'Valeur',
             color: 'Couleur',
             image: 'Image',
-            removeOption: 'Supprimer l\'Option'
+            removeOption: 'Supprimer l\'option'
         },
-        validation: {
-            nameRequired: 'Le nom du produit est requis',
-            priceRequired: 'Le prix est requis',
-            categoryRequired: 'La catégorie est requise',
-            variantPricesRequired: 'Toutes les variantes doivent avoir un prix valide'
+        displaySettings: {
+            title: 'Paramètres d\'affichage',
+            purchaseNotifications: {
+                title: 'Notifications d\'achat',
+                description: 'Afficher les notifications "Quelqu\'un a acheté..."',
+                enabled: 'Activé'
+            },
+            countdownTimer: {
+                title: 'Compte à rebours',
+                description: 'Afficher le compte à rebours d\'urgence',
+                enabled: 'Activé'
+            }
         },
-        success: {
-            created: 'Produit créé avec succès',
-            updated: 'Produit mis à jour avec succès'
-        },
-        errors: {
-            categoriesFailed: 'Échec du chargement des catégories',
-            loadFailed: 'Échec du chargement des détails du produit',
-            saveFailed: 'Échec de l\'enregistrement du produit'
+        frequentlyBought: {
+            title: 'Produits fréquemment achetés ensemble',
+            label: 'Sélectionner les produits',
+            placeholder: 'Rechercher des produits...'
         }
     },
+    validation: {
+        nameRequired: 'Le nom du produit est requis',
+        priceRequired: 'Le prix est requis',
+        categoryRequired: 'La catégorie est requise',
+        variantPricesRequired: 'Toutes les variantes doivent avoir un prix valide'
+    },
+    success: {
+        created: 'Produit créé avec succès',
+        updated: 'Produit mis à jour avec succès'
+    },
+    errors: {
+        categoriesFailed: 'Échec du chargement des catégories',
+        loadFailed: 'Échec du chargement des détails du produit',
+        saveFailed: 'Échec de l\'enregistrement du produit'
+    }
+},
     // Admin Users Page
     usersPage: {
         title: 'Gestion des Utilisateurs',

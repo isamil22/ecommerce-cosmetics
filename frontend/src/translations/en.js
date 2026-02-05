@@ -2553,6 +2553,24 @@ export const en = {
             image: 'Image',
             removeOption: 'Remove Option'
         },
+        displaySettings: {
+            title: 'Display Settings',
+            purchaseNotifications: {
+                title: 'Purchase Notifications',
+                description: 'Show "Someone bought..." notifications',
+                enabled: 'Enabled'
+            },
+            countdownTimer: {
+                title: 'Countdown Timer',
+                description: 'Show urgency countdown timer',
+                enabled: 'Enabled'
+            }
+        },
+        frequentlyBought: {
+            title: 'Frequently Bought Together',
+            label: 'Select Products',
+            placeholder: 'Search products...'
+        },
         validation: {
             nameRequired: 'Product Name is required',
             priceRequired: 'Price is required',
