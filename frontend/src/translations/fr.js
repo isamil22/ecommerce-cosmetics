@@ -2889,23 +2889,22 @@ export const fr = {
             disabled: 'Désactivé',
             typesEnabled: 'Types Activés'
         }
-    }
     },
-// Common
-common: {
-    save: 'Enregistrer',
+    // Common
+    common: {
+        save: 'Enregistrer',
         saving: 'Enregistrement...',
-            cancel: 'Annuler',
-                back: 'Retour',
-                    edit: 'Modifier',
-                        delete: 'Supprimer',
-                            create: 'Créer',
-                                update: 'Mettre à jour',
-                                    actions: 'Actions',
-                                        error: 'Erreur :',
-                                            success: 'Succès :',
-                                                unsavedChanges: 'Modifications non enregistrées',
-                                                    optional: '(Optionnel)',
-                                                        loading: 'Chargement...'
-}
+        cancel: 'Annuler',
+        back: 'Retour',
+        edit: 'Modifier',
+        delete: 'Supprimer',
+        create: 'Créer',
+        update: 'Mettre à jour',
+        actions: 'Actions',
+        error: 'Erreur :',
+        success: 'Succès :',
+        unsavedChanges: 'Modifications non enregistrées',
+        optional: '(Optionnel)',
+        loading: 'Chargement...'
+    }
 };

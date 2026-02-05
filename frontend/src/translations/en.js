@@ -2886,23 +2886,22 @@ export const en = {
             disabled: 'Disabled',
             typesEnabled: 'Types Enabled'
         }
-    }
     },
-// Common
-common: {
-    save: 'Save',
+    // Common
+    common: {
+        save: 'Save',
         saving: 'Saving...',
-            cancel: 'Cancel',
-                back: 'Back',
-                    edit: 'Edit',
-                        delete: 'Delete',
-                            create: 'Create',
-                                update: 'Update',
-                                    actions: 'Actions',
-                                        error: 'Error:',
-                                            success: 'Success:',
-                                                unsavedChanges: 'Unsaved changes',
-                                                    optional: '(Optional)',
-                                                        loading: 'Loading...'
-}
+        cancel: 'Cancel',
+        back: 'Back',
+        edit: 'Edit',
+        delete: 'Delete',
+        create: 'Create',
+        update: 'Update',
+        actions: 'Actions',
+        error: 'Error:',
+        success: 'Success:',
+        unsavedChanges: 'Unsaved changes',
+        optional: '(Optional)',
+        loading: 'Loading...'
+    }
 };
