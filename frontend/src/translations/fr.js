@@ -1205,7 +1205,8 @@ export const fr = {
             deleting: 'Suppression...',
             fixedPrice: 'Prix Fixe',
             percentageDiscount: 'Remise en Pourcentage',
-            discount: 'Remise'
+            discount: 'Remise',
+            active: 'Actif'
         },
         form: {
             createTitle: 'Créer un Pack Personnalisé',
@@ -2656,33 +2657,7 @@ export const fr = {
         }
     },
     // Admin Custom Packs Page
-    customPacks: {
-        manageTitle: 'Packs Personnalisés',
-        manageSubtitle: 'Gérer les offres groupées de produits personnalisés',
-        addNew: 'Ajouter un Nouveau Pack',
-        refresh: 'Actualiser',
-        noPacks: 'Aucun pack personnalisé trouvé',
-        createFirst: 'Créez votre premier pack personnalisé',
-        fetchFailed: 'Échec du chargement des packs personnalisés',
-        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce pack ?',
-        deleteSuccess: 'Pack supprimé avec succès',
-        deleteFailed: 'Échec de la suppression du pack',
-        table: {
-            id: 'ID',
-            name: 'Nom',
-            products: 'Produits',
-            price: 'Prix',
-            discount: 'Remise',
-            fixedPrice: 'Prix Fixe',
-            percentageDiscount: 'Pourcentage de Remise',
-            totalValue: 'Valeur Totale',
-            active: 'Actif',
-            actions: 'Actions',
-            edit: 'Modifier',
-            delete: 'Supprimer',
-            deleting: 'Suppression...'
-        }
-    },
+
     // Review Form Settings
     reviewFormSettingsPage: {
         title: 'Paramètres du Formulaire d\'Avis',

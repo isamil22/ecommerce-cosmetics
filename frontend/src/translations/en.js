@@ -1202,7 +1202,8 @@ export const en = {
             deleting: 'Deleting...',
             fixedPrice: 'Fixed Price',
             percentageDiscount: 'Percentage Discount',
-            discount: 'Discount'
+            discount: 'Discount',
+            active: 'Active'
         },
         form: {
             createTitle: 'Create Custom Pack',
@@ -2648,33 +2649,7 @@ export const en = {
         }
     },
     // Admin Custom Packs Page
-    customPacks: {
-        manageTitle: 'Custom Packs',
-        manageSubtitle: 'Manage custom product bundles',
-        addNew: 'Add New Pack',
-        refresh: 'Refresh',
-        noPacks: 'No custom packs found',
-        createFirst: 'Create your first custom pack',
-        fetchFailed: 'Failed to fetch custom packs',
-        deleteConfirm: 'Are you sure you want to delete this pack?',
-        deleteSuccess: 'Pack deleted successfully',
-        deleteFailed: 'Failed to delete pack',
-        table: {
-            id: 'ID',
-            name: 'Name',
-            products: 'Products',
-            price: 'Price',
-            discount: 'Discount',
-            fixedPrice: 'Fixed Price',
-            percentageDiscount: 'Percentage Off',
-            totalValue: 'Total Value',
-            active: 'Active',
-            actions: 'Actions',
-            edit: 'Edit',
-            delete: 'Delete',
-            deleting: 'Deleting...'
-        }
-    },
+
     // Review Form Settings
     reviewFormSettingsPage: {
         title: 'Review Form Settings',
