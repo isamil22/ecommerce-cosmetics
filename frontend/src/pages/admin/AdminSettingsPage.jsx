@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '../../components/AdminLayout';
 import { getDiscountSettings, updateDiscountSettings } from '../../api/apiService';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminSettingsPage = () => {
+    const { t } = useLanguage();
     const [settings, setSettings] = useState({
         highValueThreshold: 500,
         highValueDiscountPercent: 10,
@@ -39,9 +40,9 @@ const AdminSettingsPage = () => {
         setMessage(null);
         try {
             await updateDiscountSettings(settings);
-            setMessage({ type: 'success', text: 'Settings updated successfully!' });
+            setMessage({ type: 'success', text: t('adminSettings.messages.saveSuccess') });
         } catch (error) {
-            setMessage({ type: 'error', text: 'Failed to update settings.' });
+            setMessage({ type: 'error', text: t('adminSettings.messages.saveError') });
         } finally {
             setSaving(false);
         }
@@ -50,11 +51,11 @@ const AdminSettingsPage = () => {
     return (
         <div className="p-6">
             <div className="admin-page-header">
-                <h2>System Settings</h2>
+                <h2>{t('adminSettings.title')}</h2>
             </div>
 
             <div className="admin-content-card" style={{ maxWidth: '800px' }}>
-                <h3>Confirgure Discount Rules</h3>
+                <h3>{t('adminSettings.configure')}</h3>
 
                 {message && (
                     <div style={{
@@ -71,11 +72,11 @@ const AdminSettingsPage = () => {
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: '30px' }}>
                         <h4 style={{ borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '15px' }}>
-                            💰 High Value Order Discount
+                            {t('adminSettings.highValue.title')}
                         </h4>
                         <div className="form-group" style={{ marginBottom: '15px' }}>
                             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                                Minimum Order Amount (MAD)
+                                {t('adminSettings.highValue.thresholdLabel')}
                             </label>
                             <input
                                 type="number"
@@ -85,11 +86,11 @@ const AdminSettingsPage = () => {
                                 className="form-control"
                                 style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}
                             />
-                            <small className="text-muted">Orders above this amount will generate a discount coupon.</small>
+                            <small className="text-muted">{t('adminSettings.highValue.help')}</small>
                         </div>
                         <div className="form-group">
                             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                                Discount Percentage (%)
+                                {t('adminSettings.highValue.discountLabel')}
                             </label>
                             <input
                                 type="number"
@@ -104,11 +105,11 @@ const AdminSettingsPage = () => {
 
                     <div style={{ marginBottom: '30px' }}>
                         <h4 style={{ borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '15px' }}>
-                            🏆 Customer Loyalty Program
+                            {t('adminSettings.loyalty.title')}
                         </h4>
                         <div className="form-group" style={{ marginBottom: '15px' }}>
                             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                                Reward Every N-th Order
+                                {t('adminSettings.loyalty.orderCountLabel')}
                             </label>
                             <input
                                 type="number"
@@ -118,11 +119,11 @@ const AdminSettingsPage = () => {
                                 className="form-control"
                                 style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}
                             />
-                            <small className="text-muted">Example: Set to 3 to reward the 3rd, 6th, 9th order.</small>
+                            <small className="text-muted">{t('adminSettings.loyalty.help')}</small>
                         </div>
                         <div className="form-group">
                             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                                Discount Percentage (%)
+                                {t('adminSettings.loyalty.discountLabel')}
                             </label>
                             <input
                                 type="number"
@@ -149,7 +150,7 @@ const AdminSettingsPage = () => {
                             fontSize: '1rem'
                         }}
                     >
-                        {saving ? 'Saving...' : 'Save Settings'}
+                        {saving ? t('adminSettings.buttons.saving') : t('adminSettings.buttons.save')}
                     </button>
                 </form>
             </div>

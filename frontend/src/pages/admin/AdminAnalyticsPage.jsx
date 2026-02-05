@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Statistic, Typography, Spin, Alert, Button, Space, Divider, message } from 'antd';
 import {
     BarChartOutlined,
@@ -18,6 +19,7 @@ const { Title, Text } = Typography;
 
 const AdminAnalyticsPage = () => {
     const { t } = useLanguage();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(null);
@@ -336,7 +338,7 @@ const AdminAnalyticsPage = () => {
                                         border: 'none',
                                         borderRadius: '8px'
                                     }}
-                                    onClick={() => window.location.href = '/admin/coupons'}
+                                    onClick={() => navigate('/admin/coupons')}
                                 >
                                     {t('analyticsPage.actions.viewCoupons')}
                                 </Button>
@@ -404,7 +406,7 @@ const AdminAnalyticsPage = () => {
                                 borderRadius: '8px',
                                 color: 'white'
                             }}
-                            onClick={() => window.location.href = '/admin/coupons'}
+                            onClick={() => navigate('/admin/coupons')}
                         >
                             {t('analyticsPage.actions.manageCoupons')}
                         </Button>
@@ -419,7 +421,7 @@ const AdminAnalyticsPage = () => {
                                 borderRadius: '8px',
                                 color: 'white'
                             }}
-                            onClick={() => window.location.href = '/admin/orders'}
+                            onClick={() => navigate('/admin/orders')}
                         >
                             {t('analyticsPage.actions.viewOrders')}
                         </Button>
@@ -434,7 +436,7 @@ const AdminAnalyticsPage = () => {
                                 borderRadius: '8px',
                                 color: 'white'
                             }}
-                            onClick={() => window.location.href = '/admin/dashboard'}
+                            onClick={() => navigate('/admin/dashboard')}
                         >
                             {t('analyticsPage.actions.dashboard')}
                         </Button>

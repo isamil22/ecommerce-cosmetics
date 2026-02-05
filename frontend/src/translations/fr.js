@@ -1419,7 +1419,7 @@ export const fr = {
             add: 'Ajouter le commentaire',
             update: 'Mettre à jour',
             cancel: 'Annuler',
-            preview: 'Aperçu'
+            delete: 'Supprimer'
         },
         messages: {
             fetchError: 'Échec de la récupération des commentaires du pack.',
@@ -2092,5 +2092,820 @@ export const fr = {
             loadError: 'Échec du chargement de la page',
             productsError: 'Échec du chargement des produits'
         }
+    },
+    // Product Comments
+    productComments: {
+        title: 'Commentaires pour {productName}',
+        addNew: 'Ajouter un Commentaire',
+        backToProducts: 'Retour aux Produits',
+        table: {
+            user: 'Utilisateur',
+            comment: 'Commentaire',
+            score: 'Note',
+            actions: 'Actions',
+            edit: 'Éditer',
+            delete: 'Supprimer'
+        },
+        form: {
+            addTitle: 'Ajouter un Commentaire',
+            editTitle: 'Modifier le Commentaire',
+            displayName: 'Nom Affiché',
+            content: 'Contenu',
+            score: 'Note',
+            images: 'Images',
+            newImages: 'Nouvelles Images (Ajouter)',
+            add: 'Ajouter',
+            update: 'Mettre à jour',
+            cancel: 'Annuler'
+        },
+        messages: {
+            fetchError: 'Échec du chargement des commentaires du produit.',
+            deleteConfirm: 'Voulez-vous vraiment supprimer ce commentaire ?',
+            deleteSuccess: 'Commentaire supprimé avec succès !',
+            deleteError: 'Échec de la suppression du commentaire.',
+            updateSuccess: 'Commentaire mis à jour avec succès !',
+            updateError: 'Échec de la mise à jour du commentaire.',
+            addSuccess: 'Commentaire ajouté avec succès !',
+            addError: "Échec de l'ajout du commentaire.",
+            deleteImageConfirm: 'Voulez-vous vraiment supprimer cette image ?',
+            deleteImageSuccess: 'Image supprimée avec succès !',
+            deleteImageError: "Échec de la suppression de l'image."
+        }
+    },
+    // General Comments
+    commentsPage: {
+        title: 'Gérer les Commentaires',
+        table: {
+            user: 'Utilisateur',
+            comment: 'Commentaire',
+            score: 'Note',
+            actions: 'Actions',
+            edit: 'Éditer',
+            delete: 'Supprimer'
+        },
+        form: {
+            editTitle: 'Modifier le Commentaire',
+            content: 'Contenu',
+            score: 'Note',
+            update: 'Mettre à jour',
+            cancel: 'Annuler'
+        },
+        messages: {
+            fetchError: 'Échec du chargement des commentaires.',
+            deleteConfirm: 'Voulez-vous vraiment supprimer ce commentaire ?',
+            deleteSuccess: 'Commentaire supprimé avec succès !',
+            deleteError: 'Échec de la suppression du commentaire.',
+            updateSuccess: 'Commentaire mis à jour avec succès !',
+            updateError: 'Échec de la mise à jour du commentaire.'
+        }
+    },
+    // Admin Settings Page
+    adminSettings: {
+        title: 'Paramètres du système',
+        configure: 'Configurer les règles de remise',
+        highValue: {
+            title: '💰 Remise pour commande de grande valeur',
+            thresholdLabel: 'Montant minimum de la commande (MAD)',
+            discountLabel: 'Pourcentage de remise (%)',
+            help: 'Les commandes supérieures à ce montant généreront un coupon de réduction.'
+        },
+        loyalty: {
+            title: '🏆 Programme de fidélité client',
+            orderCountLabel: 'Récompenser chaque N-ième commande',
+            discountLabel: 'Pourcentage de remise (%)',
+            help: 'Exemple : Réglez sur 3 pour récompenser la 3ème, 6ème, 9ème commande.'
+        },
+        buttons: {
+            save: 'Enregistrer les paramètres',
+            saving: 'Enregistrement...'
+        },
+        messages: {
+            saveSuccess: 'Paramètres mis à jour avec succès !',
+            saveError: 'Échec de la mise à jour des paramètres.'
+        }
+    },
+    // Announcement Bar
+    announcement: {
+        title: 'Barre d\'annonce',
+        subtitle: 'Gérez la barre de notification supérieure de votre boutique',
+        loading: 'Chargement des paramètres...',
+        hidePreview: 'Masquer l\'aperçu',
+        showPreview: 'Afficher l\'aperçu',
+        refresh: 'Actualiser',
+        settingsTitle: 'Paramètres de la barre',
+        livePreviewTitle: 'Aperçu en direct',
+        enable: {
+            title: 'Activer l\'annonce',
+            description: 'Afficher ou masquer la barre d\'annonce sur la boutique'
+        },
+        text: {
+            label: 'Texte de l\'annonce',
+            placeholder: 'Entrez votre texte d\'annonce ici...',
+            help: 'Vous pouvez utiliser des émojis ! 🎉'
+        },
+        background: {
+            label: 'Style de fond',
+            gradient: 'Dégradé (Rose/Violet)',
+            red: 'Rouge',
+            blue: 'Bleu',
+            green: 'Vert',
+            yellow: 'Jaune',
+            purple: 'Violet',
+            pink: 'Rose'
+        },
+        textColor: {
+            label: 'Couleur du texte'
+        },
+        animation: {
+            label: 'Effet d\'animation',
+            none: 'Aucun',
+            pulse: 'Pulsation',
+            bounce: 'Rebond'
+        },
+        onlineCounter: {
+            title: 'Afficher le compteur de visiteurs',
+            description: 'Afficher un compteur "X personnes regardent ceci" pour créer l\'urgence',
+            online: '{count} personnes regardent les offres en ce moment',
+            status: {
+                shown: 'Affiché',
+                hidden: 'Masqué'
+            }
+        },
+        sticky: {
+            title: 'Position collante (Sticky)',
+            description: 'Garder la barre visible en haut lors du défilement',
+            preview: {
+                yes: 'Collant',
+                no: 'Statique'
+            }
+        },
+        buttons: {
+            save: 'Enregistrer',
+            saving: 'Enregistrement...'
+        },
+        preview: {
+            title: 'Détails de l\'aperçu',
+            status: 'Statut :',
+            enabled: 'Activé',
+            disabled: 'Désactivé',
+            background: 'Fond :',
+            animation: 'Animation :',
+            onlineCounter: 'Compteur :',
+            sticky: 'Collant :',
+            clickToPreview: 'Cliquez sur "Afficher l\'aperçu" pour voir le résultat !'
+        },
+        messages: {
+            loadError: 'Échec du chargement des paramètres',
+            updateSuccess: 'Annonce mise à jour avec succès !',
+            updateError: 'Échec de la mise à jour de l\'annonce'
+        }
+    },
+    // Countdown Page
+    countdownPage: {
+        title: 'Paramètres du Compte à Rebours',
+        messages: {
+            saveSuccess: 'Paramètres du compte à rebours enregistrés avec succès !',
+            saveError: 'Échec de l\'enregistrement des paramètres.'
+        },
+        buttons: {
+            save: 'Enregistrer les paramètres',
+            saving: 'Enregistrement...'
+        },
+        sections: {
+            themes: {
+                title: 'Thèmes de conception',
+                label: 'Choisir un thème prédéfini',
+                description: 'Sélectionnez un thème prédéfini pour styliser rapidement votre compte à rebours.',
+                applyButton: 'Appliquer le thème sélectionné',
+                selectedPreview: 'Aperçu du thème sélectionné :',
+                presets: {
+                    darkPremium: {
+                        name: 'Sombre Premium',
+                        description: 'Mode sombre élégant avec des accents dorés. Idéal pour les marques de luxe.',
+                        preview: 'Fond bleu foncé, chiffres dorés, urgence rouge'
+                    },
+                    lightProfessional: {
+                        name: 'Clair Professionnel',
+                        description: 'Design blanc épuré avec des accents bleus professionnels. Bon pour les magasins généraux.',
+                        preview: 'Fond blanc, bordure bleue, urgence rouge'
+                    },
+                    modernGradient: {
+                        name: 'Dégradé Moderne',
+                        description: 'Fond dégradé tendance. Haute visibilité et énergie.',
+                        preview: 'Dégradé Bleu-Violet, Texte Blanc'
+                    },
+                    elegantMinimal: {
+                        name: 'Élégant Minimal',
+                        description: 'Subtil et discret. Se concentre sur le contenu.',
+                        preview: 'Fond gris clair, typographie simple'
+                    },
+                    vibrantEnergy: {
+                        name: 'Énergie Vibrante',
+                        description: 'Couleurs à fort contraste pour créer une urgence maximale.',
+                        preview: 'Fond Rouge/Corail Vif, Accents Jaunes'
+                    }
+                }
+            },
+            basic: {
+                title: 'Paramètres de base',
+                fields: {
+                    title: {
+                        label: 'Titre',
+                        placeholder: 'ex. Vente Flash se termine dans...'
+                    },
+                    endDate: {
+                        label: 'Date et heure de fin'
+                    },
+                    subtitle: {
+                        label: 'Sous-titre',
+                        placeholder: 'ex. Ne manquez pas ces offres !'
+                    },
+                    packName: {
+                        label: 'Nom du Pack/Offre',
+                        placeholder: 'ex. Pack Été'
+                    },
+                    urgentMessage: {
+                        label: 'Message d\'urgence (< 1 heure)',
+                        placeholder: 'ex. Vite ! Fin bientôt !'
+                    },
+                    expiredMessage: {
+                        label: 'Message expiré',
+                        placeholder: 'ex. Cette offre est terminée.'
+                    },
+                    enabled: {
+                        label: 'Activer le compte à rebours'
+                    }
+                }
+            },
+            colors: {
+                title: 'Couleurs personnalisées',
+                fields: {
+                    background: 'Couleur de fond',
+                    text: 'Couleur du texte',
+                    border: 'Couleur de la bordure',
+                    timerBox: 'Couleur des boîtes',
+                    timerText: 'Couleur des chiffres',
+                    urgentBg: 'Fond Urgent',
+                    urgentText: 'Texte Urgent'
+                }
+            },
+            display: {
+                title: 'Éléments d\'affichage',
+                fields: {
+                    showDays: 'Afficher Jours',
+                    showHours: 'Afficher Heures',
+                    showMinutes: 'Afficher Minutes',
+                    showSeconds: 'Afficher Secondes',
+                    showPackName: 'Afficher Nom du Pack',
+                    showSubtitle: 'Afficher Sous-titre'
+                }
+            },
+            animation: {
+                title: 'Animations',
+                fields: {
+                    pulse: 'Activer Effet Pulsation',
+                    bounce: 'Activer Effet Rebond',
+                    threshold: 'Seuil d\'urgence (secondes)'
+                }
+            },
+            layout: {
+                title: 'Mise en page et taille',
+                fields: {
+                    borderRadius: 'Rayon de bordure (px)',
+                    padding: 'Rembourrage (px)',
+                    fontSize: 'Taille de police (px)',
+                    timerFontSize: 'Taille police minuterie (px)'
+                }
+            }
+        }
+    },
+    // Admin Products Page
+    products: {
+        title: 'Produits',
+        subtitle: 'Gérez votre catalogue de produits',
+        shortcuts: {
+            newProduct: 'Nouveau Produit',
+            search: 'Rechercher',
+            closeModal: 'Fermer'
+        },
+        refresh: 'Actualiser',
+        exportCSV: 'Exporter CSV',
+        addNewProduct: 'Ajouter un Produit',
+        errors: {
+            fetchFailed: 'Échec du chargement des produits',
+            deleteFailed: 'Échec de la suppression du produit',
+            noSelection: 'Aucun produit sélectionné',
+            exportFailed: 'Échec de l\'exportation CSV'
+        },
+        success: {
+            deleted: 'Produit supprimé avec succès',
+            bulkDeleted: '{count} produits supprimés avec succès',
+            exported: 'Produits exportés avec succès'
+        },
+        bulkDeleteConfirm: 'Êtes-vous sûr de vouloir supprimer {count} produits ?',
+        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
+        bulkDelete: 'Supprimer la sélection',
+        selectAll: 'Tout sélectionner',
+        noProducts: 'Aucun produit trouvé',
+        noProductsDesc: 'Commencez par créer votre premier produit.',
+        stockStatus: {
+            inStock: 'En Stock'
+        },
+        featured: 'En Vedette',
+        newArrival: 'Nouveau',
+        category: 'Catégorie',
+        quickEdit: 'Édition Rapide',
+        edit: 'Modifier',
+        analytics: {
+            totalProducts: 'Total Produits',
+            inStock: 'En Stock',
+            lowStock: 'Stock Faible',
+            outOfStock: 'Rupture de Stock',
+            totalValue: 'Valeur Totale',
+            avgPrice: 'Prix Moyen'
+        },
+        searchPlaceholder: 'Rechercher des produits...',
+        allCategories: 'Toutes les Catégories',
+        allStock: 'Tout le Stock',
+        inStockFilter: 'En Stock',
+        lowStockFilter: 'Stock Faible',
+        outOfStockFilter: 'Rupture de Stock',
+        allStatus: 'Tous les Statuts',
+        activeStatus: 'Actif',
+        disabledStatus: 'Désactivé',
+        featuredStatus: 'En Vedette',
+        newArrivalsStatus: 'Nouveaux Arrivages',
+        sortByName: 'Nom',
+        sortByPrice: 'Prix',
+        sortByStock: 'Stock',
+        sortByDate: 'Date',
+        gridView: 'Vue Grille',
+        listView: 'Vue Liste',
+        clearFilters: 'Effacer les filtres',
+        selectedCount: 'sélectionné(s)',
+        clearSelection: 'Effacer la sélection'
+    },
+    // Admin Categories Page
+    categoriesPage: {
+        title: 'Catégories',
+        subtitle: 'Gérez les catégories de produits',
+        header: {
+            newCategory: 'Nouvelle Catégorie',
+            search: 'Rechercher',
+            refresh: 'Actualiser',
+            addNew: 'Ajouter'
+        },
+        shortcuts: {
+            clearSearch: 'Effacer la recherche'
+        },
+        stats: {
+            totalCategories: 'Total Catégories',
+            withProducts: 'Avec Produits',
+            emptyCategories: 'Vides',
+            totalProducts: 'Total Produits'
+        },
+        search: {
+            placeholder: 'Rechercher des catégories...',
+            sortName: 'Nom',
+            sortProducts: 'Nombre de Produits',
+            title: 'Vue Grille',
+            listView: 'Vue Liste',
+            clear: 'Effacer'
+        },
+        list: {
+            title: 'Catégories ({count})',
+            refresh: 'Actualiser',
+            noCategoriesFound: 'Aucune catégorie trouvée',
+            noCategoriesAvailable: 'Aucune catégorie disponible',
+            tryAdjusting: 'Essayez d\'ajuster vos termes de recherche',
+            startCreating: 'Commencez par créer votre première catégorie',
+            createFirst: 'Créer une Catégorie',
+            noImage: 'Aucune Image',
+            empty: 'Vide',
+            productCount: '{count} Produits',
+            id: 'ID: {id}',
+            edit: 'Modifier',
+            delete: 'Supprimer'
+        },
+        card: {
+            products: 'Produits'
+        },
+        confirmDelete: 'Êtes-vous sûr de vouloir supprimer cette catégorie ?',
+        messages: {
+            fetchFailed: 'Échec du chargement des catégories',
+            deleteSuccess: 'Catégorie supprimée avec succès',
+            deleteFailed: 'Échec de la suppression de la catégorie'
+        }
+    },
+    // Admin Product Form
+    productForm: {
+        title: {
+            create: 'Créer un Nouveau Produit',
+            edit: 'Modifier le Produit'
+        },
+        subtitle: {
+            create: 'Ajouter un nouveau produit à votre catalogue',
+            edit: 'Mettre à jour les détails du produit existant'
+        },
+        loading: 'Chargement des données du produit...',
+        actions: {
+            saving: 'Enregistrement...',
+            create: 'Créer le Produit',
+            update: 'Mettre à jour le Produit'
+        },
+        basicInfo: {
+            title: 'Informations de Base',
+            productName: 'Nom du Produit',
+            productNamePlaceholder: 'ex: Rouge à Lèvres Premium',
+            brand: 'Marque',
+            brandPlaceholder: 'ex: L\'Oréal',
+            price: 'Prix',
+            pricePlaceholder: '0.00',
+            stockQuantity: 'Quantité en Stock',
+            stockPlaceholder: '0',
+            category: 'Catégorie',
+            categoryPlaceholder: 'Sélectionner une Catégorie',
+            type: 'Type',
+            typeMen: 'Hommes',
+            typeWomen: 'Femmes',
+            typeBoth: 'Unisexe',
+            bestseller: 'Meilleure Vente',
+            newArrival: 'Nouvel Arrivage',
+            hasVariants: 'A des Variantes',
+            isPackable: 'Est Packable'
+        },
+        description: {
+            title: 'Description',
+            label: 'Description du Produit'
+        },
+        images: {
+            title: 'Images du Produit',
+            upload: 'Télécharger des Images',
+            existingImages: 'Images Existantes',
+            newImages: 'Nouvelles Images',
+            preview: 'Aperçu',
+            existing: 'Existante'
+        },
+        variantTypes: {
+            title: 'Types de Variantes',
+            typeName: 'Nom du Type',
+            typeNamePlaceholder: 'ex: Couleur, Taille',
+            options: 'Options',
+            optionValue: 'Valeur de l\'Option',
+            color: 'Couleur',
+            image: 'Image',
+            removeOption: 'Supprimer l\'Option'
+        },
+        validation: {
+            nameRequired: 'Le nom du produit est requis',
+            priceRequired: 'Le prix est requis',
+            categoryRequired: 'La catégorie est requise',
+            variantPricesRequired: 'Toutes les variantes doivent avoir un prix valide'
+        },
+        success: {
+            created: 'Produit créé avec succès',
+            updated: 'Produit mis à jour avec succès'
+        },
+        errors: {
+            categoriesFailed: 'Échec du chargement des catégories',
+            loadFailed: 'Échec du chargement des détails du produit',
+            saveFailed: 'Échec de l\'enregistrement du produit'
+        }
+    },
+    // Admin Users Page
+    usersPage: {
+        title: 'Gestion des Utilisateurs',
+        messages: {
+            fetchFailed: 'Échec du chargement des utilisateurs',
+            roleUpdated: 'Rôle mis à jour en {role}',
+            roleUpdateFailed: 'Échec de la mise à jour du rôle utilisateur',
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer cet utilisateur ?',
+            deleteSuccess: 'Utilisateur supprimé avec succès',
+            deleteFailed: 'Échec de la suppression de l\'utilisateur'
+        },
+        rolesModal: {
+            title: 'Gérer les Rôles',
+            error: 'Erreur lors du chargement des rôles',
+            success: 'Rôles assignés avec succès',
+            description: 'Assignez des rôles pour contrôler l\'accès des utilisateurs.',
+            permissions: '{count} permissions',
+            cancel: 'Annuler',
+            save: 'Enregistrer les Rôles'
+        },
+        permissionsModal: {
+            title: 'Permissions Utilisateur',
+            viewTitle: 'Voir les Permissions',
+            description: 'L\'utilisateur a <strong>{count}</strong> permissions basées sur ses rôles.'
+        },
+        table: {
+            userId: 'ID Utilisateur',
+            name: 'Nom',
+            email: 'Email',
+            legacyRole: 'Rôle Hérité',
+            rbacRoles: 'Rôles RBAC',
+            emailConfirmed: 'Vérifié',
+            actions: 'Actions',
+            manage: 'Gérer',
+            yes: 'Oui',
+            no: 'Non'
+        }
     }
+},
+    // Admin Category Form
+    categoryForm: {
+        title: {
+            create: 'Créer une Catégorie',
+            edit: 'Modifier la Catégorie'
+        },
+        subtitle: {
+            create: 'Ajouter une nouvelle catégorie pour vos produits',
+            edit: 'Mettre à jour les détails de la catégorie'
+        },
+        form: {
+            name: 'Nom de la Catégorie',
+            slug: 'Slug',
+            description: 'Description',
+            parentCategory: 'Catégorie Parente',
+            displayOrder: 'Ordre d\'Affichage',
+            image: 'Image de la Catégorie',
+            currentImage: 'Image Actuelle',
+            uploadNew: 'Télécharger une Nouvelle Image',
+            none: 'Aucun'
+        },
+        validation: {
+            nameRequired: 'Le nom de la catégorie est requis'
+        },
+        actions: {
+            create: 'Créer la Catégorie',
+            update: 'Mettre à jour la Catégorie',
+            saving: 'Enregistrement...'
+        },
+        messages: {
+            notFound: 'Catégorie non trouvée',
+            createSuccess: 'Catégorie créée avec succès',
+            updateSuccess: 'Catégorie mise à jour avec succès',
+            createFailed: 'Échec de la création de la catégorie',
+            updateFailed: 'Échec de la mise à jour de la catégorie'
+        }
+    },
+    // Admin Roles Page
+    rolesPage: {
+        title: 'Rôles et Permissions',
+        subtitle: 'Gérer les rôles des utilisateurs et les droits d\'accès',
+        createButton: 'Créer un Nouveau Rôle',
+        createRole: 'Créer un Rôle',
+        editRole: 'Modifier le Rôle',
+        roleName: 'Nom du Rôle',
+        roleNamePlaceholder: 'ex: Gestionnaire de Contenu',
+        roleNameHelp: 'Utilisez un nom descriptif pour le rôle',
+        description: 'Description',
+        descriptionPlaceholder: 'Décrivez à quoi sert ce rôle',
+        permissions: 'Permissions',
+        selectAll: 'Tout Sélectionner',
+        assignPermissions: 'Assigner des Permissions ({count})',
+        cancel: 'Annuler',
+        save: 'Enregistrer le Rôle',
+        update: 'Mettre à jour le Rôle',
+        table: {
+            roleName: 'Nom du Rôle',
+            usersCount: 'Utilisateurs',
+            actions: 'Actions',
+            edit: 'Modifier',
+            delete: 'Supprimer'
+        },
+        messages: {
+            loadFailed: 'Échec du chargement des rôles',
+            createSuccess: 'Rôle créé avec succès',
+            updateSuccess: 'Rôle mis à jour avec succès',
+            deleteSuccess: 'Rôle supprimé avec succès',
+            operationFailed: 'L\'opération a échoué',
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce rôle ?'
+        },
+        validation: {
+            nameRequired: 'Le nom du rôle est requis'
+        }
+    },
+    // Admin Analytics Page
+    analyticsPage: {
+        title: 'Tableau de Bord Analytique',
+        stats: {
+            totalRevenue: 'Revenu Total',
+            orders: 'Total Commandes',
+            customers: 'Total Clients',
+            totalCoupons: 'Total Coupons'
+        },
+        charts: {
+            revenue: 'Revenus au Fil du Temps',
+            orders: 'Aperçu des Commandes',
+            topProducts: 'Meilleurs Produits'
+        },
+        usage: {
+            title: 'Utilisation des Coupons'
+        },
+        actions: {
+            viewCoupons: 'Voir les Coupons',
+            refresh: 'Actualiser les Données'
+        }
+    },
+    // Admin Custom Packs Page
+    customPacks: {
+        manageTitle: 'Packs Personnalisés',
+        manageSubtitle: 'Gérer les offres groupées de produits personnalisés',
+        addNew: 'Ajouter un Nouveau Pack',
+        refresh: 'Actualiser',
+        noPacks: 'Aucun pack personnalisé trouvé',
+        createFirst: 'Créez votre premier pack personnalisé',
+        fetchFailed: 'Échec du chargement des packs personnalisés',
+        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce pack ?',
+        deleteSuccess: 'Pack supprimé avec succès',
+        deleteFailed: 'Échec de la suppression du pack',
+        table: {
+            id: 'ID',
+            name: 'Nom',
+            products: 'Produits',
+            price: 'Prix',
+            discount: 'Remise',
+            fixedPrice: 'Prix Fixe',
+            percentageDiscount: 'Pourcentage de Remise',
+            totalValue: 'Valeur Totale',
+            active: 'Actif',
+            actions: 'Actions',
+            edit: 'Modifier',
+            delete: 'Supprimer',
+            deleting: 'Suppression...'
+        }
+    },
+    // Review Form Settings
+    reviewFormSettingsPage: {
+        title: 'Paramètres du Formulaire d\'Avis',
+        subtitle: 'Configurer comment les clients laissent des avis',
+        configTitle: 'Configuration Générale',
+        showReviewForm: 'Afficher le Formulaire d\'Avis',
+        showReviewFormDesc: 'Permettre aux clients de soumettre de nouveaux avis',
+        preview: 'Aperçu',
+        visibleMsg: 'Le formulaire d\'avis sera visible par les clients.',
+        hiddenMsg: 'Le formulaire d\'avis est actuellement masqué pour les clients.',
+        reset: 'Rétablir les Défauts',
+        unsavedChanges: 'Vous avez des modifications non enregistrées',
+        saving: 'Enregistrement...',
+        save: 'Enregistrer les Modifications',
+        quickInfo: 'Info Rapide',
+        quickInfo1: 'Masquer le formulaire empêche de nouvelles soumissions.',
+        quickInfo2: 'Les avis existants restent visibles.',
+        quickInfo3: 'Utilisez ceci pour suspendre temporairement les avis.',
+        currentStatus: 'Statut Actuel',
+        enabled: 'Activé',
+        disabled: 'Désactivé',
+        messages: {
+            loadFailed: 'Échec du chargement des paramètres',
+            saveSuccess: 'Paramètres enregistrés avec succès',
+            saveFailed: 'Échec de l\'enregistrement des paramètres'
+        }
+    },
+    // Enhanced Visitor Counter
+    enhancedVisitorCounter: {
+        title: 'Gestion du Compteur de Visiteurs',
+        subtitle: 'Contrôlez chaque aspect de l\'affichage de votre compteur de visiteurs',
+        loading: 'Chargement des paramètres...',
+        globalSettings: {
+            title: 'Paramètres Globaux',
+            enableSystem: 'Activer le Système de Compteur',
+            customTitle: 'Titre Personnalisé',
+            customTitlePlaceholder: 'Statistiques en Direct',
+            animationSpeed: 'Vitesse d\'Animation (ms)'
+        },
+        metrics: {
+            currentViewers: {
+                title: 'Visiteurs Actuels',
+                subtitle: 'Visionnent Maintenant',
+                description: 'Nombre de personnes visionnant actuellement la page'
+            },
+            totalViews: {
+                title: 'Vues Totales',
+                subtitle: 'Total Vus',
+                description: 'Nombre total de pages vues'
+            },
+            addedToday: {
+                title: 'Ajoutés Aujourd\'hui',
+                subtitle: 'Ajoutés Aujourd\'hui',
+                description: 'Nombre d\'articles ajoutés aujourd\'hui'
+            },
+            activity: {
+                title: 'Niveau d\'Activité',
+                subtitle: 'Activité',
+                description: 'Niveau actuel d\'activité des utilisateurs'
+            },
+            min: 'Valeur Min',
+            max: 'Valeur Max',
+            preview: 'Aperçu'
+        },
+        displaySettings: {
+            title: 'Paramètres d\'Affichage',
+            backgroundColor: 'Couleur de Fond',
+            textColor: 'Couleur du Texte',
+            borderColor: 'Couleur de Bordure'
+        },
+        actions: {
+            save: 'Enregistrer Tous les Paramètres',
+            saving: 'Enregistrement...',
+            reset: 'Réinitialiser les Modifications'
+        },
+        messages: {
+            loadFailed: 'Échec du chargement des paramètres du compteur',
+            saveSuccess: 'Paramètres enregistrés avec succès',
+            saveFailed: 'Échec de l\'enregistrement des paramètres',
+            reset: 'Paramètres réinitialisés aux valeurs d\'origine',
+            unsavedChanges: 'Vous avez des modifications non enregistrées'
+        },
+        validation: {
+            currentViewersRange: 'Le Min des Visiteurs Actuels ne peut pas être supérieur au Max',
+            totalViewsRange: 'Le Min des Vues Totales ne peut pas être supérieur au Max',
+            addedTodayRange: 'Le Min des Ajoutés Aujourd\'hui ne peut pas être supérieur au Max',
+            activityRange: 'Le Min du Niveau d\'Activité ne peut pas être supérieur au Max'
+        },
+        preview: {
+            title: 'Aperçu en Direct',
+            show: 'Afficher l\'Aperçu',
+            hide: 'Masquer l\'Aperçu'
+        }
+    },
+    // Notification Settings
+    notificationSettings: {
+        title: 'Paramètres de Notification en Direct',
+        subtitle: 'Contrôlez les notifications d\'activité en direct affichées aux clients',
+        loading: 'Chargement des paramètres...',
+        unsavedChanges: 'Modifications Non Enregistrées',
+        config: {
+            title: 'Configuration',
+            enable: 'Activer les Notifications en Direct',
+            enableDesc: 'Afficher les notifications d\'activité en direct aux clients',
+            maxNotifications: 'Notifications Maximum Affichées',
+            maxNotificationsHelp: 'Nombre maximum de notifications à afficher par session',
+            minInterval: 'Intervalle Min (secondes)',
+            maxInterval: 'Intervalle Max (secondes)',
+            duration: 'Durée (secondes)',
+            types: {
+                title: 'Types de Notification',
+                purchase: 'Notifications d\'Achat',
+                purchaseDesc: 'Afficher quand quelqu\'un achète un produit',
+                viewing: 'Notifications de Visionnage',
+                viewingDesc: 'Afficher combien de personnes regardent',
+                cart: 'Notifications de Panier',
+                cartDesc: 'Afficher quand quelqu\'un ajoute au panier'
+            },
+            position: {
+                title: 'Position de la Notification',
+                bottomLeft: 'Bas Gauche',
+                bottomRight: 'Bas Droite',
+                topLeft: 'Haut Gauche',
+                topRight: 'Haut Droite'
+            }
+        },
+        actions: {
+            save: 'Enregistrer les Modifications',
+            saving: 'Enregistrement...',
+            reset: 'Réinitialiser'
+        },
+        messages: {
+            loadFailed: 'Échec du chargement des paramètres de notification',
+            saveSuccess: 'Paramètres enregistrés avec succès',
+            saveFailed: 'Échec de l\'enregistrement des paramètres',
+            reset: 'Paramètres réinitialisés au dernier état enregistré'
+        },
+        validation: {
+            maxNotifications: 'Le nombre max de notifications doit être compris entre 1 et 20',
+            minInterval: 'L\'intervalle min doit être compris entre 1 et 60 secondes',
+            maxInterval: 'L\'intervalle max doit être compris entre 1 et 60 secondes',
+            intervalRange: 'L\'intervalle min ne peut pas être supérieur à l\'intervalle max',
+            duration: 'La durée doit être comprise entre 1 et 60 secondes'
+        },
+        preview: {
+            title: 'Aperçu en Direct',
+            liveActivity: 'Activité en Direct',
+            someoneBought: 'Quelqu\'un au Maroc vient d\'acheter',
+            currentSettings: 'Résumé des Paramètres Actuels',
+            status: 'Statut',
+            enabled: 'Actif',
+            disabled: 'Désactivé',
+            typesEnabled: 'Types Activés'
+        }
+    }
+    },
+// Common
+common: {
+    save: 'Enregistrer',
+        saving: 'Enregistrement...',
+            cancel: 'Annuler',
+                back: 'Retour',
+                    edit: 'Modifier',
+                        delete: 'Supprimer',
+                            create: 'Créer',
+                                update: 'Mettre à jour',
+                                    actions: 'Actions',
+                                        error: 'Erreur :',
+                                            success: 'Succès :',
+                                                unsavedChanges: 'Modifications non enregistrées',
+                                                    optional: '(Optionnel)',
+                                                        loading: 'Chargement...'
+}
 };

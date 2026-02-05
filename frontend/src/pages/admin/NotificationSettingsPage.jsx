@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { notificationSettingsService } from '../../api/notificationSettingsService';
 import { toast } from 'react-toastify';
-import { 
-    FiBell, 
-    FiBellOff, 
-    FiSettings, 
-    FiSave, 
-    FiRefreshCw, 
-    FiCheckCircle, 
+import {
+    FiBell,
+    FiBellOff,
+    FiSettings,
+    FiSave,
+    FiRefreshCw,
+    FiCheckCircle,
     FiAlertCircle,
     FiEye,
     FiEyeOff,
@@ -16,8 +16,10 @@ import {
     FiClock,
     FiMapPin
 } from 'react-icons/fi';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const NotificationSettingsPage = () => {
+    const { t } = useLanguage();
     const [settings, setSettings] = useState({
         enabled: false,
         maxNotifications: 5,
@@ -41,33 +43,28 @@ const NotificationSettingsPage = () => {
                 setSettings(data);
                 setOriginalSettings({ ...data });
             } catch (err) {
-                toast.error('Failed to load notification settings.');
+                toast.error(t('notificationSettings.messages.loadFailed'));
                 console.error('Error loading settings:', err);
             } finally {
                 setIsLoading(false);
             }
         };
         fetchSettings();
-    }, []);
+    }, [t]);
 
     // Check for changes
     useEffect(() => {
         if (originalSettings) {
             const changed = JSON.stringify(settings) !== JSON.stringify(originalSettings);
             setHasChanges(changed);
-            console.log('Settings changed:', changed);
-            console.log('Current settings:', settings);
-            console.log('Original settings:', originalSettings);
         }
     }, [settings, originalSettings]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        const newValue = type === 'checkbox' ? checked : 
-                        type === 'number' ? parseInt(value, 10) : value;
-        
-        console.log('Setting changed:', name, 'from', settings[name], 'to', newValue);
-        
+        const newValue = type === 'checkbox' ? checked :
+            type === 'number' ? parseInt(value, 10) : value;
+
         setSettings(prev => ({
             ...prev,
             [name]: newValue,
@@ -76,23 +73,23 @@ const NotificationSettingsPage = () => {
 
     const validateSettings = () => {
         if (settings.maxNotifications < 1 || settings.maxNotifications > 20) {
-            toast.error('Maximum notifications must be between 1 and 20');
+            toast.error(t('notificationSettings.validation.maxNotifications'));
             return false;
         }
         if (settings.minIntervalSeconds < 1 || settings.minIntervalSeconds > 60) {
-            toast.error('Minimum interval must be between 1 and 60 seconds');
+            toast.error(t('notificationSettings.validation.minInterval'));
             return false;
         }
         if (settings.maxIntervalSeconds < 1 || settings.maxIntervalSeconds > 60) {
-            toast.error('Maximum interval must be between 1 and 60 seconds');
+            toast.error(t('notificationSettings.validation.maxInterval'));
             return false;
         }
         if (settings.minIntervalSeconds > settings.maxIntervalSeconds) {
-            toast.error('Minimum interval cannot be greater than maximum interval');
+            toast.error(t('notificationSettings.validation.intervalRange'));
             return false;
         }
         if (settings.notificationDurationSeconds < 1 || settings.notificationDurationSeconds > 60) {
-            toast.error('Notification duration must be between 1 and 60 seconds');
+            toast.error(t('notificationSettings.validation.duration'));
             return false;
         }
         return true;
@@ -100,23 +97,20 @@ const NotificationSettingsPage = () => {
 
     const handleSaveSettings = async (e) => {
         e.preventDefault();
-        
-        console.log('Saving settings:', settings);
-        
+
         if (!validateSettings()) {
             return;
         }
 
         setIsSaving(true);
         try {
-            const result = await notificationSettingsService.saveSettings(settings);
-            console.log('Save result:', result);
+            await notificationSettingsService.saveSettings(settings);
             setOriginalSettings({ ...settings });
             setHasChanges(false);
-            toast.success('Notification settings saved successfully!');
+            toast.success(t('notificationSettings.messages.saveSuccess'));
         } catch (err) {
             console.error('Error saving settings:', err);
-            toast.error('Failed to save settings. You must be an admin.');
+            toast.error(t('notificationSettings.messages.saveFailed'));
         } finally {
             setIsSaving(false);
         }
@@ -126,7 +120,7 @@ const NotificationSettingsPage = () => {
         if (originalSettings) {
             setSettings({ ...originalSettings });
             setHasChanges(false);
-            toast.info('Settings reset to original values');
+            toast.info(t('notificationSettings.messages.reset'));
         }
     };
 
@@ -136,7 +130,7 @@ const NotificationSettingsPage = () => {
                 <div className="flex items-center justify-center min-h-64">
                     <div className="text-center">
                         <FiRefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-pink-600" />
-                        <p className="text-gray-600">Loading notification settings...</p>
+                        <p className="text-gray-600">{t('notificationSettings.loading')}</p>
                     </div>
                 </div>
             </div>
@@ -144,10 +138,10 @@ const NotificationSettingsPage = () => {
     }
 
     const positionOptions = [
-        { value: 'bottom-left', label: 'Bottom Left' },
-        { value: 'bottom-right', label: 'Bottom Right' },
-        { value: 'top-left', label: 'Top Left' },
-        { value: 'top-right', label: 'Top Right' }
+        { value: 'bottom-left', label: t('notificationSettings.config.position.bottomLeft') },
+        { value: 'bottom-right', label: t('notificationSettings.config.position.bottomRight') },
+        { value: 'top-left', label: t('notificationSettings.config.position.topLeft') },
+        { value: 'top-right', label: t('notificationSettings.config.position.topRight') }
     ];
 
     return (
@@ -158,14 +152,14 @@ const NotificationSettingsPage = () => {
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 flex items-center">
                             <FiBell className="w-8 h-8 mr-3 text-pink-600" />
-                            Live Notification Settings
+                            {t('notificationSettings.title')}
                         </h1>
-                        <p className="text-gray-600 mt-2">Control live activity notifications displayed to customers</p>
+                        <p className="text-gray-600 mt-2">{t('notificationSettings.subtitle')}</p>
                     </div>
                     {hasChanges && (
                         <div className="flex items-center text-orange-600 bg-orange-50 px-4 py-2 rounded-lg">
                             <FiAlertCircle className="w-5 h-5 mr-2" />
-                            <span className="text-sm font-medium">Unsaved changes</span>
+                            <span className="text-sm font-medium">{t('notificationSettings.unsavedChanges')}</span>
                         </div>
                     )}
                 </div>
@@ -177,10 +171,10 @@ const NotificationSettingsPage = () => {
                     <div className="bg-gradient-to-r from-pink-500 to-purple-600 px-6 py-4">
                         <h2 className="text-xl font-semibold text-white flex items-center">
                             <FiSettings className="w-6 h-6 mr-2" />
-                            Configuration
+                            {t('notificationSettings.config.title')}
                         </h2>
                     </div>
-                    
+
                     <form onSubmit={handleSaveSettings} className="p-6 space-y-6">
                         {/* Enable/Disable Toggle */}
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
@@ -193,10 +187,10 @@ const NotificationSettingsPage = () => {
                                     )}
                                     <div>
                                         <label htmlFor="enabled" className="text-lg font-medium text-gray-900">
-                                            Enable Live Notifications
+                                            {t('notificationSettings.config.enable')}
                                         </label>
                                         <p className="text-sm text-gray-600">
-                                            Show live activity notifications to customers
+                                            {t('notificationSettings.config.enableDesc')}
                                         </p>
                                     </div>
                                 </div>
@@ -220,7 +214,7 @@ const NotificationSettingsPage = () => {
                                 {/* Max Notifications */}
                                 <div>
                                     <label htmlFor="maxNotifications" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Maximum Notifications Displayed
+                                        {t('notificationSettings.config.maxNotifications')}
                                     </label>
                                     <input
                                         type="number"
@@ -232,7 +226,7 @@ const NotificationSettingsPage = () => {
                                         min="1"
                                         max="20"
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">How many notifications to show at once (1-20)</p>
+                                    <p className="text-xs text-gray-500 mt-1">{t('notificationSettings.config.maxNotificationsHelp')}</p>
                                 </div>
 
                                 {/* Interval Settings */}
@@ -240,7 +234,7 @@ const NotificationSettingsPage = () => {
                                     <div>
                                         <label htmlFor="minIntervalSeconds" className="block text-sm font-medium text-gray-700 mb-2">
                                             <FiClock className="w-4 h-4 inline mr-1" />
-                                            Min Interval (seconds)
+                                            {t('notificationSettings.config.minInterval')}
                                         </label>
                                         <input
                                             type="number"
@@ -256,7 +250,7 @@ const NotificationSettingsPage = () => {
                                     <div>
                                         <label htmlFor="maxIntervalSeconds" className="block text-sm font-medium text-gray-700 mb-2">
                                             <FiClock className="w-4 h-4 inline mr-1" />
-                                            Max Interval (seconds)
+                                            {t('notificationSettings.config.maxInterval')}
                                         </label>
                                         <input
                                             type="number"
@@ -273,17 +267,17 @@ const NotificationSettingsPage = () => {
 
                                 {/* Notification Types */}
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900">Notification Types</h3>
-                                    
+                                    <h3 className="text-lg font-medium text-gray-900">{t('notificationSettings.config.types.title')}</h3>
+
                                     <div className="space-y-3">
                                         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                             <div className="flex items-center">
                                                 <FiShoppingCart className="w-5 h-5 text-green-600 mr-3" />
                                                 <div>
                                                     <label htmlFor="showPurchaseNotifications" className="font-medium text-gray-900">
-                                                        Purchase Notifications
+                                                        {t('notificationSettings.config.types.purchase')}
                                                     </label>
-                                                    <p className="text-sm text-gray-600">Show when customers make purchases</p>
+                                                    <p className="text-sm text-gray-600">{t('notificationSettings.config.types.purchaseDesc')}</p>
                                                 </div>
                                             </div>
                                             <label className="relative inline-flex items-center cursor-pointer">
@@ -304,9 +298,9 @@ const NotificationSettingsPage = () => {
                                                 <FiEye className="w-5 h-5 text-blue-600 mr-3" />
                                                 <div>
                                                     <label htmlFor="showViewingNotifications" className="font-medium text-gray-900">
-                                                        Viewing Notifications
+                                                        {t('notificationSettings.config.types.viewing')}
                                                     </label>
-                                                    <p className="text-sm text-gray-600">Show when customers view products</p>
+                                                    <p className="text-sm text-gray-600">{t('notificationSettings.config.types.viewingDesc')}</p>
                                                 </div>
                                             </div>
                                             <label className="relative inline-flex items-center cursor-pointer">
@@ -327,9 +321,9 @@ const NotificationSettingsPage = () => {
                                                 <FiUsers className="w-5 h-5 text-orange-600 mr-3" />
                                                 <div>
                                                     <label htmlFor="showCartNotifications" className="font-medium text-gray-900">
-                                                        Cart Notifications
+                                                        {t('notificationSettings.config.types.cart')}
                                                     </label>
-                                                    <p className="text-sm text-gray-600">Show when customers add items to cart</p>
+                                                    <p className="text-sm text-gray-600">{t('notificationSettings.config.types.cartDesc')}</p>
                                                 </div>
                                             </div>
                                             <label className="relative inline-flex items-center cursor-pointer">
@@ -352,7 +346,7 @@ const NotificationSettingsPage = () => {
                                     <div>
                                         <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-2">
                                             <FiMapPin className="w-4 h-4 inline mr-1" />
-                                            Notification Position
+                                            {t('notificationSettings.config.position.title')}
                                         </label>
                                         <select
                                             name="position"
@@ -371,7 +365,7 @@ const NotificationSettingsPage = () => {
                                     <div>
                                         <label htmlFor="notificationDurationSeconds" className="block text-sm font-medium text-gray-700 mb-2">
                                             <FiClock className="w-4 h-4 inline mr-1" />
-                                            Duration (seconds)
+                                            {t('notificationSettings.config.duration')}
                                         </label>
                                         <input
                                             type="number"
@@ -393,32 +387,31 @@ const NotificationSettingsPage = () => {
                             <button
                                 type="submit"
                                 disabled={isSaving}
-                                className={`flex-1 flex items-center justify-center px-6 py-3 rounded-xl font-medium transition-all ${
-                                    !isSaving
-                                        ? 'bg-pink-600 text-white hover:bg-pink-700 shadow-lg hover:shadow-xl'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                }`}
+                                className={`flex-1 flex items-center justify-center px-6 py-3 rounded-xl font-medium transition-all ${!isSaving
+                                    ? 'bg-pink-600 text-white hover:bg-pink-700 shadow-lg hover:shadow-xl'
+                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    }`}
                             >
                                 {isSaving ? (
                                     <>
                                         <FiRefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                                        Saving...
+                                        {t('notificationSettings.actions.saving')}
                                     </>
                                 ) : (
                                     <>
                                         <FiSave className="w-5 h-5 mr-2" />
-                                        Save Changes
+                                        {t('notificationSettings.actions.save')}
                                     </>
                                 )}
                             </button>
-                            
+
                             {hasChanges && (
                                 <button
                                     type="button"
                                     onClick={handleReset}
                                     className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
                                 >
-                                    Reset
+                                    {t('notificationSettings.actions.reset')}
                                 </button>
                             )}
                         </div>
@@ -430,21 +423,20 @@ const NotificationSettingsPage = () => {
                     <div className="bg-gradient-to-r from-blue-500 to-green-600 px-6 py-4">
                         <h2 className="text-xl font-semibold text-white flex items-center">
                             <FiEye className="w-6 h-6 mr-2" />
-                            Live Preview
+                            {t('notificationSettings.preview.title')}
                         </h2>
                     </div>
-                    
+
                     <div className="p-6">
                         {settings.enabled ? (
                             <div className="space-y-6">
                                 {/* Preview Notification */}
-                                <div className={`bg-white rounded-xl shadow-lg border-2 border-blue-200 p-4 ${
-                                    settings.position.includes('left') ? 'mr-auto' : 'ml-auto'
-                                }`} style={{ maxWidth: '300px' }}>
+                                <div className={`bg-white rounded-xl shadow-lg border-2 border-blue-200 p-4 ${settings.position.includes('left') ? 'mr-auto' : 'ml-auto'
+                                    }`} style={{ maxWidth: '300px' }}>
                                     <div className="flex items-center justify-between mb-3">
                                         <div className="flex items-center gap-2">
                                             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                                            <h3 className="font-bold text-gray-800 text-sm">Live Activity</h3>
+                                            <h3 className="font-bold text-gray-800 text-sm">{t('notificationSettings.preview.liveActivity')}</h3>
                                         </div>
                                         <button className="text-gray-400 hover:text-gray-600">
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -452,7 +444,7 @@ const NotificationSettingsPage = () => {
                                             </svg>
                                         </button>
                                     </div>
-                                    
+
                                     <div className="flex items-start gap-3">
                                         <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm">
                                             👩
@@ -464,7 +456,7 @@ const NotificationSettingsPage = () => {
                                                 <span className="text-xs text-gray-400">2 minutes ago</span>
                                             </div>
                                             <p className="text-sm text-gray-800 leading-tight">
-                                                <span className="font-medium">Someone just bought</span>
+                                                <span className="font-medium">{t('notificationSettings.preview.someoneBought')}</span>
                                                 <br />
                                                 <span className="font-semibold text-pink-600">
                                                     "CosRX BHA Blackhead Power Liquid"
@@ -476,37 +468,37 @@ const NotificationSettingsPage = () => {
 
                                 {/* Settings Summary */}
                                 <div className="bg-gray-50 rounded-xl p-4">
-                                    <h3 className="font-medium text-gray-900 mb-3">Current Settings</h3>
+                                    <h3 className="font-medium text-gray-900 mb-3">{t('notificationSettings.preview.currentSettings')}</h3>
                                     <div className="space-y-2 text-sm">
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Status:</span>
+                                            <span className="text-gray-600">{t('notificationSettings.preview.status')}:</span>
                                             <span className="text-green-600 font-medium flex items-center">
                                                 <FiCheckCircle className="w-4 h-4 mr-1" />
-                                                Enabled
+                                                {t('notificationSettings.preview.enabled')}
                                             </span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Max Notifications:</span>
+                                            <span className="text-gray-600">{t('notificationSettings.config.maxNotifications')}:</span>
                                             <span className="font-medium">{settings.maxNotifications}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Interval:</span>
+                                            <span className="text-gray-600">{t('notificationSettings.config.minInterval')}:</span>
                                             <span className="font-medium">{settings.minIntervalSeconds}-{settings.maxIntervalSeconds}s</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Position:</span>
+                                            <span className="text-gray-600">{t('notificationSettings.config.position.title')}:</span>
                                             <span className="font-medium">{settings.position}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Duration:</span>
+                                            <span className="text-gray-600">{t('notificationSettings.config.duration')}:</span>
                                             <span className="font-medium">{settings.notificationDurationSeconds}s</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-gray-600">Types Enabled:</span>
+                                            <span className="text-gray-600">{t('notificationSettings.preview.typesEnabled')}:</span>
                                             <span className="font-medium text-pink-600">
-                                                {[settings.showPurchaseNotifications && 'Purchase', 
-                                                  settings.showViewingNotifications && 'Viewing', 
-                                                  settings.showCartNotifications && 'Cart'].filter(Boolean).join(', ')}
+                                                {[settings.showPurchaseNotifications && t('notificationSettings.config.types.purchase'),
+                                                settings.showViewingNotifications && t('notificationSettings.config.types.viewing'),
+                                                settings.showCartNotifications && t('notificationSettings.config.types.cart')].filter(Boolean).join(', ')}
                                             </span>
                                         </div>
                                     </div>
@@ -515,8 +507,8 @@ const NotificationSettingsPage = () => {
                         ) : (
                             <div className="text-center py-12">
                                 <FiBellOff className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">Notifications Disabled</h3>
-                                <p className="text-gray-600">Enable live notifications to see a preview here</p>
+                                <h3 className="text-lg font-medium text-gray-900 mb-2">{t('notificationSettings.preview.disabled')}</h3>
+                                <p className="text-gray-600">{t('notificationSettings.config.enableDesc')}</p>
                             </div>
                         )}
                     </div>
@@ -524,6 +516,234 @@ const NotificationSettingsPage = () => {
             </div>
         </div>
     );
+};
+
+export default NotificationSettingsPage;
+
+
+                                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                        <div className="flex items-center">
+                                            <FiEye className="w-5 h-5 text-blue-600 mr-3" />
+                                            <div>
+                                                <label htmlFor="showViewingNotifications" className="font-medium text-gray-900">
+                                                    Viewing Notifications
+                                                </label>
+                                                <p className="text-sm text-gray-600">Show when customers view products</p>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                name="showViewingNotifications"
+                                                id="showViewingNotifications"
+                                                checked={settings.showViewingNotifications}
+                                                onChange={handleChange}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                        <div className="flex items-center">
+                                            <FiUsers className="w-5 h-5 text-orange-600 mr-3" />
+                                            <div>
+                                                <label htmlFor="showCartNotifications" className="font-medium text-gray-900">
+                                                    Cart Notifications
+                                                </label>
+                                                <p className="text-sm text-gray-600">Show when customers add items to cart</p>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                name="showCartNotifications"
+                                                id="showCartNotifications"
+                                                checked={settings.showCartNotifications}
+                                                onChange={handleChange}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-600"></div>
+                                        </label>
+                                    </div>
+                                </div >
+                            </div >
+
+    {/* Position and Duration */ }
+    < div className = "grid grid-cols-1 md:grid-cols-2 gap-4" >
+                                <div>
+                                    <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <FiMapPin className="w-4 h-4 inline mr-1" />
+                                        Notification Position
+                                    </label>
+                                    <select
+                                        name="position"
+                                        id="position"
+                                        value={settings.position}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                                    >
+                                        {positionOptions.map(option => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label htmlFor="notificationDurationSeconds" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <FiClock className="w-4 h-4 inline mr-1" />
+                                        Duration (seconds)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="notificationDurationSeconds"
+                                        id="notificationDurationSeconds"
+                                        value={settings.notificationDurationSeconds}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                                        min="1"
+                                        max="60"
+                                    />
+                                </div>
+                            </div >
+                        </div >
+                    )}
+
+{/* Action Buttons */ }
+<div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
+    <button
+        type="submit"
+        disabled={isSaving}
+        className={`flex-1 flex items-center justify-center px-6 py-3 rounded-xl font-medium transition-all ${!isSaving
+            ? 'bg-pink-600 text-white hover:bg-pink-700 shadow-lg hover:shadow-xl'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+    >
+        {isSaving ? (
+            <>
+                <FiRefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                Saving...
+            </>
+        ) : (
+            <>
+                <FiSave className="w-5 h-5 mr-2" />
+                Save Changes
+            </>
+        )}
+    </button>
+
+    {hasChanges && (
+        <button
+            type="button"
+            onClick={handleReset}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+        >
+            Reset
+        </button>
+    )}
+</div>
+                </form >
+            </div >
+
+    {/* Live Preview */ }
+    < div className = "bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden" >
+                <div className="bg-gradient-to-r from-blue-500 to-green-600 px-6 py-4">
+                    <h2 className="text-xl font-semibold text-white flex items-center">
+                        <FiEye className="w-6 h-6 mr-2" />
+                        Live Preview
+                    </h2>
+                </div>
+
+                <div className="p-6">
+                    {settings.enabled ? (
+                        <div className="space-y-6">
+                            {/* Preview Notification */}
+                            <div className={`bg-white rounded-xl shadow-lg border-2 border-blue-200 p-4 ${settings.position.includes('left') ? 'mr-auto' : 'ml-auto'
+                                }`} style={{ maxWidth: '300px' }}>
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                                        <h3 className="font-bold text-gray-800 text-sm">Live Activity</h3>
+                                    </div>
+                                    <button className="text-gray-400 hover:text-gray-600">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div className="flex items-start gap-3">
+                                    <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm">
+                                        👩
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-lg">🛒</span>
+                                            <span className="text-xs font-semibold text-gray-600">Morocco</span>
+                                            <span className="text-xs text-gray-400">2 minutes ago</span>
+                                        </div>
+                                        <p className="text-sm text-gray-800 leading-tight">
+                                            <span className="font-medium">Someone just bought</span>
+                                            <br />
+                                            <span className="font-semibold text-pink-600">
+                                                "CosRX BHA Blackhead Power Liquid"
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Settings Summary */}
+                            <div className="bg-gray-50 rounded-xl p-4">
+                                <h3 className="font-medium text-gray-900 mb-3">Current Settings</h3>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Status:</span>
+                                        <span className="text-green-600 font-medium flex items-center">
+                                            <FiCheckCircle className="w-4 h-4 mr-1" />
+                                            Enabled
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Max Notifications:</span>
+                                        <span className="font-medium">{settings.maxNotifications}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Interval:</span>
+                                        <span className="font-medium">{settings.minIntervalSeconds}-{settings.maxIntervalSeconds}s</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Position:</span>
+                                        <span className="font-medium">{settings.position}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Duration:</span>
+                                        <span className="font-medium">{settings.notificationDurationSeconds}s</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Types Enabled:</span>
+                                        <span className="font-medium text-pink-600">
+                                            {[settings.showPurchaseNotifications && 'Purchase',
+                                            settings.showViewingNotifications && 'Viewing',
+                                            settings.showCartNotifications && 'Cart'].filter(Boolean).join(', ')}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <FiBellOff className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">Notifications Disabled</h3>
+                            <p className="text-gray-600">Enable live notifications to see a preview here</p>
+                        </div>
+                    )}
+                </div>
+            </div >
+        </div >
+    </div >
+);
 };
 
 export default NotificationSettingsPage;

@@ -2089,5 +2089,820 @@ export const en = {
             loadError: 'Failed to load landing page',
             productsError: 'Failed to fetch products'
         }
+    },
+    // Product Comments
+    productComments: {
+        title: 'Comments for {productName}',
+        addNew: 'Add New Comment',
+        backToProducts: 'Back to Products',
+        table: {
+            user: 'User',
+            comment: 'Comment',
+            score: 'Score',
+            actions: 'Actions',
+            edit: 'Edit',
+            delete: 'Delete'
+        },
+        form: {
+            addTitle: 'Add New Comment',
+            editTitle: 'Edit Comment',
+            displayName: 'Display Name',
+            content: 'Content',
+            score: 'Score',
+            images: 'Images',
+            newImages: 'New Images (Append)',
+            add: 'Add Comment',
+            update: 'Update',
+            cancel: 'Cancel'
+        },
+        messages: {
+            fetchError: 'Failed to fetch product comments.',
+            deleteConfirm: 'Are you sure you want to delete this comment?',
+            deleteSuccess: 'Comment deleted successfully!',
+            deleteError: 'Failed to delete comment.',
+            updateSuccess: 'Comment updated successfully!',
+            updateError: 'Failed to update comment.',
+            addSuccess: 'Comment added successfully!',
+            addError: 'Failed to add comment.',
+            deleteImageConfirm: 'Are you sure you want to delete this image?',
+            deleteImageSuccess: 'Image deleted successfully!',
+            deleteImageError: 'Failed to delete image.'
+        }
+    },
+    // General Comments
+    commentsPage: {
+        title: 'Manage Comments',
+        table: {
+            user: 'User',
+            comment: 'Comment',
+            score: 'Score',
+            actions: 'Actions',
+            edit: 'Edit',
+            delete: 'Delete'
+        },
+        form: {
+            editTitle: 'Edit Comment',
+            content: 'Content',
+            score: 'Score',
+            update: 'Update',
+            delete: 'Delete'
+        },
+        messages: {
+            fetchError: 'Failed to fetch comments.',
+            deleteConfirm: 'Are you sure you want to delete this comment?',
+            deleteSuccess: 'Comment deleted successfully!',
+            deleteError: 'Failed to delete comment.',
+            updateSuccess: 'Comment updated successfully!',
+            updateError: 'Failed to update comment.'
+        }
+    },
+    // Admin Settings Page
+    adminSettings: {
+        title: 'System Settings',
+        configure: 'Configure Discount Rules',
+        highValue: {
+            title: '💰 High Value Order Discount',
+            thresholdLabel: 'Minimum Order Amount (MAD)',
+            discountLabel: 'Discount Percentage (%)',
+            help: 'Orders above this amount will generate a discount coupon.'
+        },
+        loyalty: {
+            title: '🏆 Customer Loyalty Program',
+            orderCountLabel: 'Reward Every N-th Order',
+            discountLabel: 'Discount Percentage (%)',
+            help: 'Example: Set to 3 to reward the 3rd, 6th, 9th order.'
+        },
+        buttons: {
+            save: 'Save Settings',
+            saving: 'Saving...'
+        },
+        messages: {
+            saveSuccess: 'Settings updated successfully!',
+            saveError: 'Failed to update settings.'
+        }
+    },
+    // Announcement Bar
+    announcement: {
+        title: 'Announcement Bar',
+        subtitle: 'Manage the top notification bar of your store',
+        loading: 'Loading announcement settings...',
+        hidePreview: 'Hide Preview',
+        showPreview: 'Show Preview',
+        refresh: 'Refresh',
+        settingsTitle: 'Bar Settings',
+        livePreviewTitle: 'Live Preview',
+        enable: {
+            title: 'Enable Announcement',
+            description: 'Show or hide the announcement bar on the storefront'
+        },
+        text: {
+            label: 'Announcement Text',
+            placeholder: 'Enter your announcement text here...',
+            help: 'You can use emojis! 🎉'
+        },
+        background: {
+            label: 'Background Style',
+            gradient: 'Gradient (Pink/Purple)',
+            red: 'Red',
+            blue: 'Blue',
+            green: 'Green',
+            yellow: 'Yellow',
+            purple: 'Purple',
+            pink: 'Pink'
+        },
+        textColor: {
+            label: 'Text Color'
+        },
+        animation: {
+            label: 'Animation Effect',
+            none: 'None',
+            pulse: 'Pulse',
+            bounce: 'Bounce'
+        },
+        onlineCounter: {
+            title: 'Show Online Viewer Counter',
+            description: 'Display a fake "X people are viewing this" counter to create urgency',
+            online: '{count} people viewing offers right now',
+            status: {
+                shown: 'Shown',
+                hidden: 'Hidden'
+            }
+        },
+        sticky: {
+            title: 'Sticky Position',
+            description: 'Keep the bar visible at the top while scrolling',
+            preview: {
+                yes: 'Sticky',
+                no: 'Static'
+            }
+        },
+        buttons: {
+            save: 'Save Changes',
+            saving: 'Saving...'
+        },
+        preview: {
+            title: 'Preview Details',
+            status: 'Status:',
+            enabled: 'Enabled',
+            disabled: 'Disabled',
+            background: 'Background:',
+            animation: 'Animation:',
+            onlineCounter: 'Online Counter:',
+            sticky: 'Sticky:',
+            clickToPreview: 'Click "Show Preview" to see how it looks!'
+        },
+        messages: {
+            loadError: 'Failed to load announcement settings',
+            updateSuccess: 'Announcement updated successfully!',
+            updateError: 'Failed to update announcement'
+        }
+    },
+    // Countdown Page
+    countdownPage: {
+        title: 'Countdown Timer Settings',
+        messages: {
+            saveSuccess: 'Countdown settings saved successfully!',
+            saveError: 'Failed to save countdown settings.'
+        },
+        buttons: {
+            save: 'Save Settings',
+            saving: 'Saving...'
+        },
+        sections: {
+            themes: {
+                title: 'Design Themes',
+                label: 'Choose a Preset Theme',
+                description: 'Select a pre-designed theme to quickly style your countdown timer to match your brand.',
+                applyButton: 'Apply Selected Theme',
+                selectedPreview: 'Selected Theme Preview:',
+                presets: {
+                    darkPremium: {
+                        name: 'Dark Premium',
+                        description: 'Elegant dark mode with gold accents. Perfect for luxury brands.',
+                        preview: 'Dark Blue Background, Gold Numbers, Red Urgency'
+                    },
+                    lightProfessional: {
+                        name: 'Light Professional',
+                        description: 'Clean white design with professional blue accents. Good for general stores.',
+                        preview: 'White Background, Blue Border, Red Urgency'
+                    },
+                    modernGradient: {
+                        name: 'Modern Gradient',
+                        description: 'Trendy gradient background. High visibility and energy.',
+                        preview: 'Blue-Purple Gradient, White Text'
+                    },
+                    elegantMinimal: {
+                        name: 'Elegant Minimal',
+                        description: 'Subtle and understated. Focuses on content.',
+                        preview: 'Light Gray Background, Simple Typography'
+                    },
+                    vibrantEnergy: {
+                        name: 'Vibrant Energy',
+                        description: 'High contrast colors to create maximum urgency.',
+                        preview: 'Bright Red/Coral Background, Yellow Accents'
+                    }
+                }
+            },
+            basic: {
+                title: 'Basic Settings',
+                fields: {
+                    title: {
+                        label: 'Title',
+                        placeholder: 'e.g., Flash Sale ends in...'
+                    },
+                    endDate: {
+                        label: 'End Date & Time'
+                    },
+                    subtitle: {
+                        label: 'Subtitle',
+                        placeholder: 'e.g., Don\'t miss out on these deals!'
+                    },
+                    packName: {
+                        label: 'Pack/Offer Name',
+                        placeholder: 'e.g., Summer Bundle'
+                    },
+                    urgentMessage: {
+                        label: 'Urgent Message (< 1 hour)',
+                        placeholder: 'e.g., Hurry! Ending soon!'
+                    },
+                    expiredMessage: {
+                        label: 'Expired Message',
+                        placeholder: 'e.g., This offer has ended.'
+                    },
+                    enabled: {
+                        label: 'Enable Countdown Timer'
+                    }
+                }
+            },
+            colors: {
+                title: 'Custom Colors',
+                fields: {
+                    background: 'Background Color',
+                    text: 'Text Color',
+                    border: 'Border Color',
+                    timerBox: 'Timer Box Color',
+                    timerText: 'Timer Text Color',
+                    urgentBg: 'Urgent Background',
+                    urgentText: 'Urgent Text Color'
+                }
+            },
+            display: {
+                title: 'Display Elements',
+                fields: {
+                    showDays: 'Show Days',
+                    showHours: 'Show Hours',
+                    showMinutes: 'Show Minutes',
+                    showSeconds: 'Show Seconds',
+                    showPackName: 'Show Pack Name',
+                    showSubtitle: 'Show Subtitle'
+                }
+            },
+            animation: {
+                title: 'Animations',
+                fields: {
+                    pulse: 'Enable Pulse Effect',
+                    bounce: 'Enable Bounce Effect',
+                    threshold: 'Urgency Threshold (seconds)'
+                }
+            },
+            layout: {
+                title: 'Layout & Sizing',
+                fields: {
+                    borderRadius: 'Border Radius (px)',
+                    padding: 'Padding (px)',
+                    fontSize: 'Font Size (px)',
+                    timerFontSize: 'Timer Font Size (px)'
+                }
+            }
+        }
+    },
+    // Admin Products Page
+    products: {
+        title: 'Products',
+        subtitle: 'Manage your product catalog',
+        shortcuts: {
+            newProduct: 'New Product',
+            search: 'Search',
+            closeModal: 'Close'
+        },
+        refresh: 'Refresh',
+        exportCSV: 'Export CSV',
+        addNewProduct: 'Add New Product',
+        errors: {
+            fetchFailed: 'Failed to fetch products',
+            deleteFailed: 'Failed to delete product',
+            noSelection: 'No products selected',
+            exportFailed: 'Failed to export to CSV'
+        },
+        success: {
+            deleted: 'Product deleted successfully',
+            bulkDeleted: '{count} products deleted successfully',
+            exported: 'Products exported successfully'
+        },
+        bulkDeleteConfirm: 'Are you sure you want to delete {count} products?',
+        deleteConfirm: 'Are you sure you want to delete this product?',
+        bulkDelete: 'Delete Selected',
+        selectAll: 'Select All',
+        noProducts: 'No products found',
+        noProductsDesc: 'Get started by creating your first product.',
+        stockStatus: {
+            inStock: 'In Stock'
+        },
+        featured: 'Featured',
+        newArrival: 'New',
+        category: 'Category',
+        quickEdit: 'Quick Edit',
+        edit: 'Edit',
+        analytics: {
+            totalProducts: 'Total Products',
+            inStock: 'In Stock',
+            lowStock: 'Low Stock',
+            outOfStock: 'Out of Stock',
+            totalValue: 'Total Value',
+            avgPrice: 'Avg Price'
+        },
+        searchPlaceholder: 'Search products...',
+        allCategories: 'All Categories',
+        allStock: 'All Stock',
+        inStockFilter: 'In Stock',
+        lowStockFilter: 'Low Stock',
+        outOfStockFilter: 'Out of Stock',
+        allStatus: 'All Status',
+        activeStatus: 'Active',
+        disabledStatus: 'Disabled',
+        featuredStatus: 'Featured',
+        newArrivalsStatus: 'New Arrivals',
+        sortByName: 'Name',
+        sortByPrice: 'Price',
+        sortByStock: 'Stock',
+        sortByDate: 'Date',
+        gridView: 'Grid View',
+        listView: 'List View',
+        clearFilters: 'Clear Filters',
+        selectedCount: 'selected',
+        clearSelection: 'Clear Selection'
+    },
+    // Admin Categories Page
+    categoriesPage: {
+        title: 'Categories',
+        subtitle: 'Manage product categories',
+        header: {
+            newCategory: 'New Category',
+            search: 'Search',
+            refresh: 'Refresh',
+            addNew: 'Add New'
+        },
+        shortcuts: {
+            clearSearch: 'Clear Search'
+        },
+        stats: {
+            totalCategories: 'Total Categories',
+            withProducts: 'With Products',
+            emptyCategories: 'Empty',
+            totalProducts: 'Total Products'
+        },
+        search: {
+            placeholder: 'Search categories...',
+            sortName: 'Name',
+            sortProducts: 'Product Count',
+            title: 'Grid View',
+            listView: 'List View',
+            clear: 'Clear'
+        },
+        list: {
+            title: 'Categories ({count})',
+            refresh: 'Refresh',
+            noCategoriesFound: 'No categories found',
+            noCategoriesAvailable: 'No categories available',
+            tryAdjusting: 'Try adjusting your search terms',
+            startCreating: 'Get started by creating your first category',
+            createFirst: 'Create Category',
+            noImage: 'No Image',
+            empty: 'Empty',
+            productCount: '{count} Products',
+            id: 'ID: {id}',
+            edit: 'Edit',
+            delete: 'Delete'
+        },
+        card: {
+            products: 'Products'
+        },
+        confirmDelete: 'Are you sure you want to delete this category?',
+        messages: {
+            fetchFailed: 'Failed to fetch categories',
+            deleteSuccess: 'Category deleted successfully',
+            deleteFailed: 'Failed to delete category'
+        }
+    },
+    // Admin Product Form
+    productForm: {
+        title: {
+            create: 'Create New Product',
+            edit: 'Edit Product'
+        },
+        subtitle: {
+            create: 'Add a new product to your catalog',
+            edit: 'Update existing product details'
+        },
+        loading: 'Loading product data...',
+        actions: {
+            saving: 'Saving...',
+            create: 'Create Product',
+            update: 'Update Product'
+        },
+        basicInfo: {
+            title: 'Basic Information',
+            productName: 'Product Name',
+            productNamePlaceholder: 'e.g. Premium Lipstick',
+            brand: 'Brand',
+            brandPlaceholder: 'e.g. L\'Oreal',
+            price: 'Price',
+            pricePlaceholder: '0.00',
+            stockQuantity: 'Stock Quantity',
+            stockPlaceholder: '0',
+            category: 'Category',
+            categoryPlaceholder: 'Select Category',
+            type: 'Type',
+            typeMen: 'Men',
+            typeWomen: 'Women',
+            typeBoth: 'Unisex',
+            bestseller: 'Bestseller',
+            newArrival: 'New Arrival',
+            hasVariants: 'Has Variants',
+            isPackable: 'Is Packable'
+        },
+        description: {
+            title: 'Description',
+            label: 'Product Description'
+        },
+        images: {
+            title: 'Product Images',
+            upload: 'Upload Images',
+            existingImages: 'Existing Images',
+            newImages: 'New Images',
+            preview: 'Preview',
+            existing: 'Existing'
+        },
+        variantTypes: {
+            title: 'Variant Types',
+            typeName: 'Type Name',
+            typeNamePlaceholder: 'e.g. Color, Size',
+            options: 'Options',
+            optionValue: 'Option Value',
+            color: 'Color',
+            image: 'Image',
+            removeOption: 'Remove Option'
+        },
+        validation: {
+            nameRequired: 'Product Name is required',
+            priceRequired: 'Price is required',
+            categoryRequired: 'Category is required',
+            variantPricesRequired: 'All variants must have a valid price'
+        },
+        success: {
+            created: 'Product created successfully',
+            updated: 'Product updated successfully'
+        },
+        errors: {
+            categoriesFailed: 'Failed to load categories',
+            loadFailed: 'Failed to load product details',
+            saveFailed: 'Failed to save product'
+        }
+    },
+    // Admin Users Page
+    usersPage: {
+        title: 'Users Management',
+        messages: {
+            fetchFailed: 'Failed to fetch users',
+            roleUpdated: 'Role updated to {role}',
+            roleUpdateFailed: 'Failed to update user role',
+            deleteConfirm: 'Are you sure you want to delete this user?',
+            deleteSuccess: 'User deleted successfully',
+            deleteFailed: 'Failed to delete user'
+        },
+        rolesModal: {
+            title: 'Manage Roles',
+            error: 'Error loading roles',
+            success: 'Roles assigned successfully',
+            description: 'Assign roles to control user access.',
+            permissions: '{count} permissions',
+            cancel: 'Cancel',
+            save: 'Save Roles'
+        },
+        permissionsModal: {
+            title: 'User Permissions',
+            viewTitle: 'View Permissions',
+            description: 'User has <strong>{count}</strong> permissions based on their roles.'
+        },
+        table: {
+            userId: 'User ID',
+            name: 'Name',
+            email: 'Email',
+            legacyRole: 'Legacy Role',
+            rbacRoles: 'RBAC Roles',
+            emailConfirmed: 'Verified',
+            actions: 'Actions',
+            manage: 'Manage',
+            yes: 'Yes',
+            no: 'No'
+        }
     }
+},
+    // Admin Category Form
+    categoryForm: {
+        title: {
+            create: 'Create Category',
+            edit: 'Edit Category'
+        },
+        subtitle: {
+            create: 'Add a new category for your products',
+            edit: 'Update category details'
+        },
+        form: {
+            name: 'Category Name',
+            slug: 'Slug',
+            description: 'Description',
+            parentCategory: 'Parent Category',
+            displayOrder: 'Display Order',
+            image: 'Category Image',
+            currentImage: 'Current Image',
+            uploadNew: 'Upload New Image',
+            none: 'None'
+        },
+        validation: {
+            nameRequired: 'Category Name is required'
+        },
+        actions: {
+            create: 'Create Category',
+            update: 'Update Category',
+            saving: 'Saving...'
+        },
+        messages: {
+            notFound: 'Category not found',
+            createSuccess: 'Category created successfully',
+            updateSuccess: 'Category updated successfully',
+            createFailed: 'Failed to create category',
+            updateFailed: 'Failed to update category'
+        }
+    },
+    // Admin Roles Page
+    rolesPage: {
+        title: 'Roles & Permissions',
+        subtitle: 'Manage user roles and access rights',
+        createButton: 'Create New Role',
+        createRole: 'Create Role',
+        editRole: 'Edit Role',
+        roleName: 'Role Name',
+        roleNamePlaceholder: 'e.g. Content Manager',
+        roleNameHelp: 'Use a descriptive name for the role',
+        description: 'Description',
+        descriptionPlaceholder: 'Describe what this role is for',
+        permissions: 'Permissions',
+        selectAll: 'Select All',
+        assignPermissions: 'Assign Permissions ({count})',
+        cancel: 'Cancel',
+        save: 'Save Role',
+        update: 'Update Role',
+        table: {
+            roleName: 'Role Name',
+            usersCount: 'Users',
+            actions: 'Actions',
+            edit: 'Edit',
+            delete: 'Delete'
+        },
+        messages: {
+            loadFailed: 'Failed to load roles',
+            createSuccess: 'Role created successfully',
+            updateSuccess: 'Role updated successfully',
+            deleteSuccess: 'Role deleted successfully',
+            operationFailed: 'Operation failed',
+            deleteConfirm: 'Are you sure you want to delete this role?'
+        },
+        validation: {
+            nameRequired: 'Role name is required'
+        }
+    },
+    // Admin Analytics Page
+    analyticsPage: {
+        title: 'Analytics Dashboard',
+        stats: {
+            totalRevenue: 'Total Revenue',
+            orders: 'Total Orders',
+            customers: 'Total Customers',
+            totalCoupons: 'Total Coupons'
+        },
+        charts: {
+            revenue: 'Revenue Over Time',
+            orders: 'Orders Overview',
+            topProducts: 'Top Products'
+        },
+        usage: {
+            title: 'Coupon Usage'
+        },
+        actions: {
+            viewCoupons: 'View Coupons',
+            refresh: 'Refresh Data'
+        }
+    },
+    // Admin Custom Packs Page
+    customPacks: {
+        manageTitle: 'Custom Packs',
+        manageSubtitle: 'Manage custom product bundles',
+        addNew: 'Add New Pack',
+        refresh: 'Refresh',
+        noPacks: 'No custom packs found',
+        createFirst: 'Create your first custom pack',
+        fetchFailed: 'Failed to fetch custom packs',
+        deleteConfirm: 'Are you sure you want to delete this pack?',
+        deleteSuccess: 'Pack deleted successfully',
+        deleteFailed: 'Failed to delete pack',
+        table: {
+            id: 'ID',
+            name: 'Name',
+            products: 'Products',
+            price: 'Price',
+            discount: 'Discount',
+            fixedPrice: 'Fixed Price',
+            percentageDiscount: 'Percentage Off',
+            totalValue: 'Total Value',
+            active: 'Active',
+            actions: 'Actions',
+            edit: 'Edit',
+            delete: 'Delete',
+            deleting: 'Deleting...'
+        }
+    },
+    // Review Form Settings
+    reviewFormSettingsPage: {
+        title: 'Review Form Settings',
+        subtitle: 'Configure how customers leave reviews',
+        configTitle: 'General Configuration',
+        showReviewForm: 'Show Review Form',
+        showReviewFormDesc: 'Allow customers to submit new reviews',
+        preview: 'Preview',
+        visibleMsg: 'The review form will be visible to customers.',
+        hiddenMsg: 'The review form is currently hidden from customers.',
+        reset: 'Reset Defaults',
+        unsavedChanges: 'You have unsaved changes',
+        saving: 'Saving...',
+        save: 'Save Changes',
+        quickInfo: 'Quick Info',
+        quickInfo1: 'Hiding the form prevents new submissions.',
+        quickInfo2: 'Existing reviews remain visible.',
+        quickInfo3: 'Use this to temporarily pause reviews.',
+        currentStatus: 'Current Status',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
+        messages: {
+            loadFailed: 'Failed to load settings',
+            saveSuccess: 'Settings saved successfully',
+            saveFailed: 'Failed to save settings'
+        }
+    },
+    // Enhanced Visitor Counter
+    enhancedVisitorCounter: {
+        title: 'Enhanced Visitor Counter Management',
+        subtitle: 'Control every aspect of your visitor counter display',
+        loading: 'Loading settings...',
+        globalSettings: {
+            title: 'Global Settings',
+            enableSystem: 'Enable Visitor Counter System',
+            customTitle: 'Custom Title',
+            customTitlePlaceholder: 'Live Statistics',
+            animationSpeed: 'Animation Speed (ms)'
+        },
+        metrics: {
+            currentViewers: {
+                title: 'Current Viewers',
+                subtitle: 'Viewing Now',
+                description: 'Number of people currently viewing the page'
+            },
+            totalViews: {
+                title: 'Total Views',
+                subtitle: 'Total Viewed',
+                description: 'Total number of page views'
+            },
+            addedToday: {
+                title: 'Added Today',
+                subtitle: 'Added Today',
+                description: 'Number of items added today'
+            },
+            activity: {
+                title: 'Activity Level',
+                subtitle: 'Activity',
+                description: 'Current level of user activity'
+            },
+            min: 'Min Value',
+            max: 'Max Value',
+            preview: 'Preview'
+        },
+        displaySettings: {
+            title: 'Display Settings',
+            backgroundColor: 'Background Color',
+            textColor: 'Text Color',
+            borderColor: 'Border Color'
+        },
+        actions: {
+            save: 'Save All Settings',
+            saving: 'Saving...',
+            reset: 'Reset Changes'
+        },
+        messages: {
+            loadFailed: 'Failed to load enhanced visitor counter settings',
+            saveSuccess: 'Settings saved successfully',
+            saveFailed: 'Failed to save settings',
+            reset: 'Settings reset to original values',
+            unsavedChanges: 'You have unsaved changes'
+        },
+        validation: {
+            currentViewersRange: 'Current Viewers Min cannot be greater than Max',
+            totalViewsRange: 'Total Views Min cannot be greater than Max',
+            addedTodayRange: 'Added Today Min cannot be greater than Max',
+            activityRange: 'Activity Level Min cannot be greater than Max'
+        },
+        preview: {
+            title: 'Live Preview',
+            show: 'Show Preview',
+            hide: 'Hide Preview'
+        }
+    },
+    // Notification Settings
+    notificationSettings: {
+        title: 'Live Notification Settings',
+        subtitle: 'Control live activity notifications displayed to customers',
+        loading: 'Loading settings...',
+        unsavedChanges: 'Unsaved Changes',
+        config: {
+            title: 'Configuration',
+            enable: 'Enable Live Notifications',
+            enableDesc: 'Show live activity notifications to customers',
+            maxNotifications: 'Maximum Notifications Displayed',
+            maxNotificationsHelp: 'Maximum number of notifications to show per session',
+            minInterval: 'Min Interval (seconds)',
+            maxInterval: 'Max Interval (seconds)',
+            duration: 'Duration (seconds)',
+            types: {
+                title: 'Notification Types',
+                purchase: 'Purchase Notifications',
+                purchaseDesc: 'Show when someone buys a product',
+                viewing: 'Viewing Notifications',
+                viewingDesc: 'Show how many people are viewing',
+                cart: 'Cart Notifications',
+                cartDesc: 'Show when someone adds to cart'
+            },
+            position: {
+                title: 'Notification Position',
+                bottomLeft: 'Bottom Left',
+                bottomRight: 'Bottom Right',
+                topLeft: 'Top Left',
+                topRight: 'Top Right'
+            }
+        },
+        actions: {
+            save: 'Save Changes',
+            saving: 'Saving...',
+            reset: 'Reset'
+        },
+        messages: {
+            loadFailed: 'Failed to load notification settings',
+            saveSuccess: 'Settings saved successfully',
+            saveFailed: 'Failed to save settings',
+            reset: 'Settings reset to last saved state'
+        },
+        validation: {
+            maxNotifications: 'Max notifications must be between 1 and 20',
+            minInterval: 'Min interval must be between 1 and 60 seconds',
+            maxInterval: 'Max interval must be between 1 and 60 seconds',
+            intervalRange: 'Min interval cannot be greater than Max interval',
+            duration: 'Duration must be between 1 and 60 seconds'
+        },
+        preview: {
+            title: 'Live Preview',
+            liveActivity: 'Live Activity',
+            someoneBought: 'Someone in Morocco just bought',
+            currentSettings: 'Current Settings Summary',
+            status: 'Status',
+            enabled: 'Active',
+            disabled: 'Disabled',
+            typesEnabled: 'Types Enabled'
+        }
+    }
+    },
+// Common
+common: {
+    save: 'Save',
+        saving: 'Saving...',
+            cancel: 'Cancel',
+                back: 'Back',
+                    edit: 'Edit',
+                        delete: 'Delete',
+                            create: 'Create',
+                                update: 'Update',
+                                    actions: 'Actions',
+                                        error: 'Error:',
+                                            success: 'Success:',
+                                                unsavedChanges: 'Unsaved changes',
+                                                    optional: '(Optional)',
+                                                        loading: 'Loading...'
+}
 };

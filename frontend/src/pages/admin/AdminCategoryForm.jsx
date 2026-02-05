@@ -2,7 +2,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { createCategory, updateCategory, getAllCategories } from '../../api/apiService';
 import { toast } from 'react-toastify';
-import { 
+import {
     FiArrowLeft, FiSave, FiUpload, FiImage, FiGrid, FiTag, FiFileText,
     FiCheckCircle, FiAlertCircle, FiX, FiEye, FiTrash2, FiRefreshCw,
     FiZap, FiHeart, FiShield, FiSettings, FiPlus, FiEdit3, FiCamera,
@@ -92,7 +92,7 @@ const AdminCategoryForm = () => {
         const { name, value } = e.target;
         setCategory(prev => ({ ...prev, [name]: value }));
         setIsDirty(true);
-        
+
         // Clear error for this field
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
@@ -103,7 +103,7 @@ const AdminCategoryForm = () => {
         if (file) {
             setImage(file);
             setIsDirty(true);
-            
+
             // Create preview
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -134,7 +134,7 @@ const AdminCategoryForm = () => {
         e.preventDefault();
         e.stopPropagation();
         setDragActive(false);
-        
+
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             const file = e.dataTransfer.files[0];
             if (file.type.startsWith('image/')) {
@@ -156,33 +156,33 @@ const AdminCategoryForm = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!category.name.trim()) {
             newErrors.name = t('categoryForm.validation.nameRequired');
         } else if (category.name.trim().length < 2) {
             newErrors.name = t('categoryForm.validation.nameMinLength');
         }
-        
+
         if (category.description && category.description.trim().length > 500) {
             newErrors.description = t('categoryForm.validation.descriptionMaxLength');
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             toast.error(t('categoryForm.validation.fixErrors'));
             return;
         }
-        
+
         setIsSubmitting(true);
         const formData = new FormData();
         formData.append('category', new Blob([JSON.stringify(category)], { type: 'application/json' }));
-        
+
         if (image) {
             formData.append('image', image);
         }
@@ -241,12 +241,12 @@ const AdminCategoryForm = () => {
             <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-8">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                        <Link 
+                        <Link
                             to="/admin/categories"
                             className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
                         >
                             <FiArrowLeft className="w-5 h-5" />
-                            <span>Back to Categories</span>
+                            <span>{t('categoryForm.actions.back')}</span>
                         </Link>
                     </div>
                     <div className="flex items-center space-x-4">
@@ -274,16 +274,16 @@ const AdminCategoryForm = () => {
                             <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
                                 <span className="flex items-center">
                                     <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+S</kbd>
-                                    <span className="ml-2">Save</span>
+                                    <span className="ml-2">{t('common.save')}</span>
                                 </span>
                                 <span className="flex items-center">
                                     <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Esc</kbd>
-                                    <span className="ml-2">Back</span>
+                                    <span className="ml-2">{t('common.back')}</span>
                                 </span>
                                 {isDirty && (
                                     <span className="flex items-center text-orange-600">
                                         <FiAlertTriangle className="w-4 h-4 mr-1" />
-                                        <span>Unsaved changes</span>
+                                        <span>{t('common.unsavedChanges')}</span>
                                     </span>
                                 )}
                             </div>
@@ -298,7 +298,7 @@ const AdminCategoryForm = () => {
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 animate-pulse">
                         <div className="flex items-center">
                             <FiAlertTriangle className="mr-2 animate-bounce" />
-                            <span className="font-semibold">Error:</span>
+                            <span className="font-semibold">{t('common.error')}</span>
                             <span className="ml-2">{error}</span>
                         </div>
                     </div>
@@ -308,7 +308,7 @@ const AdminCategoryForm = () => {
                     <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
                         <div className="flex items-center">
                             <FiCheckCircle className="mr-2" />
-                            <span className="font-semibold">Success:</span>
+                            <span className="font-semibold">{t('common.success')}</span>
                             <span className="ml-2">{success}</span>
                         </div>
                     </div>
@@ -341,19 +341,18 @@ const AdminCategoryForm = () => {
                                 <div>
                                     <label htmlFor="name" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                         <FiTag className="w-5 h-5 text-purple-500" />
-                                        <span>Category Name</span>
+                                        <span>{t('categoryForm.fields.categoryName')}</span>
                                         <span className="text-red-500">*</span>
                                     </label>
-                                    <input 
-                                        type="text" 
-                                        name="name" 
-                                        id="name" 
-                                        value={category.name} 
-                                        onChange={handleChange} 
-                                        required 
-                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
-                                            errors.name ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-purple-300'
-                                        }`}
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        value={category.name}
+                                        onChange={handleChange}
+                                        required
+                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.name ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-purple-300'
+                                            }`}
                                         placeholder={t('categoryForm.fields.categoryNamePlaceholder')}
                                     />
                                     {errors.name && (
@@ -367,18 +366,17 @@ const AdminCategoryForm = () => {
                                 <div>
                                     <label htmlFor="description" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                         <FiFileText className="w-5 h-5 text-blue-500" />
-                                        <span>Description</span>
-                                        <span className="text-sm text-gray-500">(Optional)</span>
+                                        <span>{t('categoryForm.fields.description')}</span>
+                                        <span className="text-sm text-gray-500">{t('common.optional')}</span>
                                     </label>
-                                    <textarea 
-                                        name="description" 
-                                        id="description" 
-                                        value={category.description} 
-                                        onChange={handleChange} 
+                                    <textarea
+                                        name="description"
+                                        id="description"
+                                        value={category.description}
+                                        onChange={handleChange}
                                         rows="6"
-                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                                            errors.description ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-blue-300'
-                                        }`}
+                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${errors.description ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-blue-300'
+                                            }`}
                                         placeholder={t('categoryForm.fields.descriptionPlaceholder')}
                                     />
                                     {errors.description && (
@@ -398,17 +396,16 @@ const AdminCategoryForm = () => {
                                 <div>
                                     <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                         <FiCamera className="w-5 h-5 text-green-500" />
-                                        <span>Category Image</span>
-                                        <span className="text-sm text-gray-500">(Optional)</span>
+                                        <span>{t('categoryForm.fields.categoryImage')}</span>
+                                        <span className="text-sm text-gray-500">{t('common.optional')}</span>
                                     </label>
-                                    
+
                                     {/* Image Upload Area */}
-                                    <div 
-                                        className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${
-                                            dragActive 
-                                                ? 'border-purple-400 bg-purple-50' 
+                                    <div
+                                        className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${dragActive
+                                                ? 'border-purple-400 bg-purple-50'
                                                 : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
-                                        }`}
+                                            }`}
                                         onDragEnter={handleDrag}
                                         onDragLeave={handleDrag}
                                         onDragOver={handleDrag}
@@ -423,11 +420,11 @@ const AdminCategoryForm = () => {
                                             accept="image/*"
                                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                         />
-                                        
+
                                         {imagePreview ? (
                                             <div className="relative">
-                                                <img 
-                                                    src={imagePreview} 
+                                                <img
+                                                    src={imagePreview}
                                                     alt={t('categoryForm.imageUpload.preview')}
                                                     className="mx-auto max-h-48 rounded-lg shadow-lg"
                                                 />
@@ -446,10 +443,10 @@ const AdminCategoryForm = () => {
                                                 </div>
                                                 <div>
                                                     <p className="text-lg font-medium text-gray-900">
-                                                        Drop your image here
+                                                        {t('categoryForm.imageUpload.dropHere')}
                                                     </p>
                                                     <p className="text-gray-500">
-                                                        or click to browse
+                                                        {t('categoryForm.imageUpload.clickToBrowse')}
                                                     </p>
                                                 </div>
                                                 <button
@@ -457,14 +454,14 @@ const AdminCategoryForm = () => {
                                                     onClick={() => fileInputRef.current?.click()}
                                                     className="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-purple-600 hover:to-blue-700 transition-all duration-300"
                                                 >
-                                                    Choose File
+                                                    {t('categoryForm.imageUpload.chooseFile')}
                                                 </button>
                                             </div>
                                         )}
                                     </div>
-                                    
+
                                     <p className="mt-2 text-sm text-gray-500">
-                                        Supported formats: JPG, PNG, GIF. Max size: 5MB
+                                        {t('categoryForm.imageUpload.formats')}
                                     </p>
                                 </div>
                             </div>
@@ -477,19 +474,19 @@ const AdminCategoryForm = () => {
                                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
                             >
                                 <FiArrowLeft className="w-4 h-4" />
-                                <span>Cancel</span>
+                                <span>{t('common.cancel')}</span>
                             </Link>
-                            
+
                             <div className="flex items-center space-x-4">
                                 <button
                                     type="button"
                                     onClick={() => navigate('/admin/categories')}
                                     className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </button>
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     disabled={isSubmitting}
                                     className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
