@@ -2594,7 +2594,7 @@ export const fr = {
         loadFailed: 'Échec du chargement des détails du produit',
         saveFailed: 'Échec de l\'enregistrement du produit'
     }
-},
+    ,
     // Admin Users Page
     usersPage: {
         title: 'Gestion des Utilisateurs',
