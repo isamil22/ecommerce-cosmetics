@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllPacks, deletePack } from '../../api/apiService'; // Correct path
 import Loader from '../../components/Loader'; // Correct path
-import { 
-    FiPlus, 
-    FiEdit3, 
-    FiThumbsUp, 
-    FiMessageSquare, 
-    FiTrash2, 
+import {
+    FiPlus,
+    FiEdit3,
+    FiThumbsUp,
+    FiMessageSquare,
+    FiTrash2,
     FiPackage,
     FiDollarSign,
     FiMoreVertical,
@@ -33,11 +33,11 @@ const AdminPacksPage = () => {
             if (Array.isArray(packsArray)) {
                 setPacks(packsArray);
             } else {
-                setError('Received invalid data from server.');
+                setError(t('packForm.errors.fetchFailed'));
             }
 
         } catch (err) {
-            setError('Failed to fetch packs.');
+            setError(t('packForm.errors.fetchFailed'));
             console.error("Fetch Packs Error:", err);
         } finally {
             setLoading(false);
@@ -100,8 +100,8 @@ const AdminPacksPage = () => {
                             <FiRefreshCw className="w-4 h-4" />
                             <span>{t('adminDashboard.refresh')}</span>
                         </button>
-                        <Link 
-                            to="/admin/packs/new" 
+                        <Link
+                            to="/admin/packs/new"
                             className="flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                         >
                             <FiPlus className="w-5 h-5" />
@@ -115,8 +115,8 @@ const AdminPacksPage = () => {
             {packs && packs.length > 0 ? (
                 <div className="space-y-4">
                     {packs.map((pack) => (
-                        <div 
-                            key={pack.id} 
+                        <div
+                            key={pack.id}
                             className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
                             onMouseEnter={() => setHoveredPackId(pack.id)}
                             onMouseLeave={() => setHoveredPackId(null)}
@@ -137,7 +137,7 @@ const AdminPacksPage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     {/* Enhanced Action Buttons */}
                                     <div className="flex items-center space-x-2">
                                         <Link
@@ -147,7 +147,7 @@ const AdminPacksPage = () => {
                                             <FiEdit3 className="w-4 h-4 group-hover:animate-pulse" />
                                             <span className="font-medium">{t('managePacks.actions.edit')}</span>
                                         </Link>
-                                        
+
                                         <Link
                                             to={`/admin/packs/${pack.id}/recommendations`}
                                             className="group flex items-center space-x-2 px-4 py-2 text-purple-600 hover:text-white hover:bg-purple-600 rounded-lg transition-all duration-200 transform hover:scale-105"
@@ -155,7 +155,7 @@ const AdminPacksPage = () => {
                                             <FiThumbsUp className="w-4 h-4 group-hover:animate-bounce" />
                                             <span className="font-medium">{t('managePacks.actions.recommendations')}</span>
                                         </Link>
-                                        
+
                                         <Link
                                             to={`/admin/packs/${pack.id}/comments`}
                                             className="group flex items-center space-x-2 px-4 py-2 text-green-600 hover:text-white hover:bg-green-600 rounded-lg transition-all duration-200 transform hover:scale-105"
@@ -163,7 +163,7 @@ const AdminPacksPage = () => {
                                             <FiMessageSquare className="w-4 h-4 group-hover:animate-pulse" />
                                             <span className="font-medium">{t('managePacks.actions.comments')}</span>
                                         </Link>
-                                        
+
                                         <button
                                             onClick={() => handleDelete(pack.id)}
                                             disabled={deletingPackId === pack.id}
@@ -180,7 +180,7 @@ const AdminPacksPage = () => {
                                         </button>
                                     </div>
                                 </div>
-                                
+
                                 {/* Pack Description Preview */}
                                 {pack.description && (
                                     <div className="mt-4 p-3 bg-gray-50 rounded-lg">
@@ -201,8 +201,8 @@ const AdminPacksPage = () => {
                     </div>
                     <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('managePacks.noPacks')}</h3>
                     <p className="text-gray-500 mb-6">{t('managePacks.noPacksDesc')}</p>
-                    <Link 
-                        to="/admin/packs/new" 
+                    <Link
+                        to="/admin/packs/new"
                         className="inline-flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                     >
                         <FiPlus className="w-5 h-5" />

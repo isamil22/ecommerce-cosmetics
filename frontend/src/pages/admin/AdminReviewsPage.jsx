@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { getAllReviews, createAdminReview, updateReview, approveReview, deleteReview } from '../../api/apiService.js';
 
 const AdminReviewsPage = () => {
+    const { t } = useLanguage();
     const [reviews, setReviews] = useState([]);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [activeTab, setActiveTab] = useState('all'); // 'all', 'pending', 'approved'
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [editingReview, setEditingReview] = useState(null);
-    
+
     // Form state
     const [formData, setFormData] = useState({
         content: '',
@@ -25,7 +27,7 @@ const AdminReviewsPage = () => {
             const response = await getAllReviews();
             setReviews(response.data);
         } catch (err) {
-            setError('Failed to fetch reviews.');
+            setError(t('reviews.messages.fetchError'));
             console.error(err);
         }
     };
@@ -55,12 +57,12 @@ const AdminReviewsPage = () => {
         e.preventDefault();
         try {
             await createAdminReview(formData);
-            setSuccess('Review created successfully!');
+            setSuccess(t('reviews.messages.createSuccess'));
             setShowCreateForm(false);
             setFormData({ content: '', rating: 5, customName: '', approved: true });
             fetchReviews();
         } catch (err) {
-            setError('Failed to create review.');
+            setError(t('reviews.messages.createError'));
             console.error(err);
         }
     };
@@ -82,12 +84,12 @@ const AdminReviewsPage = () => {
         e.preventDefault();
         try {
             await updateReview(reviewId, formData);
-            setSuccess('Review updated successfully!');
+            setSuccess(t('reviews.messages.updateSuccess'));
             setEditingReview(null);
             setFormData({ content: '', rating: 5, customName: '', approved: true });
             fetchReviews();
         } catch (err) {
-            setError('Failed to update review.');
+            setError(t('reviews.messages.updateError'));
             console.error(err);
         }
     };
@@ -96,23 +98,23 @@ const AdminReviewsPage = () => {
     const handleApprove = async (reviewId) => {
         try {
             await approveReview(reviewId);
-            setSuccess('Review approved successfully!');
+            setSuccess(t('reviews.messages.approveSuccess'));
             fetchReviews();
         } catch (err) {
-            setError('Failed to approve review.');
+            setError(t('reviews.messages.approveError'));
             console.error(err);
         }
     };
 
     // Delete review
     const handleDelete = async (reviewId) => {
-        if (window.confirm('Are you sure you want to delete this review?')) {
+        if (window.confirm(t('reviews.messages.deleteConfirm'))) {
             try {
                 await deleteReview(reviewId);
-                setSuccess('Review deleted successfully!');
+                setSuccess(t('reviews.messages.deleteSuccess'));
                 fetchReviews();
             } catch (err) {
-                setError('Failed to delete review.');
+                setError(t('reviews.messages.deleteError'));
                 console.error(err);
             }
         }
@@ -146,7 +148,7 @@ const AdminReviewsPage = () => {
     return (
         <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Manage Reviews</h1>
+                <h1 className="text-3xl font-bold">{t('reviews.title')}</h1>
                 <button
                     onClick={() => {
                         setShowCreateForm(true);
@@ -155,7 +157,7 @@ const AdminReviewsPage = () => {
                     }}
                     className="bg-pink-500 text-white py-2 px-6 rounded-lg hover:bg-pink-600 transition-colors font-semibold"
                 >
-                    + Create New Review
+                    {t('reviews.createButton')}
                 </button>
             </div>
 
@@ -166,12 +168,12 @@ const AdminReviewsPage = () => {
             {(showCreateForm || editingReview) && (
                 <div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-pink-300">
                     <h2 className="text-2xl font-bold mb-4">
-                        {editingReview ? 'Edit Review' : 'Create New Review'}
+                        {editingReview ? t('reviews.form.editTitle') : t('reviews.form.createTitle')}
                     </h2>
                     <form onSubmit={editingReview ? (e) => handleUpdateReview(e, editingReview) : handleCreateReview}>
                         <div className="mb-4">
                             <label className="block text-gray-700 font-semibold mb-2">
-                                Customer Name
+                                {t('reviews.form.customerName')}
                             </label>
                             <input
                                 type="text"
@@ -179,14 +181,14 @@ const AdminReviewsPage = () => {
                                 value={formData.customName}
                                 onChange={handleInputChange}
                                 className="w-full border border-gray-300 rounded-lg p-3"
-                                placeholder="Enter customer name"
+                                placeholder={t('reviews.form.customerNamePlaceholder')}
                                 required
                             />
                         </div>
 
                         <div className="mb-4">
                             <label className="block text-gray-700 font-semibold mb-2">
-                                Review Content
+                                {t('reviews.form.content')}
                             </label>
                             <textarea
                                 name="content"
@@ -194,17 +196,17 @@ const AdminReviewsPage = () => {
                                 onChange={handleInputChange}
                                 className="w-full border border-gray-300 rounded-lg p-3"
                                 rows="4"
-                                placeholder="Enter review content"
+                                placeholder={t('reviews.form.contentPlaceholder')}
                                 required
                             />
                         </div>
 
                         <div className="mb-4">
                             <label className="block text-gray-700 font-semibold mb-2">
-                                Rating
+                                {t('reviews.form.rating')}
                             </label>
                             {renderStarSelector(formData.rating)}
-                            <p className="text-sm text-gray-500 mt-1">{formData.rating} out of 5 stars</p>
+                            <p className="text-sm text-gray-500 mt-1">{t('reviews.form.ratingHelp', { rating: formData.rating })}</p>
                         </div>
 
                         <div className="mb-4">
@@ -216,7 +218,7 @@ const AdminReviewsPage = () => {
                                     onChange={handleInputChange}
                                     className="mr-2 w-4 h-4"
                                 />
-                                <span className="text-gray-700 font-semibold">Approved (visible on homepage)</span>
+                                <span className="text-gray-700 font-semibold">{t('reviews.form.approved')}</span>
                             </label>
                         </div>
 
@@ -225,14 +227,14 @@ const AdminReviewsPage = () => {
                                 type="submit"
                                 className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors font-semibold"
                             >
-                                {editingReview ? 'Update Review' : 'Create Review'}
+                                {editingReview ? t('reviews.form.update') : t('reviews.form.create')}
                             </button>
                             <button
                                 type="button"
                                 onClick={handleCancel}
                                 className="bg-gray-500 text-white py-2 px-6 rounded-lg hover:bg-gray-600 transition-colors font-semibold"
                             >
-                                Cancel
+                                {t('reviews.form.cancel')}
                             </button>
                         </div>
                     </form>
@@ -243,33 +245,30 @@ const AdminReviewsPage = () => {
             <div className="flex space-x-2 mb-6 border-b-2 border-gray-200">
                 <button
                     onClick={() => setActiveTab('all')}
-                    className={`py-2 px-6 font-semibold transition-colors ${
-                        activeTab === 'all'
+                    className={`py-2 px-6 font-semibold transition-colors ${activeTab === 'all'
                             ? 'text-pink-500 border-b-2 border-pink-500'
                             : 'text-gray-500 hover:text-gray-700'
-                    }`}
+                        }`}
                 >
-                    All Reviews ({reviews.length})
+                    {t('reviews.tabs.all', { count: reviews.length })}
                 </button>
                 <button
                     onClick={() => setActiveTab('pending')}
-                    className={`py-2 px-6 font-semibold transition-colors ${
-                        activeTab === 'pending'
+                    className={`py-2 px-6 font-semibold transition-colors ${activeTab === 'pending'
                             ? 'text-pink-500 border-b-2 border-pink-500'
                             : 'text-gray-500 hover:text-gray-700'
-                    }`}
+                        }`}
                 >
-                    Pending ({reviews.filter(r => !r.approved).length})
+                    {t('reviews.tabs.pending', { count: reviews.filter(r => !r.approved).length })}
                 </button>
                 <button
                     onClick={() => setActiveTab('approved')}
-                    className={`py-2 px-6 font-semibold transition-colors ${
-                        activeTab === 'approved'
+                    className={`py-2 px-6 font-semibold transition-colors ${activeTab === 'approved'
                             ? 'text-pink-500 border-b-2 border-pink-500'
                             : 'text-gray-500 hover:text-gray-700'
-                    }`}
+                        }`}
                 >
-                    Approved ({reviews.filter(r => r.approved).length})
+                    {t('reviews.tabs.approved', { count: reviews.filter(r => r.approved).length })}
                 </button>
             </div>
 
@@ -280,37 +279,36 @@ const AdminReviewsPage = () => {
                         filteredReviews.map(review => (
                             <div
                                 key={review.id}
-                                className={`p-4 border rounded-lg shadow-sm ${
-                                    review.approved ? 'border-green-300 bg-green-50' : 'border-yellow-300 bg-yellow-50'
-                                }`}
+                                className={`p-4 border rounded-lg shadow-sm ${review.approved ? 'border-green-300 bg-green-50' : 'border-yellow-300 bg-yellow-50'
+                                    }`}
                             >
                                 <div className="flex justify-between items-start">
                                     <div className="flex-1">
                                         <div className="flex items-center space-x-3 mb-2">
                                             {review.createdByAdmin && (
                                                 <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                                                    ADMIN CREATED
+                                                    {t('reviews.list.adminCreated')}
                                                 </span>
                                             )}
                                             {review.approved ? (
                                                 <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                                                    APPROVED
+                                                    {t('reviews.list.approved')}
                                                 </span>
                                             ) : (
                                                 <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                                                    PENDING
+                                                    {t('reviews.list.pending')}
                                                 </span>
                                             )}
                                         </div>
                                         <p className="font-semibold text-gray-800">
                                             {review.createdByAdmin ? (
-                                                <span>Customer: <span className="font-normal text-gray-600">{review.customName || 'Anonymous'}</span></span>
+                                                <span>{t('reviews.list.customer')} <span className="font-normal text-gray-600">{review.customName || t('reviews.list.anonymous')}</span></span>
                                             ) : (
-                                                <span>User: <span className="font-normal text-gray-600">{review.userEmail}</span></span>
+                                                <span>{t('reviews.list.user')} <span className="font-normal text-gray-600">{review.userEmail}</span></span>
                                             )}
                                         </p>
                                         <p className="font-semibold text-gray-800 mt-1">
-                                            Rating:{' '}
+                                            {t('reviews.list.rating')}
                                             <span className="font-normal text-yellow-500">
                                                 {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                                             </span>
@@ -324,28 +322,28 @@ const AdminReviewsPage = () => {
                                             onClick={() => handleStartEdit(review)}
                                             className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors text-sm"
                                         >
-                                            Edit
+                                            {t('reviews.list.actions.edit')}
                                         </button>
                                         {!review.approved && (
                                             <button
                                                 onClick={() => handleApprove(review.id)}
                                                 className="bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600 transition-colors text-sm"
                                             >
-                                                Approve
+                                                {t('reviews.list.actions.approve')}
                                             </button>
                                         )}
                                         <button
                                             onClick={() => handleDelete(review.id)}
                                             className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition-colors text-sm"
                                         >
-                                            Delete
+                                            {t('reviews.list.actions.delete')}
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <p className="text-center text-gray-500 py-4">No reviews found.</p>
+                        <p className="text-center text-gray-500 py-4">{t('reviews.list.noReviews')}</p>
                     )}
                 </div>
             </div>

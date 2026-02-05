@@ -9,8 +9,10 @@ import {
     FiType, FiFileText, FiGlobe, FiExternalLink, FiMaximize2,
     FiMinimize2, FiGrid, FiLayers, FiTag, FiBarChart
 } from 'react-icons/fi';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminHeroPage = () => {
+    const { t } = useLanguage();
     const fileInputRef = useRef(null);
     const [hero, setHero] = useState({ title: '', subtitle: '', linkText: '', linkUrl: '', titleFont: 'sans-serif' });
     const [image, setImage] = useState(null);
@@ -41,8 +43,8 @@ const AdminHeroPage = () => {
                     setMobileImagePreview(response.data.mobileImageUrl);
                 }
             } catch (err) {
-                setError('Failed to load hero data.');
-                toast.error('Failed to load hero data.');
+                setError(t('heroSettings.messages.loadFailed'));
+                toast.error(t('heroSettings.messages.loadFailed'));
             } finally {
                 setLoading(false);
             }
@@ -141,7 +143,7 @@ const AdminHeroPage = () => {
             if (file.type.startsWith('image/')) {
                 handleImageChange(file);
             } else {
-                toast.error('Please select a valid image file.');
+                toast.error(t('heroSettings.messages.validation.imageRequired'));
             }
         }
     }
@@ -174,7 +176,7 @@ const AdminHeroPage = () => {
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             const file = e.dataTransfer.files[0];
             if (file.type.startsWith('image/')) handleMobileImageChange(file);
-            else toast.error('Please select a valid image file.');
+            else toast.error(t('heroSettings.messages.validation.imageRequired'));
         }
     };
 
@@ -197,25 +199,25 @@ const AdminHeroPage = () => {
         const newErrors = {};
 
         if (!hero.title.trim()) {
-            newErrors.title = 'Hero title is required';
+            newErrors.title = t('heroSettings.messages.validation.titleRequired');
         } else if (hero.title.trim().length < 3) {
-            newErrors.title = 'Hero title must be at least 3 characters';
+            newErrors.title = t('heroSettings.messages.validation.titleMinLength');
         }
 
         if (!hero.subtitle.trim()) {
-            newErrors.subtitle = 'Hero subtitle is required';
+            newErrors.subtitle = t('heroSettings.messages.validation.subtitleRequired');
         } else if (hero.subtitle.trim().length < 5) {
-            newErrors.subtitle = 'Hero subtitle must be at least 5 characters';
+            newErrors.subtitle = t('heroSettings.messages.validation.subtitleMinLength');
         }
 
         if (!hero.linkText.trim()) {
-            newErrors.linkText = 'Link text is required';
+            newErrors.linkText = t('heroSettings.messages.validation.linkTextRequired');
         }
 
         if (!hero.linkUrl.trim()) {
-            newErrors.linkUrl = 'Link URL is required';
+            newErrors.linkUrl = t('heroSettings.messages.validation.linkUrlRequired');
         } else if (!hero.linkUrl.startsWith('/') && !hero.linkUrl.startsWith('http')) {
-            newErrors.linkUrl = 'Link URL must start with / or http';
+            newErrors.linkUrl = t('heroSettings.messages.validation.linkUrlFormat');
         }
 
         setErrors(newErrors);
@@ -226,7 +228,7 @@ const AdminHeroPage = () => {
         e.preventDefault();
 
         if (!validateForm()) {
-            toast.error('Please fix the errors before submitting.');
+            toast.error(t('brandSettings.errors.saveDetails')); // Fallback or generic error
             return;
         }
 
@@ -246,11 +248,11 @@ const AdminHeroPage = () => {
 
         try {
             await updateHero(formData);
-            setSuccess('Hero section updated successfully!');
-            toast.success('Hero section updated successfully!');
+            setSuccess(t('heroSettings.messages.success'));
+            toast.success(t('heroSettings.messages.success'));
             setIsDirty(false);
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Operation failed. Please try again.';
+            const errorMessage = err.response?.data?.message || t('heroSettings.messages.validation.saveFailed') || 'Operation failed';
             setError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -310,30 +312,30 @@ const AdminHeroPage = () => {
                         </div>
                         <div>
                             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 bg-clip-text text-transparent flex items-center space-x-3">
-                                <span>Manage Hero Section</span>
+                                <span>{t('heroSettings.pageTitle')}</span>
                                 <FiZap className="w-8 h-8 text-yellow-500 animate-pulse" />
                             </h1>
                             <p className="text-gray-600 mt-2 flex items-center space-x-2">
                                 <FiHeart className="w-4 h-4 text-pink-500" />
-                                <span>Customize your homepage hero section to engage visitors</span>
+                                <span>{t('heroSettings.pageSubtitle')}</span>
                             </p>
                             <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
                                 <span className="flex items-center">
                                     <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+S</kbd>
-                                    <span className="ml-2">Save</span>
+                                    <span className="ml-2">{t('heroSettings.shortcuts.save')}</span>
                                 </span>
                                 <span className="flex items-center">
                                     <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+P</kbd>
-                                    <span className="ml-2">Preview</span>
+                                    <span className="ml-2">{t('heroSettings.shortcuts.preview')}</span>
                                 </span>
                                 <span className="flex items-center">
                                     <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Esc</kbd>
-                                    <span className="ml-2">Clear Messages</span>
+                                    <span className="ml-2">{t('heroSettings.shortcuts.clear')}</span>
                                 </span>
                                 {isDirty && (
                                     <span className="flex items-center text-orange-600">
                                         <FiAlertTriangle className="w-4 h-4 mr-1" />
-                                        <span>Unsaved changes</span>
+                                        <span>{t('heroSettings.shortcuts.unsaved')}</span>
                                     </span>
                                 )}
                             </div>
@@ -345,7 +347,7 @@ const AdminHeroPage = () => {
                             className="flex items-center space-x-2 bg-white text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-purple-300 transition-all duration-300 group"
                         >
                             <FiEye className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                            <span>{showPreview ? 'Hide Preview' : 'Show Preview'}</span>
+                            <span>{showPreview ? t('heroSettings.shortcuts.hidePreview') : t('heroSettings.shortcuts.showPreview')}</span>
                         </button>
                     </div>
                 </div>
@@ -367,7 +369,7 @@ const AdminHeroPage = () => {
                     <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
                         <div className="flex items-center">
                             <FiCheckCircle className="mr-2" />
-                            <span className="font-semibold">Success:</span>
+                            <span className="font-semibold">{t('brandSettings.success.saved')}:</span>
                             <span className="ml-2">{success}</span>
                         </div>
                     </div>
@@ -385,10 +387,10 @@ const AdminHeroPage = () => {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-bold text-gray-900">
-                                        Hero Section Settings
+                                        {t('heroSettings.title')}
                                     </h2>
                                     <p className="text-gray-600">
-                                        Configure your homepage hero section content
+                                        {t('heroSettings.subtitle')}
                                     </p>
                                 </div>
                             </div>
@@ -399,7 +401,7 @@ const AdminHeroPage = () => {
                             <div>
                                 <label htmlFor="title" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                     <FiType className="w-5 h-5 text-pink-500" />
-                                    <span>Hero Title</span>
+                                    <span>{t('heroSettings.form.title')}</span>
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -411,7 +413,7 @@ const AdminHeroPage = () => {
                                     required
                                     className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent ${errors.title ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-pink-300'
                                         }`}
-                                    placeholder="Enter your hero title (e.g., Welcome to Our Store)"
+                                    placeholder={t('heroSettings.form.titlePlaceholder')}
                                 />
                                 {errors.title && (
                                     <p className="mt-2 text-sm text-red-600 flex items-center">
@@ -425,7 +427,7 @@ const AdminHeroPage = () => {
                             <div>
                                 <label htmlFor="titleFont" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                     <FiType className="w-5 h-5 text-gray-500" />
-                                    <span>Title Font</span>
+                                    <span>{t('heroSettings.form.titleFont')}</span>
                                 </label>
                                 <select
                                     name="titleFont"
@@ -434,12 +436,12 @@ const AdminHeroPage = () => {
                                     onChange={handleChange}
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent hover:border-gray-300"
                                 >
-                                    <option value="sans-serif">Default (Sans Serif)</option>
-                                    <option value="'Dancing Script', cursive">Dancing Script (Cursive)</option>
-                                    <option value="'Playfair Display', serif">Playfair Display (Serif)</option>
-                                    <option value="'Great Vibes', cursive">Great Vibes (Calligraphic)</option>
-                                    <option value="'Cinzel', serif">Cinzel (Luxury)</option>
-                                    <option value="'Montserrat', sans-serif">Montserrat (Modern)</option>
+                                    <option value="sans-serif">{t('brandSettings.fontOptions.default')}</option>
+                                    <option value="'Dancing Script', cursive">{t('brandSettings.fontOptions.dancingScript')}</option>
+                                    <option value="'Playfair Display', serif">{t('brandSettings.fontOptions.playfairDisplay')}</option>
+                                    <option value="'Great Vibes', cursive">{t('brandSettings.fontOptions.greatVibes')}</option>
+                                    <option value="'Cinzel', serif">{t('brandSettings.fontOptions.cinzel')}</option>
+                                    <option value="'Montserrat', sans-serif">{t('brandSettings.fontOptions.montserrat')}</option>
                                 </select>
                             </div>
 
@@ -447,7 +449,7 @@ const AdminHeroPage = () => {
                             <div>
                                 <label htmlFor="subtitle" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                     <FiFileText className="w-5 h-5 text-blue-500" />
-                                    <span>Hero Subtitle</span>
+                                    <span>{t('heroSettings.form.subtitle')}</span>
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <textarea
@@ -459,7 +461,7 @@ const AdminHeroPage = () => {
                                     rows="3"
                                     className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${errors.subtitle ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-blue-300'
                                         }`}
-                                    placeholder="Enter your hero subtitle (e.g., Discover amazing products at great prices)"
+                                    placeholder={t('heroSettings.form.subtitlePlaceholder')}
                                 />
                                 {errors.subtitle && (
                                     <p className="mt-2 text-sm text-red-600 flex items-center">
@@ -473,7 +475,7 @@ const AdminHeroPage = () => {
                             <div>
                                 <label htmlFor="linkText" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                     <FiTag className="w-5 h-5 text-green-500" />
-                                    <span>Button Text</span>
+                                    <span>{t('heroSettings.form.linkText')}</span>
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -485,7 +487,7 @@ const AdminHeroPage = () => {
                                     required
                                     className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-green-500 focus:border-transparent ${errors.linkText ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-green-300'
                                         }`}
-                                    placeholder="Enter button text (e.g., Shop Now, Explore, Get Started)"
+                                    placeholder={t('heroSettings.form.linkTextPlaceholder')}
                                 />
                                 {errors.linkText && (
                                     <p className="mt-2 text-sm text-red-600 flex items-center">
@@ -499,7 +501,7 @@ const AdminHeroPage = () => {
                             <div>
                                 <label htmlFor="linkUrl" className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                     <FiLink className="w-5 h-5 text-purple-500" />
-                                    <span>Button URL</span>
+                                    <span>{t('heroSettings.form.linkUrl')}</span>
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -511,7 +513,7 @@ const AdminHeroPage = () => {
                                     required
                                     className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.linkUrl ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-purple-300'
                                         }`}
-                                    placeholder="Enter button URL (e.g., /products, /shop, https://example.com)"
+                                    placeholder={t('heroSettings.form.linkUrlPlaceholder')}
                                 />
                                 {errors.linkUrl && (
                                     <p className="mt-2 text-sm text-red-600 flex items-center">
@@ -526,7 +528,7 @@ const AdminHeroPage = () => {
                                 <div>
                                     <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                         <FiMonitor className="w-5 h-5 text-indigo-500" />
-                                        <span>Desktop Background</span>
+                                        <span>{t('heroSettings.form.desktopBackground')}</span>
                                     </label>
                                     <div
                                         className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${dragActive
@@ -553,8 +555,8 @@ const AdminHeroPage = () => {
                                         ) : (
                                             <div className="space-y-2">
                                                 <FiUpload className="w-8 h-8 text-pink-500 mx-auto" />
-                                                <p className="text-sm font-medium text-gray-900">Drop Desktop Image</p>
-                                                <p className="text-xs text-gray-500">1920x800px recommended</p>
+                                                <p className="text-sm font-medium text-gray-900">{t('heroSettings.form.dropDesktop')}</p>
+                                                <p className="text-xs text-gray-500">{t('heroSettings.form.desktopRec')}</p>
                                             </div>
                                         )}
                                     </div>
@@ -564,7 +566,7 @@ const AdminHeroPage = () => {
                                 <div>
                                     <label className="flex items-center space-x-2 text-lg font-semibold text-gray-900 mb-3">
                                         <FiTarget className="w-5 h-5 text-purple-500" />
-                                        <span>Mobile Background</span>
+                                        <span>{t('heroSettings.form.mobileBackground')}</span>
                                     </label>
                                     <div
                                         className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${mobileDragActive
@@ -590,8 +592,8 @@ const AdminHeroPage = () => {
                                         ) : (
                                             <div className="space-y-2">
                                                 <FiUpload className="w-8 h-8 text-purple-500 mx-auto" />
-                                                <p className="text-sm font-medium text-gray-900">Drop Mobile Image</p>
-                                                <p className="text-xs text-gray-500">800x1000px recommended</p>
+                                                <p className="text-sm font-medium text-gray-900">{t('heroSettings.form.dropMobile')}</p>
+                                                <p className="text-xs text-gray-500">{t('heroSettings.form.mobileRec')}</p>
                                             </div>
                                         )}
                                     </div>
@@ -608,12 +610,12 @@ const AdminHeroPage = () => {
                                     {isSubmitting ? (
                                         <>
                                             <FiRefreshCw className="w-5 h-5 animate-spin" />
-                                            <span>Updating Hero Section...</span>
+                                            <span>{t('heroSettings.form.updating')}</span>
                                         </>
                                     ) : (
                                         <>
                                             <FiSave className="w-5 h-5" />
-                                            <span>Update Hero Section</span>
+                                            <span>{t('heroSettings.form.updateButton')}</span>
                                         </>
                                     )}
                                 </button>
@@ -631,10 +633,10 @@ const AdminHeroPage = () => {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-bold text-gray-900">
-                                        Live Preview
+                                        {t('heroSettings.preview.title')}
                                     </h2>
                                     <p className="text-gray-600">
-                                        See how your hero section will appear
+                                        {t('heroSettings.preview.subtitle')}
                                     </p>
                                 </div>
                             </div>
@@ -671,7 +673,7 @@ const AdminHeroPage = () => {
 
                                 {/* Preview Overlay */}
                                 <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-xs">
-                                    Live Preview
+                                    {t('heroSettings.preview.livePreviewBadge')}
                                 </div>
                             </div>
 
@@ -679,24 +681,24 @@ const AdminHeroPage = () => {
                             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                                 <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
                                     <FiInfo className="w-4 h-4 mr-2 text-blue-500" />
-                                    Preview Information
+                                    {t('heroSettings.preview.infoTitle')}
                                 </h3>
                                 <div className="space-y-2 text-sm text-gray-600">
                                     <div className="flex justify-between">
-                                        <span>Title Length:</span>
+                                        <span>{t('heroSettings.preview.titleLength')}:</span>
                                         <span>{hero.title.length} characters</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span>Subtitle Length:</span>
+                                        <span>{t('heroSettings.preview.subtitleLength')}:</span>
                                         <span>{hero.subtitle.length} characters</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span>Has Background Image:</span>
-                                        <span>{imagePreview ? 'Yes' : 'No'}</span>
+                                        <span>{t('heroSettings.preview.hasImage')}:</span>
+                                        <span>{imagePreview ? t('heroSettings.preview.yes') : t('heroSettings.preview.no')}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span>Button URL:</span>
-                                        <span className="truncate max-w-32">{hero.linkUrl || 'Not set'}</span>
+                                        <span>{t('heroSettings.preview.buttonUrl')}:</span>
+                                        <span className="truncate max-w-32">{hero.linkUrl || t('heroSettings.preview.notSet')}</span>
                                     </div>
                                 </div>
                             </div>

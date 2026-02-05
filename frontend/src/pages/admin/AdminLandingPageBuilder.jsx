@@ -6,6 +6,7 @@ import { SECTION_TYPE_LABELS, DEFAULT_SECTION_DATA, SECTION_COMPONENTS } from '.
 import SectionEditor from '../../components/landingPage/sections/SectionEditor';
 import Loader from '../../components/Loader';
 import { getAllProducts } from '../../api/apiService';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 // ... (Drag and Drop Imports remain the same - no changes needed here, assuming they are effectively lines 9-27 in original)
 
@@ -32,6 +33,7 @@ import { CSS } from '@dnd-kit/utilities';
  * Sortable Section Item Wrapper
  */
 const SortableSectionItem = ({ id, section, index, editingSection, setEditingSection, moveSection, deleteSection, updateSectionData, dragging }) => {
+    const { t } = useLanguage();
     // ... (SortableSectionItem content remains exactly the same)
     const {
         attributes,
@@ -81,7 +83,7 @@ const SortableSectionItem = ({ id, section, index, editingSection, setEditingSec
                                 display: 'flex',
                                 alignItems: 'center'
                             }}
-                            title="Drag to reorder"
+                            title={t('landingPageBuilder.sections.dragToReorder')}
                         >
                             :::
                         </div>
@@ -96,7 +98,7 @@ const SortableSectionItem = ({ id, section, index, editingSection, setEditingSec
                         <button onClick={() => moveSection(index, 'down')} disabled={false} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: 'white', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>↓</button>
 
                         <button onClick={() => setEditingSection(editingSection === index ? null : index)} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: editingSection === index ? '#3182ce' : 'white', color: editingSection === index ? 'white' : '#4a5568', borderRadius: '4px', cursor: 'pointer' }}>
-                            {editingSection === index ? 'Done' : 'Edit'}
+                            {editingSection === index ? t('landingPageBuilder.sections.done') : t('landingPageBuilder.sections.edit')}
                         </button>
                         <button onClick={() => deleteSection(index)} style={{ padding: '4px 8px', border: '1px solid #cbd5e0', background: 'white', color: '#e53e3e', borderRadius: '4px', cursor: 'pointer' }}>🗑️</button>
                     </div>
@@ -123,6 +125,7 @@ const SortableSectionItem = ({ id, section, index, editingSection, setEditingSec
  * Create and edit landing pages with drag-and-drop section builder
  */
 const AdminLandingPageBuilder = () => {
+    const { t } = useLanguage();
     const { id } = useParams();
     const navigate = useNavigate();
     // Get sidebar context to determine layout width
@@ -222,7 +225,7 @@ const AdminLandingPageBuilder = () => {
             setSettings(data.settings || settings);
         } catch (error) {
             console.error('Error loading landing page:', error);
-            alert('Failed to load landing page');
+            alert(t('landingPageBuilder.messages.loadError'));
             navigate('/admin/landing-pages');
         } finally {
             setLoading(false);
@@ -232,15 +235,15 @@ const AdminLandingPageBuilder = () => {
     const handleSave = async (publish = false) => {
         // Validation
         if (!title.trim()) {
-            alert('Please enter a title');
+            alert(t('landingPageBuilder.messages.enterTitle'));
             return;
         }
         if (!slug.trim()) {
-            alert('Please enter a slug');
+            alert(t('landingPageBuilder.messages.enterSlug'));
             return;
         }
         if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
-            alert('Slug must be lowercase with hyphens only (e.g., summer-serum-2024)');
+            alert(t('landingPageBuilder.messages.slugFormat'));
             return;
         }
 
@@ -265,15 +268,15 @@ const AdminLandingPageBuilder = () => {
             setSaving(true);
             if (isEditMode) {
                 await landingPageService.updateLandingPage(id, landingPageData);
-                alert('Landing page updated successfully!');
+                alert(t('landingPageBuilder.messages.saveSuccess'));
             } else {
                 await landingPageService.createLandingPage(landingPageData);
-                alert('Landing page created successfully!');
+                alert(t('landingPageBuilder.messages.createSuccess'));
                 navigate('/admin/landing-pages');
             }
         } catch (error) {
             console.error('[LandingPageBuilder] Error saving landing page:', error);
-            alert(error.response?.data?.message || 'Failed to save landing page');
+            alert(error.response?.data?.message || t('landingPageBuilder.messages.saveError'));
         } finally {
             setSaving(false);
         }
@@ -283,8 +286,7 @@ const AdminLandingPageBuilder = () => {
         const duplicateCount = sections.filter(s => s.sectionType === sectionType).length;
         if (duplicateCount > 0) {
             const confirmAdd = window.confirm(
-                `⚠️ You already have ${duplicateCount} "${SECTION_TYPE_LABELS[sectionType]}" section(s).\n\n` +
-                `Are you sure you want to add another one?`
+                t('landingPageBuilder.messages.duplicateSection', { count: duplicateCount, type: SECTION_TYPE_LABELS[sectionType] })
             );
             if (!confirmAdd) return;
         }
@@ -302,7 +304,7 @@ const AdminLandingPageBuilder = () => {
     };
 
     const deleteSection = (index) => {
-        if (!confirm('Are you sure you want to delete this section?')) return;
+        if (!confirm(t('landingPageBuilder.messages.deleteSectionConfirm'))) return;
         const updatedSections = sections.filter((_, i) => i !== index);
         updatedSections.forEach((section, idx) => { section.sectionOrder = idx; });
         setSections(updatedSections);
@@ -417,13 +419,13 @@ const AdminLandingPageBuilder = () => {
                                     e.currentTarget.style.backgroundColor = 'transparent';
                                     e.currentTarget.style.borderColor = '#e2e8f0';
                                 }}
-                                title="Back to Landing Pages"
+                                title={t('landingPageBuilder.header.back')}
                             >
                                 <FiArrowLeft size={16} />
-                                Back
+                                {t('landingPageBuilder.header.back')}
                             </button>
                             <h1 style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, color: '#2d3748' }}>
-                                {isEditMode ? 'Edit Page Details' : 'New Page'}
+                                {isEditMode ? t('landingPageBuilder.header.editTitle') : t('landingPageBuilder.header.newTitle')}
                             </h1>
                         </div>
                     </div>
@@ -442,7 +444,7 @@ const AdminLandingPageBuilder = () => {
                                 fontSize: '0.85rem'
                             }}
                         >
-                            {saving ? '...' : 'Save Draft'}
+                            {saving ? t('landingPageBuilder.header.saving') : t('landingPageBuilder.header.saveDraft')}
                         </button>
                         <button
                             onClick={() => handleSave(true)}
@@ -458,7 +460,7 @@ const AdminLandingPageBuilder = () => {
                                 fontSize: '0.85rem'
                             }}
                         >
-                            {saving ? '...' : 'Publish'}
+                            {saving ? '...' : t('landingPageBuilder.header.publish')}
                         </button>
                     </div>
                 </div>
@@ -474,10 +476,10 @@ const AdminLandingPageBuilder = () => {
                         marginBottom: '25px',
                         border: '1px solid #e2e8f0'
                     }}>
-                        <h3 style={{ marginTop: 0, marginBottom: '15px', fontSize: '1rem', color: '#4a5568' }}>⚙️ Page Settings</h3>
+                        <h3 style={{ marginTop: 0, marginBottom: '15px', fontSize: '1rem', color: '#4a5568' }}>⚙️ {t('landingPageBuilder.settings.title')}</h3>
 
                         <div style={{ marginBottom: '15px' }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '0.9rem' }}>Title</label>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '0.9rem' }}>{t('landingPageBuilder.settings.pageTitle')}</label>
                             <input
                                 type="text"
                                 value={title}
@@ -488,7 +490,7 @@ const AdminLandingPageBuilder = () => {
 
                         <div style={{ marginBottom: '15px' }}>
                             <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '0.9rem' }}>
-                                Slug <button type="button" onClick={generateSlugFromTitle} style={{ fontSize: '0.75rem', padding: '2px 6px', marginLeft: '5px', cursor: 'pointer', background: '#e2e8f0', border: 'none', borderRadius: '4px' }}>Generate</button>
+                                {t('landingPageBuilder.settings.slug')} <button type="button" onClick={generateSlugFromTitle} style={{ fontSize: '0.75rem', padding: '2px 6px', marginLeft: '5px', cursor: 'pointer', background: '#e2e8f0', border: 'none', borderRadius: '4px' }}>{t('landingPageBuilder.settings.generate')}</button>
                             </label>
                             <input
                                 type="text"
@@ -499,7 +501,7 @@ const AdminLandingPageBuilder = () => {
                         </div>
 
                         <div style={{ marginBottom: '15px' }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '0.9rem' }}>Main Product (Default)</label>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '0.9rem' }}>{t('landingPageBuilder.settings.mainProduct')}</label>
                             <select
                                 value={productId || ''}
                                 onChange={(e) => setProductId(e.target.value)}
@@ -513,14 +515,14 @@ const AdminLandingPageBuilder = () => {
                                 ))}
                             </select>
                             <small style={{ color: '#666', fontSize: '0.8rem' }}>
-                                This product will be used by any section set to "Default".
+                                {t('landingPageBuilder.settings.mainProductHelp')}
                             </small>
                         </div>
                     </div>
 
                     {/* Section Builder */}
                     <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 style={{ margin: 0, fontSize: '1.1rem' }}>🏗️ Sections</h3>
+                        <h3 style={{ margin: 0, fontSize: '1.1rem' }}>🏗️ {t('landingPageBuilder.sections.title')}</h3>
                         <button
                             onClick={() => setShowSectionPicker(!showSectionPicker)}
                             style={{
@@ -534,7 +536,7 @@ const AdminLandingPageBuilder = () => {
                                 fontSize: '0.85rem'
                             }}
                         >
-                            + Add New
+                            + {t('landingPageBuilder.sections.addNew')}
                         </button>
                     </div>
 
@@ -547,7 +549,7 @@ const AdminLandingPageBuilder = () => {
                             padding: '10px',
                             boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
                         }}>
-                            <div style={{ fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '8px', color: '#718096' }}>CLICK TO ADD:</div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '8px', color: '#718096' }}>{t('landingPageBuilder.sections.clickToAdd')}</div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                                 {Object.keys(SECTION_TYPE_LABELS).map((sectionType) => (
                                     <button
@@ -573,7 +575,7 @@ const AdminLandingPageBuilder = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         {sections.length === 0 && (
                             <div style={{ textAlign: 'center', padding: '30px', color: '#a0aec0', border: '2px dashed #e2e8f0', borderRadius: '8px' }}>
-                                No sections yet. Add one to start!
+                                {t('landingPageBuilder.sections.noSections')}
                             </div>
                         )}
 
@@ -651,8 +653,8 @@ const AdminLandingPageBuilder = () => {
 
                     {sections.length === 0 && (
                         <div style={{ padding: '100px', textAlign: 'center', color: '#718096' }}>
-                            <h2 style={{ fontSize: '2rem', marginBottom: '10px' }}>Your Page Preview</h2>
-                            <p>Add sections from the left panel to see them appear here instantly.</p>
+                            <h2 style={{ fontSize: '2rem', marginBottom: '10px' }}>{t('landingPageBuilder.preview.title')}</h2>
+                            <p>{t('landingPageBuilder.preview.subtitle')}</p>
                         </div>
                     )}
                 </div>

@@ -4,6 +4,7 @@ import DynamicAdminSidebar from './DynamicAdminSidebar';
 import { getUserProfile } from '../api/apiService';
 import { PermissionProvider } from '../contexts/PermissionContext';
 import { FiMenu, FiX } from 'react-icons/fi';
+import GoogleTranslateWidget from './GoogleTranslateWidget';
 
 const AdminLayout = () => {
     const navigate = useNavigate();
@@ -113,6 +114,11 @@ const AdminLayout = () => {
                 <main className="flex-1 min-h-screen overflow-x-hidden transition-all duration-300" style={{ backgroundColor: '#f8f9fa', padding: '0' }}>
                     <Outlet context={{ isSidebarOpen, setIsSidebarOpen }} />
                 </main>
+
+                {/* Emergency Translation Widget - Fixed Bottom Right */}
+                <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999, background: 'white', padding: '5px', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                    <GoogleTranslateWidget />
+                </div>
             </div>
         </PermissionProvider>
     );

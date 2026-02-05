@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-    getPackById, 
-    getAllProducts, 
-    getAllPacks, 
+import {
+    getPackById,
+    getAllProducts,
+    getAllPacks,
     getAllCustomPacks,
     updatePackRecommendations,
     updatePackProductRecommendations,
@@ -12,11 +12,13 @@ import {
 } from '../../api/apiService';
 import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminPackRecommendationsPage = () => {
+    const { t } = useLanguage();
     const { packId } = useParams();
     const navigate = useNavigate();
-    
+
     const [pack, setPack] = useState(null);
     const [allProducts, setAllProducts] = useState([]);
     const [allPacks, setAllPacks] = useState([]);
@@ -35,55 +37,55 @@ const AdminPackRecommendationsPage = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            
+
             // Fetch pack details
             const packResponse = await getPackById(packId);
             const packData = packResponse.data;
             setPack(packData);
-            
+
             // Set current recommendations
             setSelectedProductIds(packData.recommendedProducts?.map(p => p.id) || []);
             setSelectedPackIds(packData.recommendedPacks?.map(p => p.id) || []);
             setSelectedCustomPackIds(packData.recommendedCustomPacks?.map(p => p.id) || []);
-            
+
             // Fetch all products, packs, and custom packs
             const [productsResponse, packsResponse, customPacksResponse] = await Promise.all([
                 getAllProducts(),
                 getAllPacks(),
                 getAllCustomPacks()
             ]);
-            
+
             setAllProducts(productsResponse.data.content || productsResponse.data || []);
             setAllPacks((packsResponse.data || []).filter(p => p.id !== parseInt(packId)));
             setAllCustomPacks(customPacksResponse.data || []);
-            
+
         } catch (error) {
             console.error('Error fetching data:', error);
-            toast.error('Failed to load data');
+            toast.error(t('packRecommendations.messages.loadError'));
         } finally {
             setLoading(false);
         }
     };
 
     const handleProductToggle = (productId) => {
-        setSelectedProductIds(prev => 
-            prev.includes(productId) 
+        setSelectedProductIds(prev =>
+            prev.includes(productId)
                 ? prev.filter(id => id !== productId)
                 : [...prev, productId]
         );
     };
 
     const handlePackToggle = (packId) => {
-        setSelectedPackIds(prev => 
-            prev.includes(packId) 
+        setSelectedPackIds(prev =>
+            prev.includes(packId)
                 ? prev.filter(id => id !== packId)
                 : [...prev, packId]
         );
     };
 
     const handleCustomPackToggle = (customPackId) => {
-        setSelectedCustomPackIds(prev => 
-            prev.includes(customPackId) 
+        setSelectedCustomPackIds(prev =>
+            prev.includes(customPackId)
                 ? prev.filter(id => id !== customPackId)
                 : [...prev, customPackId]
         );
@@ -92,19 +94,19 @@ const AdminPackRecommendationsPage = () => {
     const handleSave = async () => {
         try {
             setSaving(true);
-            
+
             await updatePackRecommendations(packId, {
                 productIds: selectedProductIds,
                 packIds: selectedPackIds,
                 customPackIds: selectedCustomPackIds
             });
-            
-            toast.success('Recommendations updated successfully!');
+
+            toast.success(t('packRecommendations.messages.success'));
             navigate('/admin/packs');
-            
+
         } catch (error) {
             console.error('Error saving recommendations:', error);
-            toast.error('Failed to save recommendations');
+            toast.error(t('packRecommendations.messages.error'));
         } finally {
             setSaving(false);
         }
@@ -129,10 +131,10 @@ const AdminPackRecommendationsPage = () => {
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800">
-                        Manage Recommendations
+                        {t('packRecommendations.title')}
                     </h1>
                     <p className="text-gray-600 mt-1">
-                        Pack: {pack?.name}
+                        {t('packRecommendations.subtitle', { name: pack?.name })}
                     </p>
                 </div>
                 <div className="space-x-4">
@@ -140,14 +142,14 @@ const AdminPackRecommendationsPage = () => {
                         onClick={() => navigate('/admin/packs')}
                         className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
                     >
-                        Cancel
+                        {t('packRecommendations.cancel')}
                     </button>
                     <button
                         onClick={handleSave}
                         disabled={saving}
                         className="px-6 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 disabled:opacity-50"
                     >
-                        {saving ? 'Saving...' : 'Save Changes'}
+                        {saving ? t('packRecommendations.saving') : t('packRecommendations.save')}
                     </button>
                 </div>
             </div>
@@ -156,7 +158,7 @@ const AdminPackRecommendationsPage = () => {
             <div className="mb-6">
                 <input
                     type="text"
-                    placeholder="Search products and packs..."
+                    placeholder={t('packRecommendations.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
@@ -167,7 +169,7 @@ const AdminPackRecommendationsPage = () => {
                 {/* Product Recommendations */}
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                        Product Recommendations ({selectedProductIds.length})
+                        {t('packRecommendations.sections.products')} ({selectedProductIds.length})
                     </h2>
                     <div className="space-y-3 max-h-96 overflow-y-auto">
                         {filteredProducts.map(product => (
@@ -195,7 +197,7 @@ const AdminPackRecommendationsPage = () => {
                 {/* Pack Recommendations */}
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                        Pack Recommendations ({selectedPackIds.length})
+                        {t('packRecommendations.sections.packs')} ({selectedPackIds.length})
                     </h2>
                     <div className="space-y-3 max-h-96 overflow-y-auto">
                         {filteredPacks.map(pack => (
@@ -223,7 +225,7 @@ const AdminPackRecommendationsPage = () => {
                 {/* Custom Pack Recommendations */}
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                        Custom Pack Recommendations ({selectedCustomPackIds.length})
+                        {t('packRecommendations.sections.customPacks')} ({selectedCustomPackIds.length})
                     </h2>
                     <div className="space-y-3 max-h-96 overflow-y-auto">
                         {filteredCustomPacks.map(customPack => (
@@ -240,8 +242,8 @@ const AdminPackRecommendationsPage = () => {
                                 <div className="flex-1">
                                     <p className="font-medium text-gray-800">{customPack.name}</p>
                                     <p className="text-sm text-gray-600">
-                                        {customPack.pricingType === 'FIXED' 
-                                            ? `$${customPack.fixedPrice?.toFixed(2)}` 
+                                        {customPack.pricingType === 'FIXED'
+                                            ? `$${customPack.fixedPrice?.toFixed(2)}`
                                             : `${(customPack.discountRate * 100).toFixed(0)}% off`
                                         }
                                     </p>
@@ -257,15 +259,15 @@ const AdminPackRecommendationsPage = () => {
 
             {/* Current Recommendations Summary */}
             <div className="mt-8 bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4 text-gray-800">Current Selection Summary</h3>
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">{t('packRecommendations.summary.title')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <p className="font-medium text-gray-700 mb-2">
-                            Selected Products ({selectedProductIds.length}):
+                            {t('packRecommendations.summary.selectedProducts')} ({selectedProductIds.length}):
                         </p>
                         <div className="text-sm text-gray-600">
                             {selectedProductIds.length === 0 ? (
-                                <span className="italic">No products selected</span>
+                                <span className="italic">{t('packRecommendations.summary.noneSelected')}</span>
                             ) : (
                                 allProducts
                                     .filter(p => selectedProductIds.includes(p.id))
@@ -276,11 +278,11 @@ const AdminPackRecommendationsPage = () => {
                     </div>
                     <div>
                         <p className="font-medium text-gray-700 mb-2">
-                            Selected Packs ({selectedPackIds.length}):
+                            {t('packRecommendations.summary.selectedPacks')} ({selectedPackIds.length}):
                         </p>
                         <div className="text-sm text-gray-600">
                             {selectedPackIds.length === 0 ? (
-                                <span className="italic">No packs selected</span>
+                                <span className="italic">{t('packRecommendations.summary.noneSelected')}</span>
                             ) : (
                                 allPacks
                                     .filter(p => selectedPackIds.includes(p.id))
@@ -291,11 +293,11 @@ const AdminPackRecommendationsPage = () => {
                     </div>
                     <div>
                         <p className="font-medium text-gray-700 mb-2">
-                            Selected Custom Packs ({selectedCustomPackIds.length}):
+                            {t('packRecommendations.summary.selectedCustomPacks')} ({selectedCustomPackIds.length}):
                         </p>
                         <div className="text-sm text-gray-600">
                             {selectedCustomPackIds.length === 0 ? (
-                                <span className="italic">No custom packs selected</span>
+                                <span className="italic">{t('packRecommendations.summary.noneSelected')}</span>
                             ) : (
                                 allCustomPacks
                                     .filter(p => selectedCustomPackIds.includes(p.id))

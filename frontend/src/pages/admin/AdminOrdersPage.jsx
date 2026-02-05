@@ -41,20 +41,20 @@ const MiniChart = ({ data, type = 'line', color = 'blue' }) => {
 const StatusBadge = ({ status, count, percentage }) => {
     const { t } = useLanguage();
     return (
-    <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border">
-        <div className="flex items-center">
-            <div className={`w-3 h-3 rounded-full mr-3 ${status === 'PREPARING' ? 'bg-yellow-400' :
-                status === 'DELIVERING' ? 'bg-blue-400' :
-                    status === 'DELIVERED' ? 'bg-green-400' :
-                        'bg-red-400'
-                }`}></div>
-            <span className="text-sm font-medium text-gray-700">{t(`ordersPage.status_${status}`)}</span>
+        <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border">
+            <div className="flex items-center">
+                <div className={`w-3 h-3 rounded-full mr-3 ${status === 'PREPARING' ? 'bg-yellow-400' :
+                    status === 'DELIVERING' ? 'bg-blue-400' :
+                        status === 'DELIVERED' ? 'bg-green-400' :
+                            'bg-red-400'
+                    }`}></div>
+                <span className="text-sm font-medium text-gray-700">{t(`ordersPage.status_${status}`)}</span>
+            </div>
+            <div className="text-right">
+                <div className="text-lg font-bold text-gray-900">{count}</div>
+                <div className="text-xs text-gray-500">{percentage}%</div>
+            </div>
         </div>
-        <div className="text-right">
-            <div className="text-lg font-bold text-gray-900">{count}</div>
-            <div className="text-xs text-gray-500">{percentage}%</div>
-        </div>
-    </div>
     );
 };
 
@@ -123,8 +123,8 @@ const AdminOrdersPage = () => {
             setDeletedOrders(deletedOrdersRes.data);
             setError(null);
         } catch (err) {
-            setError('Failed to fetch orders.');
-            toast.error('Failed to fetch orders.');
+            setError(t('ordersPage.messages.fetchError'));
+            toast.error(t('ordersPage.messages.fetchError'));
             console.error(err);
         } finally {
             setLoading(false);
@@ -293,13 +293,13 @@ const AdminOrdersPage = () => {
 
     // Enhanced handler functions
     const handleDeleteOrder = async (orderId) => {
-        if (window.confirm('Are you sure you want to delete this order?')) {
+        if (window.confirm(t('ordersPage.messages.deleteConfirm'))) {
             try {
                 await deleteOrder(orderId);
-                toast.success('Order deleted successfully!');
+                toast.success(t('ordersPage.messages.deleteSuccess'));
                 fetchAllOrders();
             } catch (err) {
-                toast.error('Failed to delete order.');
+                toast.error(t('ordersPage.messages.deleteError'));
                 console.error(err);
             }
         }
@@ -308,10 +308,10 @@ const AdminOrdersPage = () => {
     const handleRestoreOrder = async (orderId) => {
         try {
             await restoreOrder(orderId);
-            toast.success('Order restored successfully!');
+            toast.success(t('ordersPage.messages.restoreSuccess'));
             fetchAllOrders();
         } catch (err) {
-            toast.error('Failed to restore order.');
+            toast.error(t('ordersPage.messages.restoreError'));
             console.error(err);
         }
     };
@@ -319,29 +319,29 @@ const AdminOrdersPage = () => {
     const handleStatusChange = async (orderId, status) => {
         try {
             await updateOrderStatus(orderId, status);
-            toast.success('Order status updated!');
+            toast.success(t('ordersPage.messages.statusSuccess'));
             fetchAllOrders();
         } catch (err) {
-            toast.error('Failed to update order status.');
+            toast.error(t('ordersPage.messages.statusError'));
             console.error(err);
         }
     };
 
     const handleBulkStatusUpdate = async (status) => {
         if (selectedOrders.length === 0) {
-            toast.warn('Please select orders to update.');
+            toast.warn(t('ordersPage.messages.bulkSelect'));
             return;
         }
 
-        if (window.confirm(`Are you sure you want to update ${selectedOrders.length} orders to ${status}?`)) {
+        if (window.confirm(t('ordersPage.messages.bulkUpdateConfirm', { count: selectedOrders.length, status }))) {
             try {
                 const promises = selectedOrders.map(orderId => updateOrderStatus(orderId, status));
                 await Promise.all(promises);
-                toast.success(`${selectedOrders.length} orders updated successfully!`);
+                toast.success(t('ordersPage.messages.bulkUpdateSuccess', { count: selectedOrders.length }));
                 setSelectedOrders([]);
                 fetchAllOrders();
             } catch (err) {
-                toast.error('Failed to update some orders.');
+                toast.error(t('ordersPage.messages.bulkUpdateError'));
                 console.error(err);
             }
         }
@@ -349,19 +349,19 @@ const AdminOrdersPage = () => {
 
     const handleBulkDelete = async () => {
         if (selectedOrders.length === 0) {
-            toast.warn('Please select orders to delete.');
+            toast.warn(t('ordersPage.messages.bulkDeleteSelect'));
             return;
         }
 
-        if (window.confirm(`Are you sure you want to delete ${selectedOrders.length} orders?`)) {
+        if (window.confirm(t('ordersPage.messages.bulkDeleteConfirm', { count: selectedOrders.length }))) {
             try {
                 const promises = selectedOrders.map(orderId => deleteOrder(orderId));
                 await Promise.all(promises);
-                toast.success(`${selectedOrders.length} orders deleted successfully!`);
+                toast.success(t('ordersPage.messages.bulkDeleteSuccess', { count: selectedOrders.length }));
                 setSelectedOrders([]);
                 fetchAllOrders();
             } catch (err) {
-                toast.error('Failed to delete some orders.');
+                toast.error(t('ordersPage.messages.bulkDeleteError'));
                 console.error(err);
             }
         }
@@ -417,7 +417,7 @@ const AdminOrdersPage = () => {
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
-            toast.success('Orders exported successfully!');
+            toast.success(t('ordersPage.messages.exportSuccess'));
         } catch (err) {
             toast.error(t('ordersPage.errorExport'));
             console.error(err);
@@ -487,7 +487,7 @@ const AdminOrdersPage = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center py-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Order Management</h1>
+                            <h1 className="text-3xl font-bold text-gray-900">{t('ordersPage.title')}</h1>
                             <p className="text-gray-600 mt-1">{t('ordersPage.subtitle')}</p>
                         </div>
                         <div className="flex space-x-3">
@@ -708,7 +708,7 @@ const AdminOrdersPage = () => {
                                             onClick={handleBulkDelete}
                                             className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
                                         >
-                                            Delete Selected
+                                            {t('ordersPage.deleteSelected')}
                                         </button>
                                     )}
                                 </div>
@@ -758,14 +758,14 @@ const AdminOrdersPage = () => {
                                         </div>
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Contact Info
+                                        {t('ordersPage.table.contactInfo')}
                                     </th>
                                     <th
                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                                         onClick={() => handleSort('createdAt')}
                                     >
                                         <div className="flex items-center">
-                                            Created
+                                            {t('ordersPage.table.created')}
                                             {sortBy === 'createdAt' && (
                                                 <svg className={`w-4 h-4 ml-1 ${sortOrder === 'asc' ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
@@ -778,7 +778,7 @@ const AdminOrdersPage = () => {
                                         onClick={() => handleSort('status')}
                                     >
                                         <div className="flex items-center">
-                                            Status
+                                            {t('ordersPage.table.status')}
                                             {sortBy === 'status' && (
                                                 <svg className={`w-4 h-4 ml-1 ${sortOrder === 'asc' ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
@@ -787,10 +787,10 @@ const AdminOrdersPage = () => {
                                         </div>
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Total
+                                        {t('ordersPage.table.total')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Actions
+                                        {t('ordersPage.table.actions')}
                                     </th>
                                 </tr>
                             </thead>
@@ -899,30 +899,30 @@ const AdminOrdersPage = () => {
                                 disabled={currentPage === 1}
                                 className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Previous
+                                {t('ordersPage.pagination.previous')}
                             </button>
                             <button
                                 onClick={() => setCurrentPage(Math.min(Math.ceil(filteredAndSortedOrders.length / itemsPerPage), currentPage + 1))}
                                 disabled={currentPage >= Math.ceil(filteredAndSortedOrders.length / itemsPerPage)}
                                 className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Next
+                                {t('ordersPage.pagination.next')}
                             </button>
                         </div>
                         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                             <div>
                                 <p className="text-sm text-gray-700">
-                                    Showing{' '}
+                                    {t('ordersPage.pagination.showing')}{' '}
                                     <span className="font-medium">
                                         {(currentPage - 1) * itemsPerPage + 1}
                                     </span>{' '}
-                                    to{' '}
+                                    {t('ordersPage.pagination.to')}{' '}
                                     <span className="font-medium">
                                         {Math.min(currentPage * itemsPerPage, filteredAndSortedOrders.length)}
                                     </span>{' '}
-                                    of{' '}
+                                    {t('ordersPage.pagination.of')}{' '}
                                     <span className="font-medium">{filteredAndSortedOrders.length}</span>{' '}
-                                    results
+                                    {t('ordersPage.pagination.results')}
                                 </p>
                             </div>
                             <div>
@@ -985,9 +985,9 @@ const AdminOrdersPage = () => {
                                 <div className="flex justify-between items-center mb-6">
                                     <div>
                                         <h3 className="text-2xl font-bold text-gray-900">
-                                            Order Details - #{selectedOrder.id}
+                                            {t('ordersPage.modal.title')} - #{selectedOrder.id}
                                         </h3>
-                                        <p className="text-sm text-gray-500 mt-1">Detailed order information and timeline</p>
+                                        <p className="text-sm text-gray-500 mt-1">{t('ordersPage.modal.subtitle')}</p>
                                     </div>
                                     <button
                                         onClick={() => setShowOrderModal(false)}
@@ -1125,7 +1125,7 @@ const AdminOrdersPage = () => {
                                                                 </div>
                                                             )}
                                                             <div className="flex justify-between items-center text-sm">
-                                                                <span className="text-gray-600">Shipping:</span>
+                                                                <span className="text-gray-600">{t('ordersPage.modal.shipping')}</span>
                                                                 <span className="font-medium text-gray-700">
                                                                     {selectedOrder.shippingCost > 0 ? formatCurrency(selectedOrder.shippingCost) : <span className="text-green-600">{t('ordersPage.modal.free')}</span>}
                                                                 </span>

@@ -38,7 +38,7 @@ const AdminAnnouncementPage = () => {
             }
         } catch (error) {
             console.error('Failed to fetch announcement:', error);
-            setMessage(t('announcementPage.messages.loadError'));
+            setMessage(t('announcement.messages.loadError'));
             setMessageType('error');
         } finally {
             setLoading(false);
@@ -49,11 +49,11 @@ const AdminAnnouncementPage = () => {
         try {
             setSaving(true);
             await updateAnnouncement(announcement);
-            setMessage(t('announcementPage.messages.updateSuccess'));
+            setMessage(t('announcement.messages.updateSuccess'));
             setMessageType('success');
         } catch (error) {
             console.error('Failed to update announcement:', error);
-            setMessage(t('announcementPage.messages.updateError'));
+            setMessage(t('announcement.messages.updateError'));
             setMessageType('error');
         } finally {
             setSaving(false);
@@ -77,7 +77,7 @@ const AdminAnnouncementPage = () => {
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">{t('announcementPage.loading')}</p>
+                    <p className="text-gray-600">{t('announcement.loading')}</p>
                 </div>
             </div>
         );
@@ -96,9 +96,9 @@ const AdminAnnouncementPage = () => {
                                 </div>
                                 <div>
                                     <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-                                        {t('announcementPage.title')}
+                                        {t('announcement.title')}
                                     </h1>
-                                    <p className="text-gray-600 mt-2">{t('announcementPage.subtitle')}</p>
+                                    <p className="text-gray-600 mt-2">{t('announcement.subtitle')}</p>
                                 </div>
                             </div>
                             <div className="flex items-center space-x-3">
@@ -110,14 +110,14 @@ const AdminAnnouncementPage = () => {
                                         }`}
                                 >
                                     {previewMode ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
-                                    {previewMode ? t('announcementPage.hidePreview') : t('announcementPage.showPreview')}
+                                    {previewMode ? t('announcement.hidePreview') : t('announcement.showPreview')}
                                 </button>
                                 <button
                                     onClick={fetchAnnouncement}
                                     className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium hover:bg-blue-200 transition-all"
                                 >
                                     <FiRefreshCw className="w-4 h-4" />
-                                    {t('announcementPage.refresh')}
+                                    {t('announcement.refresh')}
                                 </button>
                             </div>
                         </div>
@@ -145,15 +145,15 @@ const AdminAnnouncementPage = () => {
                         <div className="bg-white rounded-2xl shadow-lg p-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                                 <FiBell className="w-6 h-6 text-pink-500" />
-                                {t('announcementPage.settingsTitle')}
+                                {t('announcement.settingsTitle')}
                             </h2>
 
                             <div className="space-y-6">
                                 {/* Enable/Disable */}
                                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                     <div>
-                                        <h3 className="font-semibold text-gray-900">{t('announcementPage.enable.title')}</h3>
-                                        <p className="text-sm text-gray-600">{t('announcementPage.enable.description')}</p>
+                                        <h3 className="font-semibold text-gray-900">{t('announcement.enable.title')}</h3>
+                                        <p className="text-sm text-gray-600">{t('announcement.enable.description')}</p>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -170,43 +170,43 @@ const AdminAnnouncementPage = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         <FiType className="w-4 h-4 inline mr-2" />
-                                        {t('announcementPage.text.label')}
+                                        {t('announcement.text.label')}
                                     </label>
                                     <textarea
                                         value={announcement.text}
                                         onChange={(e) => handleInputChange('text', e.target.value)}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
                                         rows="3"
-                                        placeholder={t('announcementPage.text.placeholder')}
+                                        placeholder={t('announcement.text.placeholder')}
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">{t('announcementPage.text.help')}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{t('announcement.text.help')}</p>
                                 </div>
 
                                 {/* Background Color */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         <FiType className="w-4 h-4 inline mr-2" />
-                                        {t('announcementPage.background.label')}
+                                        {t('announcement.background.label')}
                                     </label>
                                     <select
                                         value={announcement.backgroundColor}
                                         onChange={(e) => handleInputChange('backgroundColor', e.target.value)}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                                     >
-                                        <option value="gradient">{t('announcementPage.background.gradient')}</option>
-                                        <option value="#ef4444">{t('announcementPage.background.red')}</option>
-                                        <option value="#3b82f6">{t('announcementPage.background.blue')}</option>
-                                        <option value="#10b981">{t('announcementPage.background.green')}</option>
-                                        <option value="#f59e0b">{t('announcementPage.background.yellow')}</option>
-                                        <option value="#8b5cf6">{t('announcementPage.background.purple')}</option>
-                                        <option value="#ec4899">{t('announcementPage.background.pink')}</option>
+                                        <option value="gradient">{t('announcement.background.gradient')}</option>
+                                        <option value="#ef4444">{t('announcement.background.red')}</option>
+                                        <option value="#3b82f6">{t('announcement.background.blue')}</option>
+                                        <option value="#10b981">{t('announcement.background.green')}</option>
+                                        <option value="#f59e0b">{t('announcement.background.yellow')}</option>
+                                        <option value="#8b5cf6">{t('announcement.background.purple')}</option>
+                                        <option value="#ec4899">{t('announcement.background.pink')}</option>
                                     </select>
                                 </div>
 
                                 {/* Text Color */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        {t('announcementPage.textColor.label')}
+                                        {t('announcement.textColor.label')}
                                     </label>
                                     <input
                                         type="color"
@@ -220,16 +220,16 @@ const AdminAnnouncementPage = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         <FiZap className="w-4 h-4 inline mr-2" />
-                                        {t('announcementPage.animation.label')}
+                                        {t('announcement.animation.label')}
                                     </label>
                                     <select
                                         value={announcement.animationType}
                                         onChange={(e) => handleInputChange('animationType', e.target.value)}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                                     >
-                                        <option value="none">{t('announcementPage.animation.none')}</option>
-                                        <option value="pulse">{t('announcementPage.animation.pulse')}</option>
-                                        <option value="bounce">{t('announcementPage.animation.bounce')}</option>
+                                        <option value="none">{t('announcement.animation.none')}</option>
+                                        <option value="pulse">{t('announcement.animation.pulse')}</option>
+                                        <option value="bounce">{t('announcement.animation.bounce')}</option>
                                     </select>
                                 </div>
 
@@ -238,9 +238,9 @@ const AdminAnnouncementPage = () => {
                                     <div>
                                         <h3 className="font-semibold text-gray-900 flex items-center gap-2">
                                             <FiUsers className="w-4 h-4" />
-                                            {t('announcementPage.onlineCounter.title')}
+                                            {t('announcement.onlineCounter.title')}
                                         </h3>
-                                        <p className="text-sm text-gray-600">{t('announcementPage.onlineCounter.description')}</p>
+                                        <p className="text-sm text-gray-600">{t('announcement.onlineCounter.description')}</p>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -256,8 +256,8 @@ const AdminAnnouncementPage = () => {
                                 {/* Sticky Position */}
                                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                     <div>
-                                        <h3 className="font-semibold text-gray-900">{t('announcementPage.sticky.title')}</h3>
-                                        <p className="text-sm text-gray-600">{t('announcementPage.sticky.description')}</p>
+                                        <h3 className="font-semibold text-gray-900">{t('announcement.sticky.title')}</h3>
+                                        <p className="text-sm text-gray-600">{t('announcement.sticky.description')}</p>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -280,12 +280,12 @@ const AdminAnnouncementPage = () => {
                                         {saving ? (
                                             <>
                                                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                                {t('announcementPage.buttons.saving')}
+                                                {t('announcement.buttons.saving')}
                                             </>
                                         ) : (
                                             <>
                                                 <FiSave className="w-5 h-5" />
-                                                {t('announcementPage.buttons.save')}
+                                                {t('announcement.buttons.save')}
                                             </>
                                         )}
                                     </button>
@@ -297,7 +297,7 @@ const AdminAnnouncementPage = () => {
                         <div className="bg-white rounded-2xl shadow-lg p-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                                 <FiEye className="w-6 h-6 text-blue-500" />
-                                {t('announcementPage.livePreviewTitle')}
+                                {t('announcement.livePreviewTitle')}
                             </h2>
 
                             {previewMode ? (
@@ -318,7 +318,7 @@ const AdminAnnouncementPage = () => {
                                         <div className="relative z-10 flex items-center justify-center gap-3">
                                             <span className="text-lg animate-bounce">🎉</span>
                                             <span className={announcement.animationType === 'pulse' ? 'animate-pulse' : announcement.animationType === 'bounce' ? 'animate-bounce' : ''}>
-                                                {announcement.text || t('announcementPage.text.placeholder')}
+                                                {announcement.text || t('announcement.text.placeholder')}
                                             </span>
                                             <span className="text-lg animate-bounce">✨</span>
 
@@ -327,7 +327,7 @@ const AdminAnnouncementPage = () => {
                                                 <div className="hidden sm:flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
                                                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                                                     <span className="text-xs">
-                                                        {Math.floor(Math.random() * 50) + 20} متصل الآن / Online now
+                                                        {t('announcement.onlineCounter.online').replace('{count}', Math.floor(Math.random() * 50) + 20)}
                                                     </span>
                                                 </div>
                                             )}
@@ -336,20 +336,20 @@ const AdminAnnouncementPage = () => {
 
                                     {/* Preview Info */}
                                     <div className="bg-gray-50 p-4 rounded-lg">
-                                        <h3 className="font-semibold text-gray-900 mb-2">{t('announcementPage.preview.title')}</h3>
+                                        <h3 className="font-semibold text-gray-900 mb-2">{t('announcement.preview.title')}</h3>
                                         <ul className="text-sm text-gray-600 space-y-1">
-                                            <li>• {t('announcementPage.preview.status')} {announcement.enabled ? t('announcementPage.preview.enabled') : t('announcementPage.preview.disabled')}</li>
-                                            <li>• {t('announcementPage.preview.background')} {announcement.backgroundColor}</li>
-                                            <li>• {t('announcementPage.preview.animation')} {announcement.animationType}</li>
-                                            <li>• {t('announcementPage.preview.onlineCounter')} {announcement.showOnlineCounter ? t('announcementPage.onlineCounter.status.shown') : t('announcementPage.onlineCounter.status.hidden')}</li>
-                                            <li>• {t('announcementPage.preview.sticky')} {announcement.isSticky ? t('announcementPage.sticky.preview.yes') : t('announcementPage.sticky.preview.no')}</li>
+                                            <li>• {t('announcement.preview.status')} {announcement.enabled ? t('announcement.preview.enabled') : t('announcement.preview.disabled')}</li>
+                                            <li>• {t('announcement.preview.background')} {announcement.backgroundColor}</li>
+                                            <li>• {t('announcement.preview.animation')} {announcement.animationType}</li>
+                                            <li>• {t('announcement.preview.onlineCounter')} {announcement.showOnlineCounter ? t('announcement.onlineCounter.status.shown') : t('announcement.onlineCounter.status.hidden')}</li>
+                                            <li>• {t('announcement.preview.sticky')} {announcement.isSticky ? t('announcement.sticky.preview.yes') : t('announcement.sticky.preview.no')}</li>
                                         </ul>
                                     </div>
                                 </div>
                             ) : (
                                 <div className="text-center py-12 text-gray-500">
                                     <FiEye className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                                    <p>{t('announcementPage.preview.clickToPreview')}</p>
+                                    <p>{t('announcement.preview.clickToPreview')}</p>
                                 </div>
                             )}
                         </div>

@@ -98,44 +98,78 @@ export const fr = {
     // Announcement Page
     announcement: {
         title: 'Gestion des annonces',
-        subtitle: 'GÃ©rez les paramÃ¨tres de la barre d\'annonces de votre site',
-        hidePreview: 'Masquer l\'aperÃ§u',
-        showPreview: 'Afficher l\'aperÃ§u',
-        settings: 'ParamÃ¨tres de l\'annonce',
-        enableDisable: 'Activer/DÃ©sactiver',
-        enabled: 'ActivÃ©',
-        disabled: 'DÃ©sactivÃ©',
-        announcementText: 'Texte de l\'annonce',
-        textPlaceholder: 'Entrez votre message d\'annonce...',
-        backgroundColor: 'Couleur de fond',
-        gradient: 'DÃ©gradÃ©',
-        solid: 'Solide',
-        textColor: 'Couleur du texte',
-        animation: 'Animation',
-        animationTypes: {
+        subtitle: 'Gérez les paramètres de la barre d\'annonces de votre site',
+        hidePreview: 'Masquer l\'aperçu',
+        showPreview: 'Afficher l\'aperçu',
+        refresh: 'Actualiser',
+        settingsTitle: 'Paramètres de l\'annonce',
+        enable: {
+            title: 'Activer/Désactiver',
+            description: 'Basculer la visibilité de la barre d\'annonce sur votre site'
+        },
+        text: {
+            label: 'Texte de l\'annonce',
+            placeholder: 'Entrez votre message d\'annonce... (ex : Livraison gratuite au-dessus de 50€)',
+            help: 'Ce texte apparaîtra dans la barre supérieure de votre site web'
+        },
+        background: {
+            label: 'Couleur de fond',
+            gradient: 'Dégradé',
+            red: 'Rouge',
+            blue: 'Bleu',
+            green: 'Vert',
+            yellow: 'Jaune',
+            purple: 'Violet',
+            pink: 'Rose'
+        },
+        textColor: {
+            label: 'Couleur du texte'
+        },
+        animation: {
+            label: 'Animation',
             none: 'Aucune',
             pulse: 'Pulsation',
-            bounce: 'Rebond',
-            slide: 'Glissement'
+            bounce: 'Rebond'
         },
-        stickyBar: 'Barre collante',
-        fontWeight: 'Ã‰paisseur de la police',
-        fontWeights: {
-            normal: 'Normal',
-            medium: 'Moyen',
-            semibold: 'Semi-gras',
-            bold: 'Gras'
+        onlineCounter: {
+            title: 'Afficher le compteur en ligne',
+            description: 'Afficher un faux compteur "Utilisateurs en ligne" pour créer l\'urgence',
+            status: {
+                shown: 'Affiché',
+                hidden: 'Masqué'
+            },
+            online: '{count} en ligne maintenant'
         },
-        showOnlineCounter: 'Afficher le compteur en ligne',
-        livePreview: 'AperÃ§u en direct',
-        currentSettings: 'ParamÃ¨tres actuels',
-        saveChanges: 'Enregistrer les modifications',
-        saving: 'Enregistrement...',
-        loadingSettings: 'Chargement des paramÃ¨tres d\'annonce...',
-        success: 'Annonce mise Ã  jour avec succÃ¨s!',
-        errors: {
-            loadSettings: 'Ã‰chec du chargement des paramÃ¨tres d\'annonce',
-            updateFailed: 'Ã‰chec de la mise Ã  jour de l\'annonce'
+        sticky: {
+            title: 'Barre collante',
+            description: 'Garder la barre visible lors du défilement',
+            preview: {
+                yes: 'Oui',
+                no: 'Non'
+            }
+        },
+        buttons: {
+            save: 'Enregistrer les modifications',
+            saving: 'Enregistrement...',
+            save: 'Enregistrer'
+        },
+        livePreviewTitle: 'Aperçu en direct',
+        preview: {
+            title: 'Informations de l\'aperçu',
+            status: 'Statut',
+            enabled: 'Activé',
+            disabled: 'Désactivé',
+            background: 'Arrière-plan',
+            animation: 'Animation',
+            onlineCounter: 'Compteur en ligne',
+            sticky: 'Collant',
+            clickToPreview: 'Cliquez sur "Afficher l\'aperçu" pour voir la barre d\'annonce en direct'
+        },
+        loading: 'Chargement des paramètres d\'annonce...',
+        messages: {
+            loadError: 'Échec du chargement des paramètres d\'annonce',
+            updateSuccess: 'Annonce mise à jour avec succès !',
+            updateError: 'Échec de la mise à jour de l\'annonce'
         }
     },
 
@@ -1203,6 +1237,860 @@ export const fr = {
                 created: 'Pack personnalisé créé avec succès',
                 updated: 'Pack personnalisé mis à jour avec succès'
             }
+        }
+    },
+    // Users Page
+    usersPage: {
+        title: 'Gérer les utilisateurs',
+        table: {
+            userId: 'ID Utilisateur',
+            name: 'Nom',
+            email: 'Email',
+            legacyRole: 'Rôle Legacy',
+            rbacRoles: 'Rôles RBAC',
+            emailConfirmed: 'Email Confirmé',
+            actions: 'Actions',
+            yes: 'Oui',
+            no: 'Non',
+            manage: 'Gérer'
+        },
+        rolesModal: {
+            title: 'Gérer les rôles',
+            description: 'Sélectionnez les rôles à attribuer à cet utilisateur. Les utilisateurs peuvent avoir plusieurs rôles.',
+            cancel: 'Annuler',
+            save: 'Enregistrer les rôles',
+            success: 'Rôles attribués avec succès !',
+            error: 'Échec de l\'attribution des rôles',
+            permissions: '{count} permissions'
+        },
+        permissionsModal: {
+            title: 'Permissions utilisateur',
+            description: 'Cet utilisateur a {count} permissions via ses rôles attribués.',
+            viewTitle: 'Voir les permissions'
+        },
+        messages: {
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer l\'utilisateur #{id} ? Cette action est irréversible.',
+            deleteSuccess: 'Utilisateur supprimé avec succès !',
+            deleteFailed: 'Échec de la suppression de l\'utilisateur',
+            roleUpdated: 'Rôle de l\'utilisateur #{id} mis à jour vers {role}.',
+            roleUpdateFailed: 'Échec de la mise à jour du rôle pour l\'utilisateur #{id}.',
+            fetchFailed: 'Échec de la récupération des utilisateurs.'
+        }
+    },
+    // Roles Page
+    rolesPage: {
+        title: 'Gestion des rôles',
+        subtitle: 'Créez et gérez des rôles avec des permissions spécifiques',
+        createButton: 'Créer un nouveau rôle',
+        editRole: 'Modifier le rôle',
+        createRole: 'Créer le rôle',
+        roleName: 'Nom du rôle',
+        roleNamePlaceholder: 'ex: ROLE_CONTENT_MANAGER',
+        roleNameHelp: 'Utilisez le format : ROLE_NOM (ex: ROLE_MANAGER)',
+        description: 'Description',
+        descriptionPlaceholder: 'Décrivez ce que ce rôle peut faire...',
+        assignPermissions: 'Attribuer les permissions ({count} sélectionnées)',
+        permissions: 'Permissions :',
+        cancel: 'Annuler',
+        save: 'Enregistrer le rôle',
+        update: 'Mettre à jour le rôle',
+        messages: {
+            createSuccess: 'Rôle créé avec succès !',
+            updateSuccess: 'Rôle mis à jour avec succès !',
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer le rôle "{name}" ? Cette action est irréversible.',
+            deleteSuccess: 'Rôle supprimé avec succès !',
+            deleteFailed: 'Échec de la suppression du rôle. Il est peut-être attribué à des utilisateurs.',
+            saveFailed: 'Échec de l\'enregistrement du rôle',
+            fetchFailed: 'Échec de la récupération des rôles et permissions'
+        }
+    },
+    // Permissions Page
+    permissionsPage: {
+        title: 'Gestion des permissions',
+        subtitle: 'Gérer les permissions du système et les contrôles d\'accès',
+        createButton: 'Créer une nouvelle permission',
+        filterResource: 'Filtrer par ressource :',
+        allResources: 'Toutes les ressources',
+        showingCount: 'Affichage de {count} sur {total} permissions',
+        editPermission: 'Modifier la permission',
+        createPermission: 'Créer la permission',
+        resource: 'Ressource',
+        resourcePlaceholder: 'ex: PRODUCT, ORDER, USER',
+        action: 'Action',
+        actionPlaceholder: 'ex: VIEW, CREATE, EDIT, DELETE',
+        permissionName: 'Nom de la permission :',
+        description: 'Description',
+        descriptionPlaceholder: 'Décrivez ce que cette permission permet...',
+        cancel: 'Annuler',
+        save: 'Enregistrer la permission',
+        update: 'Mettre à jour la permission',
+        messages: {
+            createSuccess: 'Permission créée avec succès !',
+            updateSuccess: 'Permission mise à jour avec succès !',
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer la permission "{name}" ? Cette action est irréversible.',
+            deleteSuccess: 'Permission supprimée avec succès !',
+            deleteFailed: 'Échec de la suppression. Elle est peut-être attribuée à des rôles.',
+            saveFailed: 'Échec de l\'enregistrement de la permission',
+            fetchFailed: 'Échec de la récupération des permissions'
+        }
+    },
+    // Hero Settings
+    heroSettings: {
+        title: 'Paramètres de la section Hero',
+        subtitle: 'Configurez le contenu de la section Hero de votre page d\'accueil',
+        pageTitle: 'Gérer la section Hero',
+        pageSubtitle: 'Personnalisez la section Hero de votre page d\'accueil pour attirer les visiteurs',
+        form: {
+            title: 'Titre du Hero',
+            titlePlaceholder: 'Entrez le titre de votre Hero (ex: Bienvenue dans notre magasin)',
+            titleFont: 'Police du titre',
+            subtitle: 'Sous-titre du Hero',
+            subtitlePlaceholder: 'Entrez le sous-titre de votre Hero (ex: Découvrez des produits incroyables à bas prix)',
+            linkText: 'Texte du bouton',
+            linkTextPlaceholder: 'Entrez le texte du bouton (ex: Acheter, Explorer)',
+            linkUrl: 'URL du bouton',
+            linkUrlPlaceholder: 'Entrez l\'URL du bouton (ex: /products, /shop)',
+            desktopBackground: 'Arrière-plan Bureau',
+            mobileBackground: 'Arrière-plan Mobile',
+            dropDesktop: 'Déposez l\'image pour Bureau',
+            dropMobile: 'Déposez l\'image pour Mobile',
+            updateButton: 'Mettre à jour la section Hero',
+            updating: 'Mise à jour en cours...',
+            desktopRec: 'Recommandé : 1920x800px',
+            mobileRec: 'Recommandé : 800x1000px'
+        },
+        preview: {
+            title: 'Aperçu en direct',
+            subtitle: 'Voyez comment votre section Hero apparaîtra',
+            livePreviewBadge: 'Aperçu en direct',
+            infoTitle: 'Informations de l\'aperçu',
+            titleLength: 'Longueur du titre',
+            subtitleLength: 'Longueur du sous-titre',
+            hasImage: 'Image de fond présente',
+            buttonUrl: 'URL du bouton',
+            notSet: 'Non défini',
+            yes: 'Oui',
+            no: 'Non'
+        },
+        messages: {
+            success: 'Section Hero mise à jour avec succès !',
+            loadFailed: 'Échec du chargement des données Hero.',
+            validation: {
+                titleRequired: 'Le titre du Hero est requis',
+                titleMinLength: 'Le titre du Hero doit contenir au moins 3 caractères',
+                subtitleRequired: 'Le sous-titre du Hero est requis',
+                subtitleMinLength: 'Le sous-titre du Hero doit contenir au moins 5 caractères',
+                linkTextRequired: 'Le texte du lien est requis',
+                linkUrlRequired: 'L\'URL du lien est requise',
+                linkUrlFormat: 'L\'URL du lien doit commencer par / ou http',
+                imageRequired: 'Veuillez sélectionner un fichier image valide.'
+            }
+        },
+        shortcuts: {
+            save: 'Enregistrer',
+            preview: 'Aperçu',
+            clear: 'Effacer Messages',
+            unsaved: 'Modifications non enregistrées',
+            hidePreview: 'Masquer l\'aperçu',
+            showPreview: 'Afficher l\'aperçu'
+        }
+    },
+    // Pack Comments
+    packComments: {
+        title: 'Commentaires pour {packName}',
+        addNew: 'Ajouter un nouveau commentaire',
+        backToPacks: 'Retour aux packs',
+        table: {
+            user: 'Utilisateur',
+            comment: 'Commentaire',
+            score: 'Note',
+            actions: 'Actions',
+            edit: 'Modifier',
+            delete: 'Supprimer'
+        },
+        form: {
+            addTitle: 'Ajouter un nouveau commentaire',
+            editTitle: 'Modifier le commentaire',
+            displayName: 'Nom affiché',
+            content: 'Contenu',
+            score: 'Note',
+            images: 'Images',
+            newImages: 'Nouvelles images (Ajouter)',
+            add: 'Ajouter le commentaire',
+            update: 'Mettre à jour',
+            cancel: 'Annuler',
+            preview: 'Aperçu'
+        },
+        messages: {
+            fetchError: 'Échec de la récupération des commentaires du pack.',
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce commentaire ?',
+            deleteSuccess: 'Commentaire supprimé avec succès !',
+            deleteError: 'Échec de la suppression du commentaire.',
+            updateSuccess: 'Commentaire mis à jour avec succès !',
+            updateError: 'Échec de la mise à jour du commentaire.',
+            addSuccess: 'Commentaire ajouté avec succès !',
+            addError: 'Échec de l\'ajout du commentaire.',
+            deleteImageConfirm: 'Êtes-vous sûr de vouloir supprimer cette image ?',
+            deleteImageSuccess: 'Image supprimée avec succès !',
+            deleteImageError: 'Échec de la suppression de l\'image.'
+        }
+    },
+    // Reviews
+    reviews: {
+        title: 'Gérer les avis',
+        createButton: '+ Créer un nouvel avis',
+        tabs: {
+            all: 'Tous les avis ({count})',
+            pending: 'En attente ({count})',
+            approved: 'Approuvés ({count})'
+        },
+        form: {
+            createTitle: 'Créer un nouvel avis',
+            editTitle: 'Modifier l\'avis',
+            customerName: 'Nom du client',
+            customerNamePlaceholder: 'Entrez le nom du client',
+            content: 'Contenu de l\'avis',
+            contentPlaceholder: 'Entrez le contenu de l\'avis',
+            rating: 'Note',
+            ratingHelp: '{rating} sur 5 étoiles',
+            approved: 'Approuvé (visible sur la page d\'accueil)',
+            create: 'Créer l\'avis',
+            update: 'Mettre à jour',
+            cancel: 'Annuler'
+        },
+        list: {
+            adminCreated: 'CRÉÉ PAR ADMIN',
+            approved: 'APPROUVÉ',
+            pending: 'EN ATTENTE',
+            customer: 'Client :',
+            anonymous: 'Anonyme',
+            user: 'Utilisateur :',
+            rating: 'Note :',
+            noReviews: 'Aucun avis trouvé.',
+            actions: {
+                edit: 'Modifier',
+                approve: 'Approuver',
+                delete: 'Supprimer'
+            }
+        },
+        messages: {
+            fetchError: 'Échec de la récupération des avis.',
+            createSuccess: 'Avis créé avec succès !',
+            createError: 'Échec de la création de l\'avis.',
+            updateSuccess: 'Avis mis à jour avec succès !',
+            updateError: 'Échec de la mise à jour de l\'avis.',
+            approveSuccess: 'Avis approuvé avec succès !',
+            approveError: 'Échec de l\'approbation de l\'avis.',
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer cet avis ?',
+            deleteSuccess: 'Avis supprimé avec succès !',
+            deleteError: 'Échec de la suppression de l\'avis.'
+        }
+    },
+    // Brand Settings
+    brandSettings: {
+        title: 'Paramètres de la marque',
+        subtitle: 'Personnalisez l\'identité et l\'apparence de votre marque',
+        logoConfiguration: 'Configuration du logo',
+        selectNewLogo: 'Sélectionner un nouveau logo',
+        uploading: 'Téléchargement...',
+        saveLogo: 'Enregistrer le logo',
+        recommendedSize: 'Taille recommandée : 500x500px, PNG ou JPG',
+        brandDetails: 'Détails de la marque',
+        siteTitle: 'Titre du site',
+        siteSubtitle: 'Sous-titre du site',
+        titleFont: 'Police du titre',
+        preview: 'Aperçu',
+        saving: 'Enregistrement...',
+        saveDetails: 'Enregistrer les détails',
+        fontOptions: {
+            default: 'Par défaut (Sans-Serif)',
+            dancingScript: 'Dancing Script',
+            playfairDisplay: 'Playfair Display',
+            greatVibes: 'Great Vibes',
+            cinzel: 'Cinzel',
+            montserrat: 'Montserrat'
+        },
+        success: {
+            detailsSaved: 'Détails de la marque enregistrés avec succès !',
+            logoUploaded: 'Logo téléchargé avec succès !'
+        },
+        errors: {
+            loadSettings: 'Échec du chargement des paramètres de la marque.',
+            saveDetails: 'Échec de l\'enregistrement des détails de la marque.',
+            uploadLogo: 'Échec du téléchargement du logo.'
+        }
+    },
+    // Categories Page
+    categoriesPage: {
+        title: 'Gestion des catégories',
+        subtitle: 'Organisez votre catalogue produit avec de belles catégories',
+        header: {
+            newCategory: 'Nouvelle catégorie',
+            search: 'Rechercher',
+            clearSearch: 'Effacer recherche',
+            refresh: 'Actualiser',
+            addNew: 'Ajouter une catégorie'
+        },
+        stats: {
+            totalCategories: 'Total catégories',
+            withProducts: 'Avec produits',
+            emptyCategories: 'Catégories vides',
+            totalProducts: 'Total produits'
+        },
+        search: {
+            placeholder: 'Rechercher des catégories...',
+            sortName: 'Trier par nom',
+            sortProducts: 'Trier par nombre de produits',
+            clear: 'Effacer',
+            title: 'Vue Grille',
+            listView: 'Vue Liste'
+        },
+        list: {
+            title: 'Catégories ({count})',
+            refresh: 'Actualiser',
+            noCategoriesFound: 'Aucune catégorie trouvée',
+            noCategoriesAvailable: 'Aucune catégorie disponible',
+            tryAdjusting: 'Essayez d\'ajuster vos critères de recherche',
+            startCreating: 'Commencez par créer votre première catégorie',
+            createFirst: 'Créer votre première catégorie',
+            noImage: 'Pas d\'image',
+            empty: 'Vide',
+            productCount: '{count} produits',
+            id: 'ID : {id}',
+            edit: 'Modifier',
+            delete: 'Supprimer'
+        },
+        messages: {
+            fetchFailed: 'Échec de la récupération des catégories.',
+            confirmDelete: 'Êtes-vous sûr de vouloir supprimer cette catégorie ?',
+            deleteSuccess: 'Catégorie supprimée avec succès !',
+            deleteFailed: 'Échec de la suppression de la catégorie.'
+        },
+        shortcuts: {
+            clearSearch: 'Effacer recherche'
+        },
+        card: {
+            products: 'produits'
+        }
+    },
+    // Products Page
+    products: {
+        title: 'Inventaire des produits',
+        subtitle: 'Gérez et suivez l\'ensemble de votre catalogue produits',
+        shortcuts: {
+            newProduct: 'Nouveau produit',
+            search: 'Chercher',
+            closeModal: 'Fermer la fenêtre'
+        },
+        analytics: {
+            totalProducts: 'Total produits',
+            inStock: 'En stock',
+            lowStock: 'Stock faible',
+            outOfStock: 'Rupture de stock',
+            totalValue: 'Valeur totale',
+            avgPrice: 'Prix moyen'
+        },
+        refresh: 'Actualiser',
+        exportCSV: 'Exporter CSV',
+        addNewProduct: 'Ajouter un produit',
+        searchPlaceholder: 'Rechercher des produits...',
+        allCategories: 'Toutes les catégories',
+        allStock: 'Tous les niveaux de stock',
+        inStockFilter: 'En stock',
+        lowStockFilter: 'Stock faible',
+        outOfStockFilter: 'Rupture de stock',
+        allStatus: 'Tous les statuts',
+        activeStatus: 'Actif',
+        disabledStatus: 'Désactivé',
+        featuredStatus: 'En vedette',
+        newArrivalsStatus: 'Nouveautés',
+        sortByName: 'Trier par nom',
+        sortByPrice: 'Trier par prix',
+        sortByStock: 'Trier par stock',
+        sortByDate: 'Trier par date',
+        gridView: 'Vue Grille',
+        listView: 'Vue Liste',
+        clearFilters: 'Effacer les filtres',
+        selectedCount: 'sélectionnés',
+        clearSelection: 'Effacer la sélection',
+        bulkDelete: 'Supprimer la sélection',
+        bulkDeleteConfirm: 'Êtes-vous sûr de vouloir supprimer {count} produits ?',
+        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
+        selectAll: 'Tout sélectionner',
+        noProducts: 'Aucun produit trouvé',
+        noProductsDesc: 'Essayez d\'ajuster vos critères de recherche ou ajoutez un nouveau produit',
+        stockStatus: {
+            inStock: 'en stock',
+            low: 'stock faible',
+            out: 'rupture de stock'
+        },
+        featured: 'En vedette',
+        newArrival: 'Nouveau',
+        errors: {
+            fetchFailed: 'Échec de la récupération des produits.',
+            deleteFailed: 'Échec de la suppression du produit.',
+            noSelection: 'Aucun produit sélectionné.',
+            exportFailed: 'Échec de l\'exportation des produits.'
+        },
+        success: {
+            deleted: 'Produit supprimé avec succès !',
+            bulkDeleted: '{count} produits supprimés avec succès !',
+            exported: 'Produits exportés avec succès !'
+        }
+    },
+    // Product Form
+    productForm: {
+        title: {
+            create: 'Créer un nouveau produit',
+            edit: 'Modifier le produit'
+        },
+        subtitle: {
+            create: 'Remplissez les informations ci-dessous pour créer un nouveau produit',
+            edit: 'Mettez à jour les informations ci-dessous pour modifier le produit'
+        },
+        actions: {
+            saving: 'Enregistrement...',
+            create: 'Créer le produit',
+            update: 'Mettre à jour le produit',
+            save: 'Enregistrer les modifications'
+        },
+        basicInfo: {
+            title: 'Informations de base',
+            productName: 'Nom du produit',
+            productNamePlaceholder: 'ex. Crème visage de luxe',
+            brand: 'Marque',
+            brandPlaceholder: 'ex. L\'Oréal',
+            price: 'Prix (DH)',
+            pricePlaceholder: '0.00',
+            stockQuantity: 'Quantité en stock',
+            stockPlaceholder: '0',
+            category: 'Catégorie',
+            categoryPlaceholder: 'Sélectionner une catégorie',
+            type: 'Type de produit',
+            typeMen: 'Hommes',
+            typeWomen: 'Femmes',
+            typeBoth: 'Mixte',
+            bestseller: 'Best-seller (En vedette)',
+            newArrival: 'Nouvelle arrivée',
+            hasVariants: 'A des variantes (Couleurs/Taille)',
+            isPackable: 'Disponible en packs'
+        },
+        description: {
+            title: 'Description',
+            label: 'Description du produit'
+        },
+        images: {
+            title: 'Images du produit',
+            upload: 'Télécharger des images',
+            existingImages: 'Images existantes',
+            newImages: 'Nouvelles images',
+            preview: 'Aperçu',
+            existing: 'Existant'
+        },
+        variantTypes: {
+            title: 'Types de variantes',
+            typeName: 'Nom du type',
+            typeNamePlaceholder: 'ex. Couleur, Taille',
+            options: 'Options',
+            optionValue: 'Valeur',
+            color: 'Couleur',
+            image: 'Image',
+            removeOption: 'Supprimer l\'option'
+        },
+        validation: {
+            nameRequired: 'Le nom du produit est requis.',
+            priceRequired: 'Le prix est requis et doit être supérieur à 0.',
+            categoryRequired: 'La catégorie est requise.',
+            variantPricesRequired: 'Toutes les variantes doivent avoir un prix valide.'
+        },
+        errors: {
+            categoriesFailed: 'Échec de la récupération des catégories.',
+            loadFailed: 'Échec du chargement des détails du produit.',
+            saveFailed: 'Échec de l\'enregistrement du produit.'
+        },
+        success: {
+            created: 'Produit créé avec succès !',
+            updated: 'Produit mis à jour avec succès !'
+        },
+        loading: 'Chargement du produit...'
+    },
+    // Manage Packs Page
+    managePacks: {
+        title: 'Gérer les Packs',
+        subtitle: 'Créez et gérez des offres groupées et spéciales',
+        addNew: 'Nouveau Pack',
+        noPacks: 'Aucun pack trouvé',
+        noPacksDesc: 'Commencez par créer votre premier pack de produits',
+        createFirst: 'Créer le premier pack',
+        actions: {
+            edit: 'Modifier',
+            recommendations: 'Recommandations',
+            comments: 'Commentaires',
+            delete: 'Supprimer',
+            deleting: 'Suppression...'
+        },
+        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce pack ?',
+        deleteSuccess: 'Pack supprimé avec succès',
+        deleteFailed: 'Échec de la suppression du pack'
+    },
+    // Pack Form
+    packForm: {
+        createTitle: 'Créer un nouveau Pack',
+        createSubtitle: 'Concevoir une nouvelle offre groupée',
+        editTitle: 'Modifier le Pack',
+        editSubtitle: 'Mettre à jour les détails de ce pack',
+        unsavedChanges: 'Modifications non enregistrées',
+        clearDraft: 'Effacer le brouillon',
+        steps: {
+            basicInfo: 'Infos de base',
+            packItems: 'Articles du pack',
+            displaySettings: 'Paramètres d\'affichage',
+            recommendations: 'Recommandations',
+            review: 'Révision'
+        },
+        basicInfo: {
+            name: 'Nom du Pack',
+            namePlaceholder: 'ex. Kit Essentiels Été',
+            price: 'Prix',
+            image: 'Image du Pack',
+            hideComments: 'Masquer commentaires',
+            hideCommentsDesc: 'Désactiver les commentaires/avis pour ce pack'
+        },
+        description: {
+            title: 'Description',
+            label: 'Description du Pack'
+        },
+        items: {
+            title: 'Articles du Pack',
+            addItem: 'Ajouter un article',
+            enhancedSelection: 'Sélection avancée',
+            enhancedDesc: 'Recherchez et sélectionnez facilement des produits. Glissez pour réorganiser.'
+        },
+        validation: {
+            nameRequired: 'Le nom du pack est requis',
+            nameLength: 'Le nom du pack doit contenir au moins 3 caractères',
+            priceRequired: 'Un prix valide est requis',
+            itemRequired: 'Au moins un article de pack est requis',
+            itemDefaultRequired: 'Le produit par défaut est requis pour tous les articles'
+        },
+        dragDrop: {
+            clickToUpload: 'Cliquez pour télécharger',
+            orDrag: 'ou glisser-déposer',
+            fileTypeInfo: 'PNG, JPG, GIF jusqu\'à 5 Mo',
+            change: 'Changer',
+            remove: 'Retirer',
+            invalidType: 'Veuillez sélectionner un fichier image valide',
+            invalidSize: 'La taille de l\'image doit être inférieure à 5 Mo',
+            dropInvalid: 'Veuillez déposer un fichier image valide'
+        },
+        productSelect: {
+            placeholder: 'Sélectionner un produit...',
+            search: 'Rechercher des produits...',
+            noProducts: 'Aucun produit trouvé',
+            selected: 'sélectionné(s)',
+            more: 'plus'
+        },
+        success: {
+            created: 'Pack créé avec succès !',
+            updated: 'Pack mis à jour avec succès !',
+            draftCleared: 'Brouillon effacé avec succès'
+        },
+        errors: {
+            fetchFailed: 'Échec de la récupération des données. Veuillez réessayer.',
+            createFailed: 'Échec de la création du pack. Veuillez vérifier les champs.'
+        },
+        autoSave: 'Formulaire enregistré automatiquement'
+    },
+    // Pack Recommendations
+    packRecommendations: {
+        title: 'Gérer les Recommandations',
+        subtitle: 'Pack : {name}',
+        cancel: 'Annuler',
+        save: 'Enregistrer',
+        saving: 'Enregistrement...',
+        searchPlaceholder: 'Rechercher produits et packs...',
+        sections: {
+            products: 'Produits recommandés',
+            packs: 'Packs recommandés',
+            customPacks: 'Packs personnalisés recommandés'
+        },
+        summary: {
+            title: 'Résumé de la sélection',
+            selectedProducts: 'Produits sélectionnés',
+            selectedPacks: 'Packs sélectionnés',
+            selectedCustomPacks: 'Packs personnalisés sélectionnés',
+            noneSelected: 'Aucun élément sélectionné'
+        },
+        messages: {
+            success: 'Recommandations mises à jour avec succès !',
+            error: 'Échec de l\'enregistrement des recommandations',
+            loadError: 'Échec du chargement des données'
+        }
+    },
+    // Order Management Page
+    ordersPage: {
+        title: 'Gestion des Commandes',
+        subtitle: 'Gérer et suivre les commandes clients',
+        loading: 'Chargement des commandes...',
+        errorExport: 'Échec de l\'exportation des commandes',
+        export: 'Exporter',
+        searchPlaceholder: 'Rechercher par nom, ID ou téléphone...',
+        resetFilters: 'Réinitialiser',
+        showActive: 'Commandes actives',
+        showDeleted: 'Commandes supprimées',
+        selected: 'sélectionné(s)',
+        updateStatus: 'Mettre à jour le statut',
+        deleteSelected: 'Supprimer la sélection',
+        totalOrders: 'Total Commandes',
+        totalRevenue: 'Revenu Total',
+        averageOrder: 'Panier Moyen',
+        uniqueCustomers: 'Clients Uniques',
+        status: 'Statut',
+        todaysOrders: 'Commandes du jour',
+        revenueToday: 'Revenu du jour',
+        table: {
+            orderId: 'ID Commande',
+            customer: 'Client',
+            contactInfo: 'Contact',
+            created: 'Créé le',
+            status: 'Statut',
+            total: 'Total',
+            actions: 'Actions'
+        },
+        pagination: {
+            previous: 'Précédent',
+            next: 'Suivant',
+            showing: 'Affichage de',
+            to: 'à',
+            of: 'sur',
+            results: 'résultats'
+        },
+        status_ALL: 'Tous les statuts',
+        status_PREPARING: 'En préparation',
+        status_DELIVERING: 'En livraison',
+        status_DELIVERED: 'Livré',
+        status_CANCELLED: 'Annulé',
+        date_ALL: 'Tout le temps',
+        date_TODAY: 'Aujourd\'hui',
+        date_THIS_WEEK: 'Cette semaine',
+        date_THIS_MONTH: 'Ce mois',
+        timeline_placed: 'Commande passée',
+        timeline_transit: 'En transit',
+        timeline_delivered: 'Livrée',
+        modal: {
+            title: 'Détails de la commande',
+            subtitle: 'Informations détaillées et chronologie',
+            close: 'Fermer',
+            clientInfo: 'Informations Client',
+            name: 'Nom :',
+            phone: 'Tél :',
+            city: 'Ville :',
+            address: 'Adresse :',
+            orderInfo: 'Informations Commande',
+            coupon: 'Code Promo :',
+            orderItems: 'Articles',
+            packContents: 'Contenu du pack',
+            variant: 'Variante :',
+            qty: 'Qté :',
+            noItems: 'Aucun article trouvé',
+            subtotal: 'Sous-total',
+            discount: 'Réduction',
+            shipping: 'Expédition',
+            free: 'Gratuit',
+            total: 'Total',
+            timeline: 'Chronologie',
+            quickActions: 'Actions Rapides',
+            markDelivering: 'Marquer En Livraison',
+            markDelivered: 'Marquer comme Livré',
+            cancelOrder: 'Annuler la commande',
+            restoreOrder: 'Restaurer la commande'
+        },
+        messages: {
+            fetchError: 'Échec du chargement des commandes.',
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer cette commande ?',
+            deleteSuccess: 'Commande supprimée avec succès !',
+            deleteError: 'Échec de la suppression.',
+            restoreSuccess: 'Commande restaurée avec succès !',
+            restoreError: 'Échec de la restauration.',
+            statusSuccess: 'Statut mis à jour !',
+            statusError: 'Échec de la mise à jour du statut.',
+            bulkSelect: 'Veuillez sélectionner des commandes.',
+            bulkUpdateConfirm: 'Mettre à jour {count} commandes vers {status} ?',
+            bulkUpdateSuccess: '{count} commandes mises à jour !',
+            bulkUpdateError: 'Échec de la mise à jour de certaines commandes.',
+            bulkDeleteSelect: 'Veuillez sélectionner des commandes à supprimer.',
+            bulkDeleteConfirm: 'Supprimer {count} commandes ?',
+            bulkDeleteSuccess: '{count} commandes supprimées !',
+            bulkDeleteError: 'Échec de la suppression de certaines commandes.',
+            exportSuccess: 'Commandes exportées avec succès !'
+        }
+    },
+    // Order Feedback Component
+    orderFeedback: {
+        title: 'Avis Client',
+        loading: 'Chargement des avis...',
+        error: 'Erreur lors du chargement de l\'avis',
+        noFeedback: 'Aucun avis soumis',
+        noFeedbackDesc: "Le client n'a pas encore laissé d'avis pour cette commande",
+        from: 'De :',
+        anonymous: 'Utilisateur Anonyme'
+    },
+    // Coupon Management Page
+    couponsPage: {
+        title: 'Gestion des Coupons',
+        subtitle: 'Créez des remises incroyables et boostez vos ventes avec des campagnes professionnelles',
+        create: 'Créer un Coupon',
+        refresh: 'Actualiser',
+        refreshSuccess: 'Liste actualisée avec succès !',
+        stats: {
+            total: 'Total Coupons',
+            active: 'Coupons Actifs',
+            usage: 'Utilisations',
+            savings: 'Économies Totales'
+        },
+        form: {
+            title_create: 'Créer un Coupon',
+            title_edit: 'Modifier le Coupon',
+            subtitle: 'Configurez la remise parfaite pour vos clients',
+            name: 'Nom du Coupon',
+            namePlaceholder: 'ex: Soldes d\'Été',
+            code: 'Code Promo',
+            generate: 'Générer un code',
+            discountType: 'Type de Remise',
+            discountValue: 'Valeur de la Remise',
+            percentage: 'Pourcentage (%)',
+            fixed: 'Montant Fixe ($)',
+            freeShipping: 'Livraison Gratuite',
+            expiry: 'Date d\'expiration',
+            usageLimit: 'Limite d\'utilisation',
+            usageLimitHelp: 'Laissez 0 pour illimité',
+            minPurchase: 'Montant Minimum d\'Achat',
+            applicableProducts: 'Produits Éligibles',
+            applicableCategories: 'Catégories Éligibles',
+            scopeHelp: 'Laissez vide pour appliquer à tout',
+            cancel: 'Annuler',
+            submit_create: 'Créer',
+            submit_update: 'Mettre à jour'
+        },
+        table: {
+            id: 'ID',
+            name: 'Nom',
+            discount: 'Remise',
+            expiry: 'Expiration',
+            usage: 'Utilisation',
+            scope: 'Portée',
+            actions: 'Actions',
+            allItems: 'Tous les articles',
+            products: 'Produits',
+            categories: 'Catégories',
+            copy: 'Copier Code',
+            edit: 'Modifier',
+            analytics: 'Analytique',
+            delete: 'Supprimer'
+        },
+        messages: {
+            created: 'Coupon "{name}" créé avec succès !',
+            updated: 'Coupon "{name}" mis à jour !',
+            deleted: 'Coupon supprimé avec succès !',
+            copied: 'Code copié dans le presse-papier !',
+            deleteConfirm: 'Voulez-vous vraiment supprimer ce coupon ?',
+            deleteConfirmTitle: 'Supprimer le Coupon',
+            yesDelete: 'Oui, Supprimer',
+            errorFetch: 'Erreur lors du chargement des coupons !',
+            errorAction: 'Une erreur est survenue !'
+        }
+    },
+    // Landing Pages Page
+    landingPagesPage: {
+        title: 'Pages de Destination',
+        subtitle: 'Créez des pages de vente à haute conversion pour vos campagnes marketing',
+        create: 'Créer une Page',
+        searchPlaceholder: 'Rechercher des pages...',
+        stats: {
+            total: 'Total Pages',
+            active: 'Pages Actives',
+            views: 'Vues Totales',
+            conversions: 'Conv. Moyenne'
+        },
+        tabs: {
+            all: 'Toutes les Pages',
+            published: 'Publiées',
+            drafts: 'Brouillons'
+        },
+        table: {
+            title: 'Titre',
+            slug: 'Slug URL',
+            status: 'Statut',
+            views: 'Vues',
+            conversions: 'Conversions',
+            lastModified: 'Dernière Modif',
+            actions: 'Actions',
+            view: 'Voir',
+            edit: 'Modifier',
+            duplicate: 'Dupliquer',
+            publish: 'Publier',
+            unpublish: 'Dépublier',
+            delete: 'Supprimer'
+        },
+        status: {
+            published: 'Publié',
+            draft: 'Brouillon'
+        },
+        messages: {
+            deleteConfirm: 'Voulez-vous vraiment supprimer cette page ?',
+            deleteConfirmTitle: 'Supprimer la Page',
+            yesDelete: 'Oui, Supprimer',
+            publishedSuccess: 'Page publiée avec succès !',
+            unpublishedSuccess: 'Page dépubliée avec succès !',
+            deletedSuccess: 'Page supprimée avec succès !',
+            duplicatedSuccess: 'Page dupliquée avec succès !',
+            errorFetch: 'Erreur lors du chargement des pages',
+            errorAction: 'Action échouée'
+        }
+    },
+    // Landing Page Builder
+    landingPageBuilder: {
+        header: {
+            editTitle: 'Modifier la Page',
+            newTitle: 'Nouvelle Page',
+            back: 'Retour',
+            saveDraft: 'Enregistrer Brouillon',
+            saving: 'Enregistrement...',
+            publish: 'Publier'
+        },
+        settings: {
+            title: 'Paramètres de la Page',
+            pageTitle: 'Titre',
+            slug: 'Slug',
+            generate: 'Générer',
+            mainProduct: 'Produit Principal (Défaut)',
+            mainProductHelp: 'Ce produit sera utilisé par toute section définie sur "Défaut".'
+        },
+        sections: {
+            title: 'Sections',
+            addNew: 'Ajouter',
+            clickToAdd: 'CLIQUER POUR AJOUTER :',
+            noSections: 'Aucune section. Ajoutez-en une pour commencer !',
+            dragToReorder: 'Glisser pour réorganiser',
+            done: 'Terminé',
+            edit: 'Éditer'
+        },
+        preview: {
+            title: 'Aperçu de Votre Page',
+            subtitle: 'Ajoutez des sections depuis le panneau de gauche pour les voir apparaître ici instantanément.'
+        },
+        messages: {
+            enterTitle: 'Veuillez entrer un titre',
+            enterSlug: 'Veuillez entrer un slug',
+            slugFormat: 'Le slug doit être en minuscules avec des tirets uniquement (ex: serum-ete-2024)',
+            duplicateSectionTitle: 'Attendez !',
+            duplicateSection: 'Vous avez déjà {count} section(s) "{type}". Êtes-vous sûr de vouloir en ajouter une autre ?',
+            deleteSectionConfirm: 'Voulez-vous vraiment supprimer cette section ?',
+            saveSuccess: 'Page enregistrée avec succès !',
+            createSuccess: 'Page créée avec succès !',
+            saveError: 'Échec de l\'enregistrement de la page',
+            loadError: 'Échec du chargement de la page',
+            productsError: 'Échec du chargement des produits'
         }
     }
 };

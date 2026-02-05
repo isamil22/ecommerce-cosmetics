@@ -159,11 +159,14 @@ import {
     FiPieChart
 } from "react-icons/fi";
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 const { Option } = Select;
 
 const { Title, Text, Paragraph } = Typography;
 
 const AdminCouponsPage = () => {
+    const { t } = useLanguage();
     const [form] = Form.useForm();
     const [coupons, setCoupons] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -389,7 +392,7 @@ const AdminCouponsPage = () => {
             title: (
                 <div className="flex items-center space-x-2">
                     <FiTag className="w-4 h-4 text-purple-500" />
-                    <span>ID</span>
+                    <span>{t('couponsPage.table.id')}</span>
                 </div>
             ),
             dataIndex: "id",
@@ -404,7 +407,7 @@ const AdminCouponsPage = () => {
             title: (
                 <div className="flex items-center space-x-2">
                     <FiGift className="w-4 h-4 text-green-500" />
-                    <span>Coupon Name</span>
+                    <span>{t('couponsPage.table.name')}</span>
                 </div>
             ),
             dataIndex: "name",
@@ -421,12 +424,11 @@ const AdminCouponsPage = () => {
                 </div>
             )
         },
-        // ... (Discount, Expiry, Usage, Scope columns remain same - omitted for brevity if no changes)
         {
             title: (
                 <div className="flex items-center space-x-2">
                     <FiPercent className="w-4 h-4 text-blue-500" />
-                    <span>Discount</span>
+                    <span>{t('couponsPage.table.discount')}</span>
                 </div>
             ),
             key: "discount",
@@ -441,7 +443,7 @@ const AdminCouponsPage = () => {
                     icon = <FiDollarSign className="w-4 h-4" />;
                     color = 'blue';
                 } else {
-                    discountDisplay = 'Free Shipping';
+                    discountDisplay = t('couponsPage.form.freeShipping');
                     icon = <FiTruck className="w-4 h-4" />;
                     color = 'purple';
                 }
@@ -460,7 +462,7 @@ const AdminCouponsPage = () => {
             title: (
                 <div className="flex items-center space-x-2">
                     <FiCalendar className="w-4 h-4 text-orange-500" />
-                    <span>Expiry</span>
+                    <span>{t('couponsPage.table.expiry')}</span>
                 </div>
             ),
             dataIndex: "expiryDate",
@@ -483,7 +485,7 @@ const AdminCouponsPage = () => {
             title: (
                 <div className="flex items-center space-x-2">
                     <FiUsers className="w-4 h-4 text-red-500" />
-                    <span>Usage</span>
+                    <span>{t('couponsPage.table.usage')}</span>
                 </div>
             ),
             key: "usage",
@@ -510,13 +512,13 @@ const AdminCouponsPage = () => {
                         )}
                     </div>
                 );
-            }
+            },
         },
         {
             title: (
                 <div className="flex items-center space-x-2">
                     <FiTarget className="w-4 h-4 text-indigo-500" />
-                    <span>Scope</span>
+                    <span>{t('couponsPage.table.scope')}</span>
                 </div>
             ),
             key: "appliesTo",
@@ -527,7 +529,7 @@ const AdminCouponsPage = () => {
                 if (productCount === 0 && categoryCount === 0) {
                     return (
                         <Tag color="blue" icon={<FiGlobe className="w-3 h-3" />}>
-                            All Items
+                            {t('couponsPage.table.allItems')}
                         </Tag>
                     );
                 }
@@ -536,12 +538,12 @@ const AdminCouponsPage = () => {
                     <div className="space-y-1">
                         {productCount > 0 && (
                             <Tag color="green" icon={<FiPackage className="w-3 h-3" />}>
-                                {productCount} Products
+                                {productCount} {t('couponsPage.table.products')}
                             </Tag>
                         )}
                         {categoryCount > 0 && (
                             <Tag color="purple" icon={<FiGrid className="w-3 h-3" />}>
-                                {categoryCount} Categories
+                                {categoryCount} {t('couponsPage.table.categories')}
                             </Tag>
                         )}
                     </div>
@@ -552,14 +554,14 @@ const AdminCouponsPage = () => {
             title: (
                 <div className="flex items-center space-x-2">
                     <FiSettings className="w-4 h-4 text-gray-500" />
-                    <span>Actions</span>
+                    <span>{t('couponsPage.table.actions')}</span>
                 </div>
             ),
             key: "action",
-            width: 150, // Increased width for Edit button
+            width: 150,
             render: (_, record) => (
                 <Space size="small">
-                    <Tooltip title="Copy coupon code">
+                    <Tooltip title={t('couponsPage.table.copy')}>
                         <Button
                             type="text"
                             icon={<FiCopy className="w-4 h-4" />}
@@ -567,15 +569,15 @@ const AdminCouponsPage = () => {
                             className="hover:bg-blue-50 hover:text-blue-600"
                         />
                     </Tooltip>
-                    <Tooltip title="Edit coupon">
+                    <Tooltip title={t('couponsPage.table.edit')}>
                         <Button
                             type="text"
                             icon={<FiEdit className="w-4 h-4" />}
-                            onClick={() => handleEdit(record)} // Trigger Edit
+                            onClick={() => handleEdit(record)}
                             className="hover:bg-yellow-50 hover:text-yellow-600"
                         />
                     </Tooltip>
-                    <Tooltip title="View analytics">
+                    <Tooltip title={t('couponsPage.table.analytics')}>
                         <Button
                             type="text"
                             icon={<FiBarChart className="w-4 h-4" />}
@@ -583,20 +585,20 @@ const AdminCouponsPage = () => {
                         />
                     </Tooltip>
                     <Popconfirm
-                        title="Delete Coupon"
+                        title={t('couponsPage.messages.deleteConfirmTitle')}
                         description={
                             <div>
-                                <p>Are you sure you want to delete this coupon?</p>
+                                <p>{t('couponsPage.messages.deleteConfirm')}</p>
                                 <p className="text-red-600 font-semibold">"{record.name}"</p>
                             </div>
                         }
                         onConfirm={() => handleDelete(record.id)}
-                        okText="Yes, Delete"
-                        cancelText="Cancel"
+                        okText={t('couponsPage.messages.yesDelete')}
+                        cancelText={t('couponsPage.form.cancel')}
                         okButtonProps={{ danger: true }}
                         icon={<FiAlertTriangle className="w-4 h-4 text-red-500" />}
                     >
-                        <Tooltip title="Delete coupon">
+                        <Tooltip title={t('couponsPage.table.delete')}>
                             <Button
                                 type="text"
                                 icon={<FiTrash2 className="w-4 h-4" />}
@@ -605,12 +607,13 @@ const AdminCouponsPage = () => {
                         </Tooltip>
                     </Popconfirm>
                 </Space>
-            ),
-        },
+            )
+        }
     ];
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+            {/* Header Section */}
             {/* Header Section */}
             <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700">
                 <div className="absolute inset-0 bg-black opacity-10"></div>
@@ -627,11 +630,11 @@ const AdminCouponsPage = () => {
                             </div>
                             <div>
                                 <Title level={1} className="!text-white !mb-2 flex items-center space-x-3">
-                                    <span>🎫 Coupon Management</span>
+                                    <span>🎫 {t('couponsPage.title')}</span>
                                     <FiAward className="w-8 h-8 text-yellow-400 animate-pulse" />
                                 </Title>
                                 <Paragraph className="!text-blue-100 !text-lg !mb-0">
-                                    Create amazing discounts and boost your sales with professional coupon campaigns
+                                    {t('couponsPage.subtitle')}
                                 </Paragraph>
                             </div>
                         </div>
@@ -647,7 +650,7 @@ const AdminCouponsPage = () => {
                                 }}
                                 className="bg-gradient-to-r from-pink-500 to-rose-500 border-none hover:from-pink-600 hover:to-rose-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 rounded-xl px-8 py-4 h-auto"
                             >
-                                <span className="text-lg font-semibold">Create Coupon</span>
+                                <span className="text-lg font-semibold">{t('couponsPage.create')}</span>
                             </Button>
                         </div>
                     </div>
@@ -663,7 +666,7 @@ const AdminCouponsPage = () => {
                                 title={
                                     <div className="flex items-center space-x-2 text-gray-600">
                                         <FiGift className="w-5 h-5 text-purple-500" />
-                                        <span>Total Coupons</span>
+                                        <span>{t('couponsPage.stats.total')}</span>
                                     </div>
                                 }
                                 value={stats.totalCoupons}
@@ -678,7 +681,7 @@ const AdminCouponsPage = () => {
                                 title={
                                     <div className="flex items-center space-x-2 text-gray-600">
                                         <FiZap className="w-5 h-5 text-green-500" />
-                                        <span>Active Coupons</span>
+                                        <span>{t('couponsPage.stats.active')}</span>
                                     </div>
                                 }
                                 value={stats.activeCoupons}
@@ -693,7 +696,7 @@ const AdminCouponsPage = () => {
                                 title={
                                     <div className="flex items-center space-x-2 text-gray-600">
                                         <FiUsers className="w-5 h-5 text-blue-500" />
-                                        <span>Total Usage</span>
+                                        <span>{t('couponsPage.stats.usage')}</span>
                                     </div>
                                 }
                                 value={stats.totalUsage}
@@ -708,7 +711,7 @@ const AdminCouponsPage = () => {
                                 title={
                                     <div className="flex items-center space-x-2 text-gray-600">
                                         <FiDollarSign className="w-5 h-5 text-yellow-500" />
-                                        <span>Total Savings</span>
+                                        <span>{t('couponsPage.stats.savings')}</span>
                                     </div>
                                 }
                                 value={stats.totalSavings}
@@ -734,10 +737,10 @@ const AdminCouponsPage = () => {
                                     </div>
                                     <div>
                                         <Title level={2} className="!text-white !mb-2">
-                                            Create Amazing Coupon
+                                            {editingCoupon ? t('couponsPage.form.title_edit') : t('couponsPage.form.title_create')}
                                         </Title>
                                         <Text className="text-blue-100 text-lg">
-                                            Design the perfect discount to boost your sales
+                                            {t('couponsPage.form.subtitle')}
                                         </Text>
                                     </div>
                                 </div>
@@ -764,7 +767,7 @@ const AdminCouponsPage = () => {
                                             label={
                                                 <div className="flex items-center space-x-2">
                                                     <FiTag className="w-5 h-5 text-purple-500" />
-                                                    <span className="text-lg font-semibold">Coupon Name</span>
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.name')}</span>
                                                 </div>
                                             }
                                             name="name"
@@ -772,7 +775,7 @@ const AdminCouponsPage = () => {
                                         >
                                             <Input
                                                 size="large"
-                                                placeholder="e.g., Summer Sale Spectacular"
+                                                placeholder={t('couponsPage.form.namePlaceholder')}
                                                 className="rounded-xl border-2 hover:border-purple-300 focus:border-purple-500 transition-colors"
                                             />
                                         </Form.Item>
@@ -782,8 +785,8 @@ const AdminCouponsPage = () => {
                                             label={
                                                 <div className="flex items-center space-x-2">
                                                     <FiKey className="w-5 h-5 text-blue-500" />
-                                                    <span className="text-lg font-semibold">Coupon Code</span>
-                                                    <Tooltip title="Generate a random code">
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.code')}</span>
+                                                    <Tooltip title={t('couponsPage.form.generate')}>
                                                         <Button
                                                             type="link"
                                                             icon={<FiRefreshCw className="w-4 h-4" />}
@@ -811,7 +814,7 @@ const AdminCouponsPage = () => {
                                             label={
                                                 <div className="flex items-center space-x-2">
                                                     <FiPercent className="w-5 h-5 text-green-500" />
-                                                    <span className="text-lg font-semibold">Discount Type</span>
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.discountType')}</span>
                                                 </div>
                                             }
                                             name="discountType"
@@ -826,19 +829,19 @@ const AdminCouponsPage = () => {
                                                 <Option value="PERCENTAGE">
                                                     <div className="flex items-center space-x-2">
                                                         <FiPercent className="w-4 h-4 text-green-500" />
-                                                        <span>Percentage Discount</span>
+                                                        <span>{t('couponsPage.form.percentage')}</span>
                                                     </div>
                                                 </Option>
                                                 <Option value="FIXED_AMOUNT">
                                                     <div className="flex items-center space-x-2">
                                                         <FiDollarSign className="w-4 h-4 text-blue-500" />
-                                                        <span>Fixed Amount</span>
+                                                        <span>{t('couponsPage.form.fixed')}</span>
                                                     </div>
                                                 </Option>
                                                 <Option value="FREE_SHIPPING">
                                                     <div className="flex items-center space-x-2">
                                                         <FiTruck className="w-4 h-4 text-purple-500" />
-                                                        <span>Free Shipping</span>
+                                                        <span>{t('couponsPage.form.freeShipping')}</span>
                                                     </div>
                                                 </Option>
                                             </Select>
@@ -851,7 +854,7 @@ const AdminCouponsPage = () => {
                                                     {selectedDiscountType === 'PERCENTAGE' && <FiPercent className="w-5 h-5 text-green-500" />}
                                                     {selectedDiscountType === 'FIXED_AMOUNT' && <FiDollarSign className="w-5 h-5 text-blue-500" />}
                                                     {selectedDiscountType === 'FREE_SHIPPING' && <FiTruck className="w-5 h-5 text-purple-500" />}
-                                                    <span className="text-lg font-semibold">Discount Value</span>
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.discountValue')}</span>
                                                 </div>
                                             }
                                             name="discountValue"
@@ -871,7 +874,7 @@ const AdminCouponsPage = () => {
                                             label={
                                                 <div className="flex items-center space-x-2">
                                                     <FiCalendar className="w-5 h-5 text-orange-500" />
-                                                    <span className="text-lg font-semibold">Expiry Date</span>
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.expiry')}</span>
                                                 </div>
                                             }
                                             name="expiryDate"
@@ -894,7 +897,7 @@ const AdminCouponsPage = () => {
                                             label={
                                                 <div className="flex items-center space-x-2">
                                                     <FiDollarSign className="w-5 h-5 text-yellow-500" />
-                                                    <span className="text-lg font-semibold">Minimum Purchase</span>
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.minPurchase')}</span>
                                                     <Tooltip title="Leave empty for no minimum">
                                                         <FiInfo className="w-4 h-4 text-gray-400" />
                                                     </Tooltip>
@@ -915,8 +918,8 @@ const AdminCouponsPage = () => {
                                             label={
                                                 <div className="flex items-center space-x-2">
                                                     <FiUsers className="w-5 h-5 text-red-500" />
-                                                    <span className="text-lg font-semibold">Usage Limit</span>
-                                                    <Tooltip title="0 for unlimited usage">
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.usageLimit')}</span>
+                                                    <Tooltip title={t('couponsPage.form.usageLimitHelp')}>
                                                         <FiInfo className="w-4 h-4 text-gray-400" />
                                                     </Tooltip>
                                                 </div>
@@ -928,7 +931,7 @@ const AdminCouponsPage = () => {
                                                 size="large"
                                                 min={0}
                                                 className="w-full rounded-xl border-2 hover:border-red-300 focus:border-red-500 transition-colors"
-                                                placeholder="0 for unlimited usage"
+                                                placeholder={t('couponsPage.form.usageLimitHelp')}
                                             />
                                         </Form.Item>
                                     </Col>
@@ -940,8 +943,8 @@ const AdminCouponsPage = () => {
                                             label={
                                                 <div className="flex items-center space-x-2">
                                                     <FiPackage className="w-5 h-5 text-indigo-500" />
-                                                    <span className="text-lg font-semibold">Applicable Products</span>
-                                                    <Tooltip title="Leave empty to apply to all products">
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.applicableProducts')}</span>
+                                                    <Tooltip title={t('couponsPage.form.scopeHelp')}>
                                                         <FiInfo className="w-4 h-4 text-gray-400" />
                                                     </Tooltip>
                                                 </div>
@@ -951,7 +954,7 @@ const AdminCouponsPage = () => {
                                             <Select
                                                 mode="multiple"
                                                 size="large"
-                                                placeholder="Select specific products"
+                                                placeholder={t('couponsPage.form.scopeHelp')}
                                                 className="rounded-xl"
                                                 showSearch
                                                 filterOption={(input, option) =>
@@ -971,8 +974,8 @@ const AdminCouponsPage = () => {
                                             label={
                                                 <div className="flex items-center space-x-2">
                                                     <FiGrid className="w-5 h-5 text-teal-500" />
-                                                    <span className="text-lg font-semibold">Applicable Categories</span>
-                                                    <Tooltip title="Leave empty to apply to all categories">
+                                                    <span className="text-lg font-semibold">{t('couponsPage.form.applicableCategories')}</span>
+                                                    <Tooltip title={t('couponsPage.form.scopeHelp')}>
                                                         <FiInfo className="w-4 h-4 text-gray-400" />
                                                     </Tooltip>
                                                 </div>
@@ -982,7 +985,7 @@ const AdminCouponsPage = () => {
                                             <Select
                                                 mode="multiple"
                                                 size="large"
-                                                placeholder="Select specific categories"
+                                                placeholder={t('couponsPage.form.scopeHelp')}
                                                 className="rounded-xl"
                                                 showSearch
                                                 filterOption={(input, option) =>
@@ -998,26 +1001,6 @@ const AdminCouponsPage = () => {
                                         </Form.Item>
                                     </Col>
                                 </Row>
-
-                                <Form.Item
-                                    name="firstTimeOnly"
-                                    valuePropName="checked"
-                                    className="mb-6"
-                                >
-                                    <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                                        <Switch
-                                            size="default"
-                                            className="bg-gradient-to-r from-green-400 to-emerald-500"
-                                        />
-                                        <div>
-                                            <div className="flex items-center space-x-2">
-                                                <FiUserCheck className="w-5 h-5 text-green-600" />
-                                                <span className="text-lg font-semibold text-green-800">First-Time Customers Only</span>
-                                            </div>
-                                            <Text className="text-green-600">Restrict this coupon to new customers only</Text>
-                                        </div>
-                                    </div>
-                                </Form.Item>
 
                                 <div className="flex items-center justify-between pt-6 border-t border-gray-200">
                                     <Button
@@ -1037,7 +1020,7 @@ const AdminCouponsPage = () => {
                                             }}
                                             className="rounded-xl px-8 py-3 h-auto"
                                         >
-                                            Cancel
+                                            {t('couponsPage.form.cancel')}
                                         </Button>
                                         <Button
                                             type="primary"
@@ -1047,7 +1030,9 @@ const AdminCouponsPage = () => {
                                             icon={<FiZap className="w-5 h-5" />}
                                             className="bg-gradient-to-r from-purple-600 to-blue-600 border-none hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 rounded-xl px-8 py-3 h-auto"
                                         >
-                                            <span className="text-lg font-semibold">Create Amazing Coupon</span>
+                                            <span className="text-lg font-semibold">
+                                                {editingCoupon ? t('couponsPage.form.submit_update') : t('couponsPage.form.submit_create')}
+                                            </span>
                                         </Button>
                                     </Space>
                                 </div>
@@ -1066,10 +1051,10 @@ const AdminCouponsPage = () => {
                                 </div>
                                 <div>
                                     <Title level={3} className="!mb-1">
-                                        Coupon Analytics & Management
+                                        {t('couponsPage.title')}
                                     </Title>
                                     <Text className="text-gray-600">
-                                        Monitor performance and manage your coupon campaigns
+                                        {t('couponsPage.subtitle')}
                                     </Text>
                                 </div>
                             </div>
@@ -1080,14 +1065,7 @@ const AdminCouponsPage = () => {
                                     loading={refreshing}
                                     className="rounded-xl"
                                 >
-                                    Refresh
-                                </Button>
-                                <Button
-                                    type="primary"
-                                    icon={<FiDownload className="w-4 h-4" />}
-                                    className="bg-gradient-to-r from-green-500 to-emerald-600 border-none rounded-xl"
-                                >
-                                    Export
+                                    {t('couponsPage.refresh')}
                                 </Button>
                             </div>
                         </div>

@@ -91,8 +91,8 @@ const AdminPackForm = () => {
 
                 console.log('AdminPackForm: Data fetch completed successfully');
             } catch (err) {
-                setError('Failed to fetch data. Please try again later.');
-                toast.error('Failed to fetch data. Please try again later.');
+                setError(t('packForm.errors.fetchFailed'));
+                toast.error(t('packForm.errors.fetchFailed'));
                 console.error('Error fetching data:', err);
                 // Set empty arrays as fallback
                 setProducts([]);
@@ -110,7 +110,7 @@ const AdminPackForm = () => {
         if (isDirty) {
             const timer = setTimeout(() => {
                 localStorage.setItem('packFormDraft', JSON.stringify(packData));
-                toast.info('Form auto-saved', { autoClose: 1000 });
+                toast.info(t('packForm.autoSave'), { autoClose: 1000 });
             }, 2000);
             setAutoSaveTimer(timer);
         }
@@ -140,16 +140,16 @@ const AdminPackForm = () => {
         switch (name) {
             case 'name':
                 if (!value.trim()) {
-                    newErrors.name = 'Pack name is required';
+                    newErrors.name = t('packForm.validation.nameRequired');
                 } else if (value.trim().length < 3) {
-                    newErrors.name = 'Pack name must be at least 3 characters';
+                    newErrors.name = t('packForm.validation.nameLength');
                 } else {
                     delete newErrors.name;
                 }
                 break;
             case 'price':
                 if (!value || parseFloat(value) <= 0) {
-                    newErrors.price = 'Valid price is required';
+                    newErrors.price = t('packForm.validation.priceRequired');
                 } else {
                     delete newErrors.price;
                 }
@@ -174,13 +174,13 @@ const AdminPackForm = () => {
         if (file) {
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                toast.error('Please select a valid image file');
+                toast.error(t('packForm.dragDrop.invalidType'));
                 return;
             }
 
             // Validate file size (5MB limit)
             if (file.size > 5 * 1024 * 1024) {
-                toast.error('Image size must be less than 5MB');
+                toast.error(t('packForm.dragDrop.invalidSize'));
                 return;
             }
 
@@ -207,7 +207,7 @@ const AdminPackForm = () => {
                 setImagePreview(URL.createObjectURL(file));
                 setIsDirty(true);
             } else {
-                toast.error('Please drop a valid image file');
+                toast.error(t('packForm.dragDrop.dropInvalid'));
             }
         }
     };
@@ -242,7 +242,7 @@ const AdminPackForm = () => {
             setPackData({ ...packData, items: newItems });
             setIsDirty(true);
         } else {
-            toast.warning('At least one pack item is required');
+            toast.warning(t('packForm.validation.itemRequired'));
         }
     };
 
@@ -296,7 +296,7 @@ const AdminPackForm = () => {
         setError('');
 
         if (!validateForm()) {
-            toast.error('Please fix the validation errors before submitting');
+            toast.error(t('packForm.validation.fixErrors'));
             return;
         }
 
@@ -320,7 +320,7 @@ const AdminPackForm = () => {
             toast.success(t('packForm.success.created'));
             navigate('/admin/packs');
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Failed to create pack. Please check the form fields.';
+            const errorMessage = err.response?.data?.message || t('packForm.errors.createFailed');
             setError(errorMessage);
             toast.error(errorMessage);
             console.error(err);
@@ -411,12 +411,12 @@ const AdminPackForm = () => {
                                                 ))}
                                                 {selectedProducts.length > 2 && (
                                                     <span className="text-xs text-gray-500">
-                                                        +{selectedProducts.length - 2} more
+                                                        +{selectedProducts.length - 2} {t('packForm.productSelect.more')}
                                                     </span>
                                                 )}
                                             </div>
                                             <span className="text-sm text-gray-700">
-                                                {selectedProducts.length} selected
+                                                {selectedProducts.length} {t('packForm.productSelect.selected')}
                                             </span>
                                         </>
                                     ) : (
@@ -453,7 +453,7 @@ const AdminPackForm = () => {
                                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <input
                                     type="text"
-                                    placeholder="Search products..."
+                                    placeholder={t('packForm.productSelect.search')}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
@@ -491,7 +491,7 @@ const AdminPackForm = () => {
                                 ))
                             ) : (
                                 <div className="p-4 text-center text-gray-500 text-sm">
-                                    No products found
+                                    {t('packForm.productSelect.noProducts')}
                                 </div>
                             )}
                         </div>
@@ -592,7 +592,7 @@ const AdminPackForm = () => {
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center mb-4">
                         <FiPackage className="w-5 h-5 text-pink-500 mr-2" />
-                        <h3 className="text-lg font-semibold text-gray-800">Basic Information</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">{t('packForm.basicInfo.title')}</h3>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -682,7 +682,7 @@ const AdminPackForm = () => {
                                                 className="px-3 py-1 text-sm bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors"
                                             >
                                                 <FiUpload className="w-4 h-4 inline mr-1" />
-                                                Change
+                                                {t('packForm.dragDrop.change')}
                                             </button>
                                             <button
                                                 type="button"
@@ -690,7 +690,7 @@ const AdminPackForm = () => {
                                                 className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
                                             >
                                                 <FiTrash2 className="w-4 h-4 inline mr-1" />
-                                                Remove
+                                                {t('packForm.dragDrop.remove')}
                                             </button>
                                         </div>
                                     </div>
@@ -703,11 +703,11 @@ const AdminPackForm = () => {
                                                 onClick={() => fileInputRef.current?.click()}
                                                 className="text-pink-600 hover:text-pink-700 font-medium"
                                             >
-                                                Click to upload
+                                                {t('packForm.dragDrop.clickToUpload')}
                                             </button>
-                                            <p className="text-gray-500 text-sm">or drag and drop</p>
+                                            <p className="text-gray-500 text-sm">{t('packForm.dragDrop.orDrag')}</p>
                                         </div>
-                                        <p className="text-xs text-gray-400">PNG, JPG, GIF up to 5MB</p>
+                                        <p className="text-xs text-gray-400">{t('packForm.dragDrop.fileTypeInfo')}</p>
                                     </div>
                                 )}
                             </div>

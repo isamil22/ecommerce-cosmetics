@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { getAllRoles, getAllPermissions, createRole, updateRole, deleteRole, assignPermissionsToRole } from '../../api/rbacService';
 import { FiPlus, FiEdit3, FiTrash2, FiSave, FiX, FiShield, FiLock, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminRolesPage = () => {
+    const { t } = useLanguage();
     const [roles, setRoles] = useState([]);
     const [permissions, setPermissions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -30,7 +32,7 @@ const AdminRolesPage = () => {
             setPermissions(permsRes.data);
         } catch (error) {
             console.error('Error fetching data:', error);
-            toast.error('Failed to fetch roles and permissions');
+            toast.error(t('rolesPage.messages.fetchFailed'));
         } finally {
             setLoading(false);
         }
@@ -41,17 +43,17 @@ const AdminRolesPage = () => {
         try {
             if (editingRole) {
                 await updateRole(editingRole.id, formData);
-                toast.success('Role updated successfully!');
+                toast.success(t('rolesPage.messages.updateSuccess'));
             } else {
                 await createRole(formData);
-                toast.success('Role created successfully!');
+                toast.success(t('rolesPage.messages.createSuccess'));
             }
             setShowModal(false);
             resetForm();
             fetchData();
         } catch (error) {
             console.error('Error saving role:', error);
-            toast.error(error.response?.data?.message || 'Failed to save role');
+            toast.error(error.response?.data?.message || t('rolesPage.messages.saveFailed'));
         }
     };
 
@@ -66,14 +68,14 @@ const AdminRolesPage = () => {
     };
 
     const handleDelete = async (roleId, roleName) => {
-        if (window.confirm(`Are you sure you want to delete role "${roleName}"? This cannot be undone.`)) {
+        if (window.confirm(t('rolesPage.messages.deleteConfirm').replace('{name}', roleName))) {
             try {
                 await deleteRole(roleId);
-                toast.success('Role deleted successfully!');
+                toast.success(t('rolesPage.messages.deleteSuccess'));
                 fetchData();
             } catch (error) {
                 console.error('Error deleting role:', error);
-                toast.error(error.response?.data?.message || 'Failed to delete role. It may be assigned to users.');
+                toast.error(error.response?.data?.message || t('rolesPage.messages.deleteFailed'));
             }
         }
     };
@@ -119,9 +121,9 @@ const AdminRolesPage = () => {
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 flex items-center">
                             <FiShield className="mr-3 text-pink-600" />
-                            Role Management
+                            {t('rolesPage.title')}
                         </h1>
-                        <p className="text-gray-600 mt-2">Create and manage roles with specific permissions</p>
+                        <p className="text-gray-600 mt-2">{t('rolesPage.subtitle')}</p>
                     </div>
                     <button
                         onClick={() => {
@@ -131,7 +133,7 @@ const AdminRolesPage = () => {
                         className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center shadow-lg"
                     >
                         <FiPlus className="mr-2" />
-                        Create New Role
+                        {t('rolesPage.createButton')}
                     </button>
                 </div>
             </div>
@@ -167,7 +169,7 @@ const AdminRolesPage = () => {
 
                             <div className="mt-4 pt-4 border-t border-gray-200">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-gray-600 text-sm font-medium">Permissions:</span>
+                                    <span className="text-gray-600 text-sm font-medium">{t('rolesPage.permissions')}</span>
                                     <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-semibold">
                                         {role.permissions?.length || 0}
                                     </span>
@@ -200,7 +202,7 @@ const AdminRolesPage = () => {
                             <div className="flex items-center justify-between">
                                 <h2 className="text-2xl font-bold text-gray-900 flex items-center">
                                     <FiShield className="mr-2 text-pink-600" />
-                                    {editingRole ? 'Edit Role' : 'Create New Role'}
+                                    {editingRole ? t('rolesPage.editRole') : t('rolesPage.createRole')}
                                 </h2>
                                 <button
                                     onClick={() => {
@@ -218,29 +220,29 @@ const AdminRolesPage = () => {
                             {/* Role Name */}
                             <div className="mb-6">
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Role Name *
+                                    {t('rolesPage.roleName')} *
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                    placeholder="e.g., ROLE_CONTENT_MANAGER"
+                                    placeholder={t('rolesPage.roleNamePlaceholder')}
                                     required
                                 />
-                                <p className="text-gray-500 text-sm mt-1">Use format: ROLE_NAME (e.g., ROLE_MANAGER)</p>
+                                <p className="text-gray-500 text-sm mt-1">{t('rolesPage.roleNameHelp')}</p>
                             </div>
 
                             {/* Description */}
                             <div className="mb-6">
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Description
+                                    {t('rolesPage.description')}
                                 </label>
                                 <textarea
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                    placeholder="Describe what this role can do..."
+                                    placeholder={t('rolesPage.descriptionPlaceholder')}
                                     rows="3"
                                 />
                             </div>
@@ -248,9 +250,9 @@ const AdminRolesPage = () => {
                             {/* Permissions */}
                             <div className="mb-6">
                                 <label className="block text-gray-700 font-semibold mb-3">
-                                    Assign Permissions ({formData.permissionIds.length} selected)
+                                    {t('rolesPage.assignPermissions').replace('{count}', formData.permissionIds.length)}
                                 </label>
-                                
+
                                 <div className="space-y-4 max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-4">
                                     {Object.entries(groupPermissionsByResource()).map(([resource, perms]) => (
                                         <div key={resource} className="border-b border-gray-100 pb-4 last:border-0">
@@ -288,14 +290,14 @@ const AdminRolesPage = () => {
                                     className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
                                 >
                                     <FiX className="mr-2" />
-                                    Cancel
+                                    {t('rolesPage.cancel')}
                                 </button>
                                 <button
                                     type="submit"
                                     className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center shadow-lg"
                                 >
                                     <FiSave className="mr-2" />
-                                    {editingRole ? 'Update Role' : 'Create Role'}
+                                    {editingRole ? t('rolesPage.update') : t('rolesPage.save')}
                                 </button>
                             </div>
                         </form>

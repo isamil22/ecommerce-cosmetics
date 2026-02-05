@@ -221,25 +221,25 @@ const AdminCategoriesPage = () => {
                         </div>
                         <div>
                             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-purple-600 to-blue-600 bg-clip-text text-transparent flex items-center space-x-3">
-                                <span>Category Management</span>
+                                <span>{t('categoriesPage.title')}</span>
                                 <FiZap className="w-8 h-8 text-yellow-500 animate-pulse" />
                             </h1>
                             <p className="text-gray-600 mt-2 flex items-center space-x-2">
                                 <FiHeart className="w-4 h-4 text-pink-500" />
-                                <span>Organize your product catalog with beautiful categories</span>
+                                <span>{t('categoriesPage.subtitle')}</span>
                             </p>
                             <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
                                 <span className="flex items-center">
                                     <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+N</kbd>
-                                    <span className="ml-2">New Category</span>
+                                    <span className="ml-2">{t('categoriesPage.header.newCategory')}</span>
                                 </span>
                                 <span className="flex items-center">
                                     <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Ctrl+F</kbd>
-                                    <span className="ml-2">Search</span>
+                                    <span className="ml-2">{t('categoriesPage.header.search')}</span>
                                 </span>
                                 <span className="flex items-center">
                                     <kbd className="bg-gray-100 px-2 py-1 rounded text-xs">Esc</kbd>
-                                    <span className="ml-2">Clear Search</span>
+                                    <span className="ml-2">{t('categoriesPage.shortcuts.clearSearch')}</span>
                                 </span>
                             </div>
                         </div>
@@ -251,15 +251,16 @@ const AdminCategoriesPage = () => {
                             className="flex items-center space-x-2 bg-white text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-purple-300 transition-all duration-300 group"
                         >
                             <FiRefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-transform duration-500 ${refreshing ? 'animate-spin' : ''}`} />
-                            <span>Refresh</span>
+                            <span>{t('categoriesPage.header.refresh')}</span>
                         </button>
 
                         <Link
                             to="/admin/categories/new"
                             className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group"
                         >
+
                             <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-                            <span className="font-medium">Add New Category</span>
+                            <span className="font-medium">{t('categoriesPage.header.addNew')}</span>
                         </Link>
                     </div>
                 </div>
@@ -281,7 +282,7 @@ const AdminCategoriesPage = () => {
                     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Total Categories</p>
+                                <p className="text-gray-600 text-sm font-medium">{t('categoriesPage.stats.totalCategories')}</p>
                                 <p className="text-gray-900 text-2xl font-bold">{analytics.totalCategories}</p>
                             </div>
                             <div className="bg-purple-100 rounded-full p-3">
@@ -293,7 +294,7 @@ const AdminCategoriesPage = () => {
                     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">With Products</p>
+                                <p className="text-gray-600 text-sm font-medium">{t('categoriesPage.stats.withProducts')}</p>
                                 <p className="text-green-600 text-2xl font-bold">{analytics.categoriesWithProducts}</p>
                             </div>
                             <div className="bg-green-100 rounded-full p-3">
@@ -305,7 +306,7 @@ const AdminCategoriesPage = () => {
                     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Empty Categories</p>
+                                <p className="text-gray-600 text-sm font-medium">{t('categoriesPage.stats.emptyCategories')}</p>
                                 <p className="text-yellow-600 text-2xl font-bold">{analytics.emptyCategories}</p>
                             </div>
                             <div className="bg-yellow-100 rounded-full p-3">
@@ -317,7 +318,7 @@ const AdminCategoriesPage = () => {
                     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Total Products</p>
+                                <p className="text-gray-600 text-sm font-medium">{t('categoriesPage.stats.totalProducts')}</p>
                                 <p className="text-blue-600 text-2xl font-bold">{analytics.totalProducts}</p>
                             </div>
                             <div className="bg-blue-100 rounded-full p-3">
@@ -353,8 +354,8 @@ const AdminCategoriesPage = () => {
                                     onChange={(e) => setSortBy(e.target.value)}
                                     className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                 >
-                                    <option value="name">Sort by Name</option>
-                                    <option value="products">Sort by Product Count</option>
+                                    <option value="name">{t('categoriesPage.search.sortName')}</option>
+                                    <option value="products">{t('categoriesPage.search.sortProducts')}</option>
                                 </select>
                                 <button
                                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
@@ -369,14 +370,14 @@ const AdminCategoriesPage = () => {
                                 <button
                                     onClick={() => setViewMode('grid')}
                                     className={`p-3 ${viewMode === 'grid' ? 'bg-purple-500 text-white' : 'text-gray-500 hover:bg-gray-50'} transition-colors`}
-                                    title="Grid View"
+                                    title={t('categoriesPage.search.title')}
                                 >
                                     <FiGrid className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={() => setViewMode('list')}
                                     className={`p-3 ${viewMode === 'list' ? 'bg-purple-500 text-white' : 'text-gray-500 hover:bg-gray-50'} transition-colors`}
-                                    title="List View"
+                                    title={t('categoriesPage.search.listView')}
                                 >
                                     <FiLayers className="w-4 h-4" />
                                 </button>
@@ -387,10 +388,10 @@ const AdminCategoriesPage = () => {
                                 <button
                                     onClick={() => setSearchTerm('')}
                                     className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-lg transition-colors flex items-center"
-                                    title="Clear search"
+                                    title={t('categoriesPage.search.clear')}
                                 >
                                     <FiX className="w-4 h-4 mr-2" />
-                                    Clear
+                                    {t('categoriesPage.search.clear')}
                                 </button>
                             )}
                         </div>
@@ -404,7 +405,7 @@ const AdminCategoriesPage = () => {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">
                                 <h2 className="text-xl font-bold text-gray-900">
-                                    Categories ({filteredAndSortedCategories.length})
+                                    {t('categoriesPage.list.title', { count: filteredAndSortedCategories.length })}
                                 </h2>
                             </div>
                             <div className="flex items-center space-x-3">
@@ -413,7 +414,7 @@ const AdminCategoriesPage = () => {
                                     className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors flex items-center"
                                 >
                                     <FiRefreshCw className="w-4 h-4 mr-2" />
-                                    Refresh
+                                    {t('categoriesPage.list.refresh')}
                                 </button>
                             </div>
                         </div>
@@ -425,17 +426,17 @@ const AdminCategoriesPage = () => {
                             <div className="text-center py-12">
                                 <FiGrid className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                    {searchTerm ? 'No categories found' : 'No categories available'}
+                                    {searchTerm ? t('categoriesPage.list.noCategoriesFound') : t('categoriesPage.list.noCategoriesAvailable')}
                                 </h3>
                                 <p className="text-gray-600 mb-6">
-                                    {searchTerm ? 'Try adjusting your search criteria' : 'Start by creating your first category'}
+                                    {searchTerm ? t('categoriesPage.list.tryAdjusting') : t('categoriesPage.list.startCreating')}
                                 </p>
                                 <Link
                                     to="/admin/categories/new"
                                     className="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-blue-700 transition-all duration-200 flex items-center mx-auto w-fit"
                                 >
                                     <FiPlus className="w-5 h-5 mr-2" />
-                                    {searchTerm ? t('categoriesPage.shortcuts.clearSearch') : 'Create Your First Category'}
+                                    {searchTerm ? t('categoriesPage.shortcuts.clearSearch') : t('categoriesPage.list.createFirst')}
                                 </Link>
                             </div>
                         ) : (
@@ -466,7 +467,7 @@ const AdminCategoriesPage = () => {
                                                         ) : (
                                                             <div className="text-center">
                                                                 <FiGrid className="w-16 h-16 text-purple-400 mx-auto mb-2" />
-                                                                <p className="text-purple-600 font-medium">No Image</p>
+                                                                <p className="text-purple-600 font-medium">{t('categoriesPage.list.noImage')}</p>
                                                             </div>
                                                         )}
 
@@ -476,12 +477,12 @@ const AdminCategoriesPage = () => {
                                                             {isEmpty ? (
                                                                 <>
                                                                     <FiAlertTriangle className="w-3 h-3 inline mr-1" />
-                                                                    Empty
+                                                                    {t('categoriesPage.list.empty')}
                                                                 </>
                                                             ) : (
                                                                 <>
                                                                     <FiCheckCircle className="w-3 h-3 inline mr-1" />
-                                                                    {productCount} products
+                                                                    {t('categoriesPage.list.productCount', { count: productCount })}
                                                                 </>
                                                             )}
                                                         </div>
@@ -502,10 +503,10 @@ const AdminCategoriesPage = () => {
 
                                                         <div className="flex items-center justify-between">
                                                             <span className="text-sm text-gray-500">
-                                                                ID: {category.id}
+                                                                {t('categoriesPage.list.id', { id: category.id })}
                                                             </span>
                                                             <span className="text-sm font-medium text-gray-700">
-                                                                {productCount} products
+                                                                {t('categoriesPage.list.productCount', { count: productCount })}
                                                             </span>
                                                         </div>
 
@@ -516,7 +517,7 @@ const AdminCategoriesPage = () => {
                                                                 className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 py-2 px-3 rounded-lg transition-colors flex items-center justify-center"
                                                             >
                                                                 <FiEdit3 className="w-4 h-4 mr-2" />
-                                                                Edit
+                                                                {t('categoriesPage.list.edit')}
                                                             </Link>
                                                             <button
                                                                 onClick={() => handleDelete(category.id)}
@@ -528,7 +529,7 @@ const AdminCategoriesPage = () => {
                                                                 ) : (
                                                                     <FiTrash2 className="w-4 h-4 mr-2" />
                                                                 )}
-                                                                Delete
+                                                                {t('categoriesPage.list.delete')}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -558,11 +559,11 @@ const AdminCategoriesPage = () => {
                                                                 </h3>
                                                                 <span className={`px-2 py-1 rounded-full text-xs font-semibold ${isEmpty ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
                                                                     }`}>
-                                                                    {isEmpty ? 'Empty' : `${productCount} products`}
+                                                                    {isEmpty ? t('categoriesPage.list.empty') : t('categoriesPage.list.productCount', { count: productCount })}
                                                                 </span>
                                                             </div>
                                                             <div className="flex items-center space-x-4 mt-1 text-sm text-gray-600">
-                                                                <span>ID: {category.id}</span>
+                                                                <span>{t('categoriesPage.list.id', { id: category.id })}</span>
                                                                 {category.description && (
                                                                     <>
                                                                         <span>â€¢</span>

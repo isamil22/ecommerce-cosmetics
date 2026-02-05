@@ -435,7 +435,7 @@ const AdminProductForm = () => {
                             ) : (
                                 <>
                                     <FiSave className="w-4 h-4 mr-2" />
-                                    {isEditing ? 'Update Product' : 'Create Product'}
+                                    {isEditing ? t('productForm.actions.update') : t('productForm.actions.create')}
                                 </>
                             )}
                         </button>
@@ -787,9 +787,9 @@ const AdminProductForm = () => {
                                                             </label>
                                                         </div>
                                                         {opt.imagePreview ? (
-                                                            <img src={opt.imagePreview} alt="Preview" className="w-8 h-8 rounded object-cover border" />
+                                                            <img src={opt.imagePreview} alt={t('productForm.images.preview')} className="w-8 h-8 rounded object-cover border" />
                                                         ) : opt.imageUrl ? (
-                                                            <img src={opt.imageUrl} alt="Existing" className="w-8 h-8 rounded object-cover border" />
+                                                            <img src={opt.imageUrl} alt={t('productForm.images.existing')} className="w-8 h-8 rounded object-cover border" />
                                                         ) : null}
 
                                                         <button

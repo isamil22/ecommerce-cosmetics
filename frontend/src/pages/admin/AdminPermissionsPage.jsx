@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { getAllPermissions, createPermission, updatePermission, deletePermission, getAllResources, getAllActions } from '../../api/rbacService';
 import { FiPlus, FiEdit3, FiTrash2, FiSave, FiX, FiKey, FiFilter } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminPermissionsPage = () => {
+    const { t } = useLanguage();
     const [permissions, setPermissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -32,7 +34,7 @@ const AdminPermissionsPage = () => {
             setResources(resourcesRes.data);
         } catch (error) {
             console.error('Error fetching data:', error);
-            toast.error('Failed to fetch permissions');
+            toast.error(t('permissionsPage.messages.fetchFailed'));
         } finally {
             setLoading(false);
         }
@@ -49,17 +51,17 @@ const AdminPermissionsPage = () => {
 
             if (editingPermission) {
                 await updatePermission(editingPermission.id, permissionData);
-                toast.success('Permission updated successfully!');
+                toast.success(t('permissionsPage.messages.updateSuccess'));
             } else {
                 await createPermission(permissionData);
-                toast.success('Permission created successfully!');
+                toast.success(t('permissionsPage.messages.createSuccess'));
             }
             setShowModal(false);
             resetForm();
             fetchData();
         } catch (error) {
             console.error('Error saving permission:', error);
-            toast.error(error.response?.data?.message || 'Failed to save permission');
+            toast.error(error.response?.data?.message || t('permissionsPage.messages.saveFailed'));
         }
     };
 
@@ -75,14 +77,14 @@ const AdminPermissionsPage = () => {
     };
 
     const handleDelete = async (permissionId, permissionName) => {
-        if (window.confirm(`Are you sure you want to delete permission "${permissionName}"? This cannot be undone.`)) {
+        if (window.confirm(t('permissionsPage.messages.deleteConfirm').replace('{name}', permissionName))) {
             try {
                 await deletePermission(permissionId);
-                toast.success('Permission deleted successfully!');
+                toast.success(t('permissionsPage.messages.deleteSuccess'));
                 fetchData();
             } catch (error) {
                 console.error('Error deleting permission:', error);
-                toast.error(error.response?.data?.message || 'Failed to delete permission. It may be assigned to roles.');
+                toast.error(error.response?.data?.message || t('permissionsPage.messages.deleteFailed'));
             }
         }
     };
@@ -120,9 +122,9 @@ const AdminPermissionsPage = () => {
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 flex items-center">
                             <FiKey className="mr-3 text-pink-600" />
-                            Permission Management
+                            {t('permissionsPage.title')}
                         </h1>
-                        <p className="text-gray-600 mt-2">Manage system permissions and access controls</p>
+                        <p className="text-gray-600 mt-2">{t('permissionsPage.subtitle')}</p>
                     </div>
                     <button
                         onClick={() => {
@@ -132,7 +134,7 @@ const AdminPermissionsPage = () => {
                         className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center shadow-lg"
                     >
                         <FiPlus className="mr-2" />
-                        Create New Permission
+                        {t('permissionsPage.createButton')}
                     </button>
                 </div>
             </div>
@@ -141,19 +143,19 @@ const AdminPermissionsPage = () => {
             <div className="mb-6 bg-white rounded-lg shadow p-4">
                 <div className="flex items-center space-x-4">
                     <FiFilter className="text-gray-600" />
-                    <label className="text-gray-700 font-medium">Filter by Resource:</label>
+                    <label className="text-gray-700 font-medium">{t('permissionsPage.filterResource')}</label>
                     <select
                         value={filterResource}
                         onChange={(e) => setFilterResource(e.target.value)}
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
-                        <option value="ALL">All Resources</option>
+                        <option value="ALL">{t('permissionsPage.allResources')}</option>
                         {resources.map(resource => (
                             <option key={resource} value={resource}>{resource}</option>
                         ))}
                     </select>
                     <span className="text-gray-500 text-sm">
-                        Showing {filteredPermissions.length} of {permissions.length} permissions
+                        {t('permissionsPage.showingCount').replace('{count}', filteredPermissions.length).replace('{total}', permissions.length)}
                     </span>
                 </div>
             </div>
@@ -209,7 +211,7 @@ const AdminPermissionsPage = () => {
                             <div className="flex items-center justify-between">
                                 <h2 className="text-2xl font-bold text-gray-900 flex items-center">
                                     <FiKey className="mr-2 text-pink-600" />
-                                    {editingPermission ? 'Edit Permission' : 'Create New Permission'}
+                                    {editingPermission ? t('permissionsPage.editPermission') : t('permissionsPage.createPermission')}
                                 </h2>
                                 <button
                                     onClick={() => {
@@ -227,14 +229,14 @@ const AdminPermissionsPage = () => {
                             {/* Resource */}
                             <div className="mb-4">
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Resource *
+                                    {t('permissionsPage.resource')} *
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.resource}
                                     onChange={(e) => setFormData({ ...formData, resource: e.target.value.toUpperCase() })}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                    placeholder="e.g., PRODUCT, ORDER, USER"
+                                    placeholder={t('permissionsPage.resourcePlaceholder')}
                                     required
                                 />
                             </div>
@@ -242,14 +244,14 @@ const AdminPermissionsPage = () => {
                             {/* Action */}
                             <div className="mb-4">
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Action *
+                                    {t('permissionsPage.action')} *
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.action}
                                     onChange={(e) => setFormData({ ...formData, action: e.target.value.toUpperCase() })}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                    placeholder="e.g., VIEW, CREATE, EDIT, DELETE"
+                                    placeholder={t('permissionsPage.actionPlaceholder')}
                                     required
                                 />
                             </div>
@@ -257,7 +259,7 @@ const AdminPermissionsPage = () => {
                             {/* Auto-generated Name Preview */}
                             {formData.resource && formData.action && (
                                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                    <p className="text-sm text-gray-600">Permission Name:</p>
+                                    <p className="text-sm text-gray-600">{t('permissionsPage.permissionName')}</p>
                                     <p className="font-bold text-blue-900">{formData.resource}:{formData.action}</p>
                                 </div>
                             )}
@@ -265,13 +267,13 @@ const AdminPermissionsPage = () => {
                             {/* Description */}
                             <div className="mb-6">
                                 <label className="block text-gray-700 font-semibold mb-2">
-                                    Description
+                                    {t('permissionsPage.description')}
                                 </label>
                                 <textarea
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                                    placeholder="Describe what this permission allows..."
+                                    placeholder={t('permissionsPage.descriptionPlaceholder')}
                                     rows="3"
                                 />
                             </div>
@@ -287,14 +289,14 @@ const AdminPermissionsPage = () => {
                                     className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
                                 >
                                     <FiX className="mr-2" />
-                                    Cancel
+                                    {t('permissionsPage.cancel')}
                                 </button>
                                 <button
                                     type="submit"
                                     className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center shadow-lg"
                                 >
                                     <FiSave className="mr-2" />
-                                    {editingPermission ? 'Update Permission' : 'Create Permission'}
+                                    {editingPermission ? t('permissionsPage.update') : t('permissionsPage.save')}
                                 </button>
                             </div>
                         </form>

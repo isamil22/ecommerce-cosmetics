@@ -3,8 +3,10 @@ import { getAllUsers, updateUserRole, deleteUser } from '../../api/apiService';
 import { getAllRoles, getUserRoles, assignRolesToUser, getUserPermissions } from '../../api/rbacService';
 import { FiShield, FiKey, FiEdit3, FiTrash2, FiX, FiSave } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminUsersPage = () => {
+    const { t } = useLanguage();
     const [users, setUsers] = useState([]);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -21,7 +23,7 @@ const AdminUsersPage = () => {
             const response = await getAllUsers();
             setUsers(response.data);
         } catch (err) {
-            setError('Failed to fetch users.');
+            setError(t('usersPage.messages.fetchFailed'));
             console.error(err);
         }
     };
@@ -50,26 +52,26 @@ const AdminUsersPage = () => {
                     user.id === userId ? { ...user, role: newRole } : user
                 )
             );
-            setSuccess(`User #${userId}'s role updated to ${newRole}.`);
+            setSuccess(t('usersPage.messages.roleUpdated').replace('{id}', userId).replace('{role}', newRole));
         } catch (err) {
-            setError(`Failed to update role for user #${userId}.`);
+            setError(t('usersPage.messages.roleUpdateFailed').replace('{id}', userId));
             console.error(err);
         }
     };
 
     const handleDelete = async (userId) => {
-        if (window.confirm(`Are you sure you want to delete user #${userId}? This action cannot be undone.`)) {
+        if (window.confirm(t('usersPage.messages.deleteConfirm').replace('{id}', userId))) {
             setError('');
             setSuccess('');
             try {
                 await deleteUser(userId);
                 setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
-                setSuccess(`User #${userId} has been deleted.`);
-                toast.success('User deleted successfully!');
+                setSuccess(t('usersPage.messages.deleteSuccess').replace('{id}', userId));
+                toast.success(t('usersPage.messages.deleteSuccess'));
             } catch (err) {
-                setError(`Failed to delete user #${userId}.`);
+                setError(t('usersPage.messages.deleteFailed').replace('{id}', userId));
                 console.error(err);
-                toast.error('Failed to delete user');
+                toast.error(t('usersPage.messages.deleteFailed'));
             }
         }
     };
@@ -83,7 +85,7 @@ const AdminUsersPage = () => {
             setShowRoleModal(true);
         } catch (error) {
             console.error('Error fetching user roles:', error);
-            toast.error('Failed to load user roles');
+            toast.error(t('usersPage.rolesModal.error'));
         }
     };
 
@@ -95,19 +97,19 @@ const AdminUsersPage = () => {
             setShowPermissionsModal(true);
         } catch (error) {
             console.error('Error fetching user permissions:', error);
-            toast.error('Failed to load user permissions');
+            toast.error(t('usersPage.rolesModal.error'));
         }
     };
 
     const handleSaveRoles = async () => {
         try {
             await assignRolesToUser(selectedUser.id, selectedRoleIds);
-            toast.success('Roles assigned successfully!');
+            toast.success(t('usersPage.rolesModal.success'));
             setShowRoleModal(false);
             fetchUsers();
         } catch (error) {
             console.error('Error assigning roles:', error);
-            toast.error('Failed to assign roles');
+            toast.error(t('usersPage.rolesModal.error'));
         }
     };
 
@@ -121,7 +123,7 @@ const AdminUsersPage = () => {
 
     return (
         <div className="p-6">
-            <h1 className="text-3xl font-bold mb-6">Manage Users</h1>
+            <h1 className="text-3xl font-bold mb-6">{t('usersPage.title')}</h1>
             {error && <p className="text-red-500 bg-red-100 p-3 rounded-md mb-4">{error}</p>}
             {success && <p className="text-green-500 bg-green-100 p-3 rounded-md mb-4">{success}</p>}
 
@@ -129,13 +131,13 @@ const AdminUsersPage = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                     <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Legacy Role</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">RBAC Roles</th>
-                        <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Email Confirmed</th>
-                        <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('usersPage.table.userId')}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('usersPage.table.name')}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('usersPage.table.email')}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('usersPage.table.legacyRole')}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('usersPage.table.rbacRoles')}</th>
+                        <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{t('usersPage.table.emailConfirmed')}</th>
+                        <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{t('usersPage.table.actions')}</th>
                     </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -160,12 +162,12 @@ const AdminUsersPage = () => {
                                     className="flex items-center space-x-1 text-pink-600 hover:text-pink-800 hover:bg-pink-50 px-3 py-1 rounded-lg transition-colors"
                                 >
                                     <FiShield className="w-4 h-4" />
-                                    <span>Manage</span>
+                                    <span>{t('usersPage.table.manage')}</span>
                                 </button>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.emailConfirmation ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                    {user.emailConfirmation ? 'Yes' : 'No'}
+                                    {user.emailConfirmation ? t('usersPage.table.yes') : t('usersPage.table.no')}
                                 </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
@@ -173,14 +175,14 @@ const AdminUsersPage = () => {
                                     <button
                                         onClick={() => handleViewPermissions(user)}
                                         className="text-blue-600 hover:text-blue-900 hover:bg-blue-50 p-2 rounded-lg transition-colors"
-                                        title="View Permissions"
+                                        title={t('usersPage.permissionsModal.viewTitle')}
                                     >
                                         <FiKey className="w-4 h-4" />
                                     </button>
                                     <button
                                         onClick={() => handleDelete(user.id)}
                                         className="text-red-600 hover:text-red-900 hover:bg-red-50 p-2 rounded-lg transition-colors"
-                                        title="Delete User"
+                                        title={t('usersPage.table.actions')}
                                     >
                                         <FiTrash2 className="w-4 h-4" />
                                     </button>
@@ -200,7 +202,7 @@ const AdminUsersPage = () => {
                             <div className="flex items-center justify-between">
                                 <h2 className="text-2xl font-bold text-gray-900 flex items-center">
                                     <FiShield className="mr-2 text-pink-600" />
-                                    Manage Roles - {selectedUser.email}
+                                    {t('usersPage.rolesModal.title')} - {selectedUser.email}
                                 </h2>
                                 <button
                                     onClick={() => setShowRoleModal(false)}
@@ -214,7 +216,7 @@ const AdminUsersPage = () => {
                         <div className="p-6">
                             <div className="mb-4">
                                 <p className="text-gray-600 text-sm mb-4">
-                                    Select the roles to assign to this user. Users can have multiple roles.
+                                    {t('usersPage.rolesModal.description')}
                                 </p>
                                 <div className="space-y-3 max-h-96 overflow-y-auto">
                                     {availableRoles.map(role => (
@@ -229,7 +231,7 @@ const AdminUsersPage = () => {
                                                 <div className="font-semibold text-gray-900">{role.name}</div>
                                                 <div className="text-gray-600 text-sm">{role.description}</div>
                                                 <div className="text-gray-500 text-xs mt-1">
-                                                    {role.permissions?.length || 0} permissions
+                                                    {t('usersPage.rolesModal.permissions').replace('{count}', role.permissions?.length || 0)}
                                                 </div>
                                             </div>
                                         </label>
@@ -243,14 +245,14 @@ const AdminUsersPage = () => {
                                     className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
                                 >
                                     <FiX className="mr-2" />
-                                    Cancel
+                                    {t('usersPage.rolesModal.cancel')}
                                 </button>
                                 <button
                                     onClick={handleSaveRoles}
                                     className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center shadow-lg"
                                 >
                                     <FiSave className="mr-2" />
-                                    Save Roles
+                                    {t('usersPage.rolesModal.save')}
                                 </button>
                             </div>
                         </div>
@@ -266,7 +268,7 @@ const AdminUsersPage = () => {
                             <div className="flex items-center justify-between">
                                 <h2 className="text-2xl font-bold text-gray-900 flex items-center">
                                     <FiKey className="mr-2 text-blue-600" />
-                                    User Permissions - {selectedUser.email}
+                                    {t('usersPage.permissionsModal.title')} - {selectedUser.email}
                                 </h2>
                                 <button
                                     onClick={() => setShowPermissionsModal(false)}
@@ -279,7 +281,7 @@ const AdminUsersPage = () => {
 
                         <div className="p-6">
                             <p className="text-gray-600 mb-4">
-                                This user has <strong>{userPermissions.length}</strong> permissions through their assigned roles.
+                                <span dangerouslySetInnerHTML={{ __html: t('usersPage.permissionsModal.description').replace('{count}', `<strong>${userPermissions.length}</strong>`) }} />
                             </p>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

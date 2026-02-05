@@ -3,8 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { getPackById, updatePackComment, deletePackComment, addAdminComment, deleteCommentImage } from '../../api/apiService';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const AdminPackCommentsPage = () => {
+    const { t } = useLanguage();
     const { packId } = useParams();
     const [pack, setPack] = useState(null);
     const [comments, setComments] = useState([]);
@@ -25,7 +27,7 @@ const AdminPackCommentsPage = () => {
             setPack(response.data);
             setComments(response.data.comments || []);
         } catch (error) {
-            toast.error("Failed to fetch pack comments.");
+            toast.error(t('packComments.messages.fetchError'));
         } finally {
             setLoading(false);
         }
@@ -40,13 +42,13 @@ const AdminPackCommentsPage = () => {
     };
 
     const handleDelete = async (commentId) => {
-        if (window.confirm("Are you sure you want to delete this comment?")) {
+        if (window.confirm(t('packComments.messages.deleteConfirm'))) {
             try {
                 await deletePackComment(commentId);
-                toast.success("Comment deleted successfully!");
+                toast.success(t('packComments.messages.deleteSuccess'));
                 fetchPackComments();
             } catch (error) {
-                toast.error("Failed to delete comment.");
+                toast.error(t('packComments.messages.deleteError'));
             }
         }
     };
@@ -64,13 +66,13 @@ const AdminPackCommentsPage = () => {
 
         try {
             await updatePackComment(editingComment.id, formData);
-            toast.success("Comment updated successfully!");
+            toast.success(t('packComments.messages.updateSuccess'));
             setEditingComment(null);
             setNewImage([]);
             fetchPackComments();
         } catch (error) {
             console.error("Update failed:", error);
-            toast.error("Failed to update comment.");
+            toast.error(t('packComments.messages.updateError'));
         }
     };
 
@@ -95,21 +97,21 @@ const AdminPackCommentsPage = () => {
 
         try {
             await addAdminComment(packId, formData, 'pack');
-            toast.success('Comment added successfully!');
+            toast.success(t('packComments.messages.addSuccess'));
             setIsAddModalOpen(false);
             setNewCommentData({ name: '', content: '', score: 5, images: [] });
             fetchPackComments();
         } catch (error) {
             console.error('Error adding comment:', error);
-            toast.error('Failed to add comment.');
+            toast.error(t('packComments.messages.addError'));
         }
     };
 
     const handleImageDelete = async (commentId, imageUrl) => {
-        if (window.confirm("Are you sure you want to delete this image?")) {
+        if (window.confirm(t('packComments.messages.deleteImageConfirm'))) {
             try {
                 await deleteCommentImage(commentId, imageUrl);
-                toast.success("Image deleted successfully!");
+                toast.success(t('packComments.messages.deleteImageSuccess'));
                 fetchPackComments();
                 if (editingComment && editingComment.id === commentId) {
                     setEditingComment(prev => ({
@@ -118,7 +120,7 @@ const AdminPackCommentsPage = () => {
                     }));
                 }
             } catch (error) {
-                toast.error("Failed to delete image.");
+                toast.error(t('packComments.messages.deleteImageError'));
             }
         }
     };
@@ -128,13 +130,13 @@ const AdminPackCommentsPage = () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Comments for {pack?.name}</h1>
+                <h1 className="text-3xl font-bold">{t('packComments.title').replace('{packName}', pack?.name || '')}</h1>
                 <div>
                     <button onClick={() => setIsAddModalOpen(true)} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 mr-4">
-                        Add New Comment
+                        {t('packComments.addNew')}
                     </button>
                     <Link to="/admin/packs" className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600">
-                        Back to Packs
+                        {t('packComments.backToPacks')}
                     </Link>
                 </div>
             </div>
@@ -143,39 +145,39 @@ const AdminPackCommentsPage = () => {
             {isAddModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-                        <h2 className="text-2xl font-bold mb-4">Add New Comment</h2>
+                        <h2 className="text-2xl font-bold mb-4">{t('packComments.form.addTitle')}</h2>
                         <form onSubmit={handleAddNewComment}>
                             {/* Form fields for adding a comment */}
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newName">
-                                    Display Name
+                                    {t('packComments.form.displayName')}
                                 </label>
                                 <input id="newName" type="text" name="name" value={newCommentData.name} onChange={handleNewCommentChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required />
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newContent">
-                                    Content
+                                    {t('packComments.form.content')}
                                 </label>
                                 <textarea id="newContent" name="content" value={newCommentData.content} onChange={handleNewCommentChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" rows="4" required />
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newScore">
-                                    Score
+                                    {t('packComments.form.score')}
                                 </label>
                                 <input id="newScore" type="number" name="score" min="1" max="5" value={newCommentData.score} onChange={handleNewCommentChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required />
                             </div>
                             <div className="mb-6">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newImages">
-                                    Images
+                                    {t('packComments.form.images')}
                                 </label>
                                 <input id="newImages" type="file" name="images" onChange={handleNewCommentImageChange} multiple className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0" />
                             </div>
                             <div className="flex items-center justify-between">
                                 <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Add Comment
+                                    {t('packComments.form.add')}
                                 </button>
                                 <button type="button" onClick={() => setIsAddModalOpen(false)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                    Cancel
+                                    {t('packComments.form.cancel')}
                                 </button>
                             </div>
                         </form>
@@ -187,11 +189,11 @@ const AdminPackCommentsPage = () => {
             {editingComment && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-                        <h2 className="text-2xl font-bold mb-4">Edit Comment</h2>
+                        <h2 className="text-2xl font-bold mb-4">{t('packComments.form.editTitle')}</h2>
                         <form onSubmit={handleUpdate}>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                                    Display Name
+                                    {t('packComments.form.displayName')}
                                 </label>
                                 <input
                                     id="name"
@@ -203,7 +205,7 @@ const AdminPackCommentsPage = () => {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">
-                                    Content
+                                    {t('packComments.form.content')}
                                 </label>
                                 <textarea
                                     id="content"
@@ -215,7 +217,7 @@ const AdminPackCommentsPage = () => {
                             </div>
                             <div className="mb-6">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="score">
-                                    Score
+                                    {t('packComments.form.score')}
                                 </label>
                                 <input
                                     id="score"
@@ -228,7 +230,7 @@ const AdminPackCommentsPage = () => {
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">Images</label>
+                                <label className="block text-gray-700 text-sm font-bold mb-2">{t('packComments.form.images')}</label>
                                 <div className="flex flex-wrap gap-2">
                                     {editingComment.images.map((image, index) => (
                                         <div key={index} className="relative">
@@ -246,7 +248,7 @@ const AdminPackCommentsPage = () => {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
-                                    New Images (Append)
+                                    {t('packComments.form.newImages')}
                                 </label>
                                 <input
                                     id="image"
@@ -285,14 +287,14 @@ const AdminPackCommentsPage = () => {
                                     type="submit"
                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 >
-                                    Update
+                                    {t('packComments.form.update')}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setEditingComment(null)}
                                     className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 >
-                                    Cancel
+                                    {t('packComments.form.cancel')}
                                 </button>
                             </div>
                         </form>
@@ -304,10 +306,10 @@ const AdminPackCommentsPage = () => {
                 <table className="min-w-full table-auto">
                     <thead className="bg-gray-200">
                         <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comment</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('packComments.table.user')}</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('packComments.table.comment')}</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('packComments.table.score')}</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('packComments.table.actions')}</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -317,8 +319,8 @@ const AdminPackCommentsPage = () => {
                                 <td className="px-6 py-4">{comment.content}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{comment.score}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button onClick={() => handleEdit(comment)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
-                                    <button onClick={() => handleDelete(comment.id)} className="ml-4 text-red-600 hover:text-red-900">Delete</button>
+                                    <button onClick={() => handleEdit(comment)} className="text-indigo-600 hover:text-indigo-900">{t('packComments.table.edit')}</button>
+                                    <button onClick={() => handleDelete(comment.id)} className="ml-4 text-red-600 hover:text-red-900">{t('packComments.table.delete')}</button>
                                 </td>
                             </tr>
                         ))}
