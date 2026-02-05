@@ -5,7 +5,7 @@ export const fr = {
     welcomeMessage: "Bienvenue! Voici ce qui se passe avec votre boutique aujourd'hui.",
     refresh: 'Actualiser',
     liveStatus: 'Statut en direct: En ligne',
-    lastUpdated: 'DerniÃ¨re mise Ã  jour',
+    lastUpdated: 'Dernière mise à jour',
     error: 'Erreur',
     loadingDashboard: 'Chargement du tableau de bord...',
 
@@ -15,8 +15,8 @@ export const fr = {
     totalUsers: 'Total des utilisateurs',
     totalProducts: 'Total des produits',
     packsAvailable: 'Packs disponibles',
-    customPacks: 'Packs personnalisÃ©s',
-    categories: 'CatÃ©gories',
+    customPacks: 'Packs personnalisés',
+    categories: 'Catégories',
     visitorCounter: 'Compteur de visiteurs',
 
     // Growth
@@ -24,12 +24,12 @@ export const fr = {
 
     // Status
     active: 'Actif',
-    disabled: 'DÃ©sactivÃ©',
+    disabled: 'Désactivé',
     range: 'Plage',
 
     // Sections
-    recentProducts: 'Produits rÃ©cents',
-    recentOrders: 'Commandes rÃ©centes',
+    recentProducts: 'Produits récents',
+    recentOrders: 'Commandes récentes',
     pendingReviews: 'Avis en attente',
     quickActions: 'Actions rapides',
 
@@ -38,46 +38,46 @@ export const fr = {
     viewAll: 'Voir tout',
     viewAllProducts: 'Voir tous les produits',
     viewAllOrders: 'Voir toutes les commandes',
-    manageReviews: 'GÃ©rer les avis',
-    managePacks: 'GÃ©rer les packs',
-    manageCustomPacks: 'GÃ©rer les packs personnalisÃ©s',
-    manageCategories: 'GÃ©rer les catÃ©gories',
-    configureSettings: 'Configurer les paramÃ¨tres',
+    manageReviews: 'Gérer les avis',
+    managePacks: 'Gérer les packs',
+    manageCustomPacks: 'Gérer les packs personnalisés',
+    manageCategories: 'Gérer les catégories',
+    configureSettings: 'Configurer les paramètres',
 
     // Quick Actions
     addNewProduct: 'Ajouter un nouveau produit',
-    createNewPack: 'CrÃ©er un nouveau pack',
-    newCustomPack: 'Nouveau pack personnalisÃ©',
-    addCategory: 'Ajouter une catÃ©gorie',
-    reviewFormSettings: 'ParamÃ¨tres du formulaire d\'avis',
+    createNewPack: 'Créer un nouveau pack',
+    newCustomPack: 'Nouveau pack personnalisé',
+    addCategory: 'Ajouter une catégorie',
+    reviewFormSettings: 'Paramètres du formulaire d\'avis',
 
     // Confirmation
-    deleteProductConfirm: 'ÃŠtes-vous sÃ»r de vouloir supprimer ce produit?',
+    deleteProductConfirm: 'Êtes-vous sûr de vouloir supprimer ce produit?',
 
     // Errors
-    failedToFetchDashboard: 'Ã‰chec de la rÃ©cupÃ©ration des donnÃ©es du tableau de bord.',
-    failedToDeleteProduct: 'Ã‰chec de la suppression du produit.',
+    failedToFetchDashboard: 'Échec de la récupération des données du tableau de bord.',
+    failedToDeleteProduct: 'Échec de la suppression du produit.',
 
     // ===== BATCH 1: SETTINGS PAGES =====
 
     // Brand Settings Page
     brandSettings: {
-        title: 'ParamÃ¨tres du logo',
-        subtitle: 'GÃ©rez l\'identitÃ© visuelle de votre site web',
+        title: 'Paramètres du logo',
+        subtitle: 'Gérez l\'identité visuelle de votre site web',
         logoConfiguration: 'Configuration du logo',
-        selectNewLogo: 'SÃ©lectionner un nouveau logo',
+        selectNewLogo: 'Sélectionner un nouveau logo',
         saveLogo: 'Enregistrer le logo',
-        uploading: 'TÃ©lÃ©chargement...',
-        recommendedSize: 'Taille recommandÃ©e: 512x512px (CarrÃ©). Format PNG ou JPG.',
-        brandDetails: 'DÃ©tails de la marque',
+        uploading: 'Téléchargement...',
+        recommendedSize: 'Taille recommandée: 512x512px (Carré). Format PNG ou JPG.',
+        brandDetails: 'Détails de la marque',
         siteTitle: 'Titre du site',
         siteSubtitle: 'Sous-titre du site',
         titleFont: 'Police du titre',
-        preview: 'AperÃ§u:',
-        saveDetails: 'Enregistrer les dÃ©tails',
+        preview: 'Aperçu:',
+        saveDetails: 'Enregistrer les détails',
         saving: 'Enregistrement...',
         fontOptions: {
-            default: 'Par dÃ©faut (Sans Serif)',
+            default: 'Par défaut (Sans Serif)',
             dancingScript: 'Dancing Script (Cursive)',
             playfairDisplay: 'Playfair Display (Serif)',
             greatVibes: 'Great Vibes (Calligraphique)',
@@ -85,13 +85,13 @@ export const fr = {
             montserrat: 'Montserrat (Moderne)'
         },
         success: {
-            logoUploaded: 'Logo tÃ©lÃ©chargÃ© avec succÃ¨s!',
-            detailsSaved: 'DÃ©tails de la marque enregistrÃ©s avec succÃ¨s!'
+            logoUploaded: 'Logo téléchargé avec succès!',
+            detailsSaved: 'Détails de la marque enregistrés avec succès!'
         },
         errors: {
-            loadSettings: 'Ã‰chec du chargement des paramÃ¨tres.',
-            saveDetails: 'Ã‰chec de l\'enregistrement des dÃ©tails.',
-            uploadLogo: 'Ã‰chec du tÃ©lÃ©chargement du logo.'
+            loadSettings: 'Échec du chargement des paramètres.',
+            saveDetails: 'Échec de l\'enregistrement des détails.',
+            uploadLogo: 'Échec du téléchargement du logo.'
         }
     },
 
@@ -175,18 +175,18 @@ export const fr = {
 
     // Countdown Page
     countdown: {
-        title: 'Gestion du compte Ã  rebours',
-        subtitle: 'Configurez le minuteur de compte Ã  rebours de votre site',
-        settings: 'ParamÃ¨tres du compte Ã  rebours',
-        enableDisable: 'Activer/DÃ©sactiver',
-        enabled: 'ActivÃ©',
-        disabled: 'DÃ©sactivÃ©',
+        title: 'Gestion du compte à rebours',
+        subtitle: 'Configurez le minuteur de compte à rebours de votre site',
+        settings: 'Paramètres du compte à rebours',
+        enableDisable: 'Activer/Désactiver',
+        enabled: 'Activé',
+        disabled: 'Désactivé',
         targetDate: 'Date cible',
         targetTime: 'Heure cible',
         title: 'Titre',
         titlePlaceholder: 'Vente flash se termine dans...',
         message: 'Message',
-        messagePlaceholder: 'DÃ©pÃªchez-vous! Offre Ã  durÃ©e limitÃ©e!',
+        messagePlaceholder: 'Dépêchez-vous! Offre à durée limitée!',
         position: 'Position',
         positions: {
             top: 'Haut',
@@ -197,29 +197,29 @@ export const fr = {
         styles: {
             minimal: 'Minimal',
             bold: 'Gras',
-            gradient: 'DÃ©gradÃ©'
+            gradient: 'Dégradé'
         },
         showDays: 'Afficher les jours',
         showHours: 'Afficher les heures',
         showMinutes: 'Afficher les minutes',
         showSeconds: 'Afficher les secondes',
-        autoHide: 'Masquer automatiquement aprÃ¨s expiration',
-        preview: 'AperÃ§u',
+        autoHide: 'Masquer automatiquement après expiration',
+        preview: 'Aperçu',
         saveChanges: 'Enregistrer les modifications',
         saving: 'Enregistrement...',
-        loadingSettings: 'Chargement des paramÃ¨tres du compte Ã  rebours...',
-        success: 'Compte Ã  rebours mis Ã  jour avec succÃ¨s!',
+        loadingSettings: 'Chargement des paramètres du compte à rebours...',
+        success: 'Compte à rebours mis à jour avec succès!',
         errors: {
-            loadSettings: 'Ã‰chec du chargement des paramÃ¨tres du compte Ã  rebours',
-            updateFailed: 'Ã‰chec de la mise Ã  jour du compte Ã  rebours',
+            loadSettings: 'Échec du chargement des paramètres du compte à rebours',
+            updateFailed: 'Échec de la mise à jour du compte à rebours',
             invalidDate: 'Date ou heure invalide'
         }
     },
 
     // Integrations Page
     integrations: {
-        title: 'IntÃ©grations',
-        subtitle: 'GÃ©rez les intÃ©grations tierces et les clÃ©s API',
+        title: 'Intégrations',
+        subtitle: 'Gérez les intégrations tierces et les clés API',
         analytics: 'Analytique',
         googleAnalytics: 'Google Analytics',
         trackingId: 'ID de suivi',
@@ -228,42 +228,42 @@ export const fr = {
         pixelId: 'ID du pixel',
         pixelIdPlaceholder: 'Votre ID de pixel Facebook',
         payment: 'Paiement',
-        stripeKeys: 'ClÃ©s Stripe',
-        publishableKey: 'ClÃ© publiable',
+        stripeKeys: 'Clés Stripe',
+        publishableKey: 'Clé publiable',
         publishableKeyPlaceholder: 'pk_test_...',
-        secretKey: 'ClÃ© secrÃ¨te',
+        secretKey: 'Clé secrète',
         secretKeyPlaceholder: 'sk_test_...',
-        paypalSettings: 'ParamÃ¨tres PayPal',
+        paypalSettings: 'Paramètres PayPal',
         clientId: 'ID client',
         clientIdPlaceholder: 'Votre ID client PayPal',
         email: 'E-mail',
         emailService: 'Service d\'e-mail',
-        smtpSettings: 'ParamÃ¨tres SMTP',
-        smtpHost: 'HÃ´te SMTP',
+        smtpSettings: 'Paramètres SMTP',
+        smtpHost: 'Hôte SMTP',
         smtpPort: 'Port SMTP',
         smtpUsername: 'Nom d\'utilisateur SMTP',
         smtpPassword: 'Mot de passe SMTP',
-        senderEmail: 'E-mail de l\'expÃ©diteur',
-        senderName: 'Nom de l\'expÃ©diteur',
+        senderEmail: 'E-mail de l\'expéditeur',
+        senderName: 'Nom de l\'expéditeur',
         storage: 'Stockage',
         awsS3: 'AWS S3',
-        accessKey: 'ClÃ© d\'accÃ¨s',
-        secretAccessKey: 'ClÃ© d\'accÃ¨s secrÃ¨te',
+        accessKey: 'Clé d\'accès',
+        secretAccessKey: 'Clé d\'accès secrète',
         bucketName: 'Nom du bucket',
-        region: 'RÃ©gion',
+        region: 'Région',
         testConnection: 'Tester la connexion',
         testing: 'Test...',
         saveChanges: 'Enregistrer les modifications',
         saving: 'Enregistrement...',
-        loadingSettings: 'Chargement des intÃ©grations...',
+        loadingSettings: 'Chargement des intégrations...',
         success: {
-            saved: 'IntÃ©grations enregistrÃ©es avec succÃ¨s!',
-            connectionSuccess: 'Connexion rÃ©ussie!'
+            saved: 'Intégrations enregistrées avec succès!',
+            connectionSuccess: 'Connexion réussie!'
         },
         errors: {
-            loadSettings: 'Ã‰chec du chargement des intÃ©grations',
-            updateFailed: 'Ã‰chec de la mise Ã  jour des intÃ©grations',
-            connectionFailed: 'Ã‰chec du test de connexion',
+            loadSettings: 'Échec du chargement des intégrations',
+            updateFailed: 'Échec de la mise à jour des intégrations',
+            connectionFailed: 'Échec du test de connexion',
             invalidCredentials: 'Identifiants invalides'
         }
     },
@@ -271,7 +271,7 @@ export const fr = {
     // ===== BATCH 2: PRODUCTS PAGE =====
     products: {
         title: 'Gestion des produits',
-        subtitle: 'GÃ©rez votre catalogue de produits avec des outils avancÃ©s et des informations',
+        subtitle: 'Gérez votre catalogue de produits avec des outils avancés et des informations',
 
         // Header Actions
         refresh: 'Actualiser',
@@ -297,16 +297,16 @@ export const fr = {
 
         // Search and Filters
         searchPlaceholder: 'Rechercher des produits...',
-        allCategories: 'Toutes les catÃ©gories',
+        allCategories: 'Toutes les catégories',
         allStock: 'Tous les stocks',
         inStockFilter: 'En stock',
         lowStockFilter: 'Stock faible',
         outOfStockFilter: 'Rupture de stock',
         allStatus: 'Tous les statuts',
         activeStatus: 'Actif',
-        disabledStatus: 'DÃ©sactivÃ©',
+        disabledStatus: 'Désactivé',
         featuredStatus: 'En vedette',
-        newArrivalsStatus: 'NouveautÃ©s',
+        newArrivalsStatus: 'Nouveautés',
 
         // Sort Options
         sortByName: 'Trier par nom',
@@ -319,10 +319,10 @@ export const fr = {
         listView: 'Vue liste',
 
         // Bulk Actions
-        selectAll: 'Tout sÃ©lectionner',
-        clearSelection: 'Effacer la sÃ©lection',
-        bulkDelete: 'Supprimer la sÃ©lection',
-        selectedCount: 'sÃ©lectionnÃ©(s)',
+        selectAll: 'Tout sélectionner',
+        clearSelection: 'Effacer la sélection',
+        bulkDelete: 'Supprimer la sélection',
+        selectedCount: 'sélectionné(s)',
         clearFilters: 'Effacer les filtres',
 
         // Product Card
@@ -330,7 +330,7 @@ export const fr = {
         delete: 'Supprimer',
         quickEdit: 'Modification rapide',
         view: 'Voir',
-        category: 'CatÃ©gorie',
+        category: 'Catégorie',
         brand: 'Marque',
         price: 'Prix',
         stock: 'Stock',
@@ -345,39 +345,39 @@ export const fr = {
 
         // Product Badges
         bestseller: 'Meilleure vente',
-        newArrival: 'NouveautÃ©',
+        newArrival: 'Nouveauté',
         featured: 'En vedette',
-        disabled: 'DÃ©sactivÃ©',
+        disabled: 'Désactivé',
 
         // Messages
-        noProducts: 'Aucun produit trouvÃ©',
+        noProducts: 'Aucun produit trouvé',
         noProductsDesc: 'Commencez par ajouter votre premier produit',
         loadingProducts: 'Chargement des produits...',
 
         // Confirmations
-        deleteConfirm: 'ÃŠtes-vous sÃ»r de vouloir supprimer ce produit?',
-        bulkDeleteConfirm: 'ÃŠtes-vous sÃ»r de vouloir supprimer {count} produit(s)? Cette action ne peut pas Ãªtre annulÃ©e.',
+        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce produit?',
+        bulkDeleteConfirm: 'Êtes-vous sûr de vouloir supprimer {count} produit(s)? Cette action ne peut pas être annulée.',
 
         // Success Messages
         success: {
-            deleted: 'Produit supprimÃ© avec succÃ¨s!',
-            bulkDeleted: '{count} produit(s) supprimÃ©(s) avec succÃ¨s!',
-            updated: 'Produit mis Ã  jour avec succÃ¨s!',
-            exported: 'Produits exportÃ©s avec succÃ¨s!'
+            deleted: 'Produit supprimé avec succès!',
+            bulkDeleted: '{count} produit(s) supprimé(s) avec succès!',
+            updated: 'Produit mis à jour avec succès!',
+            exported: 'Produits exportés avec succès!'
         },
 
         // Error Messages
         errors: {
-            fetchFailed: 'Ã‰chec de la rÃ©cupÃ©ration des produits.',
-            deleteFailed: 'Ã‰chec de la suppression du produit.',
-            updateFailed: 'Ã‰chec de la mise Ã  jour du produit.',
-            exportFailed: 'Ã‰chec de l\'exportation des produits.',
-            noSelection: 'Aucun produit sÃ©lectionnÃ© pour la suppression'
+            fetchFailed: 'Échec de la récupération des produits.',
+            deleteFailed: 'Échec de la suppression du produit.',
+            updateFailed: 'Échec de la mise à jour du produit.',
+            exportFailed: 'Échec de l\'exportation des produits.',
+            noSelection: 'Aucun produit sélectionné pour la suppression'
         },
 
         // Warnings
         warnings: {
-            partialDelete: '{success} produit(s) supprimÃ©(s), {failed} Ã©chec(s)'
+            partialDelete: '{success} produit(s) supprimé(s), {failed} échec(s)'
         }
     },
 
@@ -385,12 +385,12 @@ export const fr = {
     productForm: {
         // Page Header
         title: {
-            create: 'CrÃ©er un nouveau produit',
+            create: 'Créer un nouveau produit',
             edit: 'Modifier le produit'
         },
         subtitle: {
-            create: 'Ajouter un nouveau produit Ã  votre catalogue',
-            edit: 'Mettre Ã  jour les informations de votre produit'
+            create: 'Ajouter un nouveau produit à votre catalogue',
+            edit: 'Mettre à jour les informations de votre produit'
         },
         loading: 'Chargement du produit...',
 
@@ -399,8 +399,8 @@ export const fr = {
             save: 'Enregistrer',
             saving: 'Enregistrement...',
             savingProduct: 'Enregistrement du produit...',
-            create: 'CrÃ©er le produit',
-            update: 'Mettre Ã  jour le produit',
+            create: 'Créer le produit',
+            update: 'Mettre à jour le produit',
             backToProducts: 'Retour aux produits'
         },
 
@@ -413,10 +413,10 @@ export const fr = {
             brandPlaceholder: 'Entrez le nom de la marque',
             price: 'Prix ($)',
             pricePlaceholder: '0.00',
-            stockQuantity: 'QuantitÃ© en stock',
+            stockQuantity: 'Quantité en stock',
             stockPlaceholder: '0',
-            category: 'CatÃ©gorie',
-            categoryPlaceholder: '-- SÃ©lectionnez une catÃ©gorie --',
+            category: 'Catégorie',
+            categoryPlaceholder: '-- Sélectionnez une catégorie --',
             type: 'Type',
             typeMen: 'Hommes',
             typeWomen: 'Femmes',
@@ -424,9 +424,9 @@ export const fr = {
 
             // Checkboxes
             bestseller: 'Meilleure vente',
-            newArrival: 'Nouvelle arrivÃ©e',
+            newArrival: 'Nouvelle arrivée',
             hasVariants: 'A des variantes',
-            isPackable: 'Disponible pour les packs personnalisÃ©s'
+            isPackable: 'Disponible pour les packs personnalisés'
         },
 
         // Description Section
@@ -438,9 +438,9 @@ export const fr = {
         // Images Section
         images: {
             title: 'Images du produit',
-            upload: 'TÃ©lÃ©charger des images',
+            upload: 'Télécharger des images',
             existingImages: 'Images existantes:',
-            newImages: 'Nouvelles images Ã  ajouter:',
+            newImages: 'Nouvelles images à ajouter:',
             removeImage: "Supprimer l'image"
         },
 
@@ -462,7 +462,7 @@ export const fr = {
         // Product Variants Section
         variants: {
             title: 'Variantes du produit',
-            select: 'SÃ©lectionner {name}',
+            select: 'Sélectionner {name}',
             price: 'Prix',
             stock: 'Stock',
             variantImage: 'Image de la variante',
@@ -472,47 +472,47 @@ export const fr = {
 
         // Display Settings Section
         displaySettings: {
-            title: "ParamÃ¨tres d'affichage",
+            title: "Paramètres d'affichage",
             purchaseNotifications: {
                 title: 'ðŸ›ï¸ Afficher les notifications d\'achat',
-                description: 'Afficher les notifications lorsque les clients achÃ¨tent ce produit',
-                enabled: 'ActivÃ©',
-                disabled: 'DÃ©sactivÃ©'
+                description: 'Afficher les notifications lorsque les clients achètent ce produit',
+                enabled: 'Activé',
+                disabled: 'Désactivé'
             },
             countdownTimer: {
-                title: 'â±ï¸ Afficher le compte Ã  rebours',
-                description: 'Afficher le compte Ã  rebours des ventes flash pour crÃ©er l\'urgence',
-                enabled: 'ActivÃ©',
-                disabled: 'DÃ©sactivÃ©'
+                title: 'â±ï¸ Afficher le compte à rebours',
+                description: 'Afficher le compte à rebours des ventes flash pour créer l\'urgence',
+                enabled: 'Activé',
+                disabled: 'Désactivé'
             }
         },
 
         // Frequently Bought Together Section
         frequentlyBought: {
-            title: 'FrÃ©quemment achetÃ©s ensemble',
-            label: 'SÃ©lectionnez les produits frÃ©quemment achetÃ©s avec ce produit',
-            placeholder: 'Rechercher et sÃ©lectionner des produits...'
+            title: 'Fréquemment achetés ensemble',
+            label: 'Sélectionnez les produits fréquemment achetés avec ce produit',
+            placeholder: 'Rechercher et sélectionner des produits...'
         },
 
         // Validation Messages
         validation: {
             nameRequired: 'Le nom du produit est requis.',
             priceRequired: 'Un prix valide est requis.',
-            categoryRequired: 'La catÃ©gorie est requise.',
+            categoryRequired: 'La catégorie est requise.',
             variantPricesRequired: 'Toutes les variantes doivent avoir des prix valides.'
         },
 
         // Success Messages
         success: {
-            created: 'Produit crÃ©Ã© avec succÃ¨s!',
-            updated: 'Produit mis Ã  jour avec succÃ¨s!'
+            created: 'Produit créé avec succès!',
+            updated: 'Produit mis à jour avec succès!'
         },
 
         // Error Messages
         errors: {
-            saveFailed: 'Ã‰chec de l\'enregistrement du produit.',
-            loadFailed: 'Ã‰chec du chargement du produit.',
-            categoriesFailed: 'Ã‰chec du chargement des catÃ©gories de produits. Veuillez rÃ©essayer.'
+            saveFailed: 'Échec de l\'enregistrement du produit.',
+            loadFailed: 'Échec du chargement du produit.',
+            categoriesFailed: 'Échec du chargement des catégories de produits. Veuillez réessayer.'
         }
     }
     ,
