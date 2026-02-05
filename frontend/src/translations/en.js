@@ -898,7 +898,33 @@ export const en = {
             created: 'Pack created successfully!',
             updated: 'Pack updated successfully!',
             draftCleared: 'Draft cleared'
-        }
+        },
+        description: {
+            title: 'Description',
+            label: 'Pack Description'
+        },
+        dragDrop: {
+            clickToUpload: 'Click to upload',
+            orDrag: 'or drag and drop',
+            fileTypeInfo: 'PNG, JPG, GIF up to 5MB',
+            change: 'Change',
+            remove: 'Remove',
+            invalidType: 'Please select a valid image file',
+            invalidSize: 'Image size must be less than 5MB',
+            dropInvalid: 'Please drop a valid image file'
+        },
+        productSelect: {
+            placeholder: 'Select Product...',
+            search: 'Search products...',
+            noProducts: 'No products found',
+            selected: 'selected',
+            more: 'more'
+        },
+        errors: {
+            fetchFailed: 'Failed to fetch data. Please try again later.',
+            createFailed: 'Failed to create pack. Please check the form fields.'
+        },
+        autoSave: 'Form auto-saved'
     },
 
     // Review Form Settings
@@ -1732,73 +1758,7 @@ export const en = {
         deleteFailed: 'Failed to delete pack'
     },
     // Pack Form
-    packForm: {
-        createTitle: 'Create New Pack',
-        createSubtitle: 'Design a new product bundle',
-        editTitle: 'Edit Pack',
-        editSubtitle: 'Update details for this pack',
-        unsavedChanges: 'Unsaved Changes',
-        clearDraft: 'Clear Draft',
-        steps: {
-            basicInfo: 'Basic Info',
-            packItems: 'Pack Items',
-            displaySettings: 'Display Settings',
-            recommendations: 'Recommendations',
-            review: 'Review'
-        },
-        basicInfo: {
-            name: 'Pack Name',
-            namePlaceholder: 'e.g. Summer Essentials Kit',
-            price: 'Price',
-            image: 'Pack Image',
-            hideComments: 'Hide Comment Form',
-            hideCommentsDesc: 'Disable user comments/reviews for this pack'
-        },
-        description: {
-            title: 'Description',
-            label: 'Pack Description'
-        },
-        items: {
-            title: 'Pack Items',
-            addItem: 'Add Item',
-            enhancedSelection: 'Enhanced Selection',
-            enhancedDesc: 'Search and select products easily. Drag items to reorder.'
-        },
-        validation: {
-            nameRequired: 'Pack name is required',
-            nameLength: 'Pack name must be at least 3 characters',
-            priceRequired: 'Valid price is required',
-            itemRequired: 'At least one pack item is required',
-            itemDefaultRequired: 'Default product is required for all items'
-        },
-        dragDrop: {
-            clickToUpload: 'Click to upload',
-            orDrag: 'or drag and drop',
-            fileTypeInfo: 'PNG, JPG, GIF up to 5MB',
-            change: 'Change',
-            remove: 'Remove',
-            invalidType: 'Please select a valid image file',
-            invalidSize: 'Image size must be less than 5MB',
-            dropInvalid: 'Please drop a valid image file'
-        },
-        productSelect: {
-            placeholder: 'Select Product...',
-            search: 'Search products...',
-            noProducts: 'No products found',
-            selected: 'selected',
-            more: 'more'
-        },
-        success: {
-            created: 'Pack created successfully!',
-            updated: 'Pack updated successfully!',
-            draftCleared: 'Draft cleared successfully'
-        },
-        errors: {
-            fetchFailed: 'Failed to fetch data. Please try again later.',
-            createFailed: 'Failed to create pack. Please check the form fields.'
-        },
-        autoSave: 'Form auto-saved'
-    },
+
     // Pack Recommendations
     packRecommendations: {
         title: 'Manage Recommendations',

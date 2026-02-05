@@ -901,7 +901,33 @@ export const fr = {
             created: 'Pack créé avec succès !',
             updated: 'Pack mis à jour avec succès !',
             draftCleared: 'Brouillon effacé'
-        }
+        },
+        description: {
+            title: 'Description',
+            label: 'Description du Pack'
+        },
+        dragDrop: {
+            clickToUpload: 'Cliquez pour télécharger',
+            orDrag: 'ou glisser-déposer',
+            fileTypeInfo: 'PNG, JPG, GIF jusqu\'à 5 Mo',
+            change: 'Changer',
+            remove: 'Retirer',
+            invalidType: 'Veuillez sélectionner un fichier image valide',
+            invalidSize: 'La taille de l\'image doit être inférieure à 5 Mo',
+            dropInvalid: 'Veuillez déposer un fichier image valide'
+        },
+        productSelect: {
+            placeholder: 'Sélectionner un produit...',
+            search: 'Rechercher des produits...',
+            noProducts: 'Aucun produit trouvé',
+            selected: 'sélectionné(s)',
+            more: 'plus'
+        },
+        errors: {
+            fetchFailed: 'Échec de la récupération des données. Veuillez réessayer.',
+            createFailed: 'Échec de la création du pack. Veuillez vérifier les champs.'
+        },
+        autoSave: 'Formulaire enregistré automatiquement'
     },
 
     // Review Form Settings
@@ -1735,73 +1761,7 @@ export const fr = {
         deleteFailed: 'Échec de la suppression du pack'
     },
     // Pack Form
-    packForm: {
-        createTitle: 'Créer un nouveau Pack',
-        createSubtitle: 'Concevoir une nouvelle offre groupée',
-        editTitle: 'Modifier le Pack',
-        editSubtitle: 'Mettre à jour les détails de ce pack',
-        unsavedChanges: 'Modifications non enregistrées',
-        clearDraft: 'Effacer le brouillon',
-        steps: {
-            basicInfo: 'Infos de base',
-            packItems: 'Articles du pack',
-            displaySettings: 'Paramètres d\'affichage',
-            recommendations: 'Recommandations',
-            review: 'Révision'
-        },
-        basicInfo: {
-            name: 'Nom du Pack',
-            namePlaceholder: 'ex. Kit Essentiels Été',
-            price: 'Prix',
-            image: 'Image du Pack',
-            hideComments: 'Masquer commentaires',
-            hideCommentsDesc: 'Désactiver les commentaires/avis pour ce pack'
-        },
-        description: {
-            title: 'Description',
-            label: 'Description du Pack'
-        },
-        items: {
-            title: 'Articles du Pack',
-            addItem: 'Ajouter un article',
-            enhancedSelection: 'Sélection avancée',
-            enhancedDesc: 'Recherchez et sélectionnez facilement des produits. Glissez pour réorganiser.'
-        },
-        validation: {
-            nameRequired: 'Le nom du pack est requis',
-            nameLength: 'Le nom du pack doit contenir au moins 3 caractères',
-            priceRequired: 'Un prix valide est requis',
-            itemRequired: 'Au moins un article de pack est requis',
-            itemDefaultRequired: 'Le produit par défaut est requis pour tous les articles'
-        },
-        dragDrop: {
-            clickToUpload: 'Cliquez pour télécharger',
-            orDrag: 'ou glisser-déposer',
-            fileTypeInfo: 'PNG, JPG, GIF jusqu\'à 5 Mo',
-            change: 'Changer',
-            remove: 'Retirer',
-            invalidType: 'Veuillez sélectionner un fichier image valide',
-            invalidSize: 'La taille de l\'image doit être inférieure à 5 Mo',
-            dropInvalid: 'Veuillez déposer un fichier image valide'
-        },
-        productSelect: {
-            placeholder: 'Sélectionner un produit...',
-            search: 'Rechercher des produits...',
-            noProducts: 'Aucun produit trouvé',
-            selected: 'sélectionné(s)',
-            more: 'plus'
-        },
-        success: {
-            created: 'Pack créé avec succès !',
-            updated: 'Pack mis à jour avec succès !',
-            draftCleared: 'Brouillon effacé avec succès'
-        },
-        errors: {
-            fetchFailed: 'Échec de la récupération des données. Veuillez réessayer.',
-            createFailed: 'Échec de la création du pack. Veuillez vérifier les champs.'
-        },
-        autoSave: 'Formulaire enregistré automatiquement'
-    },
+
     // Pack Recommendations
     packRecommendations: {
         title: 'Gérer les Recommandations',
