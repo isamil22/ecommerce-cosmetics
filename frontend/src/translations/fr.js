@@ -615,7 +615,8 @@ export const fr = {
             creating: 'Création...',
             updating: 'Mise à jour...',
             create: 'Créer une catégorie',
-            update: 'Mettre à jour la catégorie'
+            update: 'Mettre à jour la catégorie',
+            back: 'Retour'
         },
         messages: {
             notFound: 'Catégorie introuvable.',
@@ -2634,42 +2635,7 @@ export const fr = {
         }
     },
     // Admin Category Form
-    categoryForm: {
-        title: {
-            create: 'Créer une Catégorie',
-            edit: 'Modifier la Catégorie'
-        },
-        subtitle: {
-            create: 'Ajouter une nouvelle catégorie pour vos produits',
-            edit: 'Mettre à jour les détails de la catégorie'
-        },
-        form: {
-            name: 'Nom de la Catégorie',
-            slug: 'Slug',
-            description: 'Description',
-            parentCategory: 'Catégorie Parente',
-            displayOrder: 'Ordre d\'Affichage',
-            image: 'Image de la Catégorie',
-            currentImage: 'Image Actuelle',
-            uploadNew: 'Télécharger une Nouvelle Image',
-            none: 'Aucun'
-        },
-        validation: {
-            nameRequired: 'Le nom de la catégorie est requis'
-        },
-        actions: {
-            create: 'Créer la Catégorie',
-            update: 'Mettre à jour la Catégorie',
-            saving: 'Enregistrement...'
-        },
-        messages: {
-            notFound: 'Catégorie non trouvée',
-            createSuccess: 'Catégorie créée avec succès',
-            updateSuccess: 'Catégorie mise à jour avec succès',
-            createFailed: 'Échec de la création de la catégorie',
-            updateFailed: 'Échec de la mise à jour de la catégorie'
-        }
-    },
+
     // Admin Roles Page
     rolesPage: {
         title: 'Rôles et Permissions',

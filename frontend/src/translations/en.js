@@ -614,7 +614,8 @@ export const en = {
             creating: 'Creating...',
             updating: 'Updating...',
             create: 'Create Category',
-            update: 'Update Category'
+            update: 'Update Category',
+            back: 'Back'
         },
         messages: {
             notFound: 'Category not found.',
@@ -2626,42 +2627,7 @@ export const en = {
         }
     },
     // Admin Category Form
-    categoryForm: {
-        title: {
-            create: 'Create Category',
-            edit: 'Edit Category'
-        },
-        subtitle: {
-            create: 'Add a new category for your products',
-            edit: 'Update category details'
-        },
-        form: {
-            name: 'Category Name',
-            slug: 'Slug',
-            description: 'Description',
-            parentCategory: 'Parent Category',
-            displayOrder: 'Display Order',
-            image: 'Category Image',
-            currentImage: 'Current Image',
-            uploadNew: 'Upload New Image',
-            none: 'None'
-        },
-        validation: {
-            nameRequired: 'Category Name is required'
-        },
-        actions: {
-            create: 'Create Category',
-            update: 'Update Category',
-            saving: 'Saving...'
-        },
-        messages: {
-            notFound: 'Category not found',
-            createSuccess: 'Category created successfully',
-            updateSuccess: 'Category updated successfully',
-            createFailed: 'Failed to create category',
-            updateFailed: 'Failed to update category'
-        }
-    },
+
     // Admin Roles Page
     rolesPage: {
         title: 'Roles & Permissions',
