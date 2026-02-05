@@ -731,6 +731,7 @@ export const fr = {
         selected: 'sélectionné(s)',
         orderId: 'ID commande',
         customer: 'Client',
+        contact: 'Contact',
 
         timeline_placed: 'Commande passée',
         timeline_transit: 'En transit',
@@ -972,10 +973,18 @@ export const fr = {
             dashboard: 'Tableau de bord'
         },
         stats: {
+            totalRevenue: 'Revenu Total',
+            orders: 'Total Commandes',
+            customers: 'Total Clients',
             totalCoupons: 'Total des coupons',
             activeCoupons: 'Coupons actifs',
             totalUses: 'Utilisations totales',
             totalSavings: 'Économies totales'
+        },
+        charts: {
+            revenue: 'Revenus au Fil du Temps',
+            orders: 'Aperçu des Commandes',
+            topProducts: 'Meilleurs Produits'
         },
         usage: {
             title: 'Analytique d\'utilisation',
@@ -2635,27 +2644,7 @@ export const fr = {
         }
     },
     // Admin Analytics Page
-    analyticsPage: {
-        title: 'Tableau de Bord Analytique',
-        stats: {
-            totalRevenue: 'Revenu Total',
-            orders: 'Total Commandes',
-            customers: 'Total Clients',
-            totalCoupons: 'Total Coupons'
-        },
-        charts: {
-            revenue: 'Revenus au Fil du Temps',
-            orders: 'Aperçu des Commandes',
-            topProducts: 'Meilleurs Produits'
-        },
-        usage: {
-            title: 'Utilisation des Coupons'
-        },
-        actions: {
-            viewCoupons: 'Voir les Coupons',
-            refresh: 'Actualiser les Données'
-        }
-    },
+
     // Admin Custom Packs Page
 
     // Review Form Settings

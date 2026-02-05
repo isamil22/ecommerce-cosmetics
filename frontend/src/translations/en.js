@@ -733,6 +733,7 @@ export const en = {
         selected: 'selected',
         orderId: 'Order ID',
         customer: 'Customer',
+        contact: 'Contact',
         modal: {
             title: 'Order Details',
             clientInfo: 'Client Information',
@@ -969,10 +970,18 @@ export const en = {
             dashboard: 'Dashboard'
         },
         stats: {
+            totalRevenue: 'Total Revenue',
+            orders: 'Total Orders',
+            customers: 'Total Customers',
             totalCoupons: 'Total Coupons',
             activeCoupons: 'Active Coupons',
             totalUses: 'Total Uses',
             totalSavings: 'Total Savings'
+        },
+        charts: {
+            revenue: 'Revenue Over Time',
+            orders: 'Orders Overview',
+            topProducts: 'Top Products'
         },
         usage: {
             title: 'Usage Analytics',
@@ -2627,27 +2636,7 @@ export const en = {
         }
     },
     // Admin Analytics Page
-    analyticsPage: {
-        title: 'Analytics Dashboard',
-        stats: {
-            totalRevenue: 'Total Revenue',
-            orders: 'Total Orders',
-            customers: 'Total Customers',
-            totalCoupons: 'Total Coupons'
-        },
-        charts: {
-            revenue: 'Revenue Over Time',
-            orders: 'Orders Overview',
-            topProducts: 'Top Products'
-        },
-        usage: {
-            title: 'Coupon Usage'
-        },
-        actions: {
-            viewCoupons: 'View Coupons',
-            refresh: 'Refresh Data'
-        }
-    },
+
     // Admin Custom Packs Page
 
     // Review Form Settings
