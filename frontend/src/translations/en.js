@@ -2606,8 +2606,7 @@ export const en = {
             yes: 'Yes',
             no: 'No'
         }
-    }
-},
+    },
     // Admin Category Form
     categoryForm: {
         title: {

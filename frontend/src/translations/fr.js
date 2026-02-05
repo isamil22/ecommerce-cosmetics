@@ -2609,8 +2609,7 @@ export const fr = {
             yes: 'Oui',
             no: 'Non'
         }
-    }
-},
+    },
     // Admin Category Form
     categoryForm: {
         title: {
