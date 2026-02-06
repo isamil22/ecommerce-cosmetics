@@ -24,42 +24,49 @@ const HomePage = () => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [stars, setStars] = useState([]);
 
+    // --- OPTIMIZED DATA FETCHING (Parallel & Progressive) ---
     useEffect(() => {
-        const fetchData = async () => {
+        // 1. Fetch Hero IMMEDIATELY (Critical for LCP)
+        const fetchHero = async () => {
+            try {
+                const heroResponse = await getHero();
+                setHero(heroResponse.data);
+            } catch (err) {
+                console.error("Error fetching hero:", err);
+                // Fallback to default styling handled in render
+            }
+        };
+
+        // 2. Fetch Rest of Data in Background (Non-Critical)
+        const fetchContent = async () => {
             try {
                 const [
                     bestsellersResponse,
                     newArrivalsResponse,
                     reviewsResponse,
-                    categoriesResponse,
-                    heroResponse
+                    categoriesResponse
                 ] = await Promise.all([
                     getBestsellers(),
                     getNewArrivals(),
                     getApprovedReviews(),
-                    getAllCategories(),
-                    getHero()
+                    getAllCategories()
                 ]);
 
-                const bestsellersArray = Array.isArray(bestsellersResponse.data) ? bestsellersResponse.data : bestsellersResponse.data.content;
-                setBestsellers(bestsellersArray);
-
-                const newArrivalsArray = Array.isArray(newArrivalsResponse.data) ? newArrivalsResponse.data : newArrivalsResponse.data.content;
-                setNewArrivals(newArrivalsArray);
-
+                setBestsellers(Array.isArray(bestsellersResponse.data) ? bestsellersResponse.data : bestsellersResponse.data.content);
+                setNewArrivals(Array.isArray(newArrivalsResponse.data) ? newArrivalsResponse.data : newArrivalsResponse.data.content);
                 setReviews(reviewsResponse.data);
                 setCategories(categoriesResponse.data);
-                setHero(heroResponse.data);
-
             } catch (err) {
-                console.error("Error fetching data:", err);
+                console.error("Error fetching content:", err);
                 setError("لا يمكن تحميل البيانات من الخادم / Impossible de récupérer les données du serveur.");
-                toast.error("فشل في تحميل البيانات / Échec du chargement des données");
             } finally {
                 setLoading(false);
             }
         };
-        fetchData();
+
+        // Execute in parallel
+        fetchHero();
+        fetchContent();
 
         // Generate stars - reduced count for mobile performance
         const isMobile = window.innerWidth < 768;
@@ -94,10 +101,12 @@ const HomePage = () => {
     // Loading Skeleton Component
     const LoadingSkeleton = () => (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50">
-            {/* Hero Skeleton */}
-            <div className="container mx-auto px-6 py-12 lg:py-16">
-                <div className="bg-gray-200 rounded-3xl h-96 animate-skeleton-pulse max-w-7xl mx-auto"></div>
-            </div>
+            {/* Hero Skeleton - Only shown if Hero is loading */}
+            {!hero && (
+                <div className="container mx-auto px-6 py-12 lg:py-16">
+                    <div className="bg-gray-200 rounded-3xl h-96 animate-skeleton-pulse max-w-7xl mx-auto"></div>
+                </div>
+            )}
 
             {/* Categories Skeleton */}
             <div className="container mx-auto px-6 py-16 lg:py-20">
@@ -121,7 +130,9 @@ const HomePage = () => {
         </div>
     );
 
-    if (loading) {
+    // If Hero is not ready, show Skeleton.
+    // If Hero IS ready but content is loading, we render Hero + Content Skeletons below (managed by conditioned rendering or just showing skeletons at bottom)
+    if (!hero && loading) {
         return <LoadingSkeleton />;
     }
 
@@ -269,6 +280,7 @@ const HomePage = () => {
             {/* --- ULTRA ENHANCED Shop By Category Section --- */}
             <div className="w-full px-4 py-8 md:py-12">
                 <div className="text-center mb-8 md:mb-12">
+                    {/* ... Header stays same ... */}
                     <div className="inline-block mb-3 md:mb-4">
                         <span className="text-4xl md:text-5xl lg:text-6xl">🛍️</span>
                     </div>
@@ -283,51 +295,60 @@ const HomePage = () => {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-6 max-w-7xl mx-auto">
-                    {categories.length > 0 ? categories.map((category, index) => (
-                        <Link
-                            key={category.id}
-                            to={`/products?categoryId=${category.id}`}
-                            className="group relative block bg-white rounded-2xl md:rounded-3xl shadow-lg md:shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden aspect-square transform hover:scale-105"
-                            style={{ animationDelay: `${index * 0.1}s` }}
-                            aria-label={`تسوق ${category.name} / Acheter ${category.name}`}
-                        >
-                            {/* Image */}
-                            <img
-                                src={category.imageUrl || `https://placehold.co/400x400/fde4f2/E91E63?text=${encodeURIComponent(category.name)}`}
-                                alt={category.name}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                onError={(e) => {
-                                    e.target.src = `https://placehold.co/400x400/fde4f2/E91E63?text=${encodeURIComponent(category.name)}`;
-                                }}
-                            />
+                {loading ? (
+                    // Skeleton for Categories
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-6 max-w-7xl mx-auto">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="bg-gray-200 rounded-3xl h-40 animate-skeleton-pulse"></div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-6 max-w-7xl mx-auto">
+                        {categories.length > 0 ? categories.map((category, index) => (
+                            <Link
+                                key={category.id}
+                                to={`/products?categoryId=${category.id}`}
+                                className="group relative block bg-white rounded-2xl md:rounded-3xl shadow-lg md:shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden aspect-square transform hover:scale-105"
+                                style={{ animationDelay: `${index * 0.1}s` }}
+                                aria-label={`تسوق ${category.name} / Acheter ${category.name}`}
+                            >
+                                {/* Image */}
+                                <img
+                                    src={category.imageUrl || `https://placehold.co/400x400/fde4f2/E91E63?text=${encodeURIComponent(category.name)}`}
+                                    alt={category.name}
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    onError={(e) => {
+                                        e.target.src = `https://placehold.co/400x400/fde4f2/E91E63?text=${encodeURIComponent(category.name)}`;
+                                    }}
+                                />
 
-                            {/* Enhanced Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                {/* Enhanced Gradient Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                            {/* Content */}
-                            <div className="absolute inset-0 flex flex-col items-center justify-end p-3 md:p-6 pb-4 md:pb-8">
-                                <p className="font-black text-white text-lg md:text-2xl text-center leading-tight mb-2 transform group-hover:translate-y-0 transition-transform duration-500">
-                                    {category.name}
-                                </p>
-                                <p className="hidden md:block text-base text-center text-gray-200 max-w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 px-2 leading-snug">
-                                    {category.description || 'استكشف / Explorer'}
-                                </p>
+                                {/* Content */}
+                                <div className="absolute inset-0 flex flex-col items-center justify-end p-3 md:p-6 pb-4 md:pb-8">
+                                    <p className="font-black text-white text-lg md:text-2xl text-center leading-tight mb-2 transform group-hover:translate-y-0 transition-transform duration-500">
+                                        {category.name}
+                                    </p>
+                                    <p className="hidden md:block text-base text-center text-gray-200 max-w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 px-2 leading-snug">
+                                        {category.description || 'استكشف / Explorer'}
+                                    </p>
 
-                                {/* Ultra Enhanced Arrow Icon - Hidden on small mobile to save space */}
-                                <div className="hidden md:flex mt-4 w-10 h-10 bg-pink-500 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-lg">
-                                    <span className="text-white font-black text-lg">→</span>
+                                    {/* Ultra Enhanced Arrow Icon - Hidden on small mobile to save space */}
+                                    <div className="hidden md:flex mt-4 w-10 h-10 bg-pink-500 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 shadow-lg">
+                                        <span className="text-white font-black text-lg">→</span>
+                                    </div>
                                 </div>
+                            </Link>
+                        )) : (
+                            <div className="col-span-full text-center py-20">
+                                <div className="text-8xl mb-6">🛍️</div>
+                                <p className="text-3xl text-gray-600 mb-4 font-black">لا توجد فئات متاحة حالياً</p>
+                                <p className="text-2xl text-gray-400 font-semibold">Aucune catégorie disponible pour le moment</p>
                             </div>
-                        </Link>
-                    )) : (
-                        <div className="col-span-full text-center py-20">
-                            <div className="text-8xl mb-6">🛍️</div>
-                            <p className="text-3xl text-gray-600 mb-4 font-black">لا توجد فئات متاحة حالياً</p>
-                            <p className="text-2xl text-gray-400 font-semibold">Aucune catégorie disponible pour le moment</p>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             {error && (
