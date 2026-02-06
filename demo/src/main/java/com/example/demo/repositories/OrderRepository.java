@@ -17,6 +17,7 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserAndDeletedFalseOrderByCreatedAtDesc(User user);
 
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.items WHERE o.deleted = false ORDER BY o.createdAt DESC")
     List<Order> findByDeletedFalseOrderByCreatedAtDesc();
 
     Optional<Order> findByIdAndDeletedFalse(Long orderId);

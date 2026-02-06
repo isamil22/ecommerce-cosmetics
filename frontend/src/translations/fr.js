@@ -1,4 +1,4 @@
-// French translations
+﻿// French translations
 export const fr = {
     // Admin Dashboard
     adminDashboard: 'Tableau de bord Admin',
@@ -736,6 +736,7 @@ export const fr = {
         status_DELIVERING: 'En livraison',
         status_DELIVERED: 'Livré',
         status_CANCELLED: 'Annulé',
+        status_CANCELED: 'Annulé',
 
         date_ALL: 'Toutes les dates',
         date_TODAY: 'Aujourd\'hui',
@@ -748,6 +749,16 @@ export const fr = {
         status: 'Statut',
         date: 'Date',
         actions: 'Actions',
+
+        table: {
+            orderId: 'ID commande',
+            customer: 'Client',
+            contactInfo: 'Infos contact',
+            created: 'Date',
+            status: 'Statut',
+            total: 'Total',
+            actions: 'Actions'
+        },
 
         totalRevenue: 'Revenu total',
         averageOrder: 'Panier moyen',

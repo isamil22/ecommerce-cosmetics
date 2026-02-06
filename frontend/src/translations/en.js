@@ -727,6 +727,7 @@ export const en = {
         status_DELIVERING: 'Delivering',
         status_DELIVERED: 'Delivered',
         status_CANCELLED: 'Cancelled',
+        status_CANCELED: 'Cancelled',
 
         date_ALL: 'All Dates',
         date_TODAY: 'Today',
@@ -739,6 +740,16 @@ export const en = {
         status: 'Status',
         date: 'Date',
         actions: 'Actions',
+
+        table: {
+            orderId: 'Order ID',
+            customer: 'Customer',
+            contactInfo: 'Contact Info',
+            created: 'Date',
+            status: 'Status',
+            total: 'Total',
+            actions: 'Actions'
+        },
 
         totalRevenue: 'Total Revenue',
         averageOrder: 'Average Order',

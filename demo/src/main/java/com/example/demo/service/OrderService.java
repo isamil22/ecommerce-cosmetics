@@ -598,7 +598,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderDTO> getAllOrders() {
-        return orderMapper.toDTOs(orderRepository.findByDeleted(false));
+        return orderMapper.toDTOs(orderRepository.findByDeletedFalseOrderByCreatedAtDesc());
     }
 
     @Transactional(readOnly = true)
