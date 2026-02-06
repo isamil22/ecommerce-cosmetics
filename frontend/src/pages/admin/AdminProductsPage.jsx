@@ -825,7 +825,7 @@ const AdminProductsPage = () => {
 
                                                         <div className="flex items-center justify-between text-sm text-gray-600">
                                                             <span>
-                                                                {t('products.category')}: {categories.find(c => c.id === product.categoryId)?.name || 'Uncategorized'}
+                                                                {t('products.category')}: {categories.find(c => c.id === product.categoryId)?.name || t('common.uncategorized')}
                                                             </span>
                                                         </div>
 
@@ -902,7 +902,7 @@ const AdminProductsPage = () => {
                                                                 <span>•</span>
                                                                 <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${getStockColor(product.quantity)}`}>
                                                                     <StockIcon className="w-3 h-3 inline mr-1" />
-                                                                    {product.quantity} in stock
+                                                                    {product.quantity} {t('common.inStock')}
                                                                 </span>
                                                                 <span>•</span>
                                                                 <span>{categories.find(c => c.id === product.categoryId)?.name || 'Uncategorized'}</span>
@@ -914,28 +914,28 @@ const AdminProductsPage = () => {
                                                             <button
                                                                 onClick={() => handleQuickEdit(product)}
                                                                 className="bg-purple-50 hover:bg-purple-100 text-purple-600 p-2 rounded-lg transition-colors"
-                                                                title="Quick Edit"
+                                                                title={t('products.quickEdit')}
                                                             >
                                                                 <FiSettings className="w-4 h-4" />
                                                             </button>
                                                             <Link
                                                                 to={`/admin/products/edit/${product.id}`}
                                                                 className="bg-blue-50 hover:bg-blue-100 text-blue-600 p-2 rounded-lg transition-colors"
-                                                                title="Full Edit"
+                                                                title={t('products.edit')}
                                                             >
                                                                 <FiEdit3 className="w-4 h-4" />
                                                             </Link>
                                                             <Link
                                                                 to={`/admin/products/${product.id}/comments`}
                                                                 className="bg-green-50 hover:bg-green-100 text-green-600 p-2 rounded-lg transition-colors"
-                                                                title="Manage Comments"
+                                                                title={t('products.comments')}
                                                             >
                                                                 <FiUsers className="w-4 h-4" />
                                                             </Link>
                                                             <button
                                                                 onClick={() => handleDelete(product.id)}
                                                                 className="bg-red-50 hover:bg-red-100 text-red-600 p-2 rounded-lg transition-colors"
-                                                                title="Delete Product"
+                                                                title={t('products.delete')}
                                                             >
                                                                 <FiTrash2 className="w-4 h-4" />
                                                             </button>

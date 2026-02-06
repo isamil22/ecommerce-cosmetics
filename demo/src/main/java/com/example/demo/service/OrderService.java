@@ -603,7 +603,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderDTO getOrderById(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithItems(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
         OrderDTO dto = orderMapper.toDTO(order);
         populateCouponInfo(dto);

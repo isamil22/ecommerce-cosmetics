@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import DynamicAdminSidebar from './DynamicAdminSidebar';
 import { getUserProfile } from '../api/apiService';
 import { PermissionProvider } from '../contexts/PermissionContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { FiMenu, FiX } from 'react-icons/fi';
 import GoogleTranslateWidget from './GoogleTranslateWidget';
 
@@ -12,6 +13,7 @@ const AdminLayout = () => {
     const [isCheckingAccess, setIsCheckingAccess] = useState(true);
     const [hasAccess, setHasAccess] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const { t } = useLanguage();
 
     // Auto-hide sidebar on Landing Page Editor
     useEffect(() => {
@@ -54,7 +56,7 @@ const AdminLayout = () => {
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Checking access permissions...</p>
+                    <p className="text-gray-600">{t('adminLayout.checkingPermissions')}</p>
                 </div>
             </div>
         );
@@ -73,7 +75,7 @@ const AdminLayout = () => {
                     <button
                         onClick={() => setIsSidebarOpen(true)}
                         className="fixed top-4 left-4 z-[110] p-2 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition-all text-gray-700"
-                        title="Open Menu"
+                        title={t('adminLayout.openMenu')}
                     >
                         <FiMenu size={24} />
                     </button>
@@ -102,7 +104,7 @@ const AdminLayout = () => {
                             <button
                                 onClick={() => setIsSidebarOpen(false)}
                                 className="p-2 bg-white/10 rounded-full hover:bg-white/20 text-white transition-colors"
-                                title="Collapse Menu"
+                                title={t('adminLayout.collapseMenu')}
                             >
                                 <FiX size={16} />
                             </button>

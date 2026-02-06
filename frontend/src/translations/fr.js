@@ -1,4 +1,4 @@
-﻿// French translations
+// French translations
 export const fr = {
     // Admin Dashboard
     adminDashboard: 'Tableau de bord Admin',
@@ -378,7 +378,14 @@ export const fr = {
         // Warnings
         warnings: {
             partialDelete: '{success} produit(s) supprimé(s), {failed} échec(s)'
-        }
+        },
+
+        // Actions
+        quickEdit: 'Modification rapide',
+        edit: 'Modifier',
+        delete: 'Supprimer',
+        comments: 'Commentaires',
+        view: 'Voir'
     },
 
     // Admin Product Form
@@ -678,6 +685,40 @@ export const fr = {
         reviewFormSettings: 'Paramètres du formulaire d\'avis'
     },
 
+    adminSidebar: {
+        adminPanel: 'Panneau d\'administration',
+        storeManagement: 'Gestion de la boutique',
+        dashboard: 'Tableau de bord',
+        products: 'Produits',
+        categories: 'Catégories',
+        packs: 'Packs',
+        customPacks: 'Packs personnalisés',
+        sales: 'Vente',
+        orders: 'Commandes',
+        coupons: 'Coupons',
+        discountRules: 'Règles de réduction',
+        users: 'Utilisateurs',
+        reviews: 'Avis',
+        content: 'Contenu',
+        heroSection: 'Section Héro',
+        announcements: 'Annonces',
+        landingPages: 'Pages de destination',
+        countdown: 'Compte à rebours',
+        enhancedCounter: 'Compteur amélioré',
+        reviewFormSettings: 'Paramètres du formulaire d\'avis',
+        analytics: 'Analytique',
+        accessControl: 'Contrôle d\'accès',
+        roles: 'Rôles',
+        permissions: 'Permissions',
+        logoSettings: 'Paramètres du logo',
+        facebookPixel: 'Pixel Facebook'
+    },
+    adminLayout: {
+        checkingPermissions: 'Vérification des permissions d\'accès...',
+        openMenu: 'Ouvrir le menu',
+        collapseMenu: 'Réduire le menu'
+    },
+
     // Orders Page
     ordersPage: {
         title: 'Gestion des commandes',
@@ -759,6 +800,7 @@ export const fr = {
             markDelivered: 'Marquer comme livré',
             cancelOrder: 'Annuler',
             restoreOrder: 'Restaurer',
+            delete: 'Supprimer',
             close: 'Fermer',
             noItems: 'Aucun article dans cette commande.',
             coupon: 'Code promo :',
@@ -895,6 +937,7 @@ export const fr = {
             priceRequired: 'Un prix valide est requis',
             imageRequired: 'Veuillez sélectionner un fichier image valide',
             imageSize: 'La taille de l\'image doit être inférieure à 5 Mo',
+            imageInvalid: 'Veuillez sélectionner un fichier image valide',
             itemDefaultRequired: 'Le produit par défaut est requis pour chaque article',
             minItems: 'Au moins un article de pack est requis'
         },
@@ -910,7 +953,9 @@ export const fr = {
         dragDrop: {
             clickToUpload: 'Cliquez pour télécharger',
             orDrag: 'ou glisser-déposer',
+            orDragDrop: 'ou glisser-déposer',
             fileTypeInfo: 'PNG, JPG, GIF jusqu\'à 5 Mo',
+            fileTypes: 'PNG, JPG, GIF jusqu\'à 5 Mo',
             change: 'Changer',
             remove: 'Retirer',
             invalidType: 'Veuillez sélectionner un fichier image valide',
@@ -922,12 +967,17 @@ export const fr = {
             search: 'Rechercher des produits...',
             noProducts: 'Aucun produit trouvé',
             selected: 'sélectionné(s)',
-            more: 'plus'
+            more: 'plus',
+            hint: 'Cliquez pour sélectionner plusieurs produits'
         },
         errors: {
             fetchFailed: 'Échec de la récupération des données. Veuillez réessayer.',
-            createFailed: 'Échec de la création du pack. Veuillez vérifier les champs.'
+            createFailed: 'Échec de la création du pack. Veuillez vérifier les champs.',
+            updateFailed: 'Échec de la mise à jour du pack. Veuillez vérifier les champs.'
         },
+        searchPlaceholder: 'Rechercher des produits...',
+        noProductsFound: 'Aucun produit trouvé',
+        noProductsAvailable: 'Aucun produit disponible',
         autoSave: 'Formulaire enregistré automatiquement'
     },
 
@@ -957,6 +1007,45 @@ export const fr = {
             saveFailed: 'Échec de l\'enregistrement des paramètres',
             loadFailed: 'Échec du chargement des paramètres'
         }
+    },
+
+    // Common UI Elements
+    common: {
+        remove: 'Supprimer',
+        clear: 'Effacer',
+        change: 'Changer',
+        viewDetails: 'Voir les détails',
+        loading: 'Chargement...',
+        noResults: 'Aucun résultat',
+        search: 'Rechercher',
+        uncategorized: 'Non catégorisé',
+        inStock: 'en stock',
+        edit: 'Modifier',
+        delete: 'Supprimer',
+        create: 'Créer',
+        update: 'Mettre à jour',
+        cancel: 'Annuler',
+        save: 'Enregistrer',
+        saving: 'Enregistrement...',
+        close: 'Fermer',
+        back: 'Retour',
+        next: 'Suivant',
+        previous: 'Précédent',
+        actions: 'Actions',
+        status: 'Statut',
+        name: 'Nom',
+        description: 'Description',
+        price: 'Prix',
+        stock: 'Stock',
+        category: 'Catégorie',
+        image: 'Image',
+        preview: 'Aperçu',
+        dragDrop: 'ou glisser-déposer',
+        clickToUpload: 'Cliquez pour télécharger',
+        imageFormats: 'PNG, JPG, GIF jusqu\'à 5MB',
+        noProductsFound: 'Aucun produit trouvé',
+        noProductsAvailable: 'Aucun produit disponible',
+        secondary: 'Secondaire'
     },
 
     // Analytics Page
@@ -1254,6 +1343,8 @@ export const fr = {
             totalValue: 'Valeur Totale',
             savings: 'Économies',
             quickActions: 'Actions Rapides',
+            unsavedChanges: 'Modifications non enregistrées',
+            preview: 'Aperçu',
             readyToSave: 'Prêt à enregistrer ?',
             reviewSettings: 'Vérifiez les paramètres et enregistrez les modifications',
             cancel: 'Annuler',
@@ -1267,6 +1358,12 @@ export const fr = {
                 maxItemsRequired: 'Le nombre maximum d\'articles est requis',
                 fixedPriceRequired: 'Le prix fixe est requis',
                 discountRateRequired: 'Le taux de remise est requis',
+                nameLength: 'Le nom du pack doit contenir au moins 3 caractères',
+                minItemsValue: 'Le minimum d\'articles doit être d\'au moins 1',
+                fixedPriceMin: 'Le prix fixe doit être supérieur à 0',
+                discountRateRange: 'Le taux de remise doit être compris entre 0 et 1 (ex: 0.20 pour 20%)',
+                fixErrors: 'Veuillez corriger les erreurs de validation avant de soumettre',
+                saveFailed: 'Échec de l\'enregistrement du pack personnalisé',
                 minProducts: 'Sélectionnez au moins {count} produits',
                 maxItemsError: 'Le nombre maximum d\'articles ne peut pas être inférieur au minimum'
             },
@@ -1407,7 +1504,8 @@ export const fr = {
             buttonUrl: 'URL du bouton',
             notSet: 'Non défini',
             yes: 'Oui',
-            no: 'Non'
+            no: 'Non',
+            chars: 'caractères'
         },
         messages: {
             success: 'Section Hero mise à jour avec succès !',
@@ -1420,7 +1518,9 @@ export const fr = {
                 linkTextRequired: 'Le texte du lien est requis',
                 linkUrlRequired: 'L\'URL du lien est requise',
                 linkUrlFormat: 'L\'URL du lien doit commencer par / ou http',
-                imageRequired: 'Veuillez sélectionner un fichier image valide.'
+                imageRequired: 'Veuillez sélectionner un fichier image valide.',
+                saveFailed: 'Échec de l\'enregistrement des modifications.',
+                fixErrors: 'Veuillez corriger les erreurs avant d\'enregistrer.'
             }
         },
         shortcuts: {
@@ -1611,70 +1711,7 @@ export const fr = {
         }
     },
     // Products Page
-    products: {
-        title: 'Inventaire des produits',
-        subtitle: 'Gérez et suivez l\'ensemble de votre catalogue produits',
-        shortcuts: {
-            newProduct: 'Nouveau produit',
-            search: 'Chercher',
-            closeModal: 'Fermer la fenêtre'
-        },
-        analytics: {
-            totalProducts: 'Total produits',
-            inStock: 'En stock',
-            lowStock: 'Stock faible',
-            outOfStock: 'Rupture de stock',
-            totalValue: 'Valeur totale',
-            avgPrice: 'Prix moyen'
-        },
-        refresh: 'Actualiser',
-        exportCSV: 'Exporter CSV',
-        addNewProduct: 'Ajouter un produit',
-        searchPlaceholder: 'Rechercher des produits...',
-        allCategories: 'Toutes les catégories',
-        allStock: 'Tous les niveaux de stock',
-        inStockFilter: 'En stock',
-        lowStockFilter: 'Stock faible',
-        outOfStockFilter: 'Rupture de stock',
-        allStatus: 'Tous les statuts',
-        activeStatus: 'Actif',
-        disabledStatus: 'Désactivé',
-        featuredStatus: 'En vedette',
-        newArrivalsStatus: 'Nouveautés',
-        sortByName: 'Trier par nom',
-        sortByPrice: 'Trier par prix',
-        sortByStock: 'Trier par stock',
-        sortByDate: 'Trier par date',
-        gridView: 'Vue Grille',
-        listView: 'Vue Liste',
-        clearFilters: 'Effacer les filtres',
-        selectedCount: 'sélectionnés',
-        clearSelection: 'Effacer la sélection',
-        bulkDelete: 'Supprimer la sélection',
-        bulkDeleteConfirm: 'Êtes-vous sûr de vouloir supprimer {count} produits ?',
-        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
-        selectAll: 'Tout sélectionner',
-        noProducts: 'Aucun produit trouvé',
-        noProductsDesc: 'Essayez d\'ajuster vos critères de recherche ou ajoutez un nouveau produit',
-        stockStatus: {
-            inStock: 'en stock',
-            low: 'stock faible',
-            out: 'rupture de stock'
-        },
-        featured: 'En vedette',
-        newArrival: 'Nouveau',
-        errors: {
-            fetchFailed: 'Échec de la récupération des produits.',
-            deleteFailed: 'Échec de la suppression du produit.',
-            noSelection: 'Aucun produit sélectionné.',
-            exportFailed: 'Échec de l\'exportation des produits.'
-        },
-        success: {
-            deleted: 'Produit supprimé avec succès !',
-            bulkDeleted: '{count} produits supprimés avec succès !',
-            exported: 'Produits exportés avec succès !'
-        }
-    },
+
     // Product Form
     productForm: {
         title: {
@@ -1768,7 +1805,8 @@ export const fr = {
         },
         deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce pack ?',
         deleteSuccess: 'Pack supprimé avec succès',
-        deleteFailed: 'Échec de la suppression du pack'
+        deleteFailed: 'Échec de la suppression du pack',
+        noPrice: 'Prix non défini',
     },
     // Pack Form
 
@@ -1874,7 +1912,9 @@ export const fr = {
             markDelivering: 'Marquer En Livraison',
             markDelivered: 'Marquer comme Livré',
             cancelOrder: 'Annuler la commande',
-            restoreOrder: 'Restaurer la commande'
+            restoreOrder: 'Restaurer la commande',
+            delete: 'Supprimer',
+            viewDetails: 'Voir les détails'
         },
         messages: {
             fetchError: 'Échec du chargement des commandes.',
@@ -1963,6 +2003,7 @@ export const fr = {
             created: 'Coupon "{name}" créé avec succès !',
             updated: 'Coupon "{name}" mis à jour !',
             deleted: 'Coupon supprimé avec succès !',
+            refreshed: 'Coupons actualisés avec succès !',
             copied: 'Code copié dans le presse-papier !',
             deleteConfirm: 'Voulez-vous vraiment supprimer ce coupon ?',
             deleteConfirmTitle: 'Supprimer le Coupon',
@@ -1977,6 +2018,7 @@ export const fr = {
         subtitle: 'Créez des pages de vente à haute conversion pour vos campagnes marketing',
         create: 'Créer une Page',
         searchPlaceholder: 'Rechercher des pages...',
+        search: 'Rechercher',
         stats: {
             total: 'Total Pages',
             active: 'Pages Actives',
@@ -1986,7 +2028,8 @@ export const fr = {
         tabs: {
             all: 'Toutes les Pages',
             published: 'Publiées',
-            drafts: 'Brouillons'
+            drafts: 'Brouillons',
+            archived: 'Archivés'
         },
         table: {
             title: 'Titre',
@@ -1995,6 +2038,7 @@ export const fr = {
             views: 'Vues',
             conversions: 'Conversions',
             lastModified: 'Dernière Modif',
+            createdOn: 'Créé le',
             actions: 'Actions',
             view: 'Voir',
             edit: 'Modifier',
@@ -2005,19 +2049,31 @@ export const fr = {
         },
         status: {
             published: 'Publié',
-            draft: 'Brouillon'
+            draft: 'Brouillon',
+            archived: 'Archivé'
+        },
+        pagination: {
+            previous: 'Précédent',
+            next: 'Suivant',
+            pageOf: 'Page {current} sur {total}'
         },
         messages: {
             deleteConfirm: 'Voulez-vous vraiment supprimer cette page ?',
             deleteConfirmTitle: 'Supprimer la Page',
             yesDelete: 'Oui, Supprimer',
+            publishConfirm: 'Voulez-vous vraiment publier cette page ?',
+            unpublishConfirm: 'Voulez-vous vraiment dépublier cette page ?',
+            duplicatePrompt: 'Entrez un slug pour la page dupliquée (ex: promo-noel-copie) :',
             publishedSuccess: 'Page publiée avec succès !',
             unpublishedSuccess: 'Page dépubliée avec succès !',
             deletedSuccess: 'Page supprimée avec succès !',
             duplicatedSuccess: 'Page dupliquée avec succès !',
             errorFetch: 'Erreur lors du chargement des pages',
             errorAction: 'Action échouée'
-        }
+        },
+        emptyState: 'Aucune page de destination trouvée',
+        emptyDesc: 'Créez votre première page de destination pour commencer !',
+        productLabel: 'Produit'
     },
     // Landing Page Builder
     landingPageBuilder: {
@@ -2349,72 +2405,6 @@ export const fr = {
                 }
             }
         }
-    },
-    // Admin Products Page
-    products: {
-        title: 'Produits',
-        subtitle: 'Gérez votre catalogue de produits',
-        shortcuts: {
-            newProduct: 'Nouveau Produit',
-            search: 'Rechercher',
-            closeModal: 'Fermer'
-        },
-        refresh: 'Actualiser',
-        exportCSV: 'Exporter CSV',
-        addNewProduct: 'Ajouter un Produit',
-        errors: {
-            fetchFailed: 'Échec du chargement des produits',
-            deleteFailed: 'Échec de la suppression du produit',
-            noSelection: 'Aucun produit sélectionné',
-            exportFailed: 'Échec de l\'exportation CSV'
-        },
-        success: {
-            deleted: 'Produit supprimé avec succès',
-            bulkDeleted: '{count} produits supprimés avec succès',
-            exported: 'Produits exportés avec succès'
-        },
-        bulkDeleteConfirm: 'Êtes-vous sûr de vouloir supprimer {count} produits ?',
-        deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
-        bulkDelete: 'Supprimer la sélection',
-        selectAll: 'Tout sélectionner',
-        noProducts: 'Aucun produit trouvé',
-        noProductsDesc: 'Commencez par créer votre premier produit.',
-        stockStatus: {
-            inStock: 'En Stock'
-        },
-        featured: 'En Vedette',
-        newArrival: 'Nouveau',
-        category: 'Catégorie',
-        quickEdit: 'Édition Rapide',
-        edit: 'Modifier',
-        analytics: {
-            totalProducts: 'Total Produits',
-            inStock: 'En Stock',
-            lowStock: 'Stock Faible',
-            outOfStock: 'Rupture de Stock',
-            totalValue: 'Valeur Totale',
-            avgPrice: 'Prix Moyen'
-        },
-        searchPlaceholder: 'Rechercher des produits...',
-        allCategories: 'Toutes les Catégories',
-        allStock: 'Tout le Stock',
-        inStockFilter: 'En Stock',
-        lowStockFilter: 'Stock Faible',
-        outOfStockFilter: 'Rupture de Stock',
-        allStatus: 'Tous les Statuts',
-        activeStatus: 'Actif',
-        disabledStatus: 'Désactivé',
-        featuredStatus: 'En Vedette',
-        newArrivalsStatus: 'Nouveaux Arrivages',
-        sortByName: 'Nom',
-        sortByPrice: 'Prix',
-        sortByStock: 'Stock',
-        sortByDate: 'Date',
-        gridView: 'Vue Grille',
-        listView: 'Vue Liste',
-        clearFilters: 'Effacer les filtres',
-        selectedCount: 'sélectionné(s)',
-        clearSelection: 'Effacer la sélection'
     },
     // Admin Categories Page
     categoriesPage: {

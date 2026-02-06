@@ -6,6 +6,7 @@ import ReactGA from "react-ga4";
 import { addToCart } from '../api/apiService';
 import { toast } from 'react-toastify';
 import { formatPrice } from '../utils/currency';
+import LazyImage from './LazyImage';
 
 const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -155,12 +156,12 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
             </div>
 
             <Link to={`/products/${product.id}`} className="block">
-                {/* Image Container */}
+                {/* Image Container - Optimized with Lazy Loading */}
                 <div className="relative overflow-hidden bg-gray-100 aspect-square">
-                    <img
+                    <LazyImage
                         src={fullImageUrl}
                         alt={product.name}
-                        className={`w-full h-full object-cover transition-all duration-500 ${isHovered ? 'scale-110' : 'scale-100'} ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        className={`w-full h-full transition-all duration-500 ${isHovered ? 'scale-110' : 'scale-100'}`}
                         onLoad={() => setImageLoaded(true)}
                         onError={(e) => {
                             e.currentTarget.onerror = null;
@@ -168,11 +169,6 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                             setImageLoaded(true);
                         }}
                     />
-
-                    {/* Loading Skeleton */}
-                    {!imageLoaded && (
-                        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse"></div>
-                    )}
 
                     {/* Gradient Overlay on Hover */}
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}></div>

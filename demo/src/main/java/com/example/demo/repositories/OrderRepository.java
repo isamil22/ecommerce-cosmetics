@@ -21,6 +21,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findByIdAndDeletedFalse(Long orderId);
 
+    // Fetch order with items (fixes lazy loading issue)
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.items WHERE o.id = :orderId AND o.deleted = false")
+    Optional<Order> findByIdWithItems(@Param("orderId") Long orderId);
+
     List<Order> findByCoupon(Coupon coupon);
 
     // This will allow finding orders by the ID of the associated User.

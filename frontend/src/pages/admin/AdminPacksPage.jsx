@@ -132,7 +132,7 @@ const AdminPacksPage = () => {
                                             <div className="flex items-center space-x-2 text-gray-600">
                                                 <FiDollarSign className="w-4 h-4" />
                                                 <span className="font-semibold">
-                                                    {pack.price != null ? `$${pack.price.toFixed(2)}` : 'No price set'}
+                                                    {pack.price != null ? `$${pack.price.toFixed(2)}` : t('managePacks.noPrice')}
                                                 </span>
                                             </div>
                                         </div>

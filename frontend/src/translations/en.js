@@ -675,8 +675,41 @@ export const en = {
         newCustomPack: 'New Custom Pack',
         addCategory: 'Add Category',
         reviewFormSettings: 'Review Form Settings'
-    }
-    ,
+    },
+
+    adminSidebar: {
+        adminPanel: 'Admin Panel',
+        storeManagement: 'Store Management',
+        dashboard: 'Dashboard',
+        products: 'Products',
+        categories: 'Categories',
+        packs: 'Packs',
+        customPacks: 'Custom Packs',
+        sales: 'Sales',
+        orders: 'Orders',
+        coupons: 'Coupons',
+        discountRules: 'Discount Rules',
+        users: 'Users',
+        reviews: 'Reviews',
+        content: 'Content',
+        heroSection: 'Hero Section',
+        announcements: 'Announcements',
+        landingPages: 'Landing Pages',
+        countdown: 'Countdown',
+        enhancedCounter: 'Enhanced Counter',
+        reviewFormSettings: 'Review Form Settings',
+        analytics: 'Analytics',
+        accessControl: 'Access Control',
+        roles: 'Roles',
+        permissions: 'Permissions',
+        logoSettings: 'Logo Settings',
+        facebookPixel: 'Facebook Pixel'
+    },
+    adminLayout: {
+        checkingPermissions: 'Checking access permissions...',
+        openMenu: 'Open Menu',
+        collapseMenu: 'Collapse Menu'
+    },
     // Orders Page
     ordersPage: {
         title: 'Orders Management',
@@ -1251,6 +1284,8 @@ export const en = {
             totalValue: 'Total Value',
             savings: 'Savings',
             quickActions: 'Quick Actions',
+            unsavedChanges: 'Unsaved changes',
+            preview: 'Preview',
             readyToSave: 'Ready to save?',
             reviewSettings: 'Review settings and save changes',
             cancel: 'Cancel',
@@ -1264,6 +1299,12 @@ export const en = {
                 maxItemsRequired: 'Maximum items is required',
                 fixedPriceRequired: 'Fixed price is required',
                 discountRateRequired: 'Discount rate is required',
+                nameLength: 'Pack name must be at least 3 characters',
+                minItemsValue: 'Minimum items must be at least 1',
+                fixedPriceMin: 'Fixed price must be greater than 0',
+                discountRateRange: 'Discount rate must be between 0 and 1 (e.g., 0.20 for 20%)',
+                fixErrors: 'Please fix the validation errors before submitting',
+                saveFailed: 'Failed to save custom pack.',
                 minProducts: 'Select at least {count} products',
                 maxItemsError: 'Maximum items cannot be less than minimum items'
             },
@@ -1404,7 +1445,8 @@ export const en = {
             buttonUrl: 'Button URL',
             notSet: 'Not set',
             yes: 'Yes',
-            no: 'No'
+            no: 'No',
+            chars: 'characters'
         },
         messages: {
             success: 'Hero section updated successfully!',
@@ -1417,7 +1459,9 @@ export const en = {
                 linkTextRequired: 'Link text is required',
                 linkUrlRequired: 'Link URL is required',
                 linkUrlFormat: 'Link URL must start with / or http',
-                imageRequired: 'Please select a valid image file.'
+                imageRequired: 'Please select a valid image file.',
+                saveFailed: 'Failed to save changes.',
+                fixErrors: 'Please fix errors before saving.'
             }
         },
         shortcuts: {
@@ -1608,70 +1652,7 @@ export const en = {
         }
     },
     // Products Page
-    products: {
-        title: 'Products Inventory',
-        subtitle: 'Manage and track your entire product catalog',
-        shortcuts: {
-            newProduct: 'New Product',
-            search: 'Search',
-            closeModal: 'Close Modal'
-        },
-        analytics: {
-            totalProducts: 'Total Products',
-            inStock: 'In Stock',
-            lowStock: 'Low Stock',
-            outOfStock: 'Out of Stock',
-            totalValue: 'Total Value',
-            avgPrice: 'Avg Price'
-        },
-        refresh: 'Refresh',
-        exportCSV: 'Export CSV',
-        addNewProduct: 'Add New Product',
-        searchPlaceholder: 'Search products...',
-        allCategories: 'All Categories',
-        allStock: 'All Stock Levels',
-        inStockFilter: 'In Stock',
-        lowStockFilter: 'Low Stock',
-        outOfStockFilter: 'Out of Stock',
-        allStatus: 'All Status',
-        activeStatus: 'Active',
-        disabledStatus: 'Disabled',
-        featuredStatus: 'Featured',
-        newArrivalsStatus: 'New Arrivals',
-        sortByName: 'Sort by Name',
-        sortByPrice: 'Sort by Price',
-        sortByStock: 'Sort by Stock',
-        sortByDate: 'Sort by Date',
-        gridView: 'Grid View',
-        listView: 'List View',
-        clearFilters: 'Clear Filters',
-        selectedCount: 'selected',
-        clearSelection: 'Clear selection',
-        bulkDelete: 'Delete Selected',
-        bulkDeleteConfirm: 'Are you sure you want to delete {count} products?',
-        deleteConfirm: 'Are you sure you want to delete this product?',
-        selectAll: 'Select All',
-        noProducts: 'No products found',
-        noProductsDesc: 'Try adjusting your search criteria or add a new product',
-        stockStatus: {
-            inStock: 'in stock',
-            low: 'low stock',
-            out: 'out of stock'
-        },
-        featured: 'Featured',
-        newArrival: 'New',
-        errors: {
-            fetchFailed: 'Failed to fetch products.',
-            deleteFailed: 'Failed to delete product.',
-            noSelection: 'No products selected.',
-            exportFailed: 'Failed to export products.'
-        },
-        success: {
-            deleted: 'Product deleted successfully!',
-            bulkDeleted: '{count} products deleted successfully!',
-            exported: 'Products exported successfully!'
-        }
-    },
+
     // Product Form
     productForm: {
         title: {
@@ -1960,7 +1941,8 @@ export const en = {
             created: 'Coupon "{name}" created successfully!',
             updated: 'Coupon "{name}" updated successfully!',
             deleted: 'Coupon deleted successfully!',
-            copied: 'Coupon code copied to clipboard!',
+            refreshed: 'Coupons refreshed successfully!',
+            copied: 'Code copied to clipboard!',
             deleteConfirm: 'Are you sure you want to delete this coupon?',
             deleteConfirmTitle: 'Delete Coupon',
             yesDelete: 'Yes, Delete',
@@ -1974,6 +1956,7 @@ export const en = {
         subtitle: 'Create high-converting landing pages for your marketing campaigns',
         create: 'Create Landing Page',
         searchPlaceholder: 'Search landing pages...',
+        search: 'Search',
         stats: {
             total: 'Total Landing Pages',
             active: 'Active Pages',
@@ -1983,7 +1966,8 @@ export const en = {
         tabs: {
             all: 'All Pages',
             published: 'Published',
-            drafts: 'Drafts'
+            drafts: 'Drafts',
+            archived: 'Archived'
         },
         table: {
             title: 'Title',
@@ -1992,6 +1976,7 @@ export const en = {
             views: 'Views',
             conversions: 'Conversions',
             lastModified: 'Last Modified',
+            createdOn: 'Created On',
             actions: 'Actions',
             view: 'View',
             edit: 'Edit',
@@ -2002,12 +1987,21 @@ export const en = {
         },
         status: {
             published: 'Published',
-            draft: 'Draft'
+            draft: 'Draft',
+            archived: 'Archived'
+        },
+        pagination: {
+            previous: 'Previous',
+            next: 'Next',
+            pageOf: 'Page {current} of {total}'
         },
         messages: {
             deleteConfirm: 'Are you sure you want to delete this landing page?',
             deleteConfirmTitle: 'Delete Landing Page',
             yesDelete: 'Yes, Delete',
+            publishConfirm: 'Are you sure you want to publish this landing page?',
+            unpublishConfirm: 'Are you sure you want to unpublish this landing page?',
+            duplicatePrompt: 'Enter a slug for the duplicated page (e.g., product-landing-copy):',
             publishedSuccess: 'Landing page published successfully!',
             unpublishedSuccess: 'Landing page unpublished successfully!',
             deletedSuccess: 'Landing page deleted successfully!',
@@ -2348,71 +2342,7 @@ export const en = {
         }
     },
     // Admin Products Page
-    products: {
-        title: 'Products',
-        subtitle: 'Manage your product catalog',
-        shortcuts: {
-            newProduct: 'New Product',
-            search: 'Search',
-            closeModal: 'Close'
-        },
-        refresh: 'Refresh',
-        exportCSV: 'Export CSV',
-        addNewProduct: 'Add New Product',
-        errors: {
-            fetchFailed: 'Failed to fetch products',
-            deleteFailed: 'Failed to delete product',
-            noSelection: 'No products selected',
-            exportFailed: 'Failed to export to CSV'
-        },
-        success: {
-            deleted: 'Product deleted successfully',
-            bulkDeleted: '{count} products deleted successfully',
-            exported: 'Products exported successfully'
-        },
-        bulkDeleteConfirm: 'Are you sure you want to delete {count} products?',
-        deleteConfirm: 'Are you sure you want to delete this product?',
-        bulkDelete: 'Delete Selected',
-        selectAll: 'Select All',
-        noProducts: 'No products found',
-        noProductsDesc: 'Get started by creating your first product.',
-        stockStatus: {
-            inStock: 'In Stock'
-        },
-        featured: 'Featured',
-        newArrival: 'New',
-        category: 'Category',
-        quickEdit: 'Quick Edit',
-        edit: 'Edit',
-        analytics: {
-            totalProducts: 'Total Products',
-            inStock: 'In Stock',
-            lowStock: 'Low Stock',
-            outOfStock: 'Out of Stock',
-            totalValue: 'Total Value',
-            avgPrice: 'Avg Price'
-        },
-        searchPlaceholder: 'Search products...',
-        allCategories: 'All Categories',
-        allStock: 'All Stock',
-        inStockFilter: 'In Stock',
-        lowStockFilter: 'Low Stock',
-        outOfStockFilter: 'Out of Stock',
-        allStatus: 'All Status',
-        activeStatus: 'Active',
-        disabledStatus: 'Disabled',
-        featuredStatus: 'Featured',
-        newArrivalsStatus: 'New Arrivals',
-        sortByName: 'Name',
-        sortByPrice: 'Price',
-        sortByStock: 'Stock',
-        sortByDate: 'Date',
-        gridView: 'Grid View',
-        listView: 'List View',
-        clearFilters: 'Clear Filters',
-        selectedCount: 'selected',
-        clearSelection: 'Clear Selection'
-    },
+
     // Admin Categories Page
     categoriesPage: {
         title: 'Categories',

@@ -70,10 +70,7 @@ const AdminLandingPagesPage = () => {
     };
 
     const handlePublish = async (id) => {
-        if (!confirm(t('landingPagesPage.messages.publishedSuccess'))) return; // Re-using prompt message logic slightly differently or logic needs update? 
-        // Wait, confirm dialog text is different from success message.
-        // Let's use correct Confirm message.
-        if (!confirm('Are you sure you want to publish this landing page?')) return;
+        if (!confirm(t('landingPagesPage.messages.publishConfirm'))) return;
 
         try {
             await landingPageService.publishLandingPage(id);
@@ -86,7 +83,7 @@ const AdminLandingPagesPage = () => {
     };
 
     const handleUnpublish = async (id) => {
-        if (!confirm('Are you sure you want to unpublish this landing page?')) return;
+        if (!confirm(t('landingPagesPage.messages.unpublishConfirm'))) return;
 
         try {
             await landingPageService.unpublishLandingPage(id);
@@ -113,7 +110,7 @@ const AdminLandingPagesPage = () => {
     };
 
     const handleDuplicate = async (id) => {
-        const newSlug = prompt('Enter a slug for the duplicated page (e.g., product-landing-copy):');
+        const newSlug = prompt(t('landingPagesPage.messages.duplicatePrompt'));
         if (!newSlug) return;
 
         try {
@@ -143,7 +140,7 @@ const AdminLandingPagesPage = () => {
                 backgroundColor: style.bg,
                 color: style.color,
             }}>
-                {status === 'PUBLISHED' ? t('landingPagesPage.status.published') : status === 'DRAFT' ? t('landingPagesPage.status.draft') : status}
+                {status === 'PUBLISHED' ? t('landingPagesPage.status.published') : status === 'DRAFT' ? t('landingPagesPage.status.draft') : status === 'ARCHIVED' ? t('landingPagesPage.status.archived') : status}
             </span>
         );
     };
@@ -225,7 +222,7 @@ const AdminLandingPagesPage = () => {
                     <option value="ALL">{t('landingPagesPage.tabs.all')}</option>
                     <option value="PUBLISHED">{t('landingPagesPage.tabs.published')}</option>
                     <option value="DRAFT">{t('landingPagesPage.tabs.drafts')}</option>
-                    <option value="ARCHIVED">Archived</option>
+                    <option value="ARCHIVED">{t('landingPagesPage.tabs.archived')}</option>
                 </select>
 
                 <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', flex: 1 }}>
@@ -254,7 +251,7 @@ const AdminLandingPagesPage = () => {
                             fontWeight: '600',
                         }}
                     >
-                        Search
+                        {t('landingPagesPage.search')}
                     </button>
                 </form>
             </div>
@@ -271,8 +268,8 @@ const AdminLandingPagesPage = () => {
                     backgroundColor: '#f8f9fa',
                     borderRadius: '8px',
                 }}>
-                    <h3>No landing pages found</h3>
-                    <p style={{ color: '#666', marginBottom: '20px' }}>Create your first landing page to get started!</p>
+                    <h3>{t('landingPagesPage.emptyState')}</h3>
+                    <p style={{ color: '#666', marginBottom: '20px' }}>{t('landingPagesPage.emptyDesc')}</p>
                     <Link
                         to="/admin/landing-pages/create"
                         style={{
@@ -303,7 +300,7 @@ const AdminLandingPagesPage = () => {
                                     <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>{t('landingPagesPage.table.slug')}</th>
                                     <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>{t('landingPagesPage.table.status')}</th>
                                     <th style={{ padding: '15px', textAlign: 'center', fontWeight: '600' }}>{t('landingPagesPage.table.views')}</th>
-                                    <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Made On</th>
+                                    <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>{t('landingPagesPage.table.createdOn')}</th>
                                     <th style={{ padding: '15px', textAlign: 'center', fontWeight: '600' }}>{t('landingPagesPage.table.actions')}</th>
                                 </tr>
                             </thead>
@@ -314,7 +311,7 @@ const AdminLandingPagesPage = () => {
                                             <div style={{ fontWeight: '600' }}>{lp.title}</div>
                                             {lp.productName && (
                                                 <div style={{ fontSize: '0.85rem', color: '#666' }}>
-                                                    Product: {lp.productName}
+                                                    {t('landingPagesPage.productLabel')}: {lp.productName}
                                                 </div>
                                             )}
                                         </td>
@@ -450,10 +447,10 @@ const AdminLandingPagesPage = () => {
                                     cursor: page === 0 ? 'not-allowed' : 'pointer',
                                 }}
                             >
-                                Previous
+                                {t('landingPagesPage.pagination.previous')}
                             </button>
                             <span style={{ padding: '10px 20px', display: 'flex', alignItems: 'center' }}>
-                                Page {page + 1} of {totalPages}
+                                {t('landingPagesPage.pagination.pageOf').replace('{current}', page + 1).replace('{total}', totalPages)}
                             </span>
                             <button
                                 onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
@@ -467,7 +464,7 @@ const AdminLandingPagesPage = () => {
                                     cursor: page >= totalPages - 1 ? 'not-allowed' : 'pointer',
                                 }}
                             >
-                                Next
+                                {t('landingPagesPage.pagination.next')}
                             </button>
                         </div>
                     )}

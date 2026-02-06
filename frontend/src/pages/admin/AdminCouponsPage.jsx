@@ -205,7 +205,7 @@ const AdminCouponsPage = () => {
             setProducts(productsRes.data.content || productsRes.data);
             setCategories(categoriesRes.data);
         } catch (error) {
-            message.error("Failed to fetch products or categories.");
+            message.error(t('couponsPage.messages.errorAction') + " (Products/Categories)");
             console.error("Error fetching products/categories:", error);
         }
     };
@@ -216,7 +216,7 @@ const AdminCouponsPage = () => {
             const couponsRes = await fetchAllCoupons();
             setCoupons(couponsRes.data);
         } catch (error) {
-            message.error(error.response?.data?.message || "Something went wrong fetching coupons!");
+            message.error(error.response?.data?.message || t('couponsPage.messages.errorFetch'));
         } finally {
             setLoading(false);
         }
@@ -228,7 +228,7 @@ const AdminCouponsPage = () => {
         setRefreshing(true);
         try {
             await getAllCoupons();
-            message.success("Coupons refreshed successfully!");
+            message.success(t('couponsPage.messages.refreshed'));
         } catch (error) {
             console.error("Refresh failed:", error);
         } finally {
@@ -306,7 +306,7 @@ const AdminCouponsPage = () => {
                     content: (
                         <div className="flex items-center space-x-2">
                             <FiCheckCircle className="w-5 h-5 text-green-500" />
-                            <span>Coupon "{res.data.name}" updated successfully!</span>
+                            <span>{t('couponsPage.messages.updated').replace('{name}', res.data.name)}</span>
                         </div>
                     ),
                     duration: 4
@@ -317,7 +317,7 @@ const AdminCouponsPage = () => {
                     content: (
                         <div className="flex items-center space-x-2">
                             <FiCheckCircle className="w-5 h-5 text-green-500" />
-                            <span>Coupon "{res.data.name}" created successfully!</span>
+                            <span>{t('couponsPage.messages.created').replace('{name}', res.data.name)}</span>
                         </div>
                     ),
                     duration: 4
@@ -334,7 +334,7 @@ const AdminCouponsPage = () => {
                 content: (
                     <div className="flex items-center space-x-2">
                         <FiAlertCircle className="w-5 h-5 text-red-500" />
-                        <span>{error.response?.data?.message || `Something went wrong ${editingCoupon ? 'updating' : 'creating'} the coupon!`}</span>
+                        <span>{error.response?.data?.message || t('couponsPage.messages.errorAction')}</span>
                     </div>
                 ),
                 duration: 4
@@ -368,7 +368,7 @@ const AdminCouponsPage = () => {
             content: (
                 <div className="flex items-center space-x-2">
                     <FiCopy className="w-4 h-4 text-blue-500" />
-                    <span>Coupon code copied to clipboard!</span>
+                    <span>{t('couponsPage.messages.copied')}</span>
                 </div>
             ),
             duration: 2
@@ -378,11 +378,11 @@ const AdminCouponsPage = () => {
     const handleDelete = async (couponId) => {
         try {
             await deleteCoupon(couponId);
-            message.success("Coupon deleted successfully!");
+            message.success(t('couponsPage.messages.deleted'));
             getAllCoupons();
         } catch (error) {
             // Improved Error Handling from Backend
-            const errorMsg = error.response?.data?.message || "Failed to delete coupon.";
+            const errorMsg = error.response?.data?.message || t('couponsPage.messages.deleteError') || t('couponsPage.messages.errorAction');
             message.error(errorMsg);
         }
     };

@@ -578,7 +578,7 @@ const AdminCategoriesPage = () => {
                                                             <Link
                                                                 to={`/admin/categories/edit/${category.id}`}
                                                                 className="bg-blue-50 hover:bg-blue-100 text-blue-600 p-2 rounded-lg transition-colors"
-                                                                title="Edit Category"
+                                                                title={t('categoriesPage.list.edit')}
                                                             >
                                                                 <FiEdit3 className="w-4 h-4" />
                                                             </Link>
@@ -586,7 +586,7 @@ const AdminCategoriesPage = () => {
                                                                 onClick={() => handleDelete(category.id)}
                                                                 disabled={deletingCategoryId === category.id}
                                                                 className="bg-red-50 hover:bg-red-100 text-red-600 p-2 rounded-lg transition-colors disabled:opacity-50"
-                                                                title="Delete Category"
+                                                                title={t('categoriesPage.list.delete')}
                                                             >
                                                                 {deletingCategoryId === category.id ? (
                                                                     <FiRefreshCw className="w-4 h-4 animate-spin" />

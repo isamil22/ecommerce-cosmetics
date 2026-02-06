@@ -15,15 +15,20 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Serve the application with Nginx
-FROM nginx:stable-alpine
+FROM nginx:alpine
 
 # Copy the built application from the 'builder' stage
-# The output from Vite is in the 'dist' folder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy the Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Remove default nginx config and copy our optimized config
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port 80 and start Nginx
+# Create cache directories
+RUN mkdir -p /var/cache/nginx
+
+# Expose port 80
 EXPOSE 80
+
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

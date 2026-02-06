@@ -80,7 +80,7 @@ const AdminCustomPackForm = () => {
                     setSelectedProducts(packData.allowedProductIds || []);
                 }
             } catch (error) {
-                toast.error('Failed to fetch data.');
+                toast.error(t('customPacks.fetchFailed'));
                 console.error(error);
             } finally {
                 setLoading(false);
@@ -114,37 +114,37 @@ const AdminCustomPackForm = () => {
         switch (name) {
             case 'name':
                 if (!value.trim()) {
-                    newErrors.name = 'Pack name is required';
+                    newErrors.name = t('customPacks.form.validation.nameRequired');
                 } else if (value.trim().length < 3) {
-                    newErrors.name = 'Pack name must be at least 3 characters';
+                    newErrors.name = t('customPacks.form.validation.nameLength');
                 } else {
                     delete newErrors.name;
                 }
                 break;
             case 'minItems':
                 if (!value || parseInt(value) < 1) {
-                    newErrors.minItems = 'Minimum items must be at least 1';
+                    newErrors.minItems = t('customPacks.form.validation.minItemsValue');
                 } else {
                     delete newErrors.minItems;
                 }
                 break;
             case 'maxItems':
                 if (!value || parseInt(value) < parseInt(formData.minItems || 1)) {
-                    newErrors.maxItems = 'Maximum items must be greater than minimum items';
+                    newErrors.maxItems = t('customPacks.form.validation.maxItemsError');
                 } else {
                     delete newErrors.maxItems;
                 }
                 break;
             case 'fixedPrice':
                 if (formData.pricingType === 'FIXED' && (!value || parseFloat(value) <= 0)) {
-                    newErrors.fixedPrice = 'Fixed price must be greater than 0';
+                    newErrors.fixedPrice = t('customPacks.form.validation.fixedPriceMin');
                 } else {
                     delete newErrors.fixedPrice;
                 }
                 break;
             case 'discountRate':
                 if (formData.pricingType === 'DYNAMIC' && (!value || parseFloat(value) <= 0 || parseFloat(value) >= 1)) {
-                    newErrors.discountRate = 'Discount rate must be between 0 and 1 (e.g., 0.20 for 20%)';
+                    newErrors.discountRate = t('customPacks.form.validation.discountRateRange');
                 } else {
                     delete newErrors.discountRate;
                 }
@@ -222,7 +222,7 @@ const AdminCustomPackForm = () => {
         e.preventDefault();
 
         if (!validateForm()) {
-            toast.error('Please fix the validation errors before submitting');
+            toast.error(t('customPacks.form.validation.fixErrors'));
             return;
         }
 
@@ -259,7 +259,7 @@ const AdminCustomPackForm = () => {
             }
             navigate('/admin/custom-packs');
         } catch (error) {
-            toast.error('Failed to save custom pack.');
+            toast.error(t('customPacks.form.validation.saveFailed'));
             console.error(error);
         } finally {
             setIsSubmitting(false);
@@ -282,7 +282,7 @@ const AdminCustomPackForm = () => {
                         <FiArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
                         <span className="font-medium">{t('customPacks.manageTitle')}</span>
                     </button>
-                    
+
                     <div className="flex items-center space-x-3">
                         <button
                             type="button"
@@ -299,7 +299,7 @@ const AdminCustomPackForm = () => {
             <div className="bg-white border-b border-gray-200 pb-10 pt-8 px-6">
                 <div className="max-w-5xl mx-auto">
                     <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-                        <span className="text-gray-400">Custom Packs</span>
+                        <span className="text-gray-400">{t('customPacks.manageTitle')}</span>
                         <span className="text-gray-300">/</span>
                         <span className="font-medium text-pink-600">{isEditing ? t('customPacks.form.editTitle') : t('customPacks.form.createTitle')}</span>
                     </div>
@@ -327,7 +327,7 @@ const AdminCustomPackForm = () => {
                             {isDirty && (
                                 <div className="flex items-center space-x-2 text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">
                                     <FiSave className="w-4 h-4" />
-                                    <span className="text-sm font-medium">Unsaved changes</span>
+                                    <span className="text-sm font-medium">{t('customPacks.form.unsavedChanges')}</span>
                                 </div>
                             )}
                             <button
@@ -336,12 +336,12 @@ const AdminCustomPackForm = () => {
                                 className="flex items-center space-x-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition-all duration-200 group"
                             >
                                 <FiEye className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-                                <span className="font-medium">Preview</span>
+                                <span className="font-medium">{t('customPacks.form.preview')}</span>
                             </button>
                         </div>
                     </div>
-                    </div>
                 </div>
+            </div>
 
             <div className="max-w-7xl mx-auto px-6 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

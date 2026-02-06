@@ -61,8 +61,10 @@ const HomePage = () => {
         };
         fetchData();
 
-        // Generate stars
-        const newStars = Array.from({ length: 50 }).map((_, i) => ({
+        // Generate stars - reduced count for mobile performance
+        const isMobile = window.innerWidth < 768;
+        const starCount = isMobile ? 15 : 30; // Reduced from 50
+        const newStars = Array.from({ length: starCount }).map((_, i) => ({
             id: i,
             top: `${Math.random() * 100}%`,
             left: `${Math.random() * 100}%`,

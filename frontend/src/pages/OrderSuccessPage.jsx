@@ -155,6 +155,49 @@ const OrderSuccessPage = () => {
                     </div>
                 )}
 
+                {/* Order Items */}
+                {order && order.orderItems && order.orderItems.length > 0 && (
+                    <div style={{
+                        background: '#f8f9fa',
+                        borderRadius: '12px',
+                        padding: '30px',
+                        marginBottom: '30px',
+                        textAlign: 'left',
+                    }}>
+                        <h3 style={{ fontSize: '1.3rem', fontWeight: 'bold', marginBottom: '20px', color: '#333' }}>
+                            🛍️ المنتجات / Articles
+                        </h3>
+                        <div style={{ display: 'grid', gap: '15px' }}>
+                            {order.orderItems.map((item, index) => (
+                                <div key={index} style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '15px',
+                                    padding: '15px',
+                                    background: 'white',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e0e0e0'
+                                }}>
+                                    <img 
+                                        src={item.imageUrl || 'https://placehold.co/80x80'} 
+                                        alt={item.productName}
+                                        style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }}
+                                    />
+                                    <div style={{ flex: 1 }}>
+                                        <p style={{ fontWeight: '600', marginBottom: '5px' }}>{item.productName}</p>
+                                        <p style={{ color: '#666', fontSize: '0.9rem' }}>
+                                            {item.quantity} × {formatPrice(item.price)}
+                                        </p>
+                                    </div>
+                                    <div style={{ fontWeight: 'bold', color: '#ff69b4' }}>
+                                        {formatPrice(item.price * item.quantity)}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Order Details */}
                 {order && (
                     <div style={{
@@ -165,7 +208,7 @@ const OrderSuccessPage = () => {
                         textAlign: 'left',
                     }}>
                         <h3 style={{ fontSize: '1.3rem', fontWeight: 'bold', marginBottom: '20px', color: '#333' }}>
-                            تفاصيل الطلب / Détails de la commande
+                            📋 تفاصيل الطلب / Détails de la commande
                         </h3>
                         <div style={{ display: 'grid', gap: '15px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

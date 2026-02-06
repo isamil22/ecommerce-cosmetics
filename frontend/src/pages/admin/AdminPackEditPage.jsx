@@ -80,7 +80,7 @@ const AdminPackEditPage = () => {
                 }
 
             } catch (err) {
-                setError('Failed to fetch data. The pack may not exist.');
+                setError(t('packForm.errors.fetchFailed'));
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -99,7 +99,7 @@ const AdminPackEditPage = () => {
                 if (!value.trim()) {
                     newErrors.name = t('packForm.validation.nameRequired');
                 } else if (value.trim().length < 3) {
-                    newErrors.name = 'Pack name must be at least 3 characters'; // Keeping this specific check if no translation key matches perfectly, or use general
+                    newErrors.name = t('packForm.validation.nameMinLength'); // Keeping this specific check if no translation key matches perfectly, or use general
                 } else {
                     delete newErrors.name;
                 }
@@ -131,13 +131,13 @@ const AdminPackEditPage = () => {
         if (file) {
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                toast.error('Please select a valid image file');
+                toast.error(t('packForm.validation.imageInvalid'));
                 return;
             }
 
             // Validate file size (5MB limit)
             if (file.size > 5 * 1024 * 1024) {
-                toast.error('Image size must be less than 5MB');
+                toast.error(t('packForm.validation.imageSize'));
                 return;
             }
 
@@ -245,7 +245,7 @@ const AdminPackEditPage = () => {
             toast.success(t('packForm.success.updated'));
             navigate('/admin/packs');
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Failed to update pack. Please check the form fields.';
+            const errorMessage = err.response?.data?.message || t('packForm.errors.updateFailed');
             setError(errorMessage);
             toast.error(errorMessage);
             console.error(err);
@@ -360,7 +360,7 @@ const AdminPackEditPage = () => {
                                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <input
                                     type="text"
-                                    placeholder="Search products..."
+                                    placeholder={t('packForm.searchPlaceholder')}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
@@ -397,7 +397,7 @@ const AdminPackEditPage = () => {
                                 ))
                             ) : (
                                 <div className="p-4 text-center text-gray-500 text-sm">
-                                    {searchTerm ? 'No products found' : 'No products available'}
+                                    {searchTerm ? t('packForm.noProductsFound') : t('packForm.noProductsAvailable')}
                                 </div>
                             )}
                         </div>
@@ -590,11 +590,11 @@ const AdminPackEditPage = () => {
                                                 onClick={() => fileInputRef.current?.click()}
                                                 className="text-pink-600 hover:text-pink-700 font-medium"
                                             >
-                                                Click to upload
+                                                {t('packForm.dragDrop.clickToUpload')}
                                             </button>
-                                            <p className="text-gray-500 text-sm">or drag and drop</p>
+                                            <p className="text-gray-500 text-sm">{t('packForm.dragDrop.orDragDrop')}</p>
                                         </div>
-                                        <p className="text-xs text-gray-400">PNG, JPG, GIF up to 5MB</p>
+                                        <p className="text-xs text-gray-400">{t('packForm.dragDrop.fileTypes')}</p>
                                     </div>
                                 )}
                             </div>
@@ -710,7 +710,7 @@ const AdminPackEditPage = () => {
                                             size="normal"
                                             itemIndex={index}
                                         />
-                                        <p className="text-xs text-gray-500 mt-1">Click to select multiple products</p>
+                                        <p className="text-xs text-gray-500 mt-1">{t('packForm.productSelect.hint')}</p>
                                     </div>
                                 </div>
                             </div>
@@ -768,12 +768,12 @@ const AdminPackEditPage = () => {
                     </div>
                 </div>
 
-                {/* Step 4: Description (Secondary) */}
+                {/* Step 4: Description */}
                 <div className="bg-white rounded-lg shadow-md p-6 opacity-90">
                     <div className="flex items-center mb-4">
                         <FiEye className="w-5 h-5 text-gray-500 mr-2" />
                         <h3 className="text-lg font-semibold text-gray-700">{t('packForm.description.title')}</h3>
-                        <span className="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Secondary</span>
+                        <span className="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">{t('common.secondary')}</span>
                     </div>
                     <div>
                         <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -847,7 +847,7 @@ const AdminPackEditPage = () => {
                                     ))
                                 ) : (
                                     <div className="p-4 text-center text-gray-500 text-sm">
-                                        No products available
+                                        {t('packForm.noProductsAvailable')}
                                     </div>
                                 )}
                             </div>

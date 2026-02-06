@@ -228,7 +228,7 @@ const AdminHeroPage = () => {
         e.preventDefault();
 
         if (!validateForm()) {
-            toast.error(t('brandSettings.errors.saveDetails')); // Fallback or generic error
+            toast.error(t('heroSettings.messages.validation.fixErrors'));
             return;
         }
 
@@ -252,7 +252,7 @@ const AdminHeroPage = () => {
             toast.success(t('heroSettings.messages.success'));
             setIsDirty(false);
         } catch (err) {
-            const errorMessage = err.response?.data?.message || t('heroSettings.messages.validation.saveFailed') || 'Operation failed';
+            const errorMessage = err.response?.data?.message || t('heroSettings.messages.validation.saveFailed');
             setError(errorMessage);
             toast.error(errorMessage);
         } finally {
@@ -686,11 +686,11 @@ const AdminHeroPage = () => {
                                 <div className="space-y-2 text-sm text-gray-600">
                                     <div className="flex justify-between">
                                         <span>{t('heroSettings.preview.titleLength')}:</span>
-                                        <span>{hero.title.length} characters</span>
+                                        <span>{hero.title.length} {t('heroSettings.preview.chars')}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>{t('heroSettings.preview.subtitleLength')}:</span>
-                                        <span>{hero.subtitle.length} characters</span>
+                                        <span>{hero.subtitle.length} {t('heroSettings.preview.chars')}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>{t('heroSettings.preview.hasImage')}:</span>
