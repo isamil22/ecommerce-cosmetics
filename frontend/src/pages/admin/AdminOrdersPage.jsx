@@ -1172,7 +1172,7 @@ const AdminOrdersPage = () => {
                                             <div className="space-y-2">
                                                 {selectedOrder.status === 'PREPARING' && (
                                                     <button
-                                                        onClick={() => handleStatusUpdate(selectedOrder.id, 'DELIVERING')}
+                                                        onClick={() => handleStatusChange(selectedOrder.id, 'DELIVERING')}
                                                         className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium"
                                                     >
                                                         🚚 {t('ordersPage.modal.markDelivering')}
@@ -1180,7 +1180,7 @@ const AdminOrdersPage = () => {
                                                 )}
                                                 {selectedOrder.status === 'DELIVERING' && (
                                                     <button
-                                                        onClick={() => handleStatusUpdate(selectedOrder.id, 'DELIVERED')}
+                                                        onClick={() => handleStatusChange(selectedOrder.id, 'DELIVERED')}
                                                         className="w-full px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-all duration-200 font-medium"
                                                     >
                                                         ✅ {t('ordersPage.modal.markDelivered')}
@@ -1188,7 +1188,7 @@ const AdminOrdersPage = () => {
                                                 )}
                                                 {selectedOrder.status !== 'CANCELED' && (
                                                     <button
-                                                        onClick={() => handleStatusUpdate(selectedOrder.id, 'CANCELED')}
+                                                        onClick={() => handleStatusChange(selectedOrder.id, 'CANCELED')}
                                                         className="w-full px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-all duration-200 font-medium"
                                                     >
                                                         ❌ {t('ordersPage.modal.cancelOrder')}
@@ -1196,7 +1196,7 @@ const AdminOrdersPage = () => {
                                                 )}
                                                 {showDeleted && (
                                                     <button
-                                                        onClick={() => handleRestore(selectedOrder.id)}
+                                                        onClick={() => handleRestoreOrder(selectedOrder.id)}
                                                         className="w-full px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 transition-all duration-200 font-medium"
                                                     >
                                                         🔄 {t('ordersPage.modal.restoreOrder')}
