@@ -141,6 +141,7 @@ const HomePage = () => {
             </div>
 
             {/* --- STAR HERO SECTION (WOW EDITION) --- */}
+            {/* --- STAR HERO SECTION (WOW EDITION) --- */}
             {hero && (
                 <div
                     id="home-hero"
@@ -149,24 +150,34 @@ const HomePage = () => {
                         const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
                         setMousePosition({ x: moveX, y: moveY });
                     }}
-                    className="relative min-h-[85vh] md:min-h-[92vh] flex items-center justify-center overflow-hidden bg-cover bg-center text-white"
-                    style={{
-                        backgroundImage: heroImageUrl ? `url(${heroImageUrl})` : `radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)`
-                    }}
+                    className="relative min-h-[85vh] md:min-h-[92vh] flex items-center justify-center overflow-hidden text-white"
                 >
-                    <style>{`
-                        @media (max-width: 768px) {
-                            #home-hero {
-                                background-image: ${hero?.mobileImageUrl ? `url(${hero.mobileImageUrl}) !important` : 'inherit'};
-                                background-size: cover;
-                                background-position: center top;
-                                min-height: 70vh; /* Better mobile height */
+                    {/* OPTIMIZED LCP: Real Image instead of background-image */}
+                    <div className="absolute inset-0 z-0">
+                        <img
+                            src={heroImageUrl}
+                            alt="Background"
+                            className="w-full h-full object-cover"
+                            fetchPriority="high"
+                            loading="eager"
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.parentElement.style.background = 'radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)';
+                            }}
+                        />
+                        {/* Mobile Image Overlay if needed */}
+                        <style>{`
+                            @media (max-width: 768px) {
+                                #home-hero img {
+                                    object-position: center top;
+                                    ${hero?.mobileImageUrl ? `content: url(${hero.mobileImageUrl});` : ''}
+                                }
                             }
-                        }
-                    `}</style>
+                        `}</style>
+                    </div>
 
                     {/* 1. Dark Overlay & Star Background */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/80 z-0"></div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/80 z-0 pointer-events-none"></div>
 
                     {/* Star Layer */}
                     <div className="absolute inset-0 z-0 pointer-events-none">

@@ -68,9 +68,11 @@ const ReviewFormSettingsPage = lazy(() => import('./pages/admin/ReviewFormSettin
 const AdminAnalyticsPage = lazy(() => import('./pages/admin/AdminAnalyticsPage.jsx'));
 const AdminRolesPage = lazy(() => import('./pages/admin/AdminRolesPage.jsx'));
 const AdminPermissionsPage = lazy(() => import('./pages/admin/AdminPermissionsPage.jsx'));
-const AdminLandingPagesPage = lazy(() => import('./pages/admin/AdminLandingPagesPage.jsx'));
 const AdminLandingPageBuilder = lazy(() => import('./pages/admin/AdminLandingPageBuilder.jsx'));
 const AdminSettingsPage = lazy(() => import('./pages/admin/AdminSettingsPage.jsx'));
+
+// Global Effects
+const ClickAnnouncer = lazy(() => import('./components/ClickAnnouncer.jsx'));
 
 // Loading component for suspense fallback
 const PageLoader = () => (
@@ -277,6 +279,11 @@ function App() {
 
                         {/* Sticky Cart Button - Replaces FloatingActionButton */}
                         <StickyCartButton cartCount={cartCount} />
+
+                        {/* Global Click Effects */}
+                        <Suspense fallback={null}>
+                            <ClickAnnouncer />
+                        </Suspense>
                     </div>
                 </SiteSettingsProvider>
             </BrowserRouter>

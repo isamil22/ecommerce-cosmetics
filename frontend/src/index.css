@@ -48,6 +48,19 @@ body {
     /* Prevents horizontal scrollbar from animations */
     line-height: 1.6;
     font-family: 'Outfit', sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Remove blue tap box on mobile */
+}
+
+/* Make all interactive elements feel responsive */
+button, a, [role="button"] {
+    cursor: pointer;
+    touch-action: manipulation; /* Improves touch response */
+}
+
+/* Global Active State - The "Fast" feeling */
+button:active, a:active {
+    transform: scale(0.97);
+    transition: transform 0.05s ease-out;
 }
 
 #root {
