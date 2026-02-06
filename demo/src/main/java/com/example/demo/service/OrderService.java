@@ -166,6 +166,9 @@ public class OrderService {
             order.setDiscountAmount(BigDecimal.ZERO);
         }
 
+        List<OrderItem> items = createOrderItemsFromDTO(request.getCartItems(), order);
+        order.setItems(items);
+
         Order savedOrder = orderRepository.save(order);
         try {
             emailService.sendOrderConfirmation(savedOrder);
@@ -279,6 +282,9 @@ public class OrderService {
             order.setDiscountAmount(BigDecimal.ZERO);
         }
         // === END COUPON PROCESSING LOGIC ===
+
+        List<OrderItem> items = createOrderItemsFromDTO(request.getCartItems(), order);
+        order.setItems(items);
 
         Order savedOrder = orderRepository.save(order);
 
