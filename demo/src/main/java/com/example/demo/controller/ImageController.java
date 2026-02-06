@@ -35,20 +35,13 @@ public class ImageController {
         try {
             // Security: Prevent directory traversal
             if (filename.contains("..") || type.contains("..")) {
-                System.out.println("DEBUG: Security check failed for " + filename);
                 return ResponseEntity.badRequest().build();
             }
 
             Path filePath = Paths.get(uploadDir, "images", type, filename);
             File file = filePath.toFile();
 
-            System.out.println("DEBUG: Request for type=" + type + " filename=" + filename);
-            System.out.println("DEBUG: Resolving to path=" + filePath.toAbsolutePath());
-            System.out.println("DEBUG: File exists? " + file.exists());
-            System.out.println("DEBUG: Is file? " + file.isFile());
-
             if (!file.exists() || !file.isFile()) {
-                System.out.println("DEBUG: File not found or not a file");
                 return ResponseEntity.notFound().build();
             }
 
@@ -64,8 +57,6 @@ public class ImageController {
                     .body(resource);
 
         } catch (Exception e) {
-            System.out.println("DEBUG: Exception in ImageController:");
-            e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
     }
