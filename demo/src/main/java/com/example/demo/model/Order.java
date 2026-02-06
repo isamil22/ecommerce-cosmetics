@@ -52,7 +52,4 @@ public class Order {
     // New field for shipping cost
     private BigDecimal shippingCost;
 
-    public enum OrderStatus {
-        PREPARING, DELIVERING, DELIVERED, CANCELED
-    }
 }
