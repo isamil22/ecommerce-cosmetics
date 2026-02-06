@@ -384,6 +384,8 @@ const AdminOrdersPage = () => {
     };
 
     const handleViewOrder = (order) => {
+        console.log('Viewing Order Details:', order);
+        console.log('Order Items:', order.orderItems);
         setSelectedOrder(order);
         setShowOrderModal(true);
     };
@@ -1026,13 +1028,13 @@ const AdminOrdersPage = () => {
                                                     {t('ordersPage.modal.orderInfo')}
                                                 </h4>
                                                 <div className="space-y-2 text-sm">
-                                                    <p><span className="font-medium text-gray-600">{t('ordersPage.orderId')}:</span> <span className="text-gray-900">#{selectedOrder.id}</span></p>
+                                                    <p><span className="font-medium text-gray-600">{t('ordersPage.table.orderId')}:</span> <span className="text-gray-900">#{selectedOrder.id}</span></p>
                                                     <p><span className="font-medium text-gray-600">Status:</span>
                                                         <span className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedOrder.status)}`}>
                                                             {selectedOrder.status}
                                                         </span>
                                                     </p>
-                                                    <p><span className="font-medium text-gray-600">Created:</span> <span className="text-gray-900">{formatDate(selectedOrder.createdAt)}</span></p>
+                                                    <p><span className="font-medium text-gray-600">{t('ordersPage.table.created')}:</span> <span className="text-gray-900">{formatDate(selectedOrder.createdAt)}</span></p>
                                                     {selectedOrder.couponCode && (
                                                         <p><span className="font-medium text-gray-600">{t('ordersPage.modal.coupon')}</span> <span className="text-gray-900 bg-yellow-100 px-2 py-1 rounded text-xs">{selectedOrder.couponCode}</span></p>
                                                     )}
