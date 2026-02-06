@@ -736,7 +736,7 @@ const AdminOrdersPage = () => {
                                         onClick={() => handleSort('id')}
                                     >
                                         <div className="flex items-center">
-                                            {t('ordersPage.orderId')}
+                                            {t('ordersPage.table.orderId')}
                                             {sortBy === 'id' && (
                                                 <svg className={`w-4 h-4 ml-1 ${sortOrder === 'asc' ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
@@ -749,7 +749,7 @@ const AdminOrdersPage = () => {
                                         onClick={() => handleSort('clientFullName')}
                                     >
                                         <div className="flex items-center">
-                                            {t('ordersPage.customer')}
+                                            {t('ordersPage.table.customer')}
                                             {sortBy === 'clientFullName' && (
                                                 <svg className={`w-4 h-4 ml-1 ${sortOrder === 'asc' ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />

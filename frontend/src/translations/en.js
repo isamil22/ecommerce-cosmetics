@@ -39,8 +39,8 @@ export const en = {
     viewAllProducts: 'View all products',
     viewAllOrders: 'View all orders',
     manageReviews: 'Manage reviews',
-    managePacks: 'Manage Packs',
-    manageCustomPacks: 'Manage Custom Packs',
+    managePacksLink: 'Manage Packs',
+    manageCustomPacksLink: 'Manage Custom Packs',
     manageCategories: 'Manage Categories',
     configureSettings: 'Configure Settings',
 
@@ -654,8 +654,8 @@ export const en = {
         range: 'Range',
 
         // Links
-        managePacks: 'Manage Packs',
-        manageCustomPacks: 'Manage Custom Packs',
+        managePacksLink: 'Manage Packs',
+        manageCustomPacksLink: 'Manage Custom Packs',
         manageCategories: 'Manage Categories',
         configureSettings: 'Configure Settings',
 

@@ -39,8 +39,8 @@ export const fr = {
     viewAllProducts: 'Voir tous les produits',
     viewAllOrders: 'Voir toutes les commandes',
     manageReviews: 'Gérer les avis',
-    managePacks: 'Gérer les packs',
-    manageCustomPacks: 'Gérer les packs personnalisés',
+    managePacksLink: 'Gérer les packs',
+    manageCustomPacksLink: 'Gérer les packs personnalisés',
     manageCategories: 'Gérer les catégories',
     configureSettings: 'Configurer les paramètres',
 
@@ -662,8 +662,8 @@ export const fr = {
         range: 'Plage',
 
         // Links
-        managePacks: 'Gérer les packs',
-        manageCustomPacks: 'Gérer les packs personnalisés',
+        managePacksLink: 'Gérer les packs',
+        manageCustomPacksLink: 'Gérer les packs personnalisés',
         manageCategories: 'Gérer les catégories',
         configureSettings: 'Configurer les paramètres',
 

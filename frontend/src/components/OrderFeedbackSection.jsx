@@ -24,6 +24,13 @@ const OrderFeedbackSection = ({ orderId }) => {
                     setFeedback(null);
                 }
             } catch (err) {
+                // Handle 404 specifically as "No Feedback"
+                if (err.response && err.response.status === 404) {
+                    setFeedback(null);
+                    setLoading(false);
+                    return;
+                }
+
                 console.error('Error fetching feedback for order:', orderId, err);
                 setError(err.message || t('orderFeedback.error'));
                 setFeedback(null);

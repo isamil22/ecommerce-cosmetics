@@ -379,7 +379,7 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
                             <Link to="/admin/packs" className="text-pink-600 hover:text-pink-700 text-sm font-medium flex items-center mt-2 group/link">
-                                {t('managePacks')} <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
+                                {t('managePacksLink')} <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
                             </Link>
                         </div>
                     </PermissionGuard>
@@ -397,7 +397,7 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
                             <Link to="/admin/custom-packs" className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center mt-2 group/link">
-                                {t('manageCustomPacks')} <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
+                                {t('manageCustomPacksLink')} <FiArrowUpRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300" />
                             </Link>
                         </div>
                     </PermissionGuard>
