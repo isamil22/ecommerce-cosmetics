@@ -164,7 +164,7 @@ const HomePage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 overflow-x-hidden">
             {/* Ultra Enhanced Countdown Timer - Admin Controllable */}
-            <div className="w-full px-0 py-0">
+            <div className="w-full px-0 py-0 min-h-[140px] md:min-h-[160px] flex items-center justify-center">
                 <div className="w-full">
                     <EnhancedCountdown
                         fallbackEndTime={new Date().getTime() + (24 * 60 * 60 * 1000)}
@@ -194,7 +194,7 @@ const HomePage = () => {
                         <picture>
                             <source
                                 media="(max-width: 768px)"
-                                srcSet={getOptimizedImageUrl(hero.mobileImageUrl || heroImageUrl, 800)}
+                                srcSet={getOptimizedImageUrl(hero.mobileImageUrl || heroImageUrl, 480)}
                             />
                             <source
                                 media="(min-width: 769px)"
@@ -202,10 +202,13 @@ const HomePage = () => {
                             />
                             <img
                                 src={getOptimizedImageUrl(heroImageUrl, 1920)}
-                                alt="Background"
+                                alt="ByLuna Cosmetics"
+                                width="1920"
+                                height="1080"
                                 className="w-full h-full object-cover"
                                 fetchPriority="high"
                                 loading="eager"
+                                decoding="sync"
                                 onError={(e) => {
                                     e.target.style.display = 'none';
                                     e.target.parentElement.style.background = 'radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)';
