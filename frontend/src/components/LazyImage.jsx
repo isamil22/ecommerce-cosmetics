@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 
-const LazyImage = ({ 
-    src, 
-    alt, 
-    className = '', 
+const LazyImage = ({
+    src,
+    alt,
+    className = '',
     placeholderColor = '#f3f4f6',
     priority = false,
+    width,
+    height,
     onLoad,
-    onError 
+    onError
 }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [isInView, setIsInView] = useState(priority);
@@ -49,7 +51,7 @@ const LazyImage = ({
     };
 
     return (
-        <div 
+        <div
             ref={imgRef}
             className={`relative overflow-hidden ${className}`}
             style={{ backgroundColor: placeholderColor }}
@@ -58,20 +60,21 @@ const LazyImage = ({
             {!isLoaded && (
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse" />
             )}
-            
+
             {/* Actual Image */}
             {isInView && (
                 <img
                     src={src}
                     alt={alt}
+                    width={width}
+                    height={height}
                     loading={priority ? "eager" : "lazy"}
                     decoding={priority ? "sync" : "async"}
                     fetchpriority={priority ? "high" : "auto"}
                     onLoad={handleLoad}
                     onError={handleError}
-                    className={`w-full h-full object-cover transition-opacity duration-300 ${
-                        isLoaded ? 'opacity-100' : 'opacity-0'
-                    }`}
+                    className={`w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'
+                        }`}
                 />
             )}
         </div>
