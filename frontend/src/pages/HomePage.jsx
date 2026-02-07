@@ -15,7 +15,19 @@ const HomePage = () => {
     const [newArrivals, setNewArrivals] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [hero, setHero] = useState(null);
+    // HARDCODED INITIAL STATE FOR INSTANT LCP (Performance Optimization)
+    const INITIAL_HERO_STATE = {
+        "id": 1,
+        "title": "By Luna ",
+        "subtitle": "Just For You",
+        "linkText": "Shop Now",
+        "linkUrl": "/products",
+        "titleFont": "'Dancing Script', cursive",
+        "imageUrl": "/api/images/hero/c1946d7d-c798-45f7-9d8e-e37cdd553343-711w0mQpVXL._SL1500_.jpg",
+        "mobileImageUrl": null
+    };
+
+    const [hero, setHero] = useState(INITIAL_HERO_STATE);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('bestsellers');
