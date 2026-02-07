@@ -17,25 +17,10 @@ export default defineConfig({
     chunkSizeWarningLimit: 2000,
     rollupOptions: {
       output: {
-        // Manual chunking for better code splitting
-        manualChunks: {
-          // React core
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          // UI Libraries (Core) - Removed plots from here
-          'ui-vendor': ['antd', '@ant-design/icons', 'framer-motion'],
-          // Charts and data visualization (Heavy - Load only when needed)
-          'charts-vendor': ['recharts', '@ant-design/plots'],
-          // Form and editor libraries
-          'form-vendor': ['react-quill', '@tinymce/tinymce-react', 'react-select'],
-          // Utility libraries
-          'utils-vendor': ['axios', 'dayjs', 'styled-components'],
-        },
         // Optimize asset file naming
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
-          const info = assetInfo.name.split('.')
-          const ext = info[info.length - 1]
           if (/\.css$/i.test(assetInfo.name)) {
             return 'assets/[name]-[hash][extname]'
           }
@@ -59,8 +44,6 @@ export default defineConfig({
       'react',
       'react-dom',
       'react-router-dom',
-      'antd',
-      '@ant-design/icons',
       'axios',
       'dayjs',
     ],
