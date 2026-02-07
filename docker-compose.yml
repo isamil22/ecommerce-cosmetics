@@ -56,6 +56,8 @@ services:
       - backend
     env_file:
       - ./frontend/.env
+    volumes:
+      - ./uploads:/usr/share/nginx/html/uploads
     networks:
       - my-network-copy
 
