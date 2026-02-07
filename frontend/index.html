@@ -4,32 +4,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <!-- Preconnect to critical domains -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  
+
   <!-- Meta tags -->
   <title>ByLuna | Boutique de Cosmétiques</title>
   <meta name="description" content="ByLuna - Votre boutique en ligne de produits cosmétiques de qualité au Maroc.">
-  
+
   <!-- Critical CSS - Inline for fast first paint -->
   <style>
     /* Critical CSS for above-the-fold content */
-    *,*::before,*::after{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,sans-serif;line-height:1.5}
-    #root{min-height:100vh}
-    .loading{display:flex;align-items:center;justify-content:center;min-height:100vh}
-    .spinner{width:40px;height:40px;border:3px solid #f3f3f3;border-top:3px solid #e91e63;border-radius:50%;animation:spin 1s linear infinite}
-    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.5
+    }
+
+    #root {
+      min-height: 100vh
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #e91e63;
+      border-radius: 50%;
+      animation: spin 1s linear infinite
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg)
+      }
+
+      100% {
+        transform: rotate(360deg)
+      }
+    }
   </style>
-  
+
   <!-- Async font loading - non-blocking -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Outfit:wght@400;500;700&display=swap"
+    as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Outfit:wght@400;500;700&display=swap"
+      rel="stylesheet">
+  </noscript>
 </head>
 
 <body>
@@ -37,7 +78,12 @@
   <div id="root">
     <!-- Static Hero Shell for Instant FCP -->
     <style>
-      body { background-color: #090a0f; color: white; overflow-x: hidden; }
+      body {
+        background-color: #090a0f;
+        color: white;
+        overflow-x: hidden;
+      }
+
       .hero-shell {
         position: relative;
         min-height: 100vh;
@@ -47,6 +93,7 @@
         background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
         overflow: hidden;
       }
+
       .star {
         position: absolute;
         width: 2px;
@@ -56,7 +103,21 @@
         opacity: 0;
         animation: twinkle 3s infinite ease-in-out;
       }
-      @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1.2); } }
+
+      @keyframes twinkle {
+
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+
       .content-shell {
         text-align: center;
         z-index: 10;
@@ -64,16 +125,30 @@
         opacity: 0;
         animation: fadeUp 1s ease-out forwards 0.2s;
       }
-      @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       .title-shell {
         font-size: 4rem;
         font-weight: 900;
         margin-bottom: 20px;
         background: linear-gradient(180deg, #ffffff 0%, #e0e7ff 100%);
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         letter-spacing: -2px;
       }
+
       .badge-shell {
         display: inline-flex;
         align-items: center;
@@ -87,14 +162,19 @@
         font-weight: bold;
         font-size: 0.9rem;
       }
-      @media (max-width: 768px) { .title-shell { font-size: 2.5rem; } }
+
+      @media (max-width: 768px) {
+        .title-shell {
+          font-size: 2.5rem;
+        }
+      }
     </style>
     <div class="hero-shell">
       <!-- Static Stars -->
       <div class="star" style="top: 20%; left: 20%; animation-delay: 0s;"></div>
       <div class="star" style="top: 50%; left: 80%; animation-delay: 1s;"></div>
       <div class="star" style="top: 80%; left: 40%; animation-delay: 2s;"></div>
-      
+
       <div class="content-shell">
         <div class="badge-shell">
           <span>✨</span>
