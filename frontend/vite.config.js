@@ -21,10 +21,10 @@ export default defineConfig({
         manualChunks: {
           // React core
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          // UI Libraries
-          'ui-vendor': ['antd', '@ant-design/icons', '@ant-design/plots', 'framer-motion'],
-          // Charts and data visualization (separate from UI)
-          'charts-vendor': ['recharts'],
+          // UI Libraries (Core) - Removed plots from here
+          'ui-vendor': ['antd', '@ant-design/icons', 'framer-motion'],
+          // Charts and data visualization (Heavy - Load only when needed)
+          'charts-vendor': ['recharts', '@ant-design/plots'],
           // Form and editor libraries
           'form-vendor': ['react-quill', '@tinymce/tinymce-react', 'react-select'],
           // Utility libraries
