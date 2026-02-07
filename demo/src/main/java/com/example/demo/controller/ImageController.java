@@ -41,6 +41,9 @@ public class ImageController {
             @RequestParam(required = false) Integer w,
             @RequestParam(required = false) Integer h) {
         try {
+            System.out.println("DEBUG: Request for type=" + type + " filename=" + filename);
+            System.out.println("DEBUG: uploadDir=" + uploadDir);
+
             // Security: Prevent directory traversal
             if (filename.contains("..") || type.contains("..")) {
                 return ResponseEntity.badRequest().build();
@@ -48,6 +51,10 @@ public class ImageController {
 
             Path filePath = Paths.get(uploadDir, "images", type, filename);
             File file = filePath.toFile();
+
+            System.out.println("DEBUG: Checking path=" + file.getAbsolutePath());
+            System.out.println("DEBUG: Exists? " + file.exists());
+            System.out.println("DEBUG: IsFile? " + file.isFile());
 
             if (!file.exists() || !file.isFile()) {
                 return ResponseEntity.notFound().build();
@@ -68,6 +75,7 @@ public class ImageController {
                     .body(resource);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
     }
