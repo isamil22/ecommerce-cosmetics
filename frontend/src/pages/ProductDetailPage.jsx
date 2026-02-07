@@ -16,6 +16,7 @@ import ShippingReturns from '../components/ShippingReturns';
 import { toast } from 'react-toastify';
 import { trackEvent } from '../utils/facebookPixel';
 import ReactGA from 'react-ga4';
+import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 import { formatPrice } from '../utils/currency';
 import './PackDetailPage.css';
@@ -263,7 +264,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                     }}
                                 >
                                     <img
-                                        src={selectedImage || '/placeholder-product.jpg'}
+                                        src={getOptimizedImageUrl(selectedImage || '/placeholder-product.jpg', 800)}
                                         alt={product.name}
                                         className="w-full h-full object-contain mix-blend-multiply p-2 lg:p-6 transition-transform duration-200 ease-out lg:hover:scale-[1.6] origin-[var(--x)_var(--y)]"
                                     />
@@ -296,7 +297,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                         style={{ '--x': '50%', '--y': '50%' }}
                                     >
                                         <img
-                                            src={selectedImage || '/placeholder-product.jpg'}
+                                            src={getOptimizedImageUrl(selectedImage || '/placeholder-product.jpg', 1200)} // Higher res for lightbox
                                             alt={product.name}
                                             className="max-w-full max-h-full object-contain transition-transform duration-200 ease-out hover:scale-[2] origin-[var(--x)_var(--y)]"
                                         />
@@ -316,7 +317,7 @@ const ProductDetailPage = ({ fetchCartCount, isAuthenticated }) => {
                                         : 'border-white bg-white/50 hover:border-purple-300'
                                         }`}
                                 >
-                                    <img src={img} alt={`View ${idx}`} className="w-full h-full object-cover" />
+                                    <img src={getOptimizedImageUrl(img, 100)} alt={`View ${idx}`} className="w-full h-full object-cover" />
                                 </button>
                             ))}
                         </div>

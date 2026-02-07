@@ -7,6 +7,7 @@ import { addToCart } from '../api/apiService';
 import { toast } from 'react-toastify';
 import { formatPrice } from '../utils/currency';
 import LazyImage from './LazyImage';
+import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -18,7 +19,7 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
     const navigate = useNavigate();
 
     const fullImageUrl = (product.images && product.images.length > 0)
-        ? product.images[0]
+        ? getOptimizedImageUrl(product.images[0], 400) // Optimize for card size
         : 'https://placehold.co/300x300/E91E63/FFFFFF?text=Produit';
 
     // Calculate discount percentage

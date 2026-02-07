@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,10 +29,17 @@ public class ImageController {
      * Also supports legacy structure: /api/images/{filename} (for backward
      * compatibility)
      */
+    /**
+     * Serve images with type and filename.
+     * Supports new structure: /api/images/{type}/{filename}
+     * Also supports resizing: ?w=300&h=300
+     */
     @GetMapping("/{type}/{filename}")
     public ResponseEntity<Resource> getImageByType(
             @PathVariable String type,
-            @PathVariable String filename) {
+            @PathVariable String filename,
+            @RequestParam(required = false) Integer w,
+            @RequestParam(required = false) Integer h) {
         try {
             // Security: Prevent directory traversal
             if (filename.contains("..") || type.contains("..")) {
@@ -45,9 +53,12 @@ public class ImageController {
                 return ResponseEntity.notFound().build();
             }
 
-            Resource resource = new FileSystemResource(file);
+            // If resizing is requested
+            if (w != null || h != null) {
+                return serveResizedImage(file, filename, w, h);
+            }
 
-            // Determine content type based on file extension
+            Resource resource = new FileSystemResource(file);
             String contentType = getContentType(filename);
 
             return ResponseEntity.ok()
@@ -66,7 +77,9 @@ public class ImageController {
      * Supports old structure: /api/images/{filename}
      */
     @GetMapping("/{filename}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+    public ResponseEntity<Resource> getImage(@PathVariable String filename,
+            @RequestParam(required = false) Integer w,
+            @RequestParam(required = false) Integer h) {
         try {
             // Security: Prevent directory traversal
             if (filename.contains("..")) {
@@ -93,9 +106,12 @@ public class ImageController {
                 return ResponseEntity.notFound().build();
             }
 
-            Resource resource = new FileSystemResource(file);
+            // If resizing is requested
+            if (w != null || h != null) {
+                return serveResizedImage(file, filename, w, h);
+            }
 
-            // Determine content type based on file extension
+            Resource resource = new FileSystemResource(file);
             String contentType = getContentType(filename);
 
             return ResponseEntity.ok()
@@ -106,6 +122,63 @@ public class ImageController {
 
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    private ResponseEntity<Resource> serveResizedImage(File originalFile, String originalFilename, Integer width,
+            Integer height) {
+        try {
+            // Determine dimensions
+            int targetWidth = width != null ? width : 0;
+            int targetHeight = height != null ? height : 0;
+
+            if (targetWidth == 0 && targetHeight == 0) {
+                // No valid dimensions, return original
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(getContentType(originalFilename)))
+                        .body(new FileSystemResource(originalFile));
+            }
+
+            // Create cache directory if not exists
+            Path cacheDir = Paths.get(uploadDir, "images", "cache");
+            if (!cacheDir.toFile().exists()) {
+                cacheDir.toFile().mkdirs();
+            }
+
+            // Generate unique cache filename: original_wX_hY.webp
+            String cacheFilename = originalFilename + "_w" + targetWidth + "_h" + targetHeight + ".webp";
+            File cacheFile = cacheDir.resolve(cacheFilename).toFile();
+
+            // Check if cached file exists
+            if (!cacheFile.exists()) {
+                // Create thumbnail
+                var builder = net.coobird.thumbnailator.Thumbnails.of(originalFile);
+
+                if (targetWidth > 0 && targetHeight > 0) {
+                    builder.size(targetWidth, targetHeight);
+                } else if (targetWidth > 0) {
+                    builder.width(targetWidth);
+                } else {
+                    builder.height(targetHeight);
+                }
+
+                builder.outputFormat("webp")
+                        .toFile(cacheFile);
+            }
+
+            // Serve cached file
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("image/webp"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + cacheFilename + "\"")
+                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")
+                    .body(new FileSystemResource(cacheFile));
+
+        } catch (Exception e) {
+            // Fallback to original if resizing fails
+            System.err.println("Error resizing image: " + e.getMessage());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(getContentType(originalFilename)))
+                    .body(new FileSystemResource(originalFile));
         }
     }
 
