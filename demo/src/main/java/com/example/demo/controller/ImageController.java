@@ -163,6 +163,7 @@ public class ImageController {
                 }
 
                 builder.outputFormat("webp")
+                        .outputQuality(0.8)
                         .toFile(cacheFile);
             }
 
