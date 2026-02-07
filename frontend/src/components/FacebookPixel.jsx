@@ -12,18 +12,23 @@ const FacebookPixel = () => {
     const location = useLocation();
 
     useEffect(() => {
-        const fetchPixelId = async () => {
-            try {
-                const settings = await getSettings();
-                if (settings && settings.facebookPixelId) {
-                    setPixelId(settings.facebookPixelId);
+        // Defer loading of Pixel to improve TBT (Total Blocking Time)
+        const timer = setTimeout(() => {
+            const fetchPixelId = async () => {
+                try {
+                    const settings = await getSettings();
+                    if (settings && settings.facebookPixelId) {
+                        setPixelId(settings.facebookPixelId);
+                    }
+                } catch (error) {
+                    console.error('Could not load Facebook Pixel settings', error);
                 }
-            } catch (error) {
-                console.error('Could not load Facebook Pixel settings', error);
-            }
-        };
+            };
 
-        fetchPixelId();
+            fetchPixelId();
+        }, 4000); // 4 seconds delay
+
+        return () => clearTimeout(timer);
     }, []);
 
     // Track PageView on route change

@@ -9,18 +9,23 @@ const GoogleAnalytics = () => {
     const [initialized, setInitialized] = useState(false);
 
     useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                const settings = await getSettings();
-                if (settings && settings.googleAnalyticsId) {
-                    setAnalyticsId(settings.googleAnalyticsId);
+        // Defer loading of GA to improve TBT
+        const timer = setTimeout(() => {
+            const fetchSettings = async () => {
+                try {
+                    const settings = await getSettings();
+                    if (settings && settings.googleAnalyticsId) {
+                        setAnalyticsId(settings.googleAnalyticsId);
+                    }
+                } catch (error) {
+                    console.error('Could not load Google Analytics settings', error);
                 }
-            } catch (error) {
-                console.error('Could not load Google Analytics settings', error);
-            }
-        };
+            };
 
-        fetchSettings();
+            fetchSettings();
+        }, 4000); // 4 seconds delay
+
+        return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {

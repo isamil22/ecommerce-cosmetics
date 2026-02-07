@@ -28,12 +28,24 @@ const HomePage = () => {
     useEffect(() => {
         // 1. Fetch Hero IMMEDIATELY (Critical for LCP)
         const fetchHero = async () => {
+            // CACHE-FIRST STRATEGY (LCP Optimization)
+            const cachedHero = localStorage.getItem('hero_data');
+            if (cachedHero) {
+                try {
+                    setHero(JSON.parse(cachedHero));
+                } catch (e) {
+                    console.error("Error parsing cached hero", e);
+                }
+            }
+
             try {
+                // Background update
                 const heroResponse = await getHero();
                 setHero(heroResponse.data);
+                localStorage.setItem('hero_data', JSON.stringify(heroResponse.data));
             } catch (err) {
                 console.error("Error fetching hero:", err);
-                // Fallback to default styling handled in render
+                // If cache existed, we are still good. If not, and this failed -> fallback layout.
             }
         };
 
