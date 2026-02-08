@@ -652,6 +652,14 @@ export const getAllowedProductsForCustomPack = (customPackId) => {
     return apiService.get(`/custom-packs/${customPackId}/allowed-products`);
 };
 
+export const uploadCustomPackImage = (imageFile) => {
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    return apiService.post('/custom-packs/upload-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+};
+
 export const saveCountdown = (countdownData) => {
     return apiService.post('/countdown', countdownData);
 };

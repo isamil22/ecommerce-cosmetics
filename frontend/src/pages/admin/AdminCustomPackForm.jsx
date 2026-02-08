@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createCustomPack, getCustomPackById, updateCustomPack, getPackableProducts } from '../../api/apiService';
+import { createCustomPack, getCustomPackById, updateCustomPack, getPackableProducts, uploadCustomPackImage } from '../../api/apiService';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader';
 import {
@@ -228,6 +228,14 @@ const AdminCustomPackForm = () => {
 
         setIsSubmitting(true);
         try {
+            let imageUrl = formData.imageUrl;
+
+            // Upload image first if a new image file is selected
+            if (formData.image) {
+                const uploadResponse = await uploadCustomPackImage(formData.image);
+                imageUrl = uploadResponse.data.url;
+            }
+
             // Build JSON object for the API (backend expects @RequestBody CustomPackDTO)
             const dataToSend = {
                 name: formData.name,
@@ -238,7 +246,7 @@ const AdminCustomPackForm = () => {
                 fixedPrice: formData.pricingType === 'FIXED' ? parseFloat(formData.fixedPrice) : null,
                 discountRate: formData.pricingType === 'DYNAMIC' ? parseFloat(formData.discountRate) : null,
                 allowedProductIds: selectedProducts,
-                imageUrl: formData.imageUrl || null
+                imageUrl: imageUrl || null
             };
 
             if (isEditing) {
