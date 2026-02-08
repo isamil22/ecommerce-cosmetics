@@ -228,33 +228,24 @@ const AdminCustomPackForm = () => {
 
         setIsSubmitting(true);
         try {
-            const formDataToSend = new FormData();
-            formDataToSend.append('name', formData.name);
-            formDataToSend.append('description', formData.description);
-            formDataToSend.append('minItems', formData.minItems);
-            formDataToSend.append('maxItems', formData.maxItems);
-            formDataToSend.append('pricingType', formData.pricingType);
-
-            if (formData.pricingType === 'FIXED') {
-                formDataToSend.append('fixedPrice', formData.fixedPrice);
-            } else {
-                formDataToSend.append('discountRate', formData.discountRate);
-            }
-
-            // Append allowed product IDs
-            selectedProducts.forEach(id => {
-                formDataToSend.append('allowedProductIds', id);
-            });
-
-            if (formData.image) {
-                formDataToSend.append('image', formData.image);
-            }
+            // Build JSON object for the API (backend expects @RequestBody CustomPackDTO)
+            const dataToSend = {
+                name: formData.name,
+                description: formData.description,
+                minItems: parseInt(formData.minItems),
+                maxItems: parseInt(formData.maxItems),
+                pricingType: formData.pricingType,
+                fixedPrice: formData.pricingType === 'FIXED' ? parseFloat(formData.fixedPrice) : null,
+                discountRate: formData.pricingType === 'DYNAMIC' ? parseFloat(formData.discountRate) : null,
+                allowedProductIds: selectedProducts,
+                imageUrl: formData.imageUrl || null
+            };
 
             if (isEditing) {
-                await updateCustomPack(id, formDataToSend);
+                await updateCustomPack(id, dataToSend);
                 toast.success(t('customPacks.form.success.updated'));
             } else {
-                await createCustomPack(formDataToSend);
+                await createCustomPack(dataToSend);
                 toast.success(t('customPacks.form.success.created'));
             }
             navigate('/admin/custom-packs');
