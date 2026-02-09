@@ -62,6 +62,7 @@ public class CustomPackService {
         existingPack.setPricingType(customPackDTO.getPricingType());
         existingPack.setFixedPrice(customPackDTO.getFixedPrice());
         existingPack.setDiscountRate(customPackDTO.getDiscountRate());
+        existingPack.setImageUrl(customPackDTO.getImageUrl()); // Fix: Add imageUrl update
 
         // Update allowed products if provided
         if (customPackDTO.getAllowedProductIds() != null) {
