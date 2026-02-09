@@ -232,8 +232,23 @@ const AdminCustomPackForm = () => {
 
             // Upload image first if a new image file is selected
             if (formData.image) {
-                const uploadResponse = await uploadCustomPackImage(formData.image);
-                imageUrl = uploadResponse.data.url;
+                try {
+                    console.log('Uploading image...', formData.image.name);
+                    const uploadResponse = await uploadCustomPackImage(formData.image);
+                    imageUrl = uploadResponse.data.url;
+                    console.log('Image uploaded successfully:', imageUrl);
+                } catch (uploadError) {
+                    console.error('Image upload failed:', uploadError);
+                    toast.error('Failed to upload image. Please try again.');
+                    setIsSubmitting(false);
+                    return; // Stop here, don't save with blob URL
+                }
+            }
+
+            // Validate that we don't have a blob URL (which is invalid for server storage)
+            if (imageUrl && imageUrl.startsWith('blob:')) {
+                console.warn('Blob URL detected, setting to null:', imageUrl);
+                imageUrl = null; // Don't save blob URLs to database
             }
 
             // Build JSON object for the API (backend expects @RequestBody CustomPackDTO)
@@ -249,6 +264,8 @@ const AdminCustomPackForm = () => {
                 imageUrl: imageUrl || null
             };
 
+            console.log('Saving custom pack:', dataToSend);
+
             if (isEditing) {
                 await updateCustomPack(id, dataToSend);
                 toast.success(t('customPacks.form.success.updated'));
@@ -259,7 +276,7 @@ const AdminCustomPackForm = () => {
             navigate('/admin/custom-packs');
         } catch (error) {
             toast.error(t('customPacks.form.validation.saveFailed'));
-            console.error(error);
+            console.error('Save failed:', error);
         } finally {
             setIsSubmitting(false);
         }
