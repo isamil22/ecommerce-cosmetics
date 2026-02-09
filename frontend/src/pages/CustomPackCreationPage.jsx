@@ -27,7 +27,7 @@ const CustomPackCreationPage = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [showHelp, setShowHelp] = useState(false);
     const [hoveredProduct, setHoveredProduct] = useState(null);
-    const [showWelcome, setShowWelcome] = useState(true);
+    const [showWelcome, setShowWelcome] = useState(false);
     const [demoMode, setDemoMode] = useState(false);
     const [highlightedElement, setHighlightedElement] = useState(null);
     const [viewProduct, setViewProduct] = useState(null);
@@ -288,8 +288,8 @@ const CustomPackCreationPage = () => {
                                 onClick={handleAddToCart}
                                 disabled={!isMinMet}
                                 className={`px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1 ${isMinMet
-                                        ? 'bg-gradient-to-r from-gray-900 to-gray-800 text-white'
-                                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                    ? 'bg-gradient-to-r from-gray-900 to-gray-800 text-white'
+                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                     }`}
                             >
                                 <span>إضافة / Ajouter</span>
