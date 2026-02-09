@@ -21,17 +21,18 @@ public class CustomPackService {
     private final CustomPackRepository customPackRepository;
     private final ProductRepository productRepository;
     private final CustomPackMapper customPackMapper;
+    private final LocalFileService localFileService;
 
     @Transactional
     public CustomPackDTO createCustomPack(CustomPackDTO customPackDTO) {
         CustomPack customPack = customPackMapper.toEntity(customPackDTO);
-        
+
         // Handle allowed products if provided
         if (customPackDTO.getAllowedProductIds() != null && !customPackDTO.getAllowedProductIds().isEmpty()) {
             List<Product> allowedProducts = productRepository.findAllById(customPackDTO.getAllowedProductIds());
             customPack.setAllowedProducts(allowedProducts);
         }
-        
+
         CustomPack savedCustomPack = customPackRepository.save(customPack);
         return customPackMapper.toDTO(savedCustomPack);
     }
@@ -87,12 +88,18 @@ public class CustomPackService {
     public List<Product> getAllowedProductsForPack(Long customPackId) {
         CustomPack customPack = customPackRepository.findById(customPackId)
                 .orElseThrow(() -> new ResourceNotFoundException("CustomPack not found with id: " + customPackId));
-        
+
         // If no specific products are allowed, return all packable products
         if (customPack.getAllowedProducts() == null || customPack.getAllowedProducts().isEmpty()) {
             return productRepository.findByIsPackableTrue();
         }
-        
+
         return customPack.getAllowedProducts();
+    }
+
+    // Upload custom pack image to custom-packs directory
+    public String uploadCustomPackImage(org.springframework.web.multipart.MultipartFile image)
+            throws java.io.IOException {
+        return localFileService.saveImage(image, "custom-packs");
     }
 }

@@ -24,7 +24,6 @@ public class CustomPackController {
 
     private final CustomPackService customPackService;
     private final ProductMapper productMapper;
-    private final ProductService productService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('CUSTOM_PACK:CREATE') or hasAuthority('CUSTOM_PACK:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
@@ -70,7 +69,8 @@ public class CustomPackController {
     @PreAuthorize("hasAuthority('CUSTOM_PACK:CREATE') or hasAuthority('CUSTOM_PACK:EDIT') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> uploadCustomPackImage(@RequestParam("image") MultipartFile image) {
         try {
-            String imageUrl = productService.uploadAndGetImageUrl(image);
+            // Use LocalFileService directly to save to custom-packs directory
+            String imageUrl = customPackService.uploadCustomPackImage(image);
             return ResponseEntity.ok(Map.of("url", imageUrl));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
