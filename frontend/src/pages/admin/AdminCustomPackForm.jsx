@@ -76,6 +76,10 @@ const AdminCustomPackForm = () => {
                 if (isEditing) {
                     const packResponse = await getCustomPackById(id);
                     const packData = packResponse.data;
+                    // Convert discountRate from decimal to percentage for display
+                    if (packData.discountRate) {
+                        packData.discountRate = (packData.discountRate * 100).toString();
+                    }
                     setFormData(packData);
                     setSelectedProducts(packData.allowedProductIds || []);
                 }
@@ -143,7 +147,7 @@ const AdminCustomPackForm = () => {
                 }
                 break;
             case 'discountRate':
-                if (formData.pricingType === 'DYNAMIC' && (!value || parseFloat(value) <= 0 || parseFloat(value) >= 1)) {
+                if (formData.pricingType === 'DYNAMIC' && (!value || parseFloat(value) <= 0 || parseFloat(value) > 100)) {
                     newErrors.discountRate = t('customPacks.form.validation.discountRateRange');
                 } else {
                     delete newErrors.discountRate;
@@ -187,7 +191,7 @@ const AdminCustomPackForm = () => {
             const fixedPrice = parseFloat(formData.fixedPrice || 0);
             return totalValue > 0 ? ((totalValue - fixedPrice) / totalValue * 100).toFixed(1) : 0;
         } else {
-            return (parseFloat(formData.discountRate || 0) * 100).toFixed(1);
+            return parseFloat(formData.discountRate || 0).toFixed(1);
         }
     };
 
@@ -210,8 +214,8 @@ const AdminCustomPackForm = () => {
             newErrors.fixedPrice = 'Fixed price must be greater than 0';
         }
 
-        if (formData.pricingType === 'DYNAMIC' && (!formData.discountRate || parseFloat(formData.discountRate) <= 0 || parseFloat(formData.discountRate) >= 1)) {
-            newErrors.discountRate = 'Discount rate must be between 0 and 1';
+        if (formData.pricingType === 'DYNAMIC' && (!formData.discountRate || parseFloat(formData.discountRate) <= 0 || parseFloat(formData.discountRate) > 100)) {
+            newErrors.discountRate = 'Discount rate must be between 0 and 100';
         }
 
         setErrors(newErrors);
@@ -259,7 +263,8 @@ const AdminCustomPackForm = () => {
                 maxItems: parseInt(formData.maxItems),
                 pricingType: formData.pricingType,
                 fixedPrice: formData.pricingType === 'FIXED' ? parseFloat(formData.fixedPrice) : null,
-                discountRate: formData.pricingType === 'DYNAMIC' ? parseFloat(formData.discountRate) : null,
+                // Convert percentage to decimal for backend (20 -> 0.20)
+                discountRate: formData.pricingType === 'DYNAMIC' ? parseFloat(formData.discountRate) / 100 : null,
                 allowedProductIds: selectedProducts,
                 imageUrl: imageUrl || null
             };
@@ -636,14 +641,14 @@ const AdminCustomPackForm = () => {
                                                     onChange={handleChange}
                                                     required
                                                     min="0"
-                                                    max="1"
+                                                    max="100"
                                                     className={`w-full px-4 py-3 pl-12 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-100 ${errors.discountRate ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
                                                         }`}
-                                                    placeholder="0.20 (for 20% discount)"
+                                                    placeholder="20"
                                                 />
                                                 <FiPercent className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             </div>
-                                            <p className="text-sm text-gray-500 mt-2">Enter as decimal (0.20 = 20% discount)</p>
+                                            <p className="text-sm text-gray-500 mt-2">Enter as percentage (20 = 20% discount)</p>
                                             {errors.discountRate && (
                                                 <div className="flex items-center space-x-2 mt-2 text-red-600">
                                                     <FiAlertCircle className="w-4 h-4" />
