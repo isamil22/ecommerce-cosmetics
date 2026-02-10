@@ -16,6 +16,21 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
     const variants = (data?.variants && data.variants.length > 0) ? data.variants : availableVariants;
     const activeProductId = data?.productId === 'NONE' ? null : (data?.productId || productId);
 
+    // Helper to construct image URL with cache-busting for hero images
+    const getImageUrl = (url) => {
+        if (!url) return '';
+
+        const fullUrl = url.startsWith('http') ? url : window.location.origin + url;
+
+        // Add cache-busting parameter for hero images to force fresh loads
+        if (url.includes('/api/images/hero/')) {
+            const separator = url.includes('?') ? '&' : '?';
+            return `${fullUrl}${separator}v=${Date.now()}`;
+        }
+
+        return fullUrl;
+    };
+
     // Helper to format selected variants string
     const getVariantString = () => {
         if (!variants.length) return null;
@@ -98,7 +113,7 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
                 justifyContent: 'center',
                 overflow: 'hidden',
                 background: backgroundImage
-                    ? `url(${backgroundImage.startsWith('http') ? backgroundImage : window.location.origin + backgroundImage})`
+                    ? `url(${getImageUrl(backgroundImage)})`
                     : `radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)`, // Deep cosmic default
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',

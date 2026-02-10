@@ -64,7 +64,7 @@ public class ImageController {
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
-                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000") // Cache for 1 year
+                    .header(HttpHeaders.CACHE_CONTROL, getCacheControlHeader(type)) // Smart caching based on type
                     .body(resource);
 
         } catch (Exception e) {
@@ -117,7 +117,8 @@ public class ImageController {
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
-                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000") // Cache for 1 year
+                    .header(HttpHeaders.CACHE_CONTROL, getCacheControlHeader("general")) // Smart caching for legacy
+                                                                                         // endpoint
                     .body(resource);
 
         } catch (Exception e) {
@@ -197,6 +198,37 @@ public class ImageController {
                 return "image/webp";
             default:
                 return "application/octet-stream";
+        }
+    }
+
+    /**
+     * Get appropriate cache control header based on image type.
+     * Different image types have different update frequencies.
+     * 
+     * @param type The image type (hero, products, categories, etc.)
+     * @return Cache-Control header value
+     */
+    private String getCacheControlHeader(String type) {
+        if (type == null) {
+            return "public, max-age=31536000"; // 1 year default
+        }
+
+        switch (type) {
+            case "hero":
+                // Hero images change infrequently but need quick updates when they do
+                return "public, max-age=300"; // 5 minutes
+            case "products":
+            case "categories":
+            case "packs":
+            case "custom-packs":
+                // Product-related images may change but not frequently
+                return "public, max-age=86400"; // 1 day
+            case "comments":
+                // Comment images rarely change
+                return "public, max-age=604800"; // 1 week
+            default:
+                // Everything else can be cached long-term
+                return "public, max-age=31536000"; // 1 year
         }
     }
 }

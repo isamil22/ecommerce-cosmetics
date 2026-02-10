@@ -248,6 +248,26 @@ const AdminHeroPage = () => {
 
         try {
             await updateHero(formData);
+
+            // Force refresh hero data from server to get new image URLs
+            const refreshedHero = await getHero();
+            setHero(refreshedHero.data);
+
+            // Update previews with new URLs (with cache-busting to force browser to fetch new images)
+            if (refreshedHero.data.imageUrl) {
+                setImagePreview(`${refreshedHero.data.imageUrl}?v=${Date.now()}`);
+            }
+            if (refreshedHero.data.mobileImageUrl) {
+                setMobileImagePreview(`${refreshedHero.data.mobileImageUrl}?v=${Date.now()}`);
+            }
+
+            // Clear file inputs to prevent accidental re-upload
+            setImage(null);
+            setMobileImage(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+
             setSuccess(t('heroSettings.messages.success'));
             toast.success(t('heroSettings.messages.success'));
             setIsDirty(false);
