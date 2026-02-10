@@ -45,6 +45,7 @@ public class HeroService {
 
         if (image != null && !image.isEmpty()) {
             try {
+                System.out.println("📸 Hero Update: Saving new desktop image...");
                 // Delete old image if it exists
                 if (hero.getImageUrl() != null && !hero.getImageUrl().isEmpty()) {
                     localFileService.deleteImage(hero.getImageUrl());
@@ -53,6 +54,7 @@ public class HeroService {
                 // Save new image
                 String imageUrl = localFileService.saveImage(image, "hero");
                 hero.setImageUrl(imageUrl);
+                System.out.println("✅ Hero Update: Desktop image saved: " + imageUrl);
             } catch (IOException e) {
                 System.err.println("File service error for desktop image: " + e.getMessage());
                 e.printStackTrace();
@@ -60,6 +62,7 @@ public class HeroService {
         } else if (heroDTO.getImageUrl() == null || heroDTO.getImageUrl().isEmpty()) {
             // Explicit removal: Only delete if there was an image previously
             if (hero.getImageUrl() != null && !hero.getImageUrl().isEmpty()) {
+                System.out.println("🗑️ Hero Update: Explicitly removing desktop image: " + hero.getImageUrl());
                 localFileService.deleteImage(hero.getImageUrl());
                 hero.setImageUrl(null);
             }
@@ -67,6 +70,7 @@ public class HeroService {
 
         if (mobileImage != null && !mobileImage.isEmpty()) {
             try {
+                System.out.println("📸 Hero Update: Saving new mobile image...");
                 // Delete old mobile image if it exists
                 if (hero.getMobileImageUrl() != null && !hero.getMobileImageUrl().isEmpty()) {
                     localFileService.deleteImage(hero.getMobileImageUrl());
@@ -75,6 +79,7 @@ public class HeroService {
                 // Save new mobile image
                 String mobileImageUrl = localFileService.saveImage(mobileImage, "hero");
                 hero.setMobileImageUrl(mobileImageUrl);
+                System.out.println("✅ Hero Update: Mobile image saved: " + mobileImageUrl);
             } catch (IOException e) {
                 System.err.println("File service error for mobile image: " + e.getMessage());
                 e.printStackTrace();
@@ -82,6 +87,7 @@ public class HeroService {
         } else if (heroDTO.getMobileImageUrl() == null || heroDTO.getMobileImageUrl().isEmpty()) {
             // Explicit removal: Only delete if there was an image previously
             if (hero.getMobileImageUrl() != null && !hero.getMobileImageUrl().isEmpty()) {
+                System.out.println("🗑️ Hero Update: Explicitly removing mobile image: " + hero.getMobileImageUrl());
                 localFileService.deleteImage(hero.getMobileImageUrl());
                 hero.setMobileImageUrl(null);
             }

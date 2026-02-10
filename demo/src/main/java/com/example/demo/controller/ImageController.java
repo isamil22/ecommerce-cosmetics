@@ -157,8 +157,9 @@ public class ImageController {
                 synchronized (cacheFilename.intern()) {
                     // Double-check inside synchronization
                     if (!cacheFile.exists() || cacheFile.length() == 0) {
+                        File tempFile = new File(cacheFile.getAbsolutePath() + ".tmp");
                         try {
-                            // Create thumbnail
+                            System.out.println("🔨 Generating thumbnail: " + cacheFilename);
                             var builder = net.coobird.thumbnailator.Thumbnails.of(originalFile);
 
                             if (targetWidth > 0 && targetHeight > 0) {
@@ -171,12 +172,26 @@ public class ImageController {
 
                             builder.outputFormat("webp")
                                     .outputQuality(0.7)
-                                    .toFile(cacheFile);
+                                    .toFile(tempFile);
+
+                            // Atomic move to ensure we never serve a partial file
+                            java.nio.file.Files.move(tempFile.toPath(), cacheFile.toPath(),
+                                    java.nio.file.StandardCopyOption.REPLACE_EXISTING,
+                                    java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+
+                            System.out.println("✅ Generated thumbnail successfully: " + cacheFilename);
                         } catch (Exception resizeError) {
                             System.err.println("💥 Failed to generate thumbnail: " + cacheFilename + " - "
                                     + resizeError.getMessage());
-                            // If it fails, we'll fallback to original image below
-                            throw resizeError;
+                            if (tempFile.exists())
+                                tempFile.delete();
+
+                            // FALLBACK: Serve original image if resizing fails
+                            System.out.println("🔄 Falling back to original image for: " + originalFilename);
+                            return ResponseEntity.ok()
+                                    .header(HttpHeaders.CONTENT_TYPE, getContentType(originalFilename))
+                                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=3600") // Cache for less time
+                                    .body(new FileSystemResource(originalFile));
                         }
                     }
                 }
@@ -184,16 +199,14 @@ public class ImageController {
 
             // Serve cached file
             return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType("image/webp"))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + cacheFilename + "\"")
-                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")
+                    .header(HttpHeaders.CONTENT_TYPE, "image/webp")
+                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=2592000")
                     .body(new FileSystemResource(cacheFile));
-
         } catch (Exception e) {
-            // Fallback to original if resizing fails
-            System.err.println("Error resizing image: " + e.getMessage());
+            System.err.println("❌ Error in serveResizedImage: " + e.getMessage());
+            // Fallback to original image as last resort
             return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(getContentType(originalFilename)))
+                    .header(HttpHeaders.CONTENT_TYPE, getContentType(originalFilename))
                     .body(new FileSystemResource(originalFile));
         }
     }

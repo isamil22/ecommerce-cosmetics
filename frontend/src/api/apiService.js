@@ -403,7 +403,7 @@ export const getAllReviews = () => {
 };
 
 export const getHero = () => {
-    return apiService.get('/hero');
+    return apiService.get(`/hero?t=${Date.now()}`);
 };
 
 export const updateHero = (formData) => {
