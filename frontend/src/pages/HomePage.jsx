@@ -24,7 +24,7 @@ const HomePage = () => {
         "linkText": "Shop Now",
         "linkUrl": "/products",
         "titleFont": "'Dancing Script', cursive",
-        "imageUrl": "/api/images/hero/c1946d7d-c798-45f7-9d8e-e37cdd553343-711w0mQpVXL._SL1500_.jpg",
+        "imageUrl": null,
         "mobileImageUrl": null
     };
 

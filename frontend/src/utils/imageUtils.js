@@ -5,11 +5,16 @@ export const getOptimizedImageUrl = (url, width, height) => {
 
     // Clean up URL but PRESERVE existing query parameters (like v=...)
     const [baseUrl, queryString] = url.split('?');
+
+    // Encode the URL to handle spaces (e.g. "New Arrivals.jpg" -> "New%20Arrivals.jpg")
+    // encodeURI preserves sensitive characters like / and : but encodes spaces
+    const encodedBaseUrl = encodeURI(baseUrl);
+
     const params = new URLSearchParams(queryString);
 
     if (width) params.set('w', width);
     if (height) params.set('h', height);
 
     const newQueryString = params.toString();
-    return newQueryString ? `${baseUrl}?${newQueryString}` : baseUrl;
+    return newQueryString ? `${encodedBaseUrl}?${newQueryString}` : encodedBaseUrl;
 };
