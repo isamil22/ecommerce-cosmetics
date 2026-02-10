@@ -150,22 +150,36 @@ public class ImageController {
             String cacheFilename = originalFilename + "_w" + targetWidth + "_h" + targetHeight + ".webp";
             File cacheFile = cacheDir.resolve(cacheFilename).toFile();
 
-            // Check if cached file exists
-            if (!cacheFile.exists()) {
-                // Create thumbnail
-                var builder = net.coobird.thumbnailator.Thumbnails.of(originalFile);
+            // Check if cached file exists and is not empty
+            if (!cacheFile.exists() || cacheFile.length() == 0) {
+                // Synchronize on the filename to prevent multiple threads from resizing the
+                // same image
+                synchronized (cacheFilename.intern()) {
+                    // Double-check inside synchronization
+                    if (!cacheFile.exists() || cacheFile.length() == 0) {
+                        try {
+                            // Create thumbnail
+                            var builder = net.coobird.thumbnailator.Thumbnails.of(originalFile);
 
-                if (targetWidth > 0 && targetHeight > 0) {
-                    builder.size(targetWidth, targetHeight);
-                } else if (targetWidth > 0) {
-                    builder.width(targetWidth);
-                } else {
-                    builder.height(targetHeight);
+                            if (targetWidth > 0 && targetHeight > 0) {
+                                builder.size(targetWidth, targetHeight);
+                            } else if (targetWidth > 0) {
+                                builder.width(targetWidth);
+                            } else {
+                                builder.height(targetHeight);
+                            }
+
+                            builder.outputFormat("webp")
+                                    .outputQuality(0.7)
+                                    .toFile(cacheFile);
+                        } catch (Exception resizeError) {
+                            System.err.println("💥 Failed to generate thumbnail: " + cacheFilename + " - "
+                                    + resizeError.getMessage());
+                            // If it fails, we'll fallback to original image below
+                            throw resizeError;
+                        }
+                    }
                 }
-
-                builder.outputFormat("webp")
-                        .outputQuality(0.7)
-                        .toFile(cacheFile);
             }
 
             // Serve cached file

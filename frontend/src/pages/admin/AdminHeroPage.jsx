@@ -183,12 +183,14 @@ const AdminHeroPage = () => {
     const removeMobileImage = () => {
         setMobileImage(null);
         setMobileImagePreview('');
+        setHero(prev => ({ ...prev, mobileImageUrl: null }));
         setIsDirty(true);
     };
 
     const removeImage = () => {
         setImage(null);
         setImagePreview('');
+        setHero(prev => ({ ...prev, imageUrl: null }));
         setIsDirty(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = '';

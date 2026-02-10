@@ -199,14 +199,45 @@ public class LocalFileService {
             Path filePath = Paths.get(uploadDir, "images", type, filename);
             File file = filePath.toFile();
 
+            boolean deleted = false;
             if (file.exists() && file.isFile()) {
-                return file.delete();
+                deleted = file.delete();
+                if (deleted) {
+                    System.out.println("🗑️ Deleted original image: " + filePath);
+                    // Also delete cached versions if any
+                    deleteCachedVersions(filename);
+                }
             }
+            return deleted;
         } catch (Exception e) {
             // Log error but don't throw
             System.err.println("Error deleting image: " + imageUrl + " - " + e.getMessage());
         }
 
         return false;
+    }
+
+    /**
+     * Delete all cached versions of a specific file.
+     * Searches in uploads/images/cache/ for files starting with original filename.
+     */
+    private void deleteCachedVersions(String originalFilename) {
+        try {
+            Path cachePath = Paths.get(uploadDir, "images", "cache");
+            File cacheDirFile = cachePath.toFile();
+
+            if (cacheDirFile.exists() && cacheDirFile.isDirectory()) {
+                File[] cachedFiles = cacheDirFile.listFiles((dir, name) -> name.startsWith(originalFilename));
+                if (cachedFiles != null) {
+                    for (File cachedFile : cachedFiles) {
+                        if (cachedFile.delete()) {
+                            System.out.println("   🗑️ Deleted cached variant: " + cachedFile.getName());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting cached versions for " + originalFilename + ": " + e.getMessage());
+        }
     }
 }
