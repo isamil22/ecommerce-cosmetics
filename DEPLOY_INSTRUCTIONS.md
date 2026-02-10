@@ -1,7 +1,7 @@
 # Deployment Instructions
 
 ## Changes Pushed to GitHub ✅
-Commit: `a2a4ead` - "fix: add defensive image fallback for missing custom-packs images"
+Commit: `1ad362b` - "Fix: Hero image caching issues - implement smart caching and auto-cleanup"
 
 ## Manual Steps to Deploy on Server
 
@@ -21,44 +21,61 @@ cd /root/ecommerce-cosmetics
 git pull origin main
 ```
 
-### 4. Create the missing custom-packs directory
+### 4. Rebuild and restart containers
+Since we modified Java backend code (`ImageController.java`, `HeroService.java`), we MUST rebuild the backend.
+We also modified Frontend code, so we should rebuild frontend too.
+
 ```bash
-mkdir -p uploads/images/custom-packs
+docker-compose down
+docker-compose up -d --build
 ```
 
-### 5. Rebuild and restart the frontend container
+### 5. Verify the deployment
+Check backend logs to ensure it started correctly:
 ```bash
-docker-compose down frontend
-docker-compose up -d --build frontend
+docker-compose logs backend | tail -20
 ```
 
-### 6. Verify the deployment
-```bash
-docker-compose logs frontend | tail -20
-```
-
-### 7. Check if containers are running
-```bash
-docker-compose ps
-```
+### 6. Verify Fixes
+1. Open Admin Panel > Hero Section
+2. Upload new image
+3. Verify it updates immediately without refresh
 
 ---
 
-## Alternative: Full Rebuild (if needed)
+## 🆘 Troubleshooting
+
+### Error: `KeyError: 'ContainerConfig'` or `ImageNotFound`
+If you see an error like `KeyError: 'ContainerConfig'` or `No such image: sha256:...`, it means Docker's state is corrupted (it's looking for an old image that doesn't exist).
+
+**Solution:**
+You must manually remove the broken containers and let Docker recreate them.
+
+Run these 3 commands in order:
+
 ```bash
-cd /root/ecommerce-cosmetics
-git pull origin main
-mkdir -p uploads/images/custom-packs
-docker-compose down
+# 1. Stop everything and remove orphans
+docker-compose down --remove-orphans
+
+# 2. Force remove the specific broken containers (just to be safe)
+docker rm -f ecommerce-copy-backend ecommerce-copy-frontend
+
+# 3. Rebuild and start again
 docker-compose up -d --build
 ```
 
 ---
 
-## What Was Fixed
-1. ✅ Created `uploads/images/custom-packs/` directory for custom pack images
-2. ✅ Added defensive image error handling in `CustomPacksPage.jsx`
-3. ✅ When images 404, they now show a beautiful fallback UI instead of broken images
+## What Was Fixed (In this update)
+1. ✅ **Smart Caching**: Hero images now cache for 5 mins (was 1 year)
+2. ✅ **Auto Cleanup**: Old hero images are deleted automatically
+3. ✅ **Instant Updates**: Admin panel updates immediately after upload
+4. ✅ **Mobile Fix**: Removed stale localStorage cache for hero images using unique timestamps
 
 ## Files Modified
-- `frontend/src/pages/CustomPacksPage.jsx`
+- `demo/src/main/java/com/example/demo/controller/ImageController.java`
+- `demo/src/main/java/com/example/demo/service/HeroService.java`
+- `frontend/src/pages/admin/AdminHeroPage.jsx`
+- `frontend/src/components/landingPage/sections/HeroSection.jsx`
+- `frontend/src/pages/HomePage.jsx` (New Mobile Fix)
+- `frontend/src/utils/imageUtils.js` (New Mobile Fix)

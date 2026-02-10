@@ -40,25 +40,27 @@ const HomePage = () => {
     // --- OPTIMIZED DATA FETCHING (Parallel & Progressive) ---
     useEffect(() => {
         // 1. Fetch Hero IMMEDIATELY (Critical for LCP)
+        // 1. Fetch Hero IMMEDIATELY (Critical for LCP)
         const fetchHero = async () => {
-            // CACHE-FIRST STRATEGY (LCP Optimization)
-            const cachedHero = localStorage.getItem('hero_data');
-            if (cachedHero) {
-                try {
-                    setHero(JSON.parse(cachedHero));
-                } catch (e) {
-                    console.error("Error parsing cached hero", e);
-                }
-            }
-
             try {
                 // Background update
                 const heroResponse = await getHero();
-                setHero(heroResponse.data);
-                localStorage.setItem('hero_data', JSON.stringify(heroResponse.data));
+
+                // Add cache busting to hero images to ensure fresh load
+                const freshHero = { ...heroResponse.data };
+                const timestamp = Date.now();
+
+                if (freshHero.imageUrl && freshHero.imageUrl.includes('/api/images/hero/')) {
+                    freshHero.imageUrl = `${freshHero.imageUrl}${freshHero.imageUrl.includes('?') ? '&' : '?'}v=${timestamp}`;
+                }
+
+                if (freshHero.mobileImageUrl && freshHero.mobileImageUrl.includes('/api/images/hero/')) {
+                    freshHero.mobileImageUrl = `${freshHero.mobileImageUrl}${freshHero.mobileImageUrl.includes('?') ? '&' : '?'}v=${timestamp}`;
+                }
+
+                setHero(freshHero);
             } catch (err) {
                 console.error("Error fetching hero:", err);
-                // If cache existed, we are still good. If not, and this failed -> fallback layout.
             }
         };
 
