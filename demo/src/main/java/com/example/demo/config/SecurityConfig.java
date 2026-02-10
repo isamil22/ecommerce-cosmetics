@@ -46,6 +46,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html")
                         .permitAll()
+                        // Allow all HTTP methods for images (must be before GET-only matchers)
+                        .requestMatchers("/api/images/**").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/login",
                                 "/api/auth/register",
@@ -73,7 +75,6 @@ public class SecurityConfig {
                                 "/api/coupons/validate/**", // Allow coupon validation without authentication
                                 "/api/auth/debug/authorities", // Allow debug endpoint for troubleshooting
                                 "/api/orders/*/feedback", // Allow access to order feedback
-                                "/api/images/**", // Allow public access to images
                                 "/api/landing-pages/public/**", // Allow public access to published landing pages
                                 "/api/enhanced-visitor-counter-settings" // Allow public access to visitor settings
                         )
