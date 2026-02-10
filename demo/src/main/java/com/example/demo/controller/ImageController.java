@@ -34,10 +34,10 @@ public class ImageController {
      * Supports new structure: /api/images/{type}/{filename}
      * Also supports resizing: ?w=300&h=300
      */
-    @GetMapping("/{type}/{filename}")
+    @GetMapping("/{type}/{filename:.+}")
     public ResponseEntity<Resource> getImageByType(
             @PathVariable String type,
-            @PathVariable String filename,
+            @PathVariable("filename") String filename,
             @RequestParam(required = false) Integer w,
             @RequestParam(required = false) Integer h) {
         try {
@@ -76,8 +76,8 @@ public class ImageController {
      * Legacy endpoint for backward compatibility.
      * Supports old structure: /api/images/{filename}
      */
-    @GetMapping("/{filename}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename,
+    @GetMapping("/{filename:.+}")
+    public ResponseEntity<Resource> getImage(@PathVariable("filename") String filename,
             @RequestParam(required = false) Integer w,
             @RequestParam(required = false) Integer h) {
         try {
