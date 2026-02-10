@@ -18,12 +18,12 @@ import java.util.UUID;
  * 
  * Storage structure:
  * uploads/
- *   images/
- *     products/
- *     categories/
- *     packs/
- *     hero/
- *     comments/
+ * images/
+ * products/
+ * categories/
+ * packs/
+ * hero/
+ * comments/
  */
 @Service
 public class LocalFileService {
@@ -37,8 +37,9 @@ public class LocalFileService {
     /**
      * Save a MultipartFile image to local filesystem.
      * 
-     * @param file The image file to save
-     * @param imageType The type of image (products, categories, packs, hero, comments)
+     * @param file      The image file to save
+     * @param imageType The type of image (products, categories, packs, hero,
+     *                  comments)
      * @return The URL to access the saved image
      * @throws IOException If file cannot be saved
      */
@@ -57,7 +58,7 @@ public class LocalFileService {
         if (originalFilename == null || originalFilename.isEmpty()) {
             originalFilename = "image";
         }
-        
+
         // Clean filename (remove special characters)
         String cleanFilename = cleanFilename(originalFilename);
         String uniqueFilename = UUID.randomUUID().toString() + "-" + cleanFilename;
@@ -66,9 +67,17 @@ public class LocalFileService {
         Path filePath = uploadPath.resolve(uniqueFilename);
         Files.copy(file.getInputStream(), filePath);
 
+        // Log for debugging
+        System.out.println("✅ Image saved successfully:");
+        System.out.println("   Physical path: " + filePath.toAbsolutePath());
+        System.out.println("   File size: " + filePath.toFile().length() + " bytes");
+
         // Return relative URL for database storage
         // Format: /api/images/{type}/{filename}
-        return baseUrl + "/" + typeDir + "/" + uniqueFilename;
+        String imageUrl = baseUrl + "/" + typeDir + "/" + uniqueFilename;
+        System.out.println("   Database URL: " + imageUrl);
+
+        return imageUrl;
     }
 
     /**
@@ -84,8 +93,9 @@ public class LocalFileService {
      * Used for composite images (e.g., pack composite images).
      * 
      * @param imageBytes The image bytes to save
-     * @param fileName The desired file name
-     * @param imageType The type of image (products, categories, packs, hero, comments)
+     * @param fileName   The desired file name
+     * @param imageType  The type of image (products, categories, packs, hero,
+     *                   comments)
      * @return The URL to access the saved image
      * @throws IOException If file cannot be saved
      */
@@ -131,16 +141,17 @@ public class LocalFileService {
     }
 
     /**
-     * Clean filename by removing special characters and path separators.
+     * Clean filename by removing special characters, spaces, and path separators.
+     * Spaces are removed to prevent URL encoding issues.
      */
     private String cleanFilename(String filename) {
         if (filename == null) {
             return "image";
         }
-        
-        // Remove path separators and dangerous characters
-        String cleaned = filename.replaceAll("[\\\\/:*?\"<>|]", "_");
-        
+
+        // Remove path separators, dangerous characters, AND SPACES
+        String cleaned = filename.replaceAll("[\\\\/:*?\"<>|\\s]", "_");
+
         // Limit length
         if (cleaned.length() > 200) {
             String extension = "";
@@ -151,7 +162,7 @@ public class LocalFileService {
             }
             cleaned = cleaned.substring(0, 200 - extension.length()) + extension;
         }
-        
+
         return cleaned;
     }
 
@@ -199,4 +210,3 @@ public class LocalFileService {
         return false;
     }
 }
-
