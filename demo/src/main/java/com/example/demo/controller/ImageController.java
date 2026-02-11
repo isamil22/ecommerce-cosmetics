@@ -175,17 +175,25 @@ public class ImageController {
                                     .toFile(tempFile);
 
                             // Move temp file to final destination
-                            // Use absolute paths and standard replace to avoid Docker volume atomic move
-                            // issues
-                            java.nio.file.Files.move(
+                            // Copy and delete is more robust across different file system types/docker
+                            // volumes than move
+                            java.nio.file.Files.copy(
                                     tempFile.toPath().toAbsolutePath(),
                                     cacheFile.toPath().toAbsolutePath(),
                                     java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
+                            try {
+                                java.nio.file.Files.deleteIfExists(tempFile.toPath());
+                            } catch (Exception ignored) {
+                                // Ignored
+                            }
+
                             System.out.println("✅ Generated thumbnail successfully: " + cacheFilename);
                         } catch (Exception resizeError) {
                             System.err.println("💥 Failed to generate thumbnail: " + cacheFilename + " - "
-                                    + resizeError.getMessage());
+                                    + resizeError.getClass().getName() + ": " + resizeError.getMessage());
+                            resizeError.printStackTrace(); // Print full stack trace for debugging
+
                             if (tempFile.exists())
                                 tempFile.delete();
 

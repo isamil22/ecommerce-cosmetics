@@ -1,7 +1,7 @@
 # Deployment Instructions
 
 ## Changes Pushed to GitHub ✅
-Commit: `4a07f95` - "Performance Optimization: Responsive Images & Cache Fixes"
+Commit: `32d1f0d` - "Fix: Docker volume permission issue with thumbnail generation"
 
 ## Manual Steps to Deploy on Server
 
