@@ -8,6 +8,8 @@ const LazyImage = ({
     priority = false,
     width,
     height,
+    srcSet,
+    sizes,
     onLoad,
     onError
 }) => {
@@ -65,12 +67,14 @@ const LazyImage = ({
             {isInView && (
                 <img
                     src={src}
+                    srcSet={srcSet}
+                    sizes={sizes}
                     alt={alt}
                     width={width}
                     height={height}
                     loading={priority ? "eager" : "lazy"}
                     decoding={priority ? "sync" : "async"}
-                    fetchpriority={priority ? "high" : "auto"}
+                    fetchPriority={priority ? "high" : "auto"}
                     onLoad={handleLoad}
                     onError={handleError}
                     className={`w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'

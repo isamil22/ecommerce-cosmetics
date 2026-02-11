@@ -18,9 +18,23 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
     const [isLowStock, setIsLowStock] = useState(false);
     const navigate = useNavigate();
 
-    const fullImageUrl = (product.images && product.images.length > 0)
-        ? getOptimizedImageUrl(product.images[0], 400) // Optimize for card size
+    const imageUrl = (product.images && product.images.length > 0) ? product.images[0] : null;
+
+    // Default fallback
+    const fullImageUrl = imageUrl
+        ? getOptimizedImageUrl(imageUrl, 400) // Default for 1x
         : 'https://placehold.co/300x300/E91E63/FFFFFF?text=Produit';
+
+    // Responsive Set: 400px (standard), 800px (retina/desktop zoom)
+    const srcSet = imageUrl
+        ? `${getOptimizedImageUrl(imageUrl, 400)} 400w, ${getOptimizedImageUrl(imageUrl, 800)} 800w`
+        : null;
+
+    // Sizes attribute: 
+    // - Mobile (2 cols): ~50vw (minus padding)
+    // - Tablet (3 cols): ~33vw
+    // - Desktop (4 cols): ~25vw
+    const sizes = "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw";
 
     // Calculate discount percentage
     const hasDiscount = product.oldPrice && product.oldPrice > product.price;
@@ -161,6 +175,8 @@ const ProductCard = ({ product, fetchCartCount, isAuthenticated }) => {
                 <div className="relative overflow-hidden bg-gray-100 aspect-square">
                     <LazyImage
                         src={fullImageUrl}
+                        srcSet={srcSet}
+                        sizes={sizes}
                         alt={product.name}
                         className={`w-full h-full transition-all duration-500 ${isHovered ? 'scale-110' : 'scale-100'}`}
                         onLoad={() => setImageLoaded(true)}

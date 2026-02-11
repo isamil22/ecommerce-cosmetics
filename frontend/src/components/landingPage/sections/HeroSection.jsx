@@ -37,11 +37,12 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
 
         const fullUrl = processedUrl.startsWith('http') ? processedUrl : window.location.origin + processedUrl;
 
-        // Add cache-busting parameter for hero images to force fresh loads
-        if (url.includes('/api/images/hero/')) {
-            const separator = url.includes('?') ? '&' : '?';
-            return `${fullUrl}${separator}v=${Date.now()}`;
-        }
+        // Add cache busting for hero images to ensure fresh load
+        // PERFORMANCE FIX: Removed timestamp to allow caching. 
+        // if (url.includes('/api/images/hero/')) {
+        //     const separator = url.includes('?') ? '&' : '?';
+        //     return `${fullUrl}${separator}v=${Date.now()}`;
+        // }
 
         return fullUrl;
     };

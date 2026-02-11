@@ -48,16 +48,9 @@ const HomePage = () => {
                 const heroResponse = await getHero();
 
                 // Add cache busting to hero images to ensure fresh load
+                // PERFORMANCE FIX: Removed timestamp to allow caching.
+                // The backend handles updates via ETag/Last-Modified or manual cache clearing if needed.
                 const freshHero = { ...heroResponse.data };
-                const timestamp = Date.now();
-
-                if (freshHero.imageUrl && freshHero.imageUrl.includes('/api/images/hero/')) {
-                    freshHero.imageUrl = `${freshHero.imageUrl}${freshHero.imageUrl.includes('?') ? '&' : '?'}v=${timestamp}`;
-                }
-
-                if (freshHero.mobileImageUrl && freshHero.mobileImageUrl.includes('/api/images/hero/')) {
-                    freshHero.mobileImageUrl = `${freshHero.mobileImageUrl}${freshHero.mobileImageUrl.includes('?') ? '&' : '?'}v=${timestamp}`;
-                }
 
                 setHero(freshHero);
                 setHeroImageError(false); // Reset error state on new data
@@ -182,25 +175,35 @@ const HomePage = () => {
                             }}
                         />
 
-                        {/* 2. Actual Image */}
+                        {/* 2. Actual Image (Optimized with <picture>) */}
                         {heroImageUrl && !heroImageError && (
-                            <img
-                                key={heroImageUrl} // Force re-render if URL changes
-                                src={getOptimizedImageUrl(
-                                    window.innerWidth < 768 ? (hero.mobileImageUrl || heroImageUrl) : heroImageUrl,
-                                    window.innerWidth < 768 ? 720 : 1920
-                                )}
-                                alt="ByLuna Hero"
-                                className="w-full h-full object-cover transition-opacity duration-1000 animate-fade-in"
-                                style={{ opacity: heroImageError ? 0 : 1 }}
-                                fetchPriority="high"
-                                loading="eager"
-                                onLoad={() => console.log("✅ Hero image loaded successfully")}
-                                onError={(e) => {
-                                    console.error("💥 Hero image failed to load:", e.target.src);
-                                    setHeroImageError(true);
-                                }}
-                            />
+                            <picture>
+                                {/* Mobile Image (First priority for mobile) */}
+                                <source
+                                    media="(max-width: 768px)"
+                                    srcSet={getOptimizedImageUrl(hero.mobileImageUrl || heroImageUrl, 720)}
+                                />
+                                {/* Desktop Image */}
+                                <source
+                                    media="(min-width: 769px)"
+                                    srcSet={getOptimizedImageUrl(heroImageUrl, 1920)}
+                                />
+                                {/* Fallback <img> */}
+                                <img
+                                    key={heroImageUrl} // Force re-render if URL changes
+                                    src={getOptimizedImageUrl(heroImageUrl, 1920)}
+                                    alt="ByLuna Hero"
+                                    className="w-full h-full object-cover transition-opacity duration-1000 animate-fade-in"
+                                    style={{ opacity: heroImageError ? 0 : 1 }}
+                                    fetchPriority="high"
+                                    loading="eager"
+                                    onLoad={() => console.log("✅ Hero image loaded successfully")}
+                                    onError={(e) => {
+                                        console.error("💥 Hero image failed to load:", e.target.src);
+                                        setHeroImageError(true);
+                                    }}
+                                />
+                            </picture>
                         )}
 
                         {/* 3. Dark Overlay for Contrast */}
