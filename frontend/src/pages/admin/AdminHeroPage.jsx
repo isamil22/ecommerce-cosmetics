@@ -36,11 +36,27 @@ const AdminHeroPage = () => {
                 setLoading(true);
                 const response = await getHero();
                 setHero(response.data);
+                setHero(response.data);
+
+                // Helper to normalize URL (fix mixed content)
+                const normalizeUrl = (url) => {
+                    if (!url) return '';
+                    if (url.includes('/api/images/') && (url.startsWith('http://') || url.startsWith('https://'))) {
+                        try {
+                            const urlObj = new URL(url);
+                            return urlObj.pathname + urlObj.search;
+                        } catch (e) {
+                            return url;
+                        }
+                    }
+                    return url;
+                };
+
                 if (response.data.imageUrl) {
-                    setImagePreview(response.data.imageUrl);
+                    setImagePreview(normalizeUrl(response.data.imageUrl));
                 }
                 if (response.data.mobileImageUrl) {
-                    setMobileImagePreview(response.data.mobileImageUrl);
+                    setMobileImagePreview(normalizeUrl(response.data.mobileImageUrl));
                 }
             } catch (err) {
                 setError(t('heroSettings.messages.loadFailed'));

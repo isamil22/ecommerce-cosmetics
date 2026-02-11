@@ -20,7 +20,22 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
     const getImageUrl = (url) => {
         if (!url) return '';
 
-        const fullUrl = url.startsWith('http') ? url : window.location.origin + url;
+        // FIX: Handle Mixed Content (HTTP images on HTTPS site)
+        // If the URL is absolute and points to our own API, convert it to relative
+        // to ensure it uses the current protocol (HTTPS)
+        let processedUrl = url;
+        if (url.includes('/api/images/')) {
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                try {
+                    const urlObj = new URL(url);
+                    processedUrl = urlObj.pathname + urlObj.search;
+                } catch (e) {
+                    console.warn('Failed to parse URL:', url);
+                }
+            }
+        }
+
+        const fullUrl = processedUrl.startsWith('http') ? processedUrl : window.location.origin + processedUrl;
 
         // Add cache-busting parameter for hero images to force fresh loads
         if (url.includes('/api/images/hero/')) {
