@@ -160,6 +160,11 @@ public class ImageController {
                         File tempFile = new File(cacheFile.getAbsolutePath() + ".tmp");
                         try {
                             System.out.println("🔨 Generating thumbnail: " + cacheFilename);
+                            System.out.println("DEBUG: Cache Dir: " + cacheDir + ", Exists: "
+                                    + cacheDir.toFile().exists() + ", Writable: " + cacheDir.toFile().canWrite());
+                            System.out.println("DEBUG: Original File: " + originalFile.getAbsolutePath() + ", Exists: "
+                                    + originalFile.exists());
+
                             var builder = net.coobird.thumbnailator.Thumbnails.of(originalFile);
 
                             if (targetWidth > 0 && targetHeight > 0) {
@@ -173,6 +178,12 @@ public class ImageController {
                             builder.outputFormat("webp")
                                     .outputQuality(0.7)
                                     .toFile(tempFile);
+
+                            if (!tempFile.exists()) {
+                                throw new java.io.IOException("CRITICAL: Temp file was not created by Thumbnailator: "
+                                        + tempFile.getAbsolutePath());
+                            }
+                            System.out.println("DEBUG: Temp file created successfully. Size: " + tempFile.length());
 
                             // Move temp file to final destination
                             // Copy and delete is more robust across different file system types/docker

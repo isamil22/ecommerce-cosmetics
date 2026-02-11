@@ -1,7 +1,7 @@
 # Deployment Instructions
 
 ## Changes Pushed to GitHub ✅
-Commit: `32d1f0d` - "Fix: Docker volume permission issue with thumbnail generation"
+Commit: `20828e1` - "Fix: Replace Files.move with Files.copy for robust thumbnail generation"
 
 ## Manual Steps to Deploy on Server
 
