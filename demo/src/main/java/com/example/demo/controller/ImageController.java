@@ -140,8 +140,8 @@ public class ImageController {
                         .body(new FileSystemResource(originalFile));
             }
 
-            // Create cache directory if not exists
-            Path cacheDir = Paths.get(uploadDir, "images", "cache");
+            // Create cache directory if not exists - ensure absolute path
+            Path cacheDir = Paths.get(uploadDir, "images", "cache").toAbsolutePath();
             if (!cacheDir.toFile().exists()) {
                 cacheDir.toFile().mkdirs();
             }
@@ -174,10 +174,13 @@ public class ImageController {
                                     .outputQuality(0.7)
                                     .toFile(tempFile);
 
-                            // Atomic move to ensure we never serve a partial file
-                            java.nio.file.Files.move(tempFile.toPath(), cacheFile.toPath(),
-                                    java.nio.file.StandardCopyOption.REPLACE_EXISTING,
-                                    java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+                            // Move temp file to final destination
+                            // Use absolute paths and standard replace to avoid Docker volume atomic move
+                            // issues
+                            java.nio.file.Files.move(
+                                    tempFile.toPath().toAbsolutePath(),
+                                    cacheFile.toPath().toAbsolutePath(),
+                                    java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
                             System.out.println("✅ Generated thumbnail successfully: " + cacheFilename);
                         } catch (Exception resizeError) {

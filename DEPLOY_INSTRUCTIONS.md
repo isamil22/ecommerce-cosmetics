@@ -1,7 +1,7 @@
 # Deployment Instructions
 
 ## Changes Pushed to GitHub ✅
-Commit: `1ad362b` - "Fix: Hero image caching issues - implement smart caching and auto-cleanup"
+Commit: `4a07f95` - "Performance Optimization: Responsive Images & Cache Fixes"
 
 ## Manual Steps to Deploy on Server
 
