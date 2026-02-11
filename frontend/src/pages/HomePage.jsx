@@ -16,16 +16,15 @@ const HomePage = () => {
     const [newArrivals, setNewArrivals] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [categories, setCategories] = useState([]);
-    // HARDCODED INITIAL STATE FOR INSTANT LCP (Performance Optimization)
     const INITIAL_HERO_STATE = {
         "id": 1,
-        "title": "By Luna ",
-        "subtitle": "Just For You",
+        "title": "By Luna Cosmetics",
+        "subtitle": "Discover Your True Beauty",
         "linkText": "Shop Now",
         "linkUrl": "/products",
         "titleFont": "'Dancing Script', cursive",
-        "imageUrl": null,
-        "mobileImageUrl": null
+        "imageUrl": "/api/images/hero/3ac3918e-0c94-43d1-9dab-147f3644c7b8-IMG_7587.JPG",
+        "mobileImageUrl": "/api/images/hero/3ac3918e-0c94-43d1-9dab-147f3644c7b8-IMG_7587.JPG"
     };
 
     const [hero, setHero] = useState(INITIAL_HERO_STATE);

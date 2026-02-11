@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Statistic, Typography, Spin, Alert, Button, Space, Divider, message } from 'antd';
-import {
-    BarChartOutlined,
-    LineChartOutlined,
-    PieChartOutlined,
-    TrophyOutlined,
-    ArrowUpOutlined,
-    UserOutlined,
-    DollarOutlined,
-    ShoppingCartOutlined,
-    ReloadOutlined
-} from '@ant-design/icons';
+import BarChartOutlined from '@ant-design/icons/BarChartOutlined';
+import LineChartOutlined from '@ant-design/icons/LineChartOutlined';
+import PieChartOutlined from '@ant-design/icons/PieChartOutlined';
+import TrophyOutlined from '@ant-design/icons/TrophyOutlined';
+import ArrowUpOutlined from '@ant-design/icons/ArrowUpOutlined';
+import UserOutlined from '@ant-design/icons/UserOutlined';
+import DollarOutlined from '@ant-design/icons/DollarOutlined';
+import ShoppingCartOutlined from '@ant-design/icons/ShoppingCartOutlined';
+import ReloadOutlined from '@ant-design/icons/ReloadOutlined';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { getAllCoupons, getCouponUsageStatistics } from '../../api/apiService';
 
