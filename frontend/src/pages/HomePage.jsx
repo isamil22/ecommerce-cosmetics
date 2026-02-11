@@ -31,6 +31,7 @@ const HomePage = () => {
     const [hero, setHero] = useState(INITIAL_HERO_STATE);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [heroImageError, setHeroImageError] = useState(false);
     const [activeTab, setActiveTab] = useState('bestsellers');
 
     // --- STAR ANIMATION STATE ---
@@ -59,6 +60,7 @@ const HomePage = () => {
                 }
 
                 setHero(freshHero);
+                setHeroImageError(false); // Reset error state on new data
             } catch (err) {
                 console.error("Error fetching hero:", err);
             }
@@ -127,32 +129,11 @@ const HomePage = () => {
 
     // Loading Skeleton Component
     const LoadingSkeleton = () => (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50">
-            {/* Hero Skeleton - Only shown if Hero is loading */}
-            {!hero && (
-                <div className="container mx-auto px-6 py-12 lg:py-16">
-                    <div className="bg-gray-200 rounded-3xl h-96 animate-skeleton-pulse max-w-7xl mx-auto"></div>
-                </div>
-            )}
-
-            {/* Categories Skeleton */}
-            <div className="container mx-auto px-6 py-16 lg:py-20">
-                <div className="h-12 bg-gray-200 rounded-2xl w-96 mx-auto mb-16 animate-skeleton-pulse"></div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 lg:gap-8 max-w-7xl mx-auto">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="bg-gray-200 rounded-3xl h-56 animate-skeleton-pulse"></div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Products Skeleton */}
-            <div className="container mx-auto px-6 py-16 lg:py-20">
-                <div className="h-12 bg-gray-200 rounded-2xl w-96 mx-auto mb-16 animate-skeleton-pulse"></div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4 lg:gap-6 max-w-7xl mx-auto">
-                    {[...Array(8)].map((_, i) => (
-                        <div key={i} className="bg-gray-200 rounded-3xl h-96 animate-skeleton-pulse"></div>
-                    ))}
-                </div>
+        <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
+            <div className="animate-pulse flex flex-col items-center">
+                <div className="w-20 h-20 bg-gray-700 rounded-full mb-4"></div>
+                <div className="h-8 bg-gray-700 w-64 rounded-lg mb-4"></div>
+                <div className="h-4 bg-gray-700 w-96 rounded-lg"></div>
             </div>
         </div>
     );
@@ -188,39 +169,43 @@ const HomePage = () => {
                         const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
                         setMousePosition({ x: moveX, y: moveY });
                     }}
-                    className="relative min-h-[85vh] md:min-h-[92vh] flex items-center justify-center overflow-hidden text-white"
+                    className="relative min-h-[85vh] md:min-h-[92vh] flex items-center justify-center overflow-hidden bg-black"
                 >
-                    {/* OPTIMIZED LCP: Real Image instead of background-image */}
-                    {/* OPTIMIZED LCP: Real Image instead of background-image */}
-                    <div className="absolute inset-0 z-0">
-                        <picture>
-                            <source
-                                media="(max-width: 768px)"
-                                srcSet={getOptimizedImageUrl(hero.mobileImageUrl || heroImageUrl, 480)}
-                            />
-                            <source
-                                media="(min-width: 769px)"
-                                srcSet={getOptimizedImageUrl(heroImageUrl, 1920)}
-                            />
+                    {/* Background Layer */}
+                    <div className="absolute inset-0 z-0 overflow-hidden">
+                        {/* 1. Base Fallback Gradient (visible until image loads or if it fails) */}
+                        <div
+                            className="absolute inset-0 transition-opacity duration-1000"
+                            style={{
+                                background: 'radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)',
+                                opacity: !heroImageUrl || heroImageError ? 1 : 0.5
+                            }}
+                        />
+
+                        {/* 2. Actual Image */}
+                        {heroImageUrl && !heroImageError && (
                             <img
-                                src={getOptimizedImageUrl(heroImageUrl, 1920)}
-                                alt="ByLuna Cosmetics"
-                                width="1920"
-                                height="1080"
-                                className="w-full h-full object-cover"
+                                key={heroImageUrl} // Force re-render if URL changes
+                                src={getOptimizedImageUrl(
+                                    window.innerWidth < 768 ? (hero.mobileImageUrl || heroImageUrl) : heroImageUrl,
+                                    window.innerWidth < 768 ? 720 : 1920
+                                )}
+                                alt="ByLuna Hero"
+                                className="w-full h-full object-cover transition-opacity duration-1000 animate-fade-in"
+                                style={{ opacity: heroImageError ? 0 : 1 }}
                                 fetchPriority="high"
                                 loading="eager"
-                                decoding="sync"
+                                onLoad={() => console.log("✅ Hero image loaded successfully")}
                                 onError={(e) => {
-                                    e.target.style.display = 'none';
-                                    e.target.parentElement.style.background = 'radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)';
+                                    console.error("💥 Hero image failed to load:", e.target.src);
+                                    setHeroImageError(true);
                                 }}
                             />
-                        </picture>
-                    </div>
+                        )}
 
-                    {/* 1. Dark Overlay & Star Background */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/80 z-0 pointer-events-none"></div>
+                        {/* 3. Dark Overlay for Contrast */}
+                        <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none"></div>
+                    </div>
 
                     {/* Star Layer */}
                     <div className="absolute inset-0 z-0 pointer-events-none">
