@@ -1,7 +1,7 @@
 # Deployment Instructions
 
 ## Changes Pushed to GitHub ✅
-Commit: `20828e1` - "Fix: Replace Files.move with Files.copy for robust thumbnail generation"
+Commit: `ebfcf5f` - "Debug: Add verbose logging to diagnose thumbnail generation failure" failure"
 
 ## Manual Steps to Deploy on Server
 
