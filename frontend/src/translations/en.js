@@ -473,13 +473,13 @@ export const en = {
         displaySettings: {
             title: 'Display Settings',
             purchaseNotifications: {
-                title: 'ðŸ›ï¸ Show Purchase Notifications',
+                title: '🛒 Show Purchase Notifications',
                 description: 'Display notifications when customers buy this product',
                 enabled: 'Enabled',
                 disabled: 'Disabled'
             },
             countdownTimer: {
-                title: 'â±ï¸ Show Countdown Timer',
+                title: '⏱️ Show Countdown Timer',
                 description: 'Display flash sale countdown timer for urgency',
                 enabled: 'Enabled',
                 disabled: 'Disabled'

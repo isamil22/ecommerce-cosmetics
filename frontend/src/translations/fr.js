@@ -481,13 +481,13 @@ export const fr = {
         displaySettings: {
             title: "Paramètres d'affichage",
             purchaseNotifications: {
-                title: 'ðŸ›ï¸ Afficher les notifications d\'achat',
+                title: '🛒 Afficher les notifications d\'achat',
                 description: 'Afficher les notifications lorsque les clients achètent ce produit',
                 enabled: 'Activé',
                 disabled: 'Désactivé'
             },
             countdownTimer: {
-                title: 'â±ï¸ Afficher le compte à rebours',
+                title: '⏱️ Afficher le compte à rebours',
                 description: 'Afficher le compte à rebours des ventes flash pour créer l\'urgence',
                 enabled: 'Activé',
                 disabled: 'Désactivé'
@@ -914,7 +914,7 @@ export const fr = {
         },
         settings: {
             title: 'Paramètres d\'affichage',
-            purchaseNotif: 'Afficher les notifications d\'achat',
+                title: '🛒 Afficher les notifications d\'achat',
             purchaseNotifDesc: 'Afficher les notifications lorsque les clients achètent ce pack',
             countdown: 'Afficher le compte à rebours',
             countdownDesc: 'Afficher le compte à rebours de vente flash pour l\'urgence',
