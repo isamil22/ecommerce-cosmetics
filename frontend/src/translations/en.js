@@ -452,10 +452,10 @@ export const en = {
             optionValue: 'Value (e.g. Red)',
             color: 'Color',
             image: 'Image',
-            addOption: '+ Add Option',
+            addOption: 'Add Option',
             remove: 'Remove',
             removeOption: 'Remove Option',
-            addVariantType: 'Add Variant Type'
+            addVariantType: 'Add Variant Type (e.g. Size)'
         },
 
         // Product Variants Section

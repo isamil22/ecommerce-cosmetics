@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import Select from 'react-select';
 import {
     FiSave, FiX, FiUpload, FiImage, FiPackage, FiDollarSign,
-    FiStar, FiTrendingUp, FiArrowLeft, FiEye
+    FiStar, FiTrendingUp, FiArrowLeft, FiEye, FiPlus, FiTrash2
 } from 'react-icons/fi';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -732,101 +732,129 @@ const AdminProductForm = () => {
                         {/* Variant Management */}
                         {product.hasVariants && (
                             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-                                <div className="flex items-center mb-6">
-                                    <FiPackage className="w-6 h-6 text-blue-500 mr-3" />
-                                    <h2 className="text-2xl font-bold text-gray-900">{t('productForm.variantTypes.title')}</h2>
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center">
+                                        <FiPackage className="w-6 h-6 text-blue-500 mr-3" />
+                                        <h2 className="text-2xl font-bold text-gray-900">{t('productForm.variantTypes.title')}</h2>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={addVariantType}
+                                        className="flex items-center bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                                    >
+                                        <FiPlus className="w-5 h-5 mr-2" />
+                                        {t('productForm.variantTypes.addVariantType')}
+                                    </button>
                                 </div>
 
-                                {product.variantTypes.map((vt, index) => (
-                                    <div key={index} className="flex items-end gap-4 p-4 bg-gray-50 rounded-lg mb-4">
-                                        <div className="flex-grow">
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('productForm.variantTypes.typeName')} *</label>
-                                            <input
-                                                type="text"
-                                                placeholder={t('productForm.variantTypes.typeNamePlaceholder')}
-                                                value={vt.name}
-                                                onChange={(e) => handleVariantTypeChange(index, 'name', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-                                                required
-                                            />
-                                        </div>
-                                        <div className="flex-grow">
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('productForm.variantTypes.options')}</label>
-                                            <div className="space-y-3">
-                                                {vt.options.map((opt, optIndex) => (
-                                                    <div key={optIndex} className="flex gap-2 items-center bg-white p-2 border rounded-md">
-                                                        <input
-                                                            type="text"
-                                                            placeholder={t('productForm.variantTypes.optionValue')}
-                                                            value={opt.value}
-                                                            onChange={(e) => handleOptionChange(index, optIndex, 'value', e.target.value)}
-                                                            className="flex-grow px-2 py-1 border rounded"
-                                                        />
-                                                        {/* Optional Color Picker */}
-                                                        <div className="flex flex-col items-center">
-                                                            <label className="text-xs text-gray-500">{t('productForm.variantTypes.color')}</label>
-                                                            <input
-                                                                type="color"
-                                                                value={opt.colorCode || '#000000'}
-                                                                onChange={(e) => handleOptionChange(index, optIndex, 'colorCode', e.target.value)}
-                                                                className="w-8 h-8 p-0 border-0 rounded-full overflow-hidden cursor-pointer"
-                                                                title="Pick Color"
-                                                            />
-                                                        </div>
-                                                        {/* Optional Image Upload */}
-                                                        <div className="flex flex-col items-center">
-                                                            <label className="text-xs text-gray-500">{t('productForm.variantTypes.image')}</label>
-                                                            <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 p-1 rounded transition-colors">
-                                                                <FiImage className="w-5 h-5 text-gray-600" />
+                                <div className="space-y-6">
+                                    {product.variantTypes.map((vt, index) => (
+                                        <div key={index} className="bg-gray-50 rounded-xl border border-gray-200 p-6 relative group transition-all hover:shadow-md">
+                                            <button
+                                                type="button"
+                                                onClick={() => removeVariantType(index)}
+                                                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 transition-colors"
+                                                title={t('productForm.variantTypes.remove')}
+                                            >
+                                                <FiTrash2 className="w-5 h-5" />
+                                            </button>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                                                {/* Variant Type Name */}
+                                                <div className="md:col-span-4">
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        {t('productForm.variantTypes.typeName')} <span className="text-red-500">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder={t('productForm.variantTypes.typeNamePlaceholder')}
+                                                        value={vt.name}
+                                                        onChange={(e) => handleVariantTypeChange(index, 'name', e.target.value)}
+                                                        className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                        required
+                                                    />
+                                                </div>
+
+                                                {/* Options */}
+                                                <div className="md:col-span-8">
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        {t('productForm.variantTypes.options')}
+                                                    </label>
+
+                                                    <div className="flex flex-wrap gap-2 mb-3">
+                                                        {vt.options.map((opt, optIndex) => (
+                                                            <div key={optIndex} className="flex items-center bg-white border border-gray-200 rounded-lg pl-3 pr-1 py-1 shadow-sm">
                                                                 <input
-                                                                    type="file"
-                                                                    accept="image/*"
-                                                                    className="hidden"
-                                                                    onChange={(e) => handleOptionImageUpload(index, optIndex, e)}
+                                                                    type="text"
+                                                                    value={opt.value}
+                                                                    onChange={(e) => handleOptionChange(index, optIndex, 'value', e.target.value)}
+                                                                    className="w-24 text-sm border-none focus:ring-0 p-0 text-gray-700 font-medium"
+                                                                    placeholder={t('productForm.variantTypes.optionValue')}
                                                                 />
-                                                            </label>
-                                                        </div>
-                                                        {opt.imagePreview ? (
-                                                            <img src={opt.imagePreview} alt={t('productForm.images.preview')} className="w-8 h-8 rounded object-cover border" />
-                                                        ) : opt.imageUrl ? (
-                                                            <img src={opt.imageUrl} alt={t('productForm.images.existing')} className="w-8 h-8 rounded object-cover border" />
-                                                        ) : null}
+
+                                                                {/* Optional Color Picker */}
+                                                                <input
+                                                                    type="color"
+                                                                    value={opt.colorCode || '#000000'}
+                                                                    onChange={(e) => handleOptionChange(index, optIndex, 'colorCode', e.target.value)}
+                                                                    className="w-6 h-6 border-none rounded cursor-pointer ml-2"
+                                                                    title={t('productForm.variantTypes.color')}
+                                                                />
+
+                                                                {/* Optional Image Upload */}
+                                                                <label className="cursor-pointer ml-2 p-1 hover:bg-gray-100 rounded text-gray-500 hover:text-blue-500">
+                                                                    <FiImage className="w-4 h-4" />
+                                                                    <input
+                                                                        type="file"
+                                                                        accept="image/*"
+                                                                        className="hidden"
+                                                                        onChange={(e) => handleOptionImageUpload(index, optIndex, e)}
+                                                                    />
+                                                                </label>
+
+                                                                {/* Helper to show image preview tooltip or small indicator could go here */}
+                                                                {(opt.imagePreview || opt.imageUrl) && (
+                                                                    <div className="w-2 h-2 rounded-full bg-green-500 ml-1" title="Image Set"></div>
+                                                                )}
+
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleRemoveOption(index, optIndex)}
+                                                                    className="ml-2 p-1 text-gray-400 hover:text-red-500 rounded-full hover:bg-red-50"
+                                                                >
+                                                                    <FiX className="w-4 h-4" />
+                                                                </button>
+                                                            </div>
+                                                        ))}
 
                                                         <button
                                                             type="button"
-                                                            onClick={() => handleRemoveOption(index, optIndex)}
-                                                            className="text-red-500 hover:bg-red-50 p-1 rounded"
-                                                            title={t('productForm.variantTypes.removeOption')}
+                                                            onClick={() => handleAddOption(index)}
+                                                            className="flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
                                                         >
-                                                            <FiX />
+                                                            <FiPlus className="w-4 h-4 mr-1" />
+                                                            {t('productForm.variantTypes.addOption')}
                                                         </button>
                                                     </div>
-                                                ))}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleAddOption(index)}
-                                                    className="text-sm text-blue-600 hover:underline flex items-center gap-1"
-                                                >
-                                                    {t('productForm.variantTypes.addOption')}
-                                                </button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeVariantType(index)}
-                                            className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 transition-colors"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    onClick={addVariantType}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
-                                >
-                                    {t('productForm.variantTypes.addVariantType')}
-                                </button>
+                                    ))}
+
+                                    {product.variantTypes.length === 0 && (
+                                        <div className="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                                            <p className="text-gray-500 mb-4">Add a variant type (like 'Size' or 'Color') to get started.</p>
+                                            <button
+                                                type="button"
+                                                onClick={addVariantType}
+                                                className="inline-flex items-center bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-all font-medium shadow-md hover:shadow-lg"
+                                            >
+                                                <FiPlus className="w-5 h-5 mr-2" />
+                                                {t('productForm.variantTypes.addVariantType')}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
 
