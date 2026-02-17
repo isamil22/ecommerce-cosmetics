@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllPacks, deletePack } from '../../api/apiService'; // Correct path
 import Loader from '../../components/Loader'; // Correct path
+import LazyImage from '../../components/LazyImage';
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import {
     FiPlus,
     FiEdit3,
@@ -124,8 +126,19 @@ const AdminPacksPage = () => {
                             <div className="p-6">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center space-x-4">
-                                        <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center">
-                                            <FiPackage className="w-8 h-8 text-blue-600" />
+                                        {/* Pack Image Handling */}
+                                        <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
+                                            {pack.imageUrl ? (
+                                                <LazyImage
+                                                    src={getOptimizedImageUrl(pack.imageUrl)}
+                                                    alt={pack.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                                                    <FiPackage className="w-8 h-8 text-blue-600" />
+                                                </div>
+                                            )}
                                         </div>
                                         <div>
                                             <h2 className="text-xl font-bold text-gray-800 mb-1">{pack.name}</h2>
