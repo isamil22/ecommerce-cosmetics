@@ -26,7 +26,7 @@ public class Product {
     private String name;
 
     @Lob
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
 
     private BigDecimal price;
