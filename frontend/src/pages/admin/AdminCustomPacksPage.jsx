@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { getAllCustomPacks, deleteCustomPack } from '../../api/apiService';
 import Loader from '../../components/Loader';
+import LazyImage from '../../components/LazyImage';
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import { toast } from 'react-toastify';
-import { 
-    FiPlus, 
-    FiEdit3, 
-    FiTrash2, 
-    FiPackage, 
-    FiDollarSign, 
+import {
+    FiPlus,
+    FiEdit3,
+    FiTrash2,
+    FiPackage,
+    FiDollarSign,
     FiRefreshCw,
     FiTrendingUp,
     FiSettings,
@@ -92,7 +94,7 @@ const AdminCustomPacksPage = () => {
                         <p className="text-gray-600 mt-1">{t('customPacks.manageSubtitle')}</p>
                     </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-3">
                     <button
                         onClick={handleRefresh}
@@ -101,9 +103,9 @@ const AdminCustomPacksPage = () => {
                         <FiRefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-transform duration-500 ${loading ? 'animate-spin' : ''}`} />
                         <span>{t('customPacks.refresh')}</span>
                     </button>
-                    
-                    <Link 
-                        to="/admin/custom-packs/new" 
+
+                    <Link
+                        to="/admin/custom-packs/new"
                         className="flex items-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group"
                     >
                         <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
@@ -114,8 +116,8 @@ const AdminCustomPacksPage = () => {
             {customPacks.length > 0 ? (
                 <div className="grid gap-6">
                     {customPacks.map((pack, index) => (
-                        <div 
-                            key={pack.id} 
+                        <div
+                            key={pack.id}
                             className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group"
                             onMouseEnter={() => setHoveredPackId(pack.id)}
                             onMouseLeave={() => setHoveredPackId(null)}
@@ -125,14 +127,24 @@ const AdminCustomPacksPage = () => {
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-start space-x-4">
                                         <div className="relative">
-                                            <div className="w-16 h-16 bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                                <FiPackage className="w-8 h-8 text-pink-600 group-hover:rotate-12 transition-transform duration-300" />
+                                            <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200 group-hover:scale-110 transition-transform duration-300">
+                                                {pack.imageUrl ? (
+                                                    <LazyImage
+                                                        src={getOptimizedImageUrl(pack.imageUrl)}
+                                                        alt={pack.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
+                                                        <FiPackage className="w-8 h-8 text-pink-600 group-hover:rotate-12 transition-transform duration-300" />
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
                                                 <FiCheckCircle className="w-3 h-3 text-white" />
                                             </div>
                                         </div>
-                                        
+
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
                                                 <h2 className="text-xl font-bold text-gray-800 group-hover:text-pink-600 transition-colors duration-300">
@@ -140,7 +152,7 @@ const AdminCustomPacksPage = () => {
                                                 </h2>
                                                 <FiSettings className="w-4 h-4 text-gray-400 group-hover:text-pink-500 transition-colors duration-300" />
                                             </div>
-                                            
+
                                             <div className="flex items-center space-x-4 mb-3">
                                                 <div className="flex items-center space-x-2">
                                                     <FiDollarSign className="w-4 h-4 text-green-600" />
@@ -148,7 +160,7 @@ const AdminCustomPacksPage = () => {
                                                         {pack.pricingType === 'FIXED' ? `$${pack.fixedPrice}` : `${pack.discountRate * 100}% ${t('customPacks.table.discount')}`}
                                                     </span>
                                                 </div>
-                                                
+
                                                 <div className="flex items-center space-x-2">
                                                     <FiTrendingUp className="w-4 h-4 text-blue-600" />
                                                     <span className="text-sm text-gray-600">
@@ -156,14 +168,14 @@ const AdminCustomPacksPage = () => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="flex items-center space-x-2 text-sm text-gray-500">
                                                 <FiEye className="w-4 h-4" />
                                                 <span>{t('customPacks.table.id')}: {pack.id}</span>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="flex items-center space-x-2">
                                         <Link
                                             to={`/admin/custom-packs/edit/${pack.id}`}
@@ -172,7 +184,7 @@ const AdminCustomPacksPage = () => {
                                             <FiEdit3 className="w-4 h-4 group-hover/edit:rotate-12 transition-transform duration-300" />
                                             <span className="font-medium">{t('customPacks.table.edit')}</span>
                                         </Link>
-                                        
+
                                         <button
                                             onClick={() => handleDelete(pack.id)}
                                             disabled={deletingPackId === pack.id}
@@ -190,7 +202,7 @@ const AdminCustomPacksPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {/* Animated bottom border */}
                             <div className="h-1 bg-gradient-to-r from-pink-500 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                         </div>
@@ -205,8 +217,8 @@ const AdminCustomPacksPage = () => {
                         <div>
                             <h3 className="text-xl font-semibold text-gray-700 mb-2">{t('customPacks.noPacks')}</h3>
                             <p className="text-gray-500 mb-6">{t('customPacks.noPacksDesc')}</p>
-                            <Link 
-                                to="/admin/custom-packs/new" 
+                            <Link
+                                to="/admin/custom-packs/new"
                                 className="inline-flex items-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group"
                             >
                                 <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
