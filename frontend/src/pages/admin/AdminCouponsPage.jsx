@@ -1061,7 +1061,8 @@ const AdminCouponsPage = () => {
                         setEditingCoupon(null);
                     }}
                     footer={null}
-                    width={1000}
+                    width="100%"
+                    style={{ maxWidth: '1000px', top: 20 }}
                     centered
                     className="rounded-2xl overflow-hidden"
                 >

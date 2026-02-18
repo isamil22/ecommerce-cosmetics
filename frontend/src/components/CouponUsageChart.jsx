@@ -963,7 +963,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                         <Button icon={<ShareIcon />}>Share</Button>
                     </Space>
                 </div>
-                <div style={{ height: '400px', width: '100%' }}>
+                <div style={{ height: '400px', width: '100%', overflow: 'hidden' }}>
                     {renderChart()}
                 </div>
             </Card>
