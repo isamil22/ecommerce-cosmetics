@@ -71,6 +71,7 @@ docker-compose up -d --build
 2. ✅ **Auto Cleanup**: Old hero images are deleted automatically
 3. ✅ **Instant Updates**: Admin panel updates immediately after upload
 4. ✅ **Mobile Fix**: Removed stale localStorage cache for hero images using unique timestamps
+5. ✅ **Cache Buster**: Removed hardcoded preload links from `index.html` that were forcing the old image to load.
 
 ## Files Modified
 - `demo/src/main/java/com/example/demo/controller/ImageController.java`
