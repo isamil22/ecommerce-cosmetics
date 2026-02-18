@@ -52,7 +52,7 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
             onMouseMove={handleMouseMove}
             style={{
                 backgroundColor: backgroundColor,
-                // Desktop background image is handled by CSS for better control
+                position: 'relative', // Ensure relative positioning for absolute children
             }}
         >
             <style>{`
@@ -63,7 +63,7 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                     background-position: center;
                     overflow: hidden;
                     display: block;
-                    ${backgroundImage ? `background-image: url('${backgroundImage}');` : ''}
+                    /* Background image moved to <img> tag for performance */
                 }
                 
                 @media (max-width: 991px) {
@@ -78,6 +78,25 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                         display: flex;
                         align-items: center;
                         justify-content: center;
+                    }
+                }
+
+                /* Desktop Background Image Styles */
+                .desktop-bg-image {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    z-index: 0;
+                    pointer-events: none;
+                    display: none;
+                }
+
+                @media (min-width: 992px) {
+                    .desktop-bg-image {
+                        display: block;
                     }
                 }
 
@@ -324,12 +343,33 @@ const HeroPremiumSection = ({ data, isEditing = false, productId = null, availab
                 }
             `}</style>
 
+            {/* Optimized Desktop Background Image */}
+            {backgroundImage && (
+                <img
+                    src={backgroundImage}
+                    srcSet={`
+                        ${backgroundImage.includes('?') ? backgroundImage + '&' : backgroundImage + '?'}w=1024 1024w,
+                        ${backgroundImage.includes('?') ? backgroundImage + '&' : backgroundImage + '?'}w=1920 1920w
+                    `}
+                    sizes="100vw"
+                    alt="Hero Background"
+                    className="desktop-bg-image"
+                    fetchPriority="high"
+                />
+            )}
+
             {/* Mobile-only Static Background Image */}
             {data?.mobileImageUrl && (
                 <img
                     src={data.mobileImageUrl}
+                    srcSet={`
+                        ${data.mobileImageUrl.includes('?') ? data.mobileImageUrl + '&' : data.mobileImageUrl + '?'}w=480 480w,
+                        ${data.mobileImageUrl.includes('?') ? data.mobileImageUrl + '&' : data.mobileImageUrl + '?'}w=768 768w
+                    `}
+                    sizes="100vw"
                     alt="Hero Background"
                     className="mobile-bg-image"
+                    fetchPriority="high"
                 />
             )}
 

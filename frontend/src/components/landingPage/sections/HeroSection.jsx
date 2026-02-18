@@ -129,14 +129,39 @@ const HeroSection = ({ data, isEditing = false, productId = null, availableVaria
                 justifyContent: 'center',
                 overflow: 'hidden',
                 background: backgroundImage
-                    ? `url(${getImageUrl(backgroundImage)})`
+                    ? 'transparent'
                     : `radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%)`, // Deep cosmic default
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
                 color: textColor,
             }}
         >
             {/* --- LAYOUT: Dynamic Background Overlays --- */}
+
+            {/* 0. Optimized Background Image (Replaces CSS Background) */}
+            {backgroundImage && (
+                <img
+                    src={getImageUrl(backgroundImage)}
+                    srcSet={`
+                        ${getImageUrl(backgroundImage)}${getImageUrl(backgroundImage).includes('?') ? '&' : '?'}w=480 480w,
+                        ${getImageUrl(backgroundImage)}${getImageUrl(backgroundImage).includes('?') ? '&' : '?'}w=768 768w,
+                        ${getImageUrl(backgroundImage)}${getImageUrl(backgroundImage).includes('?') ? '&' : '?'}w=1280 1280w,
+                        ${getImageUrl(backgroundImage)}${getImageUrl(backgroundImage).includes('?') ? '&' : '?'}w=1920 1920w
+                    `}
+                    sizes="100vw"
+                    alt={headline || "Background"}
+                    fetchPriority="high"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                        zIndex: 0,
+                        pointerEvents: 'none'
+                    }}
+                />
+            )}
 
             {/* 1. Dark Overlay for readability if image exists */}
             {backgroundImage && (
