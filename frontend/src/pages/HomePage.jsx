@@ -23,8 +23,8 @@ const HomePage = () => {
         "linkText": "Shop Now",
         "linkUrl": "/products",
         "titleFont": "'Dancing Script', cursive",
-        "imageUrl": "/api/images/hero/3ac3918e-0c94-43d1-9dab-147f3644c7b8-IMG_7587.JPG",
-        "mobileImageUrl": "/api/images/hero/3ac3918e-0c94-43d1-9dab-147f3644c7b8-IMG_7587.JPG"
+        "imageUrl": "",
+        "mobileImageUrl": ""
     };
 
     const [hero, setHero] = useState(INITIAL_HERO_STATE);
