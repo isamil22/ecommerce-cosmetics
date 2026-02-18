@@ -914,7 +914,7 @@ export const fr = {
         },
         settings: {
             title: 'Paramètres d\'affichage',
-                title: '🛒 Afficher les notifications d\'achat',
+            title: '🛒 Afficher les notifications d\'achat',
             purchaseNotifDesc: 'Afficher les notifications lorsque les clients achètent ce pack',
             countdown: 'Afficher le compte à rebours',
             countdownDesc: 'Afficher le compte à rebours de vente flash pour l\'urgence',
@@ -1894,6 +1894,9 @@ export const fr = {
             active: 'Coupons Actifs',
             usage: 'Utilisations',
             savings: 'Économies Totales'
+        },
+        analytics: {
+            title: 'Statistiques du Coupon'
         },
         form: {
             title_create: 'Créer un Coupon',

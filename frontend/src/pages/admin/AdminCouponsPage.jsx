@@ -22,7 +22,8 @@ import {
     Divider,
     Typography,
     Alert,
-    Spin
+    Spin,
+    Modal
 } from "antd";
 import { useEffect, useState } from "react";
 import { createCoupon, getAllCoupons as fetchAllCoupons, deleteCoupon, getAllProducts, getAllCategories } from "../../api/apiService";
@@ -177,6 +178,7 @@ const AdminCouponsPage = () => {
     const [editingCoupon, setEditingCoupon] = useState(null); // New State for Editing
     const [selectedDiscountType, setSelectedDiscountType] = useState('PERCENTAGE');
     const [previewMode, setPreviewMode] = useState(false);
+    const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
     const [formData, setFormData] = useState({});
     const [stats, setStats] = useState({
         totalCoupons: 0,
@@ -581,6 +583,10 @@ const AdminCouponsPage = () => {
                         <Button
                             type="text"
                             icon={<FiBarChart className="w-4 h-4" />}
+                            onClick={() => {
+                                setEditingCoupon(record);
+                                setShowAnalyticsModal(true);
+                            }}
                             className="hover:bg-green-50 hover:text-green-600"
                         />
                     </Tooltip>
@@ -1040,6 +1046,31 @@ const AdminCouponsPage = () => {
                         </div>
                     </Card>
                 )}
+
+                {/* Analytics Modal */}
+                <Modal
+                    title={
+                        <div className="flex items-center space-x-2">
+                            <FiBarChart className="w-5 h-5 text-blue-500" />
+                            <span>{t('couponsPage.analytics.title')} - {editingCoupon?.name}</span>
+                        </div>
+                    }
+                    open={showAnalyticsModal}
+                    onCancel={() => {
+                        setShowAnalyticsModal(false);
+                        setEditingCoupon(null);
+                    }}
+                    footer={null}
+                    width={800}
+                    centered
+                    className="rounded-2xl overflow-hidden"
+                >
+                    {editingCoupon && (
+                        <div className="p-4">
+                            <CouponUsageChart couponId={editingCoupon.id} />
+                        </div>
+                    )}
+                </Modal>
 
                 {/* Coupons Table */}
                 <Card className="bg-white rounded-3xl shadow-xl border-0 overflow-hidden">
