@@ -518,6 +518,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         const commonProps = {
             ...config,
             data: chartData,
+            autoFit: true,
             animation: {
                 appear: {
                     animation: 'path-in',
@@ -677,7 +678,6 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         <div style={{
             padding: '24px',
             background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-            minHeight: '100vh',
             position: 'relative'
         }}>
             {/* Header */}
@@ -951,7 +951,6 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                 </Tabs>
             </Card>
 
-            {/* Chart Section */}
             <Card style={{
                 background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(20px)',
@@ -961,14 +960,14 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                     <Title level={3} style={{ margin: 0 }}>
-                        📈 Usage Analytics Chart
+                        Usage Analytics Chart
                     </Title>
                     <Space>
                         <Button icon={<DownloadOutlined />}>Export</Button>
                         <Button icon={<ShareIcon />}>Share</Button>
                     </Space>
                 </div>
-                <div style={{ height: '400px' }}>
+                <div style={{ height: '400px', width: '100%' }}>
                     {renderChart()}
                 </div>
             </Card>
