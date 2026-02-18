@@ -55,6 +55,7 @@ public class SecurityConfig {
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
                                 "/api/orders/guest",
+                                "/api/orders/*/feedback/guest", // Allow guest users to submit feedback
                                 "/api/test-post",
                                 "/api/cart/add" // Allow guest users to add to cart
                         )
