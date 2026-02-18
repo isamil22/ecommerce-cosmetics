@@ -158,16 +158,14 @@ public class ImageController {
                     // Double-check inside synchronization
                     if (!cacheFile.exists() || cacheFile.length() == 0) {
                         File tempFile = new File(cacheFile.getAbsolutePath() + ".tmp");
-                        // Ensure no stale temp file exists from previous failed attempts
+
+                        // Ensure no stale temp file exists
                         if (tempFile.exists()) {
                             tempFile.delete();
                         }
+
                         try {
                             System.out.println("🔨 Generating thumbnail: " + cacheFilename);
-                            System.out.println("DEBUG: Cache Dir: " + cacheDir + ", Exists: "
-                                    + cacheDir.toFile().exists() + ", Writable: " + cacheDir.toFile().canWrite());
-                            System.out.println("DEBUG: Original File: " + originalFile.getAbsolutePath() + ", Exists: "
-                                    + originalFile.exists());
 
                             var builder = net.coobird.thumbnailator.Thumbnails.of(originalFile);
 
@@ -179,19 +177,40 @@ public class ImageController {
                                 builder.height(targetHeight);
                             }
 
-                            builder.outputFormat("webp")
-                                    .outputQuality(0.7)
-                                    .toFile(tempFile);
-
-                            if (!tempFile.exists()) {
-                                throw new java.io.IOException("CRITICAL: Temp file was not created by Thumbnailator: "
-                                        + tempFile.getAbsolutePath());
+                            // Try WebP first
+                            try {
+                                builder.outputFormat("webp")
+                                        .outputQuality(0.7)
+                                        .toFile(tempFile);
+                            } catch (Exception webpError) {
+                                System.err.println(
+                                        "⚠️ WebP generation failed, falling back to JPEG: " + webpError.getMessage());
+                                // Re-initialize builder as it might be in a bad state?
+                                // Actually Thumbnails.of returns a new Builder, safe to reuse logic if we
+                                // assume builder is reusable or just create new one.
+                                // Safer to recreate builder to avoid side effects
+                                var jpgBuilder = net.coobird.thumbnailator.Thumbnails.of(originalFile);
+                                if (targetWidth > 0 && targetHeight > 0) {
+                                    jpgBuilder.size(targetWidth, targetHeight);
+                                } else if (targetWidth > 0) {
+                                    jpgBuilder.width(targetWidth);
+                                } else {
+                                    jpgBuilder.height(targetHeight);
+                                }
+                                jpgBuilder.outputFormat("jpg")
+                                        .outputQuality(0.7)
+                                        .toFile(tempFile);
                             }
+
+                            if (!tempFile.exists() || tempFile.length() == 0) {
+                                throw new java.io.IOException(
+                                        "CRITICAL: Temp file was not created by Thumbnailator (WebP and JPEG failed): "
+                                                + tempFile.getAbsolutePath());
+                            }
+
                             System.out.println("DEBUG: Temp file created successfully. Size: " + tempFile.length());
 
                             // Move temp file to final destination
-                            // Copy and delete is more robust across different file system types/docker
-                            // volumes than move
                             java.nio.file.Files.copy(
                                     tempFile.toPath().toAbsolutePath(),
                                     cacheFile.toPath().toAbsolutePath(),
@@ -200,23 +219,22 @@ public class ImageController {
                             try {
                                 java.nio.file.Files.deleteIfExists(tempFile.toPath());
                             } catch (Exception ignored) {
-                                // Ignored
                             }
 
                             System.out.println("✅ Generated thumbnail successfully: " + cacheFilename);
                         } catch (Exception resizeError) {
                             System.err.println("💥 Failed to generate thumbnail: " + cacheFilename + " - "
-                                    + resizeError.getClass().getName() + ": " + resizeError.getMessage());
-                            resizeError.printStackTrace(); // Print full stack trace for debugging
+                                    + resizeError.getMessage());
+                            resizeError.printStackTrace();
 
                             if (tempFile.exists())
                                 tempFile.delete();
 
-                            // FALLBACK: Serve original image if resizing fails
+                            // FALLBACK: Serve original image
                             System.out.println("🔄 Falling back to original image for: " + originalFilename);
                             return ResponseEntity.ok()
                                     .header(HttpHeaders.CONTENT_TYPE, getContentType(originalFilename))
-                                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=3600") // Cache for less time
+                                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=3600")
                                     .body(new FileSystemResource(originalFile));
                         }
                     }
