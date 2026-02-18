@@ -943,70 +943,7 @@ const AdminCouponsPage = () => {
                                     </Col>
                                 </Row>
 
-                                <Row gutter={[24, 24]}>
-                                    <Col xs={24} lg={12}>
-                                        <Form.Item
-                                            label={
-                                                <div className="flex items-center space-x-2">
-                                                    <FiPackage className="w-5 h-5 text-indigo-500" />
-                                                    <span className="text-lg font-semibold">{t('couponsPage.form.applicableProducts')}</span>
-                                                    <Tooltip title={t('couponsPage.form.scopeHelp')}>
-                                                        <FiInfo className="w-4 h-4 text-gray-400" />
-                                                    </Tooltip>
-                                                </div>
-                                            }
-                                            name="applicableProducts"
-                                        >
-                                            <Select
-                                                mode="multiple"
-                                                size="large"
-                                                placeholder={t('couponsPage.form.scopeHelp')}
-                                                className="rounded-xl"
-                                                showSearch
-                                                filterOption={(input, option) =>
-                                                    (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                                                }
-                                            >
-                                                {products.map(product => (
-                                                    <Option key={product.id} value={product.id}>
-                                                        {product.name}
-                                                    </Option>
-                                                ))}
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col xs={24} lg={12}>
-                                        <Form.Item
-                                            label={
-                                                <div className="flex items-center space-x-2">
-                                                    <FiGrid className="w-5 h-5 text-teal-500" />
-                                                    <span className="text-lg font-semibold">{t('couponsPage.form.applicableCategories')}</span>
-                                                    <Tooltip title={t('couponsPage.form.scopeHelp')}>
-                                                        <FiInfo className="w-4 h-4 text-gray-400" />
-                                                    </Tooltip>
-                                                </div>
-                                            }
-                                            name="applicableCategories"
-                                        >
-                                            <Select
-                                                mode="multiple"
-                                                size="large"
-                                                placeholder={t('couponsPage.form.scopeHelp')}
-                                                className="rounded-xl"
-                                                showSearch
-                                                filterOption={(input, option) =>
-                                                    (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                                                }
-                                            >
-                                                {categories.map(category => (
-                                                    <Option key={category.id} value={category.id}>
-                                                        {category.name}
-                                                    </Option>
-                                                ))}
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
+
 
                                 <div className="flex items-center justify-between pt-6 border-t border-gray-200">
                                     <Button
