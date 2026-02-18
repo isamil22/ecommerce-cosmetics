@@ -8,8 +8,10 @@ import com.example.demo.repositories.CouponRepository;
 import com.example.demo.repositories.UserRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -37,7 +39,27 @@ public abstract class OrderMapper {
     @Mapping(target = "orderItems", source = "items")
     // Safely map the coupon code to the DTO, handling nulls
     @Mapping(target = "couponCode", expression = "java(order.getCoupon() != null ? order.getCoupon().getCode() : null)")
+    @Mapping(target = "total", source = "order", qualifiedByName = "calculateTotal")
     public abstract OrderDTO toDTO(Order order);
+
+    @Named("calculateTotal")
+    protected BigDecimal calculateTotal(Order order) {
+        if (order == null)
+            return BigDecimal.ZERO;
+
+        BigDecimal itemsTotal = BigDecimal.ZERO;
+        if (order.getItems() != null) {
+            itemsTotal = order.getItems().stream()
+                    .filter(item -> item.getPrice() != null)
+                    .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        BigDecimal shipping = order.getShippingCost() != null ? order.getShippingCost() : BigDecimal.ZERO;
+        BigDecimal discount = order.getDiscountAmount() != null ? order.getDiscountAmount() : BigDecimal.ZERO;
+
+        return itemsTotal.add(shipping).subtract(discount);
+    }
 
     @Mapping(target = "productId", expression = "java(orderItem.getProduct() != null ? orderItem.getProduct().getId() : null)")
     @Mapping(target = "productName", source = "productName")

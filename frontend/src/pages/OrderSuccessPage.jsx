@@ -178,8 +178,8 @@ const OrderSuccessPage = () => {
                                     borderRadius: '8px',
                                     border: '1px solid #e0e0e0'
                                 }}>
-                                    <img 
-                                        src={item.imageUrl || 'https://placehold.co/80x80'} 
+                                    <img
+                                        src={item.imageUrl || 'https://placehold.co/80x80'}
                                         alt={item.productName}
                                         style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }}
                                     />
@@ -230,14 +230,43 @@ const OrderSuccessPage = () => {
                                     {order.status}
                                 </span>
                             </div>
-                            {order.total && (
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', paddingTop: '15px', borderTop: '2px solid #dee2e6' }}>
-                                    <span style={{ color: '#666', fontSize: '1.1rem' }}>المجموع / Total :</span>
-                                    <span style={{ fontWeight: 'bold', fontSize: '1.3rem', color: '#ff69b4' }}>
-                                        {formatPrice(order.total)}
+
+                            <hr style={{ border: 'none', borderTop: '1px solid #e0e0e0', margin: '15px 0' }} />
+
+                            {/* Price Breakdown */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <span style={{ color: '#666' }}>المجموع الفرعي / Sous-total :</span>
+                                <span style={{ fontWeight: '600' }}>
+                                    {formatPrice(order.orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0))}
+                                </span>
+                            </div>
+
+                            {order.discountAmount > 0 && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#28a745' }}>
+                                    <span>خصم / Remise ({order.couponCode}) :</span>
+                                    <span style={{ fontWeight: '600' }}>
+                                        - {formatPrice(order.discountAmount)}
                                     </span>
                                 </div>
                             )}
+
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <span style={{ color: '#666' }}>الشحن / Livraison :</span>
+                                <span style={{ fontWeight: '600' }}>
+                                    {order.shippingCost === 0 || order.shippingCost === 0.00 ?
+                                        <span style={{ color: '#28a745' }}>مجاني / Gratuit</span> :
+                                        formatPrice(order.shippingCost)
+                                    }
+                                </span>
+                            </div>
+
+                            {/* Final Total */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', paddingTop: '15px', borderTop: '2px solid #dee2e6' }}>
+                                <span style={{ color: '#333', fontSize: '1.2rem', fontWeight: 'bold' }}>المجموع / Total :</span>
+                                <span style={{ fontWeight: 'bold', fontSize: '1.4rem', color: '#ff69b4' }}>
+                                    {formatPrice(order.total)}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 )}

@@ -32,5 +32,7 @@ public class OrderDTO {
     private String nextPurchaseCouponCode;
     private BigDecimal nextPurchaseCouponPercent;
 
+    private BigDecimal total;
+
     // --- NEW FIELDS END ---
 }
