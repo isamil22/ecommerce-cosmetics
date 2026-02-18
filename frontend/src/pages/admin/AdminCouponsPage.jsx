@@ -1067,7 +1067,7 @@ const AdminCouponsPage = () => {
                 >
                     {editingCoupon && (
                         <div className="p-4">
-                            <CouponUsageChart couponId={editingCoupon.id} />
+                            <CouponUsageChart couponId={editingCoupon.id} couponName={editingCoupon.name} />
                         </div>
                     )}
                 </Modal>

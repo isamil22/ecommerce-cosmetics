@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { getCouponUsageStatisticsById } from '../api/apiService';
 import { DualAxes, Line, Column, Area, Gauge, Radar, Funnel, Heatmap, Pie, Scatter, Rose } from '@ant-design/plots';
-import { 
-    message, 
-    Card, 
-    Statistic, 
-    Spin, 
-    Row, 
-    Col, 
-    Table, 
-    Empty, 
-    Button, 
-    Select, 
-    DatePicker, 
-    Space, 
-    Progress, 
-    Tag, 
-    Tooltip, 
-    Switch, 
-    Badge, 
-    Modal, 
+import {
+    message,
+    Card,
+    Statistic,
+    Spin,
+    Row,
+    Col,
+    Table,
+    Empty,
+    Button,
+    Select,
+    DatePicker,
+    Space,
+    Progress,
+    Tag,
+    Tooltip,
+    Switch,
+    Badge,
+    Modal,
     Segmented,
     Typography,
     Divider,
@@ -35,11 +35,11 @@ import {
     Input,
     AutoComplete
 } from 'antd';
-import { 
-    RiseOutlined, 
-    TrophyOutlined, 
-    BarChartOutlined, 
-    DownloadOutlined, 
+import {
+    RiseOutlined,
+    TrophyOutlined,
+    BarChartOutlined,
+    DownloadOutlined,
     FilterOutlined,
     ArrowUpOutlined,
     ArrowDownOutlined,
@@ -109,8 +109,8 @@ const { TabPane } = Tabs;
 const CouponUsageChart = ({ couponId, couponName }) => {
     const [loading, setLoading] = useState(true);
     const [usageData, setUsageData] = useState([]);
-    const [selectedChartType, setSelectedChartType] = useState('dualAxes');
-    
+    const [selectedChartType, setSelectedChartType] = useState('area');
+
     // Debug selectedChartType changes
     useEffect(() => {
         console.log('🎨 CouponUsageChart: selectedChartType changed to:', selectedChartType);
@@ -143,15 +143,15 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             try {
                 setLoading(true);
                 console.log(`📊 CouponUsageChart: Fetching data for coupon ID: ${couponId}`);
-                
+
                 const response = await getCouponUsageStatisticsById(couponId);
                 const data = response.data || [];
-                
+
                 console.log(`📊 CouponUsageChart: Received raw response:`, response);
                 console.log(`📊 CouponUsageChart: Received data:`, data);
                 console.log(`📊 CouponUsageChart: Data type:`, typeof data, 'Array?', Array.isArray(data));
                 console.log(`📊 CouponUsageChart: Data length:`, data.length);
-                
+
                 // Validate and transform data if needed
                 let processedData = [];
                 if (Array.isArray(data)) {
@@ -170,10 +170,10 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                         count: data.count || data.usage_count || data.times_used || 0
                     }];
                 }
-                
+
                 console.log(`📊 CouponUsageChart: Processed data:`, processedData);
                 setUsageData(processedData);
-                
+
                 if (processedData.length === 0) {
                     console.log('📊 CouponUsageChart: No usage data found for this coupon');
                     message.info('No usage data available for this coupon yet');
@@ -182,7 +182,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                 }
             } catch (error) {
                 console.error('❌ CouponUsageChart: Error fetching coupon usage data:', error);
-                
+
                 // Show more specific error messages
                 if (error.response?.status === 403) {
                     message.error('Access denied. You need proper permissions to view usage statistics.');
@@ -193,7 +193,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                 } else {
                     message.error(`Failed to load coupon usage data: ${error.message}`);
                 }
-                
+
                 setUsageData([]);
             } finally {
                 setLoading(false);
@@ -220,7 +220,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         const totalUsage = validData.reduce((sum, item) => sum + (item.count || 0), 0);
         const avgUsage = totalUsage / validData.length;
         const maxUsage = Math.max(...validData.map(item => item.count || 0));
-        const growthRate = validData.length > 1 ? 
+        const growthRate = validData.length > 1 ?
             ((validData[validData.length - 1].count - validData[0].count) / validData[0].count) * 100 : 0;
 
         const insights = [];
@@ -271,7 +271,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
 
         // Validate that each item has a count property
         const validData = usageData.filter(item => item && typeof item.count === 'number');
-        
+
         if (validData.length === 0) {
             return {
                 totalUses: 0,
@@ -286,13 +286,13 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         const totalUses = validData.reduce((sum, item) => sum + (item.count || 0), 0);
         const peakUsage = Math.max(...validData.map(item => item.count || 0));
         const averageDaily = totalUses / validData.length;
-        const growthRate = validData.length > 1 ? 
+        const growthRate = validData.length > 1 ?
             ((validData[validData.length - 1].count - validData[0].count) / validData[0].count) * 100 : 0;
-        
+
         // Calculate consistency (lower variance = higher consistency)
         const variance = validData.reduce((sum, item) => sum + Math.pow((item.count || 0) - averageDaily, 2), 0) / validData.length;
         const consistency = Math.max(0, 100 - (variance / averageDaily) * 100);
-        
+
         // Calculate engagement (based on usage frequency and growth)
         const engagement = Math.min(100, (totalUses / 10) + (growthRate / 2));
 
@@ -338,10 +338,77 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             xField: 'date',
             yField: 'count',
             smooth: true,
-            color: '#43e97b',
+            color: 'l(270) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
+            areaStyle: {
+                fill: 'l(270) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
+                fillOpacity: 0.6,
+            },
+            line: {
+                color: '#1890ff',
+                size: 2
+            },
             point: {
                 size: 5,
-                shape: 'circle'
+                shape: 'circle',
+                style: {
+                    fill: 'white',
+                    stroke: '#1890ff',
+                    lineWidth: 2,
+                },
+            },
+            tooltip: {
+                showMarkers: true,
+                customContent: (title, data) => {
+                    return (
+                        <div style={{ padding: '12px 16px', borderRadius: '12px', background: 'rgba(255,255,255,0.95)', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                            <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>{dayjs(title).format('MMMM DD, YYYY')}</div>
+                            {data.map((item, index) => (
+                                <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px', fontWeight: 'bold', color: '#1890ff' }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1890ff' }}></div>
+                                    <span>{item.value} Uses</span>
+                                </div>
+                            ))}
+                        </div>
+                    );
+                }
+            },
+            slider: {
+                start: 0,
+                end: 1,
+                formatter: (v) => dayjs(usageData[Math.floor(v * (usageData.length - 1))]?.date).format('MMM DD')
+            },
+            xAxis: {
+                range: [0, 1],
+                tickCount: 5,
+                label: {
+                    style: {
+                        fill: '#aaa',
+                        fontSize: 12
+                    }
+                },
+                grid: {
+                    line: {
+                        style: {
+                            stroke: '#eee',
+                            lineDash: [4, 4]
+                        }
+                    }
+                }
+            },
+            yAxis: {
+                label: {
+                    style: {
+                        fill: '#aaa',
+                        fontSize: 12
+                    }
+                },
+                grid: {
+                    line: {
+                        style: {
+                            stroke: '#f0f0f0'
+                        }
+                    }
+                }
             }
         },
         radar: {
@@ -413,12 +480,12 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         console.log('🎨 CouponUsageChart: renderChart called');
         console.log('🎨 CouponUsageChart: usageData:', usageData);
         console.log('🎨 CouponUsageChart: selectedChartType:', selectedChartType);
-        
+
         // Ensure selectedChartType has a valid value
         const chartType = selectedChartType || 'dualAxes';
         console.log('🎨 CouponUsageChart: Using chart type:', chartType);
         console.log('🎨 CouponUsageChart: Available chart types:', chartTypes.map(c => c.value));
-        
+
         if (!usageData || !Array.isArray(usageData) || usageData.length === 0) {
             console.log('🎨 CouponUsageChart: No usage data, showing empty state');
             return <Empty description="No usage data available" />;
@@ -427,12 +494,12 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         // Validate data structure for charts
         const validData = usageData.filter(item => item && typeof item.count === 'number');
         console.log('🎨 CouponUsageChart: validData:', validData);
-        
+
         if (validData.length === 0) {
             console.log('🎨 CouponUsageChart: No valid data, showing empty state');
             return <Empty description="No valid usage data available" />;
         }
-        
+
         // For single data point, enhance the data to make other chart types work better
         let chartData = validData;
         if (validData.length === 1 && ['line', 'area', 'radar', 'funnel', 'heatmap', 'pie', 'scatter', 'rose'].includes(chartType)) {
@@ -458,12 +525,12 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                 }
             }
         };
-        
+
         console.log('🎨 CouponUsageChart: commonProps:', commonProps);
 
         console.log('🎨 CouponUsageChart: Rendering chart type:', chartType);
         console.log('🎨 CouponUsageChart: Chart data being used:', chartData);
-        
+
         try {
             // Try to render the chart component
             let chartComponent;
@@ -513,16 +580,16 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                     chartComponent = <DualAxes {...commonProps} />;
                     break;
             }
-            
+
             console.log('🎨 CouponUsageChart: Chart component created successfully');
-            
+
             // Add a debug div to verify the component is being rendered
             return (
                 <div>
-                    <div style={{ 
-                        padding: '10px', 
-                        background: '#f0f0f0', 
-                        margin: '10px 0', 
+                    <div style={{
+                        padding: '10px',
+                        background: '#f0f0f0',
+                        margin: '10px 0',
                         borderRadius: '4px',
                         fontSize: '12px',
                         color: '#666'
@@ -541,9 +608,9 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
                         {validData.map((item, index) => (
-                            <div key={index} style={{ 
-                                display: 'flex', 
-                                justifyContent: 'space-between', 
+                            <div key={index} style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
                                 alignItems: 'center',
                                 padding: '8px 16px',
                                 background: '#f8f9fa',
@@ -587,9 +654,9 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                 const validData = usageData.filter(item => item && typeof item.count === 'number');
                 const cumulative = validData.slice(0, index + 1).reduce((sum, item) => sum + (item.count || 0), 0);
                 return (
-                    <Progress 
-                        percent={analytics.totalUses > 0 ? Math.round((cumulative / analytics.totalUses) * 100) : 0} 
-                        size="small" 
+                    <Progress
+                        percent={analytics.totalUses > 0 ? Math.round((cumulative / analytics.totalUses) * 100) : 0}
+                        size="small"
                         strokeColor="#52c41a"
                     />
                 );
@@ -607,19 +674,20 @@ const CouponUsageChart = ({ couponId, couponName }) => {
     }
 
     return (
-        <div style={{ 
-            padding: '24px', 
+        <div style={{
+            padding: '24px',
             background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
             minHeight: '100vh',
             position: 'relative'
         }}>
             {/* Header */}
             <Card style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'linear-gradient(135deg, #1A2980 0%, #26D0CE 100%)',
                 color: 'white',
                 marginBottom: '24px',
-                borderRadius: '20px',
-                border: 'none'
+                borderRadius: '24px',
+                border: 'none',
+                boxShadow: '0 10px 30px rgba(38, 208, 206, 0.3)'
             }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
@@ -631,16 +699,16 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                         </Text>
                     </div>
                     <Space>
-                        <Button 
-                            type="primary" 
+                        <Button
+                            type="primary"
                             icon={<RobotOutlined />}
                             onClick={() => setShowDrawer(true)}
                             style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)' }}
                         >
                             AI Insights
                         </Button>
-                        <Button 
-                            type="primary" 
+                        <Button
+                            type="primary"
                             icon={<DownloadOutlined />}
                             style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)' }}
                         >
@@ -653,7 +721,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             {/* Key Metrics */}
             <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
                 <Col xs={24} sm={12} md={6}>
-                    <Card style={{ 
+                    <Card style={{
                         background: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(20px)',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -669,7 +737,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} md={6}>
-                    <Card style={{ 
+                    <Card style={{
                         background: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(20px)',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -685,7 +753,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} md={6}>
-                    <Card style={{ 
+                    <Card style={{
                         background: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(20px)',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -701,7 +769,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} md={6}>
-                    <Card style={{ 
+                    <Card style={{
                         background: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(20px)',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -722,7 +790,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             {/* Additional Metrics */}
             <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
                 <Col xs={24} sm={8}>
-                    <Card style={{ 
+                    <Card style={{
                         background: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(20px)',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -739,7 +807,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                     </Card>
                 </Col>
                 <Col xs={24} sm={8}>
-                    <Card style={{ 
+                    <Card style={{
                         background: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(20px)',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -756,7 +824,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
                     </Card>
                 </Col>
                 <Col xs={24} sm={8}>
-                    <Card style={{ 
+                    <Card style={{
                         background: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(20px)',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -774,7 +842,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             </Row>
 
             {/* Chart Controls */}
-            <Card style={{ 
+            <Card style={{
                 background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(20px)',
                 border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -884,7 +952,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             </Card>
 
             {/* Chart Section */}
-            <Card style={{ 
+            <Card style={{
                 background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(20px)',
                 border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -906,7 +974,7 @@ const CouponUsageChart = ({ couponId, couponName }) => {
             </Card>
 
             {/* Data Table */}
-            <Card style={{ 
+            <Card style={{
                 background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(20px)',
                 border: '1px solid rgba(255, 255, 255, 0.3)',
