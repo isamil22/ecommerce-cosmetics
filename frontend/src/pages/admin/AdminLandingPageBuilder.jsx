@@ -5,7 +5,6 @@ import landingPageService from '../../api/landingPageService';
 import { SECTION_TYPE_LABELS, DEFAULT_SECTION_DATA, SECTION_COMPONENTS } from '../../components/landingPage/sections/SectionRegistry';
 import SectionEditor from '../../components/landingPage/sections/SectionEditor';
 import Loader from '../../components/Loader';
-import { getAllProducts } from '../../api/apiService';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 // ... (Drag and Drop Imports remain the same - no changes needed here, assuming they are effectively lines 9-27 in original)
@@ -143,7 +142,6 @@ const AdminLandingPageBuilder = () => {
     const [status, setStatus] = useState('DRAFT');
     const [productId, setProductId] = useState('');
     const [sections, setSections] = useState([]);
-    const [products, setProducts] = useState([]);
     const [settings, setSettings] = useState({
         themeColor: '#ff69b4',
         fontFamily: 'Arial, sans-serif',
@@ -186,23 +184,8 @@ const AdminLandingPageBuilder = () => {
         if (isEditMode) {
             loadLandingPage();
         }
-        fetchProducts();
+        // Products are no longer fetched
     }, [id]);
-
-    const fetchProducts = async () => {
-        try {
-            const response = await getAllProducts({ size: 1000 });
-            let productList = [];
-            if (response.data && response.data.content) {
-                productList = response.data.content;
-            } else if (response.data && Array.isArray(response.data)) {
-                productList = response.data;
-            }
-            setProducts(productList);
-        } catch (error) {
-            console.error('Failed to fetch products', error);
-        }
-    };
 
     const loadLandingPage = async () => {
         try {
@@ -500,24 +483,7 @@ const AdminLandingPageBuilder = () => {
                             />
                         </div>
 
-                        <div style={{ marginBottom: '15px' }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '0.9rem' }}>{t('landingPageBuilder.settings.mainProduct')}</label>
-                            <select
-                                value={productId || ''}
-                                onChange={(e) => setProductId(e.target.value)}
-                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #cbd5e0' }}
-                            >
 
-                                {products.map(p => (
-                                    <option key={p.id} value={p.id}>
-                                        {p.name}
-                                    </option>
-                                ))}
-                            </select>
-                            <small style={{ color: '#666', fontSize: '0.8rem' }}>
-                                {t('landingPageBuilder.settings.mainProductHelp')}
-                            </small>
-                        </div>
                     </div>
 
                     {/* Section Builder */}
