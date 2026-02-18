@@ -15,7 +15,7 @@ import StickyCartButton from '../components/landingPage/StickyCartButton';
 const PublicLandingPage = (props) => {
     const { slug } = useParams();
     const [landingPage, setLandingPage] = useState(null);
-    const [product, setProduct] = useState(null);
+    // const [product, setProduct] = useState(null); // Removed for decoupling
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -29,16 +29,8 @@ const PublicLandingPage = (props) => {
             const data = await landingPageService.getPublishedLandingPage(slug);
             setLandingPage(data);
 
-            // Fetch product details explicitly to get variants
-            let productRes = null;
-            if (data.productId) {
-                try {
-                    productRes = await getProductById(data.productId);
-                    setProduct(productRes.data);
-                } catch (pErr) {
-                    console.error("Failed to fetch product details:", pErr);
-                }
-            }
+            // Product fetching removed to decouple landing page from specific products
+            // logic with productRes is removed.
 
             // Update page metadata
             document.title = data.metaTitle || data.title;
@@ -66,9 +58,9 @@ const PublicLandingPage = (props) => {
             let price = 0;
             // Try to find price in sections if not directly on product (fallback)
             // Ideally backend provides this or we get it from product fetch
-            if (data.productId && productRes && productRes.data) {
-                price = productRes.data.price;
-            }
+            // Try to find price in sections if not directly on product (fallback)
+            // Ideally backend provides this or we get it from product fetch
+            // Decoupled: Price provided by sections only now.
 
             trackEvent('ViewContent', {
                 content_name: data.title,
@@ -141,10 +133,8 @@ const PublicLandingPage = (props) => {
     // Apply custom font if provided
     const fontFamily = landingPage.settings?.fontFamily || 'Arial, sans-serif';
 
-    // Extract variants: Prefer explicitly fetched product variants, fallback to extracting from sections
-    const globalVariants = product?.variants?.length > 0
-        ? product.variants
-        : (landingPage.sections?.find(s => s.sectionData?.variants?.length > 0)?.sectionData?.variants || []);
+    // Extract variants: Fallback to extracting from sections since we are decoupled from specific products
+    const globalVariants = landingPage.sections?.find(s => s.sectionData?.variants?.length > 0)?.sectionData?.variants || [];
 
     return (
         <div style={{ fontFamily, minHeight: '50vh' }}>
