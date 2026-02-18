@@ -128,7 +128,6 @@ const CouponUsageChart = ({ couponId, couponName }) => {
         { value: 'column', label: 'Column Chart', icon: <BarChartOutlined /> },
         { value: 'area', label: 'Area Chart', icon: <AreaChartOutlined /> },
         { value: 'funnel', label: 'Funnel Chart', icon: <BarChartOutlined /> },
-        { value: 'heatmap', label: 'Heatmap', icon: <BarChartOutlined /> },
         { value: 'pie', label: 'Pie Chart', icon: <BarChartOutlined /> },
         { value: 'scatter', label: 'Scatter Plot', icon: <DotChartOutlined /> },
         { value: 'rose', label: 'Rose Chart', icon: <RoseChartOutlined /> }
