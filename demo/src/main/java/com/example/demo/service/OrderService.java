@@ -524,6 +524,11 @@ public class OrderService {
                         Product product = productRepository.findById(itemDTO.getProductId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                         "Product not found with id: " + itemDTO.getProductId()));
+
+                        // Fix: Use price from DTO if available (for packs/variants), else use DB price
+                        if (itemDTO.getPrice() != null) {
+                            return itemDTO.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
+                        }
                         return product.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
                     } else {
                         // Direct order item
@@ -592,6 +597,11 @@ public class OrderService {
                 .map(itemDTO -> {
                     // We already fetched product in filter, but clean code:
                     if (itemDTO.getProductId() != null) {
+                        // Fix: Use price from DTO if available
+                        if (itemDTO.getPrice() != null) {
+                            return itemDTO.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
+                        }
+
                         Product product = productRepository.findById(itemDTO.getProductId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                         "Product not found with id: " + itemDTO.getProductId()));
