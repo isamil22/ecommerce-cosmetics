@@ -125,11 +125,8 @@ const CouponUsageChart = ({ couponId, couponName }) => {
 
     // Chart types configuration for Segmented component
     const chartTypes = [
-        { value: 'dualAxes', label: 'Dual Axis', icon: <BarChartOutlined /> },
-        { value: 'line', label: 'Line Chart', icon: <LineChartOutlined /> },
         { value: 'column', label: 'Column Chart', icon: <BarChartOutlined /> },
         { value: 'area', label: 'Area Chart', icon: <AreaChartOutlined /> },
-        { value: 'radar', label: 'Radar Chart', icon: <DotChartOutlined /> },
         { value: 'funnel', label: 'Funnel Chart', icon: <BarChartOutlined /> },
         { value: 'heatmap', label: 'Heatmap', icon: <BarChartOutlined /> },
         { value: 'pie', label: 'Pie Chart', icon: <BarChartOutlined /> },
