@@ -158,6 +158,10 @@ public class ImageController {
                     // Double-check inside synchronization
                     if (!cacheFile.exists() || cacheFile.length() == 0) {
                         File tempFile = new File(cacheFile.getAbsolutePath() + ".tmp");
+                        // Ensure no stale temp file exists from previous failed attempts
+                        if (tempFile.exists()) {
+                            tempFile.delete();
+                        }
                         try {
                             System.out.println("🔨 Generating thumbnail: " + cacheFilename);
                             System.out.println("DEBUG: Cache Dir: " + cacheDir + ", Exists: "
