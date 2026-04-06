@@ -1,4 +1,4 @@
-/* Tailwind CSS imports */
+﻿/* Tailwind CSS imports */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -941,5 +941,47 @@ button:active, a:active {
     overflow: hidden;
     white-space: nowrap;
     position: relative;
-}\ n @ k e y f r a m e s   r i p p l e - e x p a n d   {   0 %   {   t r a n s f o r m :   s c a l e ( 0 ) ;   o p a c i t y :   0 . 8 ;   }   1 0 0 %   {   t r a n s f o r m :   s c a l e ( 4 ) ;   o p a c i t y :   0 ;   }   }   @ k e y f r a m e s   c o r e - p i n g   {   0 %   {   t r a n s f o r m :   s c a l e ( 0 . 2 ) ;   o p a c i t y :   1 ;   }   1 0 0 %   {   t r a n s f o r m :   s c a l e ( 1 . 5 ) ;   o p a c i t y :   0 ;   }   }   . r i p p l e - r i n g   {   w i d t h :   4 0 p x ;   h e i g h t :   4 0 p x ;   b o r d e r :   2 p x   s o l i d   r g b a ( 2 5 5 ,   2 1 5 ,   0 ,   0 . 6 ) ;   b o r d e r - r a d i u s :   5 0 % ;   a n i m a t i o n :   r i p p l e - e x p a n d   0 . 6 s   e a s e - o u t   f o r w a r d s ;   b o x - s h a d o w :   0   0   1 0 p x   r g b a ( 2 3 6 ,   7 2 ,   1 5 3 ,   0 . 4 ) ;   }   . r i p p l e - c o r e   {   p o s i t i o n :   a b s o l u t e ;   t o p :   5 0 % ;   l e f t :   5 0 % ;   w i d t h :   1 0 p x ;   h e i g h t :   1 0 p x ;   b a c k g r o u n d :   r a d i a l - g r a d i e n t ( c i r c l e ,   # f f f   0 % ,   # f f d 7 0 0   1 0 0 % ) ;   b o r d e r - r a d i u s :   5 0 % ;   t r a n s f o r m :   t r a n s l a t e ( - 5 0 % ,   - 5 0 % ) ;   a n i m a t i o n :   c o r e - p i n g   0 . 4 s   e a s e - o u t   f o r w a r d s ;   }  
- 
+}
+
+@keyframes ripple-expand {
+    0% {
+        transform: scale(0);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+@keyframes core-ping {
+    0% {
+        transform: scale(0.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.ripple-ring {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(255, 215, 0, 0.6);
+    border-radius: 50%;
+    animation: ripple-expand 0.6s ease-out forwards;
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+}
+
+.ripple-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, #fff 0%, #ffd700 100%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: core-ping 0.4s ease-out forwards;
+}
