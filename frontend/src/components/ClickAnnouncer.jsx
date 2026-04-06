@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 
 const ClickAnnouncer = () => {
     const [clicks, setClicks] = useState([]);
@@ -27,7 +26,7 @@ const ClickAnnouncer = () => {
 
     if (clicks.length === 0) return null;
 
-    return createPortal(
+    return (
         <div style={{
             position: 'fixed',
             top: 0,
@@ -55,7 +54,7 @@ const ClickAnnouncer = () => {
                     <div className="ripple-ring"></div>
                 </div>
             ))}
-            <style jsx>{`
+            <style jsx="true">{`
                 @keyframes ripple-expand {
                     0% {
                         transform: scale(0);
@@ -96,8 +95,7 @@ const ClickAnnouncer = () => {
                     animation: core-ping 0.4s ease-out forwards;
                 }
             `}</style>
-        </div>,
-        document.body
+        </div>
     );
 };
 
