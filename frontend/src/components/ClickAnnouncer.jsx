@@ -54,47 +54,6 @@ const ClickAnnouncer = () => {
                     <div className="ripple-ring"></div>
                 </div>
             ))}
-            <style jsx="true">{`
-                @keyframes ripple-expand {
-                    0% {
-                        transform: scale(0);
-                        opacity: 0.8;
-                    }
-                    100% {
-                        transform: scale(4);
-                        opacity: 0;
-                    }
-                }
-                @keyframes core-ping {
-                    0% {
-                        transform: scale(0.2);
-                        opacity: 1;
-                    }
-                    100% {
-                        transform: scale(1.5);
-                        opacity: 0;
-                    }
-                }
-                .ripple-ring {
-                    width: 40px;
-                    height: 40px;
-                    border: 2px solid rgba(255, 215, 0, 0.6); /* Gold */
-                    border-radius: 50%;
-                    animation: ripple-expand 0.6s ease-out forwards;
-                    box-shadow: 0 0 10px rgba(236, 72, 153, 0.4); /* Pink Glow */
-                }
-                .ripple-core {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 10px;
-                    height: 10px;
-                    background: radial-gradient(circle, #fff 0%, #ffd700 100%);
-                    border-radius: 50%;
-                    transform: translate(-50%, -50%);
-                    animation: core-ping 0.4s ease-out forwards;
-                }
-            `}</style>
         </div>
     );
 };
