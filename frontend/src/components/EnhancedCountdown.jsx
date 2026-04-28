@@ -161,9 +161,9 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
     if (timeLeft.total !== null && timeLeft.total <= 0) {
         return (
             <div className="glass-panel-dark border-red-200/50 bg-red-50/50 rounded-2xl p-4 mb-6 text-center backdrop-blur-md">
-                <div className="text-3xl mb-1">⏰</div>
+                <div className="text-3xl mb-1"><span>⏰</span></div>
                 <p className="font-black text-lg text-red-600">
-                    {config.expiredMessage || 'انتهت الفترة المحدودة! / Offre limitée expirée !'}
+                    <span>{config.expiredMessage || 'انتهت الفترة المحدودة! / Offre limitée expirée !'}</span>
                 </p>
             </div>
         );
@@ -179,11 +179,11 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
             {/* Header */}
             <div className="flex items-center justify-center mb-3 gap-2">
                 <span className={`text-2xl ${isUrgent ? 'animate-bounce' : 'animate-pulse'}`}>
-                    {isUrgent ? '🔥' : '⏳'}
+                    <span>{isUrgent ? '🔥' : '⏳'}</span>
                 </span>
                 <h3 className={`font-black tracking-tight text-lg bg-clip-text text-transparent bg-gradient-to-r 
                     ${isUrgent ? 'from-red-600 to-pink-600' : 'from-purple-600 to-pink-500'}`}>
-                    {config.title || (isUrgent ? 'عجلوا! / Dépêchez-vous !' : 'عرض محدود / Offre Limitée')}
+                    <span>{config.title || (isUrgent ? 'عجلوا! / Dépêchez-vous !' : 'عرض محدود / Offre Limitée')}</span>
                 </h3>
             </div>
 
@@ -240,16 +240,16 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
             {/* Subtitle */}
             {(config.showSubtitle !== false) && (
                 <p className="text-sm font-semibold text-gray-600">
-                    {isUrgent
+                    <span>{isUrgent
                         ? (config.urgentMessage || '⚡ طلب مرتفع! قد ترتفع الأسعار / Forte demande ! Les prix peuvent augmenter')
-                        : (config.subtitle || 'تتغير الأسعار عند انتهاء المؤقت / Les prix changent à la fin du compte à rebours')}
+                        : (config.subtitle || 'تتغير الأسعار عند انتهاء المؤقت / Les prix changent à la fin du compte à rebours')}</span>
                 </p>
             )}
 
             {/* Pack Name Reference */}
             {(config.showPackName !== false && config.packName) && (
                 <div className="mt-2 inline-block px-3 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider">
-                    {config.packName}
+                    <span>{config.packName}</span>
                 </div>
             )}
         </div>
@@ -269,10 +269,10 @@ const TimeUnit = ({ value, label, isUrgent, animate }) => (
         ${animate && isUrgent ? 'animate-pulse-custom' : ''}
     `}>
         <span className={`text-2xl sm:text-3xl font-black leading-none ${isUrgent ? 'text-red-500' : 'text-gray-800'}`}>
-            {value}
+            <span>{value}</span>
         </span>
         <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">
-            {label}
+            <span>{label}</span>
         </span>
     </div>
 );

@@ -34,7 +34,6 @@ const HomePage = () => {
     const [activeTab, setActiveTab] = useState('bestsellers');
 
     // --- STAR ANIMATION STATE ---
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [stars, setStars] = useState([]);
 
     // --- OPTIMIZED DATA FETCHING (Parallel & Progressive) ---
@@ -156,11 +155,6 @@ const HomePage = () => {
             {hero && (
                 <div
                     id="home-hero"
-                    onMouseMove={(e) => {
-                        const moveX = (e.clientX - window.innerWidth / 2) * 0.02;
-                        const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
-                        setMousePosition({ x: moveX, y: moveY });
-                    }}
                     className="relative min-h-[85vh] md:min-h-[92vh] flex items-center justify-center overflow-hidden bg-black"
                 >
                     {/* Background Layer */}
@@ -231,17 +225,14 @@ const HomePage = () => {
                     {/* Floating Parallax Blobs */}
                     <div
                         className="hidden md:block absolute top-1/4 left-10 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none z-0"
-                        style={{ transform: `translate(${mousePosition.x * -2}px, ${mousePosition.y * -2}px)` }}
                     />
                     <div
                         className="hidden md:block absolute bottom-10 right-10 w-80 h-80 bg-purple-600/20 rounded-full blur-[80px] pointer-events-none z-0"
-                        style={{ transform: `translate(${mousePosition.x * 3}px, ${mousePosition.y * 3}px)` }}
                     />
 
                     {/* Content Container */}
                     <div
                         className="relative z-10 container mx-auto px-4 text-center transition-transform duration-100 ease-out"
-                        style={{ transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)` }}
                     >
                         {/* Glass Badge */}
                         <div className="flex justify-center mb-6 md:mb-8">
