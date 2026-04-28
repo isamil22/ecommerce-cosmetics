@@ -142,19 +142,19 @@ const RewardPopup = ({ coupons }) => {
                                 justifyContent: 'center'
                             }}
                         >
-                            ✕
+                            <span>✕</span>
                         </button>
 
                         {/* Confetti Decoration */}
-                        <div style={{ fontSize: '30px', marginBottom: '10px' }}>🎉</div>
+                        <div style={{ fontSize: '30px', marginBottom: '10px' }}><span>🎉</span></div>
 
                         <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '8px' }}>
-                            أهلاً بعودتك! / Bon retour!
+                            <span>أهلاً بعودتك! / Bon retour!</span>
                         </h3>
                         <p style={{ fontSize: '0.9rem', opacity: 0.9, marginBottom: '20px' }}>
-                            لديك كود خصم غير مستخدم!
+                            <span>لديك كود خصم غير مستخدم!</span>
                             <br />
-                            Vous avez un code promo inutilisé !
+                            <span>Vous avez un code promo inutilisé !</span>
                         </p>
 
                         <div
@@ -182,9 +182,9 @@ const RewardPopup = ({ coupons }) => {
                         </div>
 
                         <div style={{ textAlign: 'center', fontSize: '0.8rem', opacity: 0.8 }}>
-                            خصم {currentCoupon.discountValue}% على طلبك القادم
+                            <span>خصم {currentCoupon.discountValue}% على طلبك القادم</span>
                             <br />
-                            {currentCoupon.discountValue}% de réduction sur votre prochaine commande
+                            <span>{currentCoupon.discountValue}% de réduction sur votre prochaine commande</span>
                         </div>
                     </div>
                 </motion.div>

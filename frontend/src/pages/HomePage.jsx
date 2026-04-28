@@ -262,12 +262,12 @@ const HomePage = () => {
                                 filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))'
                             }}
                         >
-                            {hero.title}
+                            <span>{hero.title}</span>
                         </h1>
 
                         {/* Subtitle */}
                         <p className="text-lg md:text-2xl text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto font-light leading-relaxed animate-slide-up px-2" style={{ animationDelay: '0.2s' }}>
-                            {hero.subtitle}
+                            <span>{hero.subtitle}</span>
                         </p>
 
                         {/* CTA Buttons */}
@@ -277,7 +277,7 @@ const HomePage = () => {
                                 className="w-auto group relative overflow-hidden bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-2.5 px-6 md:py-3 md:px-8 rounded-full shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:shadow-[0_0_30px_rgba(236,72,153,0.6)] transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-105 border border-white/20 text-center"
                             >
                                 <span className="relative z-10 flex items-center justify-center gap-2 text-xs md:text-sm">
-                                    {hero.linkText} <span className="text-base">✨</span>
+                                    <span>{hero.linkText}</span> <span className="text-base">✨</span>
                                 </span>
                                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </Link>
@@ -286,7 +286,7 @@ const HomePage = () => {
                                 to="/packs"
                                 className="w-auto glass-panel-pro text-white font-bold py-2.5 px-6 md:py-3 md:px-8 rounded-full hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-0.5 border border-white/30 text-xs md:text-sm flex items-center justify-center gap-2 text-center"
                             >
-                                🎁 تصفح الباقات / Packs
+                                <span>🎁 تصفح الباقات / Packs</span>
                             </Link>
                         </div>
                     </div>
@@ -347,10 +347,10 @@ const HomePage = () => {
                                 {/* Content */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-end p-3 md:p-6 pb-4 md:pb-8">
                                     <p className="font-black text-white text-lg md:text-2xl text-center leading-tight mb-2 transform group-hover:translate-y-0 transition-transform duration-500">
-                                        {category.name}
+                                        <span>{category.name}</span>
                                     </p>
                                     <p className="hidden md:block text-base text-center text-gray-200 max-w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 px-2 leading-snug">
-                                        {category.description || 'استكشف / Explorer'}
+                                        <span>{category.description || 'استكشف / Explorer'}</span>
                                     </p>
 
                                     {/* Ultra Enhanced Arrow Icon - Hidden on small mobile to save space */}
@@ -361,9 +361,9 @@ const HomePage = () => {
                             </Link>
                         )) : (
                             <div className="col-span-full text-center py-20">
-                                <div className="text-8xl mb-6">🛍️</div>
-                                <p className="text-3xl text-gray-600 mb-4 font-black">لا توجد فئات متاحة حالياً</p>
-                                <p className="text-2xl text-gray-400 font-semibold">Aucune catégorie disponible pour le moment</p>
+                                <div className="text-8xl mb-6"><span>🛍️</span></div>
+                                <p className="text-3xl text-gray-600 mb-4 font-black"><span>لا توجد فئات متاحة حالياً</span></p>
+                                <p className="text-2xl text-gray-400 font-semibold"><span>Aucune catégorie disponible pour le moment</span></p>
                             </div>
                         )}
                     </div>
@@ -446,9 +446,9 @@ const HomePage = () => {
                                 ))
                             ) : (
                                 <div className="col-span-full text-center py-16">
-                                    <div className="text-8xl mb-6">📦</div>
-                                    <p className="text-2xl text-gray-500 mb-4 font-black">لا توجد منتجات متاحة حالياً</p>
-                                    <p className="text-xl text-gray-400 font-semibold">Aucun produit disponible pour le moment</p>
+                                    <div className="text-8xl mb-6"><span>📦</span></div>
+                                    <p className="text-2xl text-gray-500 mb-4 font-black"><span>لا توجد منتجات متاحة حالياً</span></p>
+                                    <p className="text-xl text-gray-400 font-semibold"><span>Aucun produit disponible pour le moment</span></p>
                                 </div>
                             )}
                         </div>
@@ -473,9 +473,9 @@ const HomePage = () => {
                                 ))
                             ) : (
                                 <div className="col-span-full text-center py-16">
-                                    <div className="text-8xl mb-6">📦</div>
-                                    <p className="text-2xl text-gray-500 mb-4 font-black">لا توجد منتجات جديدة حالياً</p>
-                                    <p className="text-xl text-gray-400 font-semibold">Pas de nouveaux produits pour le moment</p>
+                                    <div className="text-8xl mb-6"><span>📦</span></div>
+                                    <p className="text-2xl text-gray-500 mb-4 font-black"><span>لا توجد منتجات جديدة حالياً</span></p>
+                                    <p className="text-xl text-gray-400 font-semibold"><span>Pas de nouveaux produits pour le moment</span></p>
                                 </div>
                             )}
                         </div>
@@ -560,9 +560,9 @@ const HomePage = () => {
                             </div>
                         ) : (
                             <div className="text-center py-16 bg-white rounded-3xl shadow-xl">
-                                <div className="text-8xl mb-6">💬</div>
-                                <p className="text-2xl text-gray-500 mb-4 font-black">لا توجد مراجعات بعد</p>
-                                <p className="text-xl text-gray-400 font-semibold">Pas encore d'avis - Soyez le premier à partager votre expérience !</p>
+                                <div className="text-8xl mb-6"><span>💬</span></div>
+                                <p className="text-2xl text-gray-500 mb-4 font-black"><span>لا توجد مراجعات بعد</span></p>
+                                <p className="text-xl text-gray-400 font-semibold"><span>Pas encore d'avis - Soyez le premier à partager votre expérience !</span></p>
                             </div>
                         )}
 

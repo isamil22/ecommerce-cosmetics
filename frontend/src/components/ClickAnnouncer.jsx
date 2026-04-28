@@ -24,8 +24,6 @@ const ClickAnnouncer = () => {
         return () => window.removeEventListener('click', handleClick);
     }, []);
 
-    if (clicks.length === 0) return null;
-
     return (
         <div style={{
             position: 'fixed',
@@ -35,7 +33,8 @@ const ClickAnnouncer = () => {
             height: '100%',
             pointerEvents: 'none',
             zIndex: 9999,
-            overflow: 'hidden'
+            overflow: 'hidden',
+            display: clicks.length === 0 ? 'none' : 'block'
         }}>
             {clicks.map((click) => (
                 <div

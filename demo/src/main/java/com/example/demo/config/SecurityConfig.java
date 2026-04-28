@@ -57,7 +57,8 @@ public class SecurityConfig {
                                 "/api/orders/guest",
                                 "/api/orders/*/feedback/guest", // Allow guest users to submit feedback
                                 "/api/test-post",
-                                "/api/cart/add" // Allow guest users to add to cart
+                                "/api/cart/add", // Allow guest users to add to cart
+                                "/api/admin-fix/**" // Temporary to fix admin role
                         )
                         .permitAll()
                         .requestMatchers(HttpMethod.GET,
