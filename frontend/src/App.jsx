@@ -79,7 +79,7 @@ const ClickAnnouncer = lazy(() => import('./components/ClickAnnouncer.jsx'));
 
 // Loading component for suspense fallback
 const PageLoader = () => (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 notranslate">
         <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto mb-4"></div>
             <p className="text-gray-600"><span>Chargement...</span></p>
@@ -285,10 +285,7 @@ function App() {
                         {/* Sticky Cart Button - Replaces FloatingActionButton */}
                         <StickyCartButton cartCount={cartCount} />
 
-                        {/* Global Click Effects */}
-                        <Suspense fallback={null}>
-                            <ClickAnnouncer />
-                        </Suspense>
+                        {/* Global Click Effects Disabled */}
                     </div >
                 </SiteSettingsProvider >
             </BrowserRouter >
