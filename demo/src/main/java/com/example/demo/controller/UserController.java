@@ -34,8 +34,15 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     @Operation(summary = "Get all users", description = "Retrieve all users in the system")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            return ResponseEntity.ok(userService.getAllUsers());
+        } catch (Exception e) {
+            java.io.StringWriter sw = new java.io.StringWriter();
+            java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+            e.printStackTrace(pw);
+            return ResponseEntity.status(500).body("Error: " + e.getMessage() + "\nStack trace: " + sw.toString());
+        }
     }
 
     @DeleteMapping("/{id}")
