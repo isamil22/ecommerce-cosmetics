@@ -51,8 +51,13 @@ public class GlobalExceptionHandler {
         
         // --- ADD THIS LOGGING LINE ---
         logger.error("An unexpected error occurred: ", ex);
+        
+        java.io.StringWriter sw = new java.io.StringWriter();
+        java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+        ex.printStackTrace(pw);
+        
         // -------------------------
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), "An internal server error occurred.", request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), "Error: " + ex.getMessage() + "\nStack Trace: " + sw.toString(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
