@@ -173,7 +173,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
 
     return (
         <div className={`
-            glass-panel-pro rounded-2xl p-4 text-center transform transition-all duration-300
+            notranslate glass-panel-pro rounded-2xl p-4 text-center transform transition-all duration-300
             ${isUrgent ? 'border-red-200 shadow-[0_0_20px_rgba(220,38,38,0.15)]' : 'border-white/60 shadow-xl'}
         `}>
             {/* Header */}
@@ -259,7 +259,7 @@ const EnhancedCountdown = ({ onExpire, packName, fallbackEndTime }) => {
 // Helper Components
 const TimeUnit = ({ value, label, isUrgent, animate }) => (
     <div className={`
-        flex flex-col items-center justify-center
+        notranslate flex flex-col items-center justify-center
         w-14 h-16 sm:w-16 sm:h-20 
         bg-white/80 rounded-xl border
         ${isUrgent

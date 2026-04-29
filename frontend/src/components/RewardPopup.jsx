@@ -113,6 +113,7 @@ const RewardPopup = ({ coupons }) => {
                         maxWidth: '350px',
                         width: '90%',
                     }}
+                    className="notranslate"
                 >
                     <div style={{
                         background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
