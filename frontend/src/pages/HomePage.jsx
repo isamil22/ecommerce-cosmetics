@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 const HomePage = () => {
+    console.log('CACHE_BUSTER_1');
     const [bestsellers, setBestsellers] = useState([]);
     const [newArrivals, setNewArrivals] = useState([]);
     const [reviews, setReviews] = useState([]);
