@@ -30,29 +30,25 @@ public interface UserMapper {
 
         // Check for roles in priority order
         for (com.example.demo.model.Role role : user.getRoles()) {
-            String roleName = role.getName();
-            if (roleName.equals("ADMIN")) {
+            if ("ADMIN".equals(role.getName()) || "ROLE_ADMIN".equals(role.getName())) {
                 return "ADMIN";
             }
         }
 
         for (com.example.demo.model.Role role : user.getRoles()) {
-            String roleName = role.getName();
-            if (roleName.equals("MANAGER")) {
+            if ("MANAGER".equals(role.getName()) || "ROLE_MANAGER".equals(role.getName())) {
                 return "MANAGER";
             }
         }
 
         for (com.example.demo.model.Role role : user.getRoles()) {
-            String roleName = role.getName();
-            if (roleName.equals("EDITOR")) {
+            if ("EDITOR".equals(role.getName()) || "ROLE_EDITOR".equals(role.getName())) {
                 return "EDITOR";
             }
         }
 
         for (com.example.demo.model.Role role : user.getRoles()) {
-            String roleName = role.getName();
-            if (roleName.equals("VIEWER")) {
+            if ("VIEWER".equals(role.getName()) || "ROLE_VIEWER".equals(role.getName())) {
                 return "VIEWER";
             }
         }
@@ -61,7 +57,9 @@ public interface UserMapper {
         // Exclude normal user permissions like ORDER:CREATE, ORDER:READ_OWN,
         // USER:READ_OWN, USER:UPDATE_OWN
         boolean hasAdminPermissions = user.getRoles().stream()
+                .filter(r -> r.getPermissions() != null)
                 .flatMap(r -> r.getPermissions().stream())
+                .filter(p -> p != null && p.getName() != null)
                 .anyMatch(p -> {
                     String name = p.getName();
 
@@ -100,10 +98,10 @@ public interface UserMapper {
 
         // Check for admin/manager/editor/viewer roles
         boolean hasAdminRole = user.getRoles().stream()
-                .anyMatch(r -> r.getName().equals("ADMIN") ||
-                        r.getName().equals("MANAGER") ||
-                        r.getName().equals("EDITOR") ||
-                        r.getName().equals("VIEWER"));
+                .anyMatch(r -> "ADMIN".equals(r.getName()) || "ROLE_ADMIN".equals(r.getName()) ||
+                        "MANAGER".equals(r.getName()) || "ROLE_MANAGER".equals(r.getName()) ||
+                        "EDITOR".equals(r.getName()) || "ROLE_EDITOR".equals(r.getName()) ||
+                        "VIEWER".equals(r.getName()) || "ROLE_VIEWER".equals(r.getName()));
 
         if (hasAdminRole) {
             return true;
@@ -112,7 +110,9 @@ public interface UserMapper {
         // Check if user has any admin-related permissions
         // Only grant dashboard access for explicit admin/management permissions
         boolean hasAdminPermissions = user.getRoles().stream()
+                .filter(r -> r.getPermissions() != null)
                 .flatMap(r -> r.getPermissions().stream())
+                .filter(p -> p != null && p.getName() != null)
                 .anyMatch(p -> {
                     String name = p.getName();
 
