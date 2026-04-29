@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Preconnect to critical domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Preload Critical Hero Image for LCP (Responsive) -->
+
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+  <!-- Meta tags -->
+  <title>ByLuna | Boutique de Cosmétiques</title>
+  <meta name="description" content="ByLuna - Votre boutique en ligne de produits cosmétiques de qualité au Maroc.">
+
+
+  <!-- Critical CSS - Inline for fast first paint -->
+  <style>
+    /* Critical CSS for above-the-fold content */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.5
+    }
+
+    #root {
+      min-height: 100vh
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #e91e63;
+      border-radius: 50%;
+      animation: spin 1s linear infinite
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg)
+      }
+
+      100% {
+        transform: rotate(360deg)
+      }
+    }
+  </style>
+
+  <!-- Async font loading - non-blocking -->
+  <link rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&family=Outfit:wght@400;500;700&display=swap"
+    as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&family=Outfit:wght@400;500;700&display=swap"
+      rel="stylesheet">
+  </noscript>
+  <script type="module" crossorigin src="/assets/index-B374cb7W.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-xOSlBIg5.css">
+</head>
+
+<body>
+  <!-- Loading spinner shown before React loads -->
+  <div id="root">
+    <!-- Static Hero Shell for Instant FCP -->
+    <style>
+      body {
+        background-color: #090a0f;
+        color: white;
+        overflow-x: hidden;
+      }
+
+      .hero-shell {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        overflow: hidden;
+      }
+
+      .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0;
+        animation: twinkle 3s infinite ease-in-out;
+      }
+
+      @keyframes twinkle {
+
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+
+      .content-shell {
+        text-align: center;
+        z-index: 10;
+        padding: 0 20px;
+        opacity: 0;
+        animation: fadeUp 1s ease-out forwards 0.2s;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .title-shell {
+        font-size: 4rem;
+        font-weight: 900;
+        margin-bottom: 20px;
+        background: linear-gradient(180deg, #ffffff 0%, #e0e7ff 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -2px;
+      }
+
+      .badge-shell {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 8px 24px;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 30px;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .title-shell {
+          font-size: 2.5rem;
+        }
+      }
+    </style>
+    <div class="hero-shell">
+      <!-- Static Stars -->
+      <div class="star" style="top: 20%; left: 20%; animation-delay: 0s;"></div>
+      <div class="star" style="top: 50%; left: 80%; animation-delay: 1s;"></div>
+      <div class="star" style="top: 80%; left: 40%; animation-delay: 2s;"></div>
+
+      <div class="content-shell">
+        <div class="badge-shell">
+          <span>✨</span>
+          <span>By Luna Cosmetics</span>
+        </div>
+        <h1 class="title-shell">Loading Magic...</h1>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
