@@ -76,7 +76,14 @@ public class User implements UserDetails {
         if (roles != null && !roles.isEmpty()) {
             for (com.example.demo.model.Role r : roles) {
                 // Add role itself as an authority with ROLE_ prefix for Spring Security
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + r.getName()));
+                String roleName = r.getName();
+                if (roleName != null) {
+                    if (roleName.startsWith("ROLE_")) {
+                        authorities.add(new SimpleGrantedAuthority(roleName));
+                    } else {
+                        authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+                    }
+                }
                 
                 // Add all permissions from this role
                 if (r.getPermissions() != null) {

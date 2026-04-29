@@ -43,10 +43,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request){
+    public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) throws Exception {
         // Ignore NoResourceFoundException - let Spring MVC handle it
         if (ex instanceof org.springframework.web.servlet.resource.NoResourceFoundException) {
             return null; // Let Spring MVC handle it
+        }
+        
+        // Let Spring Security handle its own exceptions (returns 401/403)
+        if (ex.getClass().getName().contains("org.springframework.security")) {
+            throw ex;
         }
         
         // --- ADD THIS LOGGING LINE ---
