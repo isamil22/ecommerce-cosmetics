@@ -11,6 +11,17 @@ import CallToActionSection from '../components/home/CallToActionSection';
 import { toast } from 'react-toastify';
 import { getOptimizedImageUrl } from '../utils/imageUtils';
 
+// Loading Skeleton Component (Moved outside to prevent re-creation on every render and avoid #321 hook errors)
+const LoadingSkeleton = () => (
+    <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center">
+            <div className="w-20 h-20 bg-gray-700 rounded-full mb-4"></div>
+            <div className="h-8 bg-gray-700 w-64 rounded-lg mb-4"></div>
+            <div className="h-4 bg-gray-700 w-96 rounded-lg"></div>
+        </div>
+    </div>
+);
+
 const HomePage = () => {
     console.log('CACHE_BUSTER_2');
     const [bestsellers, setBestsellers] = useState([]);
@@ -119,16 +130,6 @@ const HomePage = () => {
     // Use the image URL from backend (now stored locally, not AWS)
     const heroImageUrl = hero?.imageUrl;
 
-    // Loading Skeleton Component
-    const LoadingSkeleton = () => (
-        <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
-            <div className="animate-pulse flex flex-col items-center">
-                <div className="w-20 h-20 bg-gray-700 rounded-full mb-4"></div>
-                <div className="h-8 bg-gray-700 w-64 rounded-lg mb-4"></div>
-                <div className="h-4 bg-gray-700 w-96 rounded-lg"></div>
-            </div>
-        </div>
-    );
 
     // If Hero is not ready, show Skeleton.
     // If Hero IS ready but content is loading, we render Hero + Content Skeletons below (managed by conditioned rendering or just showing skeletons at bottom)
@@ -245,6 +246,7 @@ const HomePage = () => {
 
                         {/* Massive Glowing Title */}
                         <h1
+                            key={`hero-title-${hero.title}`}
                             className="text-4xl sm:text-5xl md:text-8xl font-black mb-4 md:mb-6 animate-fade-in tracking-tighter leading-tight"
                             style={{
                                 fontFamily: hero.titleFont || 'sans-serif',
@@ -258,7 +260,7 @@ const HomePage = () => {
                         </h1>
 
                         {/* Subtitle */}
-                        <p className="text-lg md:text-2xl text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto font-light leading-relaxed animate-slide-up px-2" style={{ animationDelay: '0.2s' }}>
+                        <p key={`hero-subtitle-${hero.subtitle}`} className="text-lg md:text-2xl text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto font-light leading-relaxed animate-slide-up px-2" style={{ animationDelay: '0.2s' }}>
                             <span>{hero.subtitle}</span>
                         </p>
 
