@@ -95,26 +95,29 @@ const RewardPopup = ({ coupons }) => {
         }
     };
 
-    if (!currentCoupon) return null;
+    if (!currentCoupon) {
+        return <div className="reward-popup-container notranslate" style={{ display: 'none' }}></div>;
+    }
 
     return (
-        <AnimatePresence>
-            {isVisible && (
-                <motion.div
-                    initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 50, scale: 0.9 }}
-                    transition={{ type: "spring", duration: 0.5 }}
-                    style={{
-                        position: 'fixed',
-                        bottom: '20px',
-                        left: '20px', // Left side to not block chat widgets usually on right
-                        zIndex: 9999,
-                        maxWidth: '350px',
-                        width: '90%',
-                    }}
-                    className="notranslate"
-                >
+        <div className="reward-popup-container notranslate">
+            <AnimatePresence>
+                {isVisible && (
+                    <motion.div
+                        key="reward-popup-motion"
+                        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 50, scale: 0.9 }}
+                        transition={{ type: "spring", duration: 0.5 }}
+                        style={{
+                            position: 'fixed',
+                            bottom: '20px',
+                            left: '20px', // Left side to not block chat widgets usually on right
+                            zIndex: 9999,
+                            maxWidth: '350px',
+                            width: '90%',
+                        }}
+                    >
                     <div style={{
                         background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
                         borderRadius: '20px',
@@ -189,8 +192,9 @@ const RewardPopup = ({ coupons }) => {
                         </div>
                     </div>
                 </motion.div>
-            )}
-        </AnimatePresence>
+                )}
+            </AnimatePresence>
+        </div>
     );
 };
 
